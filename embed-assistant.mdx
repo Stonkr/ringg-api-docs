@@ -1,0 +1,77 @@
+---
+title: Embed Assistant
+description: 'Learn how to embed our assistant into your website in two easy steps.'
+---
+
+<CardGroup cols={2}>
+    <Card title="Embed Script" icon="code" href="/embed-assistant#embed-script">
+        Get the script to integrate the assistant into your site.
+    </Card>
+    <Card title="Integration Setup" icon="plug" href="/embed-assistant#integration-setup">
+        Configure domains, settings and CDN permissions.
+    </Card>
+</CardGroup>
+
+## [Embed Script](https://www.ringg.ai/dashboard)
+To embed your assistant open your assistant in the dashboard, click the `Embed` button in the top right corner and copy-paste the provided code snippet into your website.
+
+_**For Example:**_
+```html
+<script>
+	function loadAgentsCdn(e, t) {
+		let n = document.createElement("link");
+		n.rel = "stylesheet", n.type = "text/css", n.href = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${e}/dist/style.css`;
+		var a = document.createElement("script");
+		a.type = "text/javascript", a.readyState ? a.onreadystatechange = function() {
+			"loaded" !== a.readyState && "complete" !== a.readyState || (a.onreadystatechange = null, t())
+		} : a.onload = function() {
+			t()
+		}, a.src = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${e}/dist/dv-agent.es.js`, document.getElementsByTagName("head")[0].appendChild(n), document.getElementsByTagName("head")[0].appendChild(a)
+	}
+</script>
+<script>
+	loadAgentsCdn("latest", function() {
+		loadAgent({
+			agentId: "",
+			xApiKey: "",
+			variables: {},
+			buttons: {},
+		});
+	});
+</script>
+```
+
+```plaintext
+agentId: string;
+xApiKey: string;
+variables: Record<string, string>;
+buttons?: {
+    modalTrigger?: { styles?: Partial<React.CSSProperties> };
+    mic?: { styles?: Partial<React.CSSProperties> };
+    call?: {
+        textBeforeCall?: string;
+        textDuringCall?: string;
+        styles?: Partial<React.CSSProperties>;
+    };
+};
+```
+
+## [Integration Setup](https://www.ringg.ai/dashboard)
+Integration Setup has three parts:
+
+1. **Whitelist Your Domain**
+
+    In the `Embed` screen, add your domain under `Whitelist Domains` to enable the assistant on your site.
+
+2. **Configure WebCall Settings**
+
+    In the assistant settings panel, use `WebCall Settings` to configure settings related to WebCall.
+
+3. **CDN Permissions**
+
+    Allow the following CDN links in your website’s security policies.
+
+    ```plaintext
+    style-src: https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@latest/dist/style.css
+    script-src: https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@latest/dist/dv-agent.es.js
+    ```
