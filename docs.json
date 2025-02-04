@@ -1,0 +1,128 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Ringg AI",
+  "colors": {
+    "primary": "#18181B",
+    "light": "#18181B",
+    "dark": "#18181B"
+  },
+  "favicon": "/favicon.png",
+  "background": {
+    "decoration": "grid"
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": " ",
+        "pages": [
+          "getting-started"
+        ]
+      },
+      {
+        "group": "API",
+        "pages": [
+          {
+            "group": "Workspace",
+            "pages": [
+              "api-reference/endpoint/workspace/get-workspace-info",
+              "api-reference/endpoint/workspace/get-all-workspaces-info",
+              "api-reference/endpoint/workspace/get-workspace-users",
+              "api-reference/endpoint/workspace/regenerate-workspace-api-key"
+            ]
+          },
+          {
+            "group": "Assistant",
+            "pages": [
+              "api-reference/endpoint/assistant/get-agents",
+              "api-reference/endpoint/assistant/get-agent-by-id",
+              "api-reference/endpoint/assistant/edit-inbound-agent",
+              "api-reference/endpoint/assistant/delete-agent"
+            ]
+          },
+          {
+            "group": "Voice",
+            "pages": [
+              "api-reference/endpoint/voice/get-agents-voices"
+            ]
+          },
+          {
+            "group": "Number",
+            "pages": [
+              "api-reference/endpoint/number/get-workspace-numbers"
+            ]
+          },
+          {
+            "group": "CSV",
+            "pages": [
+              "api-reference/endpoint/csv/get-workspace-lists",
+              "api-reference/endpoint/csv/upload-contact-list",
+              "api-reference/endpoint/csv/delete-contact-list"
+            ]
+          },
+          {
+            "group": "Calling",
+            "pages": [
+              "api-reference/endpoint/calling/get-call-history",
+              "api-reference/endpoint/calling/get-calling-terminate",
+              "api-reference/endpoint/calling/initiate-individual-outbound-call",
+              "api-reference/endpoint/calling/initiate-bulk-outbound-call",
+              "api-reference/endpoint/calling/terminate-calls"
+            ]
+          }
+        ]
+      },
+      {
+        "group": "WebCall",
+        "pages": [
+          "embed-assistant"
+        ]
+      }
+    ]
+  },
+  "seo": {
+    "metatags": {
+      "og:title" : "Ringg.ai Documentation | Setup & Use Your AI Call Assistant",
+      "og:description" : "Comprehensive guides to implement and maximize your Ringg.ai voice AI assistant. Learn how to customize, integrate, and optimize your AI call automation system",
+      "canonical": "https://docs.ringg.ai"
+    },
+    "indexing": "all"
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "https://www.ringg.ai"
+  },
+  "api": {
+    "playground": {
+      "display": "interactive"
+    },
+    "mdx": {
+      "server": "https://prod-api.ringg.ai/ca/api/v0"
+    }
+  },
+  "appearance": {
+    "default": "light"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Contact Us",
+        "href": "mailto:admin@ringg.ai"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://www.ringg.ai/dashboard"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/ringg_ai",
+      "instagram": "https://www.instagram.com/desivocaldotcom/",
+      "discord": "https://discord.com/invite/nWXREVz2vy",
+      "github": "https://github.com/Stonkr/ringg-api-docs"
+    }
+  }
+}
