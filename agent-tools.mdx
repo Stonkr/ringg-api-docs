@@ -1,0 +1,277 @@
+---
+title: "API Tool Settings Guide"
+description: "Learn how to configure and use API tools in your AI agent."
+---
+
+<CardGroup cols={1}>
+  <Card title="What are API Tools?" icon="plug" href="#what-are-api-tools">
+    Learn what API tools are and their common use cases.
+  </Card>
+  <Card title="Getting Started" icon="play-circle" href="#getting-started">
+    A step-by-step guide to setting up API tools.
+  </Card>
+</CardGroup>
+
+
+# API Tool Settings Guide
+
+## [What are API Tools?](#what-are-api-tools)
+
+API Tools allow your AI agent to connect with external services and applications during conversations. Think of them as bridges that let your agent fetch information, send data, or perform actions in other systems while talking to customers.
+
+**Common use cases:**
+
+- Check product availability in your inventory system
+- Create support tickets in your helpdesk
+- Send notifications to your team
+- Fetch customer information from your CRM
+- Update order status in your e-commerce platform
+
+## [Getting Started](#getting-started)
+
+### Step 1: Access API Settings
+
+1. Navigate to your agent's settings page
+2. Look for the **"API Settings"** section
+3. Click **"Add API"** to create your integration
+
+### Step 2: Basic Configuration
+
+#### Tool Name
+
+Give your API tool a descriptive name that your agent will understand:
+
+- ✅ Good: "check_inventory", "create_support_ticket", "get_customer_info"
+- ❌ Avoid: "API1", "Tool", "External Call"
+
+#### API Endpoint URL
+
+Enter the complete web address where your API can be reached:
+
+```
+https://api.yourcompany.com/inventory/check
+```
+
+#### HTTP Method
+
+Choose the appropriate method for your API:
+
+- **GET**: For retrieving information
+- **POST**: For creating new records or sending data
+- **PUT**: For updating existing records
+- **PATCH**: For partial updates
+
+### Step 3: Using API Tools in Prompts
+
+#### Calling API Tools During Conversations
+
+Once you've created your API tools, you can instruct your agent when and how to use them in conversations.
+
+**How to reference API tools in prompts:**
+
+1. Type `@` in your prompt to see a list of your created API tools
+2. Select the tool you want to reference - it will appear as `@||tool_name||`
+3. Write instructions around the tool reference to tell your agent when to use it
+
+**Examples:**
+
+```
+If the customer asks to create a support ticket, call the function @||create_ticket||
+```
+
+```
+When a customer inquires about product availability, call the function @||check_inventory|| with the product name they mention
+```
+
+```
+If the user requests to speak with a human agent, call the function @||create_ticket|| to escalate the conversation
+```
+
+## Parameter Types Explained
+
+### Static Parameters
+
+These are fixed values that never change:
+
+- **Example**: Your API key, company ID, or fixed headers
+- **When to use**: For authentication tokens, constant values
+
+### Dynamic Parameters
+
+These values come from the conversation or agent's knowledge:
+
+- **Example**: Customer name, phone number, order ID mentioned by the caller
+- **When to use**: When you need information that varies per conversation
+
+### Variable Parameters
+
+These are custom variables you've defined for your agent:
+
+- **Example**: Agent's department, campaign name, or predefined values
+- **When to use**: For values specific to your agent's configuration
+
+## Configuration Sections
+
+### Headers
+
+Headers provide additional information about your request:
+
+**Common headers:**
+
+- `Authorization`: For API keys or tokens
+- `Content-Type`: Usually `application/json` for JSON data
+- `Accept`: What format you want the response in
+
+**Example:**
+
+```
+Key: Authorization
+Value: Bearer your-api-key-here
+Type: Static
+```
+
+### Query Parameters
+
+These appear in the URL after a question mark (?):
+
+**Example URL:** `https://api.example.com/search?category=electronics&limit=10`
+
+**Configuration:**
+
+```
+Key: category
+Value: electronics
+Type: Static
+
+Key: customer_id
+Value: The customer's ID number
+Type: Dynamic
+```
+
+### Body Parameters
+
+Data sent in the request body (mainly for POST/PUT/PATCH requests):
+
+**Example:**
+
+```
+Key: customer_name
+Value: The customer's full name
+Type: Dynamic
+
+Key: priority
+Value: high
+Type: Static
+```
+
+### Response Selected Keys
+
+Choose which parts of the API response your agent should know:
+
+**Example API Response:**
+
+```json
+{
+  "customer": {
+    "name": "John Doe",
+    "email": "john@example.com",
+    "orders": [
+      { "id": "12345", "status": "shipped" },
+      { "id": "12346", "status": "pending" }
+    ]
+  },
+  "total_orders": 2
+}
+```
+
+**Selected Keys:**
+
+- `customer.name` → Gets "John Doe"
+- `customer.email` → Gets "[john@example.com](mailto:john@example.com)"
+- `orders[0].status` → Gets "shipped"
+- `total_orders` → Gets 2
+
+## Testing Your API Tool
+
+### Before Going Live
+
+Always test your API configuration:
+
+1. Click **"Test API"** button
+2. Provide sample values for dynamic parameters
+3. Review the response to ensure it's working correctly
+4. Check that selected response keys return the expected data
+
+## Common Examples
+
+### Example 1: Check Product Availability
+
+**Configuration:**
+
+- **URL**: `https://inventory.yourstore.com/api/check`
+- **Method**: GET
+- **Query Parameters**:
+  - `product_id` (Dynamic): "The product ID mentioned by customer"
+  - `store_location` (Static): "main-warehouse"
+
+**Response Keys**: `availability`, `quantity`, `price`
+
+### Example 2: Create Support Ticket
+
+**Configuration:**
+
+- **URL**: `https://helpdesk.yourcompany.com/api/tickets`
+- **Method**: POST
+- **Headers**:
+  - `Authorization` (Static): "Bearer your-api-key"
+  - `Content-Type` (Static): "application/json"
+- **Body Parameters**:
+  - `customer_name` (Dynamic): "Customer's full name"
+  - `issue_description` (Dynamic): "Description of the problem"
+  - `priority` (Static): "medium"
+
+**Response Keys**: `ticket_id`, `status`
+
+### Example 3: Get Customer Information
+
+**Configuration:**
+
+- **URL**: `https://crm.yourcompany.com/api/customers`
+- **Method**: GET
+- **Headers**:
+  - `X-API-Key` (Static): "your-crm-api-key"
+- **Query Parameters**:
+  - `phone` (Dynamic): "Customer's phone number"
+
+**Response Keys**: `customer.name`, `customer.email`, `customer.account_status`
+
+## Troubleshooting
+
+### Common Issues
+
+**"API Test Failed"**
+
+- Check if the URL is correct and accessible
+- Verify your API key or authentication
+- Ensure the API endpoint is working
+
+**"Invalid Response"**
+
+- Check if the API returns JSON format
+- Verify the response structure matches your selected keys
+- Test with a tool like Postman first
+
+**"Parameter Not Found"**
+
+- Ensure dynamic parameters have clear descriptions
+- Check that the parameter names match exactly
+- Verify the parameter type is correct
+
+### Getting Help
+
+If you're having trouble:
+
+1. Test your API with external tools first (like Postman)
+2. Check your API documentation
+3. Verify all URLs and authentication details
+4. Contact your technical team for API-specific issues
