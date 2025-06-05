@@ -77,6 +77,12 @@
         "pages": [
           "embed-assistant"
         ]
+      },
+      {
+        "group": "Agent Tools",
+        "pages": [
+          "agent-tools"
+        ]
       }
     ]
   },
