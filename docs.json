@@ -88,8 +88,8 @@
   },
   "seo": {
     "metatags": {
-      "og:title" : "Ringg AI Documentation | Setup & Use Your AI Call Assistant",
-      "og:description" : "Comprehensive guides to implement and maximize your Ringg AI voice AI assistant. Learn how to customize, integrate, and optimize your AI call automation system",
+      "og:title" : "Ringg AI APIs for Developers | Voice Agents",
+      "og:description" : "Setup AI calls for your business with Ringg AI API",
       "canonical": "https://docs.ringg.ai"
     },
     "indexing": "all"
