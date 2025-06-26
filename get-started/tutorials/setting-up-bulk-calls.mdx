@@ -1,0 +1,151 @@
+---
+title: "Setting Up Bulk Calls"
+description: "This tutorial will guide you through the process of setting up and initiating bulk calls to multiple recipients"
+---
+
+
+## Prerequisites
+
+Before you begin, make sure you have:
+
+* An active Ringg AI account
+
+* Your API key (X-API-KEY)
+
+* An assistant configured for outbound calls
+
+* At least one phone number assigned to your workspace
+
+* A CSV file with contact information
+
+## Execution
+
+**_Step 1: Prepare Your Contact List_**
+
+Create a CSV file with the following structure:
+
+```text
+name,mobile_number,custom_variable_1,custom_variable_2
+John Doe,+1234567890,value1,value2
+Jane Smith,+0987654321,value3,value4
+```
+
+Make sure to include all custom variables required by your assistant.
+
+**_Step 2: Upload the Contact List_**
+
+Upload your contact list to Ringg AI:
+
+```javascript
+const formData = new FormData();
+formData.append('variables_map', JSON.stringify({
+  "name": "name",
+  "mobile_number": "mobile_number",
+  "custom_variable_1": "custom_variable_1",
+  "custom_variable_2": "custom_variable_2"
+}));
+formData.append('agent_id', 'your-assistant-id');
+formData.append('call_config', JSON.stringify({
+  "max_concurrent_calls": 5,
+  "retry_count": 1
+}));
+formData.append('country_code', '+1');
+formData.append('file', yourCsvFile);
+
+const options = {
+  method: 'POST',
+  headers: {'X-API-KEY': 'your-api-key-here'},
+  body: formData
+};
+
+fetch('https://prod-api.ringg.ai/ca/api/v0/calling/contact/list', options)
+  .then(response => response.json())
+  .then(response => {
+     // Store the list_id for initiating bulk calls
+    const listId = response.list_id;
+    console.log(listId);
+  })
+  .catch(err => console.error(err));
+```
+
+**_Step 3: Get Available Phone Numbers_**
+
+Retrieve the list of phone numbers in your workspace:
+
+```javascript
+const options = {method: 'GET', headers: {'X-API-KEY': 'your-api-key-here'}};
+
+fetch('https://prod-api.ringg.ai/ca/api/v0/workspace/numbers', options)
+  .then(response => response.json())
+  .then(response => {
+     // Select phone numbers to use as caller IDs
+    const phoneNumberIds = response.workspace_numbers.map(number => number.id);
+    console.log(phoneNumberIds);
+  })
+  .catch(err => console.error(err));
+```
+
+**_Step 4: Initiate Bulk Calls_**
+
+Start the bulk calling campaign using the list ID and phone number IDs:
+
+```javascript
+const options = {
+  method: 'POST',
+  headers: {
+    'X-API-KEY': 'your-api-key-here',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "agent_id": "your-assistant-id",
+    "list_id": "your-list-id",
+    "from_numbers": [
+      "phone-number-id-1",
+      "phone-number-id-2"
+    ]
+  })
+};
+
+fetch('https://prod-api.ringg.ai/ca/api/v0/calling/outbound/bulk', options)
+  .then(response => response.json())
+  .then(response => console.log(response))
+  .catch(err => console.error(err));
+```
+
+**_Step 5: Monitor Call Progress_**
+
+You can check the status of your bulk calls using the call history endpoint:
+
+```javascript
+const options = {
+  method: 'GET',
+  headers: {'X-API-KEY': 'your-api-key-here'}
+};
+
+fetch('https://prod-api.ringg.ai/ca/api/v0/calling/history?bulk_list_id=your-list-id', options)
+  .then(response => response.json())
+  .then(response => console.log(response))
+  .catch(err => console.error(err));
+```
+
+**_Step 6: Terminate Bulk Calls (If Needed)_**
+
+If you need to stop the bulk calling campaign:
+
+```javascript
+const options = {
+  method: 'PATCH',
+  headers: {
+    'X-API-KEY': 'your-api-key-here',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "agent_id": "your-assistant-id"
+  })
+};
+
+fetch('https://prod-api.ringg.ai/ca/api/v0/calling/terminate', options)
+  .then(response => response.json())
+  .then(response => console.log(response))
+  .catch(err => console.error(err));
+```

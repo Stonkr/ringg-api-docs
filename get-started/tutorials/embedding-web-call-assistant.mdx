@@ -1,0 +1,130 @@
+---
+title: "Embedding Web Call Assistant"
+description: "This tutorial will guide you through the process of embedding a Ringg AI voice assistant on your website"
+---
+
+
+## Prerequisites
+
+Before you begin, make sure you have:
+
+* An active Ringg AI account
+
+* Your API key (X-API-KEY)
+
+* An assistant configured for web calls
+
+* Access to modify your website's HTML
+
+## Execution
+
+**_Step 1: Configure Your Assistant for Web Calls_**
+
+* Open your assistant in the Ringg AI dashboard
+
+* Navigate to the assistant settings
+
+* Configure the WebCall Settings section
+
+* Add your website domain to the Whitelist Domains list
+
+**_Step 2: Get the Embed Code_**
+
+* Open your assistant in the Ringg AI dashboard
+
+* Click the Embed button in the top right corner
+
+* Copy the provided code snippet
+
+The embed code will look similar to this:
+
+```
+<script>
+	 function loadAgentsCdn(e, t) {
+		 let n = document.createElement("link");
+		 n.rel = "stylesheet", n.type = "text/css", n.href = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${e}/dist/style.css`;
+		 var a = document.createElement("script");
+		 a.type = "text/javascript", a.readyState ? a.onreadystatechange = function() {
+			 "loaded" !== a.readyState && "complete" !== a.readyState || (a.onreadystatechange = null, t())
+		 } : a.onload = function() {
+			 t()
+		 }, a.src = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${e}/dist/dv-agent.es.js`, document.getElementsByTagName("head")[0].appendChild(n), document.getElementsByTagName("head")[0].appendChild(a)
+	 }
+</script>
+```
+
+```
+<script>
+	 loadAgentsCdn("latest", function() {
+		 loadAgent({
+			 agentId: "your-agent-id",
+			 xApiKey: "your-api-key",
+			 variables: {},
+			 buttons: {},
+		 });
+	 });
+</script>
+```
+
+**_Step 3: Customize the Embed Code_**
+
+Modify the configuration object to customize the appearance and behavior of the Web Call assistant:
+
+```javascript
+loadAgent({
+  agentId: "your-agent-id",
+  xApiKey: "your-api-key",
+  variables: {
+     // Custom variables for your assistant
+    "custom_variable_1": "value1",
+    "custom_variable_2": "value2"
+  },
+  buttons: {
+    modalTrigger: {
+      styles: {
+        backgroundColor: "#4CAF50",
+        color: "white",
+        borderRadius: "50%"
+      }
+    },
+    mic: {
+      styles: {
+        backgroundColor: "#f44336",
+        borderRadius: "50%"
+      }
+    },
+    call: {
+      textBeforeCall: "Start Call",
+      textDuringCall: "End Call",
+      styles: {
+        backgroundColor: "#2196F3",
+        color: "white",
+        borderRadius: "4px"
+      }
+    }
+  }
+});
+```
+
+**_Step 4: Add the Code to Your Website_**
+
+Paste the embed code into your website's HTML, preferably just before the closing `</body>` tag.
+
+**_Step 5: Configure CDN Permissions_**
+
+If your website uses Content Security Policy (CSP), add the following CDN links to your security policies:
+
+```text
+style-src: https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@latest/dist/style.css
+script-src: https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@latest/dist/dv-agent.es.js
+```
+
+**_Step 6: Test the Integration_**
+
+* Visit your website
+
+* Look for the Web Call button (typically in the bottom right corner)
+
+* Click the button to start a call
+
+* Speak to test the voice interaction

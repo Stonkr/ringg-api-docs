@@ -1,0 +1,97 @@
+---
+title: "Quick Start Guide"
+description: "Get started with Ringg AI's voice capabilities in minutes"
+---
+
+Get started with Ringg AI's voice capabilities in minutes. This guide will help you make your first AI-powered call using our API.
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+- An active account on Ringg AI
+- Your API key (`X-API-KEY`) from the dashboard
+- A basic understanding of making HTTP requests
+
+## Step 1: Authenticate with the API
+
+First, ensure you can access the API by retrieving your workspace information:
+
+```javascript
+const options = {
+  method: 'GET',
+  headers: { 'X-API-KEY': 'your-api-key-here' }
+};
+
+fetch('https://prod-api.ringg.ai/ca/api/v0/workspace', options)
+  .then(response => response.json())
+  .then(response => console.log(response))
+  .catch(err => console.error(err));
+```
+
+## Step 2: Make Your First Call
+
+Once authenticated, you can initiate your first AI-powered call:
+
+```javascript
+const options = {
+  method: 'POST',
+  headers: {
+    'X-API-KEY': 'your-api-key-here',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "name": "John Doe",
+    "mobile_number": "+1234567890",
+    "agent_id": "your-agent-id",
+    "from_number_id": "your-from-number-id",
+    "custom_args_values": {
+      "custom_variable_1": "value1",
+      "custom_variable_2": "value2"
+    }
+  })
+};
+
+fetch('https://prod-api.ringg.ai/ca/api/v0/calling/outbound/individual', options)
+  .then(response => response.json())
+  .then(response => console.log(response))
+  .catch(err => console.error(err));
+```
+### Required Parameters
+
+- **name**: The recipient’s name
+- **mobile_number**: The recipient’s phone number
+- **agent_id**: The ID of the AI assistant that will conduct the call
+- **from_number_id**: The ID of the phone number to use as the caller ID
+- **custom_args_values**: Custom variables to personalize the conversation
+
+## Step 3: Check Call Status
+
+After initiating a call, you’ll receive a response with the call details:
+
+```json
+{
+  "Call Status": "success",
+  "data": {
+    "Unique Call ID": "dd6c63db-66c7-42ae-9a82-e4988bef428e",
+    "Call Direction": "outbound",
+    "Call Status": "registered",
+    "From Number": "+918035737034",
+    "To Number": "+919994008915",
+    "Initiated at": "2025-04-24T04:22:47.722294",
+    "Agent ID": "cdcf1b39-173a-4492-8396-c493123ea443",
+    "System generated message": "Call initiated successfully"
+  }
+}
+```
+
+## Next Steps
+
+Now that you’ve made your first call, you can explore more advanced features:
+
+- Initiate bulk calls to multiple recipients
+- Create and customize AI assistants
+- Embed voice assistants on your website
+- Analyze call performance and outcomes
+
+> Check out our API Reference for detailed information on all available endpoints.

@@ -1,87 +1,95 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
+  "theme": "maple",
   "name": "Ringg AI",
   "colors": {
-    "primary": "#18181B",
-    "light": "#18181B",
-    "dark": "#18181B"
+    "primary": "#9AADEC",
+    "light": "#9AADEC",
+    "dark": "#9AADEC"
   },
   "favicon": "/favicon.png",
+  "styling": {
+    "eyebrows": "breadcrumbs"
+  },
   "background": {
     "decoration": "grid"
+  },
+  "icons": {
+    "library": "fontawesome"
   },
   "navigation": {
     "groups": [
       {
-        "group": " ",
+        "group": "Get Started",
         "pages": [
-          "getting-started"
-        ]
-      },
-      {
-        "group": "API",
-        "pages": [
+          "get-started/overview",
           {
-            "group": "Workspace",
+            "group": "Quick Start",
+            "icon": "rocket",
             "pages": [
-              "api-reference/endpoint/workspace/get-workspace-info",
-              "api-reference/endpoint/workspace/get-all-workspaces-info",
-              "api-reference/endpoint/workspace/get-workspace-users",
-              "api-reference/endpoint/workspace/regenerate-workspace-api-key"
+              "get-started/quick-start/quick-start-guide",
+              "get-started/quick-start/authentication",
+              "get-started/quick-start/api-overview"
             ]
           },
           {
-            "group": "Assistant",
+            "group": "Tutorials",
+            "icon": "code",
             "pages": [
-              "api-reference/endpoint/assistant/get-agents",
-              "api-reference/endpoint/assistant/get-agent-by-id",
-              "api-reference/endpoint/assistant/edit-inbound-agent",
-              "api-reference/endpoint/assistant/delete-agent"
+              "get-started/tutorials/voice-calling",
+              "get-started/tutorials/making-your-first-call",
+              "get-started/tutorials/setting-up-bulk-calls",
+              "get-started/tutorials/managing-contacts",
+              "get-started/tutorials/embedding-web-call-assistant"
             ]
           },
           {
-            "group": "Voice",
+            "group": "Best Practices",
+            "icon": "thumbs-up" ,
             "pages": [
-              "api-reference/endpoint/voice/get-agents-voices"
-            ]
-          },
-          {
-            "group": "Number",
-            "pages": [
-              "api-reference/endpoint/number/get-workspace-numbers"
-            ]
-          },
-          {
-            "group": "CSV",
-            "pages": [
-              "api-reference/endpoint/csv/get-workspace-lists",
-              "api-reference/endpoint/csv/upload-contact-list",
-              "api-reference/endpoint/csv/delete-contact-list"
-            ]
-          },
-          {
-            "group": "Calling",
-            "pages": [
-              "api-reference/endpoint/calling/get-call-history",
-              "api-reference/endpoint/calling/get-calling-terminate",
-              "api-reference/endpoint/calling/initiate-individual-outbound-call",
-              "api-reference/endpoint/calling/initiate-bulk-outbound-call",
-              "api-reference/endpoint/calling/terminate-calls"
+              "get-started/best-practices/voice-call-optimization",
+              "get-started/best-practices/web-call-integration",
+              "get-started/best-practices/security-guidelines"
             ]
           }
         ]
       },
       {
-        "group": "WebCall",
+        "group": "API Reference",
+        "tag": "NEW",
         "pages": [
-          "embed-assistant"
-        ]
-      },
-      {
-        "group": "Agent Tools",
-        "pages": [
-          "agent-tools"
+          {
+            "group": "Workspace Management",
+            "pages": [
+              "api-reference/endpoint/workspace/get-workspace-info",
+              "api-reference/endpoint/workspace/list-workspace-users"
+            ]
+          },
+          {
+            "group": "Assistant Management",
+            "pages": [
+              "api-reference/endpoint/assistant/get-assistants",
+              "api-reference/endpoint/assistant/get-assistant-by-id"
+            ]
+          },
+          {
+            "group": "Voice Calling",
+            "pages": [
+              "api-reference/endpoint/calling/get-call-history",
+              "api-reference/endpoint/calling/initiate-individual-call",
+              "api-reference/endpoint/calling/get-all-campaigns",
+              "api-reference/endpoint/calling/start-campaign",
+              "api-reference/endpoint/calling/terminate-calls"
+            ]
+          },
+          {
+            "group": "Contact Management",
+            "pages": [
+              "api-reference/endpoint/contact/get-workspace-numbers",
+              "api-reference/endpoint/contact/get-contact-list",
+              "api-reference/endpoint/contact/upload-campaign-contact-list"
+            ]
+          }
         ]
       }
     ]
@@ -130,5 +138,14 @@
       "discord": "https://discord.com/invite/nWXREVz2vy",
       "github": "https://github.com/Stonkr/ringg-api-docs"
     }
+  },
+  "search": {
+    "prompt": "Search or ask AI"
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "chatgpt"
+    ]
   }
 }

@@ -1,923 +1,1605 @@
 {
-    "openapi": "3.1.0",
-    "info": {
-        "title": "Ringg AI API Documentation",
-        "description": "This is the documentation for the Ringg AI APIs.",
-        "version": "1.0.0"
-    },
-    "paths": {
-        "/workspace": {
-            "get": {
-                "summary": "Get Workspace Info",
-                "description": "Retrieves workspace information.",
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {}
-                                }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "X-API-KEY",
-                        "in": "header",
-                        "description": "",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ]
-            }
-        },
-        "/workspace/all": {
-            "get": {
-                "summary": "Get All Workspaces Info",
-                "description": "Retrieves all workspaces information.",
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "object", "properties": {} }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "X-API-KEY",
-                        "in": "header",
-                        "description": "",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ]
-            }
-        },
-        "/workspace/users": {
-            "get": {
-                "summary": "List Workspace Users",
-                "description": "Retrieves a list of users in a workspace.",
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "object", "properties": {} }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "X-API-KEY",
-                        "in": "header",
-                        "description": "",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ]
-            }
-        },
-        "/workspace/api-key": {
-            "patch": {
-                "summary": "Regenerate API Key",
-                "description": "Invalidates current API key and generates a new one for the workspace.",
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "object", "properties": {} }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "X-API-KEY",
-                        "in": "header",
-                        "description": "",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ]
-            }
-        },
-        "/agent/all": {
-            "get": {
-                "summary": "Get Assistants",
-                "description": "Retrieves a list of available assistants.",
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "object", "properties": {} }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "X-API-KEY",
-                        "in": "header",
-                        "description": "",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ]
-            }
-        },
-        "/agent/{agent_id}": {
-            "get": {
-                "summary": "Get Assistant By ID",
-                "description": "Retrieves assistant information by its ID.",
-                "parameters": [
-                    {
-                        "name": "X-API-KEY",
-                        "in": "header",
-                        "description": "",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "agent_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "title": "Agent Id"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "object", "properties": {} }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "summary": "Delete Assistant",
-                "description": "Deletes an assistant by its ID.",
-                "parameters": [
-                    {
-                        "name": "X-API-KEY",
-                        "in": "header",
-                        "description": "",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "agent_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "title": "Agent Id"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "object", "properties": {} }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/agent": {
-            "patch": {
-                "summary": "Edit Assistant",
-                "description": "Updates the assistant’s information.",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/EditAgentRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "object", "properties": {} }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "X-API-KEY",
-                        "in": "header",
-                        "description": "",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ]
-            }
-        },
-        "/agent/voices": {
-            "get": {
-                "summary": "Get Assistant Voices",
-                "description": "Retrieves a list of available voices.",
-                "parameters": [
-                    {
-                        "name": "X-API-KEY",
-                        "in": "header",
-                        "description": "",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "language",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "anyOf": [
-                                {
-                                    "type": "string"
-                                },
-                                {
-                                    "type": "null"
-                                }
-                            ],
-                            "title": "Language"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "object", "properties": {} }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/workspace/numbers": {
-            "get": {
-                "summary": "Get Workspace Numbers",
-                "description": "Retrieves a list of available numbers.",
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "object", "properties": {} }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "X-API-KEY",
-                        "in": "header",
-                        "description": "",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ]
-            }
-        },
-        "/workspace/lists": {
-            "get": {
-                "summary": "Get Contact List",
-                "description": "Retrieves a list of saved contact CSV files.",
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "object", "properties": {} }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "X-API-KEY",
-                        "in": "header",
-                        "description": "",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ]
-            }
-        },
-        "/calling/contact/list": {
-            "post": {
-                "summary": "Upload Contact List",
-                "description": "“Uploads and saves a contact CSV file.",
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Body_upload_contact_list_api_v0_calling_contact_list_post"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "object", "properties": {} }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "X-API-KEY",
-                        "in": "header",
-                        "description": "",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ]
-            }
-        },
-        "/calling/contact/{list_id}": {
-            "delete": {
-                "summary": "Delete Contact List",
-                "description": "Deletes a contact CSV by its ID.",
-                "parameters": [
-                    {
-                        "name": "X-API-KEY",
-                        "in": "header",
-                        "description": "",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "list_id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "title": "List Id"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "object", "properties": {} }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/calling/history": {
-            "get": {
-                "summary": "Get Call History",
-                "description": "Retrieves the call history.",
-                "parameters": [
-                    {
-                        "name": "X-API-KEY",
-                        "in": "header",
-                        "description": "",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "start_date",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "anyOf": [
-                                {
-                                    "type": "string"
-                                },
-                                {
-                                    "type": "null"
-                                }
-                            ],
-                            "title": "Start Date"
-                        }
-                    },
-                    {
-                        "name": "end_date",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "anyOf": [
-                                {
-                                    "type": "string"
-                                },
-                                {
-                                    "type": "null"
-                                }
-                            ],
-                            "title": "End Date"
-                        }
-                    },
-                    {
-                        "name": "limit",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 10,
-                            "title": "Limit"
-                        }
-                    },
-                    {
-                        "name": "offset",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 0,
-                            "title": "Offset"
-                        }
-                    },
-                    {
-                        "name": "agent_id",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "anyOf": [
-                                {
-                                    "type": "string"
-                                },
-                                {
-                                    "type": "null"
-                                }
-                            ],
-                            "title": "Agent Id"
-                        }
-                    },
-                    {
-                        "name": "status",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "anyOf": [
-                                {
-                                    "type": "string"
-                                },
-                                {
-                                    "type": "null"
-                                }
-                            ],
-                            "title": "Status"
-                        }
-                    },
-                    {
-                        "name": "download",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "boolean",
-                            "default": false,
-                            "title": "Download"
-                        }
-                    },
-                    {
-                        "name": "bulk_list_id",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "anyOf": [
-                                {
-                                    "type": "string"
-                                },
-                                {
-                                    "type": "null"
-                                }
-                            ],
-                            "title": "Bulk List Id"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "object", "properties": {} }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/calling/outbound/individual": {
-            "post": {
-                "tags": [
-                    "Calling"
-                ],
-                "summary": "Initiate Individual Call",
-                "description": "Starts a new individual call.",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/InitiateIndividualOutboundCallRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "object", "properties": {} }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "X-API-KEY",
-                        "in": "header",
-                        "description": "",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ]
-            }
-        },
-        "/calling/outbound/bulk": {
-            "post": {
-                "summary": "Initiate Bulk Call",
-                "description": "Starts a new bulk call.",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/InitiateBulkOutboundCallRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "object", "properties": {} }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "X-API-KEY",
-                        "in": "header",
-                        "description": "",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ]
-            }
-        },
-        "/calling/terminate": {
-            "get": {
-                "summary": "Get Call Termination List",
-                "description": "Retrieves a list of all ongoing bulk calls for termination.",
-                "responses": {
-                    "200": {
-                        "description": "Successful response",
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "object", "properties": {} }
-                            }
-                        }
-                    }
-                }
-            },
-            "patch": {
-                "summary": "Terminate Call",
-                "description": "Terminates all selected ongoing calls.",
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/TerminateCallsRequest"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful Response",
-                        "content": {
-                            "application/json": {
-                                "schema": { "type": "object", "properties": {} }
-                            }
-                        }
-                    }
-                },
-                "parameters": [
-                    {
-                        "name": "X-API-KEY",
-                        "in": "header",
-                        "description": "",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ]
-            }
-        }
-    },
-    "components": {
-        "schemas": {
-            "Body_upload_contact_list_api_v0_calling_contact_list_post": {
-                "properties": {
-                    "variables_map": {
-                        "type": "string",
-                        "title": "Variables Map"
-                    },
-                    "agent_id": {
-                        "type": "string",
-                        "title": "Agent Id"
-                    },
-                    "call_config": {
-                        "type": "string",
-                        "title": "Call Config"
-                    },
-                    "country_code": {
-                        "type": "string",
-                        "title": "Country Code"
-                    },
-                    "file": {
-                        "type": "string",
-                        "format": "binary",
-                        "title": "File"
-                    }
-                },
-                "type": "object",
-                "required": [
-                    "variables_map",
-                    "agent_id",
-                    "call_config",
-                    "country_code",
-                    "file"
-                ],
-                "title": "Body_upload_contact_list_api_v0_calling_contact_list_post"
-            },
-            "EditAgentRequest": {
-                "properties": {
-                    "agent_id": {
-                        "anyOf": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ],
-                        "title": "Agent Id"
-                    },
-                    "intro_message": {
-                        "type": "string",
-                        "title": "Intro Message"
-                    },
-                    "agent_display_name": {
-                        "anyOf": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ],
-                        "title": "Agent Display Name"
-                    },
-                    "agent_prompt": {
-                        "anyOf": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ],
-                        "title": "Agent Prompt"
-                    },
-                    "voice_id": {
-                        "anyOf": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ],
-                        "title": "Voice Id"
-                    },
-                    "language": {
-                        "anyOf": [
-                            {
-                                "type": "string",
-                                "enum": [
-                                    "en-US",
-                                    "en-IN",
-                                    "hi-IN"
-                                ]
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ],
-                        "title": "Language"
-                    }
-                },
-                "type": "object",
-                "required": [
-                ],
-                "title": "EditAgentRequest"
-            },
-            "InitiateBulkOutboundCallRequest": {
-                "properties": {
-                    "agent_id": {
-                        "type": "string",
-                        "title": "Agent Id"
-                    },
-                    "list_id": {
-                        "type": "string",
-                        "title": "List Id"
-                    },
-                    "from_numbers": {
-                        "items": {
-                            "type": "string"
-                        },
-                        "type": "array",
-                        "title": "From Numbers"
-                    }
-                },
-                "type": "object",
-                "required": [
-                    "agent_id",
-                    "list_id",
-                    "from_numbers"
-                ],
-                "title": "InitiateBulkOutboundCallRequest"
-            },
-            "InitiateIndividualOutboundCallRequest": {
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "title": "Name"
-                    },
-                    "mobile_number": {
-                        "type": "string",
-                        "title": "Mobile Number"
-                    },
-                    "agent_id": {
-                        "type": "string",
-                        "title": "Agent Id"
-                    },
-                    "from_number_id": {
-                        "type": "string",
-                        "title": "From Number Id"
-                    },
-                    "custom_args_values": {
-                        "type": "object",
-                        "title": "Custom Args Values",
-                        "properties": {
-                            "custom_variable_1": {
-                                "type": "string",
-                                "title": "Custom Variable 1"
-                            },
-                            "custom_variable_2": {
-                                "type": "string",
-                                "title": "Custom Variable 2"
-                            }
-                        },
-                        "additionalProperties": true
-                    }
-                },
-                "type": "object",
-                "required": [
-                    "name",
-                    "mobile_number",
-                    "agent_id",
-                    "from_number_id"
-                ],
-                "title": "InitiateIndividualOutboundCallRequest"
-            },
-            "InitiateNumberPurchaseRequest": {
-                "properties": {
-                    "number": {
-                        "type": "string",
-                        "title": "Number"
-                    },
-                    "country_code": {
-                        "type": "string",
-                        "enum": [
-                            "CA",
-                            "IN",
-                            "US"
-                        ],
-                        "title": "Country Code"
-                    }
-                },
-                "type": "object",
-                "required": [
-                    "number",
-                    "country_code"
-                ],
-                "title": "InitiateNumberPurchaseRequest"
-            },
-            "TerminateCallsRequest": {
-                "properties": {
-                    "agent_id": {
-                        "anyOf": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ],
-                        "title": "Agent Id"
-                    },
-                    "call_ids": {
-                        "anyOf": [
-                            {
-                                "items": {
-                                    "type": "string"
-                                },
-                                "type": "array"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ],
-                        "title": "Call Ids"
-                    }
-                },
-                "type": "object",
-                "title": "TerminateCallsRequest"
-            }
-        }
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Ringg AI API Documentation",
+    "description": "This is the documentation for the Ringg AI APIs. The Ringg AI API follows RESTful principles, making it intuitive and easy to integrate with your applications. All API requests should be made to the base URL. The API accepts and returns data in JSON format. Ensure your requests include the appropriate Content-Type header for POST and PATCH requests.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://prod-api.ringg.ai/ca/api/v0"
     }
+  ],
+  "tags": [
+    {
+      "name": "workspace",
+      "description": "Endpoints for managing your workspace."
+    },
+    {
+      "name": "agent",
+      "description": "Endpoints for managing assistants (agents)."
+    },
+    {
+      "name": "calling",
+      "description": "Endpoints for making and managing calls."
+    },
+    {
+      "name": "campaign",
+      "description": "Endpoints for managing campaigns."
+    }
+  ],
+  "paths": {
+    "/workspace": {
+      "get": {
+        "tags": [
+          "workspace"
+        ],
+        "summary": "Get Workspace Info",
+        "description": "Retrieves information about your current workspace.",
+        "operationId": "getWorkspaceInfo",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response: Information about the current workspace.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "workspace_info": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "7251cb4b-72a3-42dc-9586-edf0328e2973"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Siddharth @ DesiVocal's Workspace"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-12-16T13:03:29.947147+00:00"
+                        },
+                        "credits": {
+                          "type": "integer",
+                          "example": 3025
+                        },
+                        "locked_credits": {
+                          "type": "integer",
+                          "example": 0
+                        },
+                        "api_key": {
+                          "type": "string",
+                          "example": "d079bcb3-f52b-4b47-a230-f626ecad3e85"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "401 Unauthorized"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid credentials"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "500 Internal Server Error"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "An unexpected error occurred on the server."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workspace/users": {
+      "get": {
+        "tags": [
+          "workspace"
+        ],
+        "summary": "List Workspace Users",
+        "description": "Retrieves a list of all users in your current workspace.",
+        "operationId": "listWorkspaceUsers",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items to return (default: 20, max: 100).",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of items to skip (default: 0).",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response: A list of users in the workspace.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "workspace_users": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "9a3001e2-3373-43a4-844c-b27a1d45e0c9"
+                          },
+                          "username": {
+                            "type": "string",
+                            "example": "sahil"
+                          },
+                          "email": {
+                            "type": "string",
+                            "example": "sahil@desivocal.com"
+                          },
+                          "role": {
+                            "type": "string",
+                            "example": "member"
+                          },
+                          "invite_status": {
+                            "type": "string",
+                            "example": "success"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key."
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end."
+          }
+        }
+      }
+    },
+    "/workspace/numbers": {
+      "get": {
+        "tags": [
+          "workspace"
+        ],
+        "summary": "Get Workspace Numbers",
+        "description": "Retrieves a list of available phone numbers in your workspace.",
+        "operationId": "getWorkspaceNumbers",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items to return (default: 20, max: 100).",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of items to skip (default: 0).",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response: A list of available phone numbers.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "workspace_numbers": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "number": {
+                            "type": "string"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "call_count": {
+                            "type": "integer"
+                          },
+                          "agent": {
+                            "type": "object",
+                            "nullable": true,
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "agent_display_name": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "is_inbound_enabled": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key."
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end."
+          }
+        }
+      }
+    },
+    "/workspace/lists": {
+      "get": {
+        "tags": [
+          "workspace"
+        ],
+        "summary": "Get Contact List",
+        "description": "Retrieves a list of saved contact CSV files.",
+        "operationId": "getContactList",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items to return (default: 20, max: 100).",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of items to skip (default: 0).",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response: A list of contact list metadata.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "contact_lists": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "list_id": {
+                            "type": "string"
+                          },
+                          "file_name": {
+                            "type": "string"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "status": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key."
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end."
+          }
+        }
+      }
+    },
+    "/agent/all": {
+      "get": {
+        "tags": [
+          "agent"
+        ],
+        "summary": "Get Assistants",
+        "description": "Retrieves a list of all available assistants in your workspace.",
+        "operationId": "getAssistants",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of items to return (default: 20, max: 100).",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of items to skip (default: 0).",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response: A list of assistants.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "agents": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "agent_display_name": {
+                                "type": "string"
+                              },
+                              "agent_type": {
+                                "type": "string"
+                              },
+                              "created_at": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "updated_at": {
+                                "type": "string",
+                                "format": "date-time"
+                              },
+                              "template_name": {
+                                "type": "string"
+                              },
+                              "template_label": {
+                                "type": "string"
+                              },
+                              "template_icon": {
+                                "type": "string"
+                              },
+                              "template_source": {
+                                "type": "string"
+                              },
+                              "call_count": {
+                                "type": "integer"
+                              },
+                              "custom_variables": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              },
+                              "is_archived": {
+                                "type": "boolean"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key."
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end."
+          }
+        }
+      }
+    },
+    "/agent/{agent_id}": {
+      "get": {
+        "tags": [
+          "agent"
+        ],
+        "summary": "Get Assistant By ID",
+        "description": "Retrieves detailed information about a specific assistant by its ID.",
+        "operationId": "getAssistantById",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "path",
+            "description": "(Required) ID of the assistant to retrieve.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response: Detailed information about the assistant.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "agents": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "agent_display_name": {
+                          "type": "string"
+                        },
+                        "agent_type": {
+                          "type": "string"
+                        },
+                        "whitelisted_domains": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "language": {
+                          "type": "string"
+                        },
+                        "voice": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "voice_preview": {
+                              "type": "string",
+                              "format": "uri"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key."
+          },
+          "404": {
+            "description": "Not Found - Resource doesn't exist."
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end."
+          }
+        }
+      }
+    },
+    "/calling/outbound/individual": {
+      "post": {
+        "tags": [
+          "calling"
+        ],
+        "summary": "Initiate Individual Call",
+        "description": "Starts a new individual outbound call to a specified recipient.",
+        "operationId": "initiateIndividualCall",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                  },
+                  "mobile_number": {
+                    "type": "string",
+                    "example": "+1234567890"
+                  },
+                  "agent_id": {
+                    "type": "string",
+                    "example": "830f767a-397e-4b39-82ff-235cd344e2f9"
+                  },
+                  "from_number_id": {
+                    "type": "string",
+                    "example": "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
+                  },
+                  "custom_args_values": {
+                    "type": "object",
+                    "properties": {
+                      "custom_variable_1": {
+                        "type": "string",
+                        "example": "value1"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response: Details about the initiated call.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "Call Status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "Unique Call ID": {
+                          "type": "string"
+                        },
+                        "Call Direction": {
+                          "type": "string"
+                        },
+                        "Call Status": {
+                          "type": "string"
+                        },
+                        "From Number": {
+                          "type": "string"
+                        },
+                        "To Number": {
+                          "type": "string"
+                        },
+                        "Initiated at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "Agent ID": {
+                          "type": "string"
+                        },
+                        "System generated message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid parameters or request format.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "invalid_parameter"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Missing required field: mobile_number."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "401 Unauthorized"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid credentials"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "500 Internal Server Error"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "An unexpected error occurred on the server."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/calling/history": {
+      "get": {
+        "tags": [
+          "calling"
+        ],
+        "summary": "Get Call History",
+        "description": "Retrieves the history of calls made through the Ringg AI platform.",
+        "operationId": "getCallHistory",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Filter calls starting from this date (ISO 8601 format).",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Filter calls up to this date (ISO 8601 format).",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of calls to return (default: 10).",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of calls to skip (default: 0).",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "description": "Filter calls by assistant ID.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter calls by status (e.g., \"completed\", \"failed\").",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "download",
+            "in": "query",
+            "description": "Whether to download the results as a CSV file.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "bulk_list_id",
+            "in": "query",
+            "description": "Filter calls by bulk list ID.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response: Call history.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "calls": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "to_number": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          },
+                          "transcript": {
+                            "type": "string"
+                          },
+                          "audio_recording": {
+                            "type": "string",
+                            "format": "uri"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "agent": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "agent_name": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "call_duration": {
+                            "type": "number"
+                          },
+                          "call_attempt_time": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "call_cost": {
+                            "type": "number"
+                          },
+                          "call_type": {
+                            "type": "string"
+                          },
+                          "inbound_from": {
+                            "type": "string",
+                            "nullable": true
+                          }
+                        }
+                      }
+                    },
+                    "limit": {
+                      "type": "integer"
+                    },
+                    "offset": {
+                      "type": "integer"
+                    },
+                    "count": {
+                      "type": "integer"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid parameters or request format.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "invalid_parameter"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid date format for start_date."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "401 Unauthorized"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid credentials"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "500 Internal Server Error"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "An unexpected error occurred on the server."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/calling/call-details": {
+      "get": {
+        "tags": [
+          "calling"
+        ],
+        "summary": "Get Call Details",
+        "description": "Retrieves detailed information about a specific call using its unique identifier.",
+        "operationId": "getCallDetails",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "description": "(Required) The unique identifier (UUID) of the call.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Call details retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "start_time": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "end_time": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "participants": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - The call does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Call not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "An unexpected error occurred."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campaign/all": {
+      "get": {
+        "tags": [
+          "campaign"
+        ],
+        "summary": "Get All Campaigns",
+        "description": "Retrieves a list of all campaigns for the current user.",
+        "operationId": "getAllCampaigns",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "call_count",
+            "in": "query",
+            "description": "Whether to include call count for each campaign.",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of campaigns retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "campaigns": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "status": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Invalid credentials"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "An unexpected error occurred."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campaign/start": {
+      "post": {
+        "tags": [
+          "campaign"
+        ],
+        "summary": "Start Campaign",
+        "description": "Initiates a new campaign with the specified configuration.",
+        "operationId": "startCampaign",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "agent_id": {
+                    "type": "string"
+                  },
+                  "list_id": {
+                    "type": "string"
+                  },
+                  "from_numbers": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Campaign started successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "campaign_id": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Invalid agent_id."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Invalid credentials"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "An unexpected error occurred."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campaign/save": {
+      "post": {
+        "tags": [
+          "campaign"
+        ],
+        "summary": "Upload Campaign Contact List",
+        "description": "Uploads a contact list for a campaign. Accepts a CSV file and campaign configuration as form data.",
+        "operationId": "uploadCampaignContactList",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "variables_map": {
+                    "type": "string",
+                    "description": "(Required) JSON string mapping variable names to columns."
+                  },
+                  "agent_id": {
+                    "type": "string",
+                    "description": "(Required) Unique identifier for the agent."
+                  },
+                  "call_config": {
+                    "type": "string",
+                    "description": "(Required) JSON string of call configuration."
+                  },
+                  "country_code": {
+                    "type": "string",
+                    "description": "(Required) Country code for the campaign."
+                  },
+                  "campaign_start_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "(Required) Start time for the campaign (ISO 8601)."
+                  },
+                  "campaign_end_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "(Required) End time for the campaign (ISO 8601)."
+                  },
+                  "campaign_name": {
+                    "type": "string",
+                    "description": "(Required) Name of the campaign."
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "(Required) CSV file containing the contact list."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact list uploaded and campaign saved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Campaign contact list uploaded successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input or file.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Invalid file format."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Invalid credentials"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "An unexpected error occurred."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campaign/terminate": {
+      "patch": {
+        "tags": [
+          "campaign"
+        ],
+        "summary": "Terminate Calls",
+        "description": "Terminates calls for a campaign, agent, or specific call IDs.",
+        "operationId": "terminateCalls",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "agent_id": {
+                    "type": "string"
+                  },
+                  "call_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "campaign_id": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calls terminated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Calls terminated successfully."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Either 'agent_id' or 'call_ids' or 'campaign_id' must be provided."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Invalid credentials"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "An unexpected error occurred."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-KEY"
+      }
+    }
+  }
 }

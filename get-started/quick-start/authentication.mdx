@@ -1,0 +1,89 @@
+---
+title: "Authentication"
+description: "How to authenticate with Ringg AI's API using API keys"
+---
+
+Ringg AI uses API key authentication to secure access to our APIs. This straightforward approach allows you to quickly integrate our voice AI capabilities into your applications while maintaining security.
+
+## Obtaining Your API Key
+
+To use the Ringg AI API, you'll need an API key (`X-API-KEY`):
+
+1. Log in to your [Ringg AI dashboard](https://www.ringg.ai/dashboard/api)
+2. Select **API** from the sidebar navigation
+3. Click the **Regenerate** button to create a new API key
+
+<Frame caption="X-API-KEY">
+    <img src="/images/api_key.png" />
+</Frame>
+
+> **Important:** Regenerating your API key will immediately invalidate any previous key. Ensure you update all your applications with the new key to prevent service disruptions.
+
+## Using Your API Key
+
+Include your API key in the header of every request to the Ringg AI API:
+
+```javascript
+const options = {
+  method: 'GET',
+  headers: {
+    'X-API-KEY': 'your-api-key-here'
+  }
+};
+
+fetch('https://prod-api.ringg.ai/ca/api/v0/workspace', options)
+  .then(response => response.json())
+  .then(response => console.log(response))
+  .catch(err => console.error(err));
+```
+## Security Best Practices
+
+To keep your API key and data secure, follow these best practices:
+
+- Never expose your API key in client-side code, public repositories, or browser-accessible files
+- Use environment variables to store your API key in server-side applications
+- Implement proper access controls to limit who can use your API key
+- Rotate your API key periodically, especially after team member departures
+- Monitor API usage to detect unusual patterns that might indicate a compromised key
+- Use HTTPS for all API requests to ensure encrypted data transmission
+- Validate and sanitize all inputs before sending them to the API
+- Implement proper error handling to prevent leaking sensitive information
+
+## Rate Limiting
+
+To ensure fair usage and system stability, Ringg AI implements rate limiting on API requests.
+[Rate limit information will be added manually]
+
+## Authentication Example
+
+The following example demonstrates how to authenticate and retrieve your workspace information:
+
+```javascript
+const options = {
+  method: 'GET',
+  headers: {
+    'X-API-KEY': 'your-api-key-here'
+  }
+};
+
+fetch('https://prod-api.ringg.ai/ca/api/v0/workspace', options)
+  .then(response => response.json())
+  .then(response => console.log(response))
+  .catch(err => console.error(err));
+```
+
+## Sample Response
+
+A successful authentication will return your workspace details:
+
+```json
+{
+  "workspace_info": {
+    "id": "7251cb4b-72a3-42dc-9586-edf0328e2973",
+    "name": "Siddharth @ DesiVocal's Workspace",
+    "created_at": "2024-12-16T13:03:29.947147+00:00",
+    "credits": 3025.0,
+    "locked_credits": 0.0,
+    "api_key": "d079bcb3-f52b-4b47-a230-f626ecad3e85"
+  }
+}
