@@ -1,0 +1,56 @@
+---
+title: "Web Call Integration"
+description: "Follow these best practices to optimize your Web Call integration for better user experience and performance"
+---
+
+## Browser Compatibility Information
+
+Ringg AI's Web Call integration is compatible with all modern browsers:
+
+- **Chrome** 55+
+- **Firefox** 53+
+- **Safari** 11+
+- **Edge** 79+
+- **Opera** 42+
+
+## For optimal performance:
+
+- Ensure the browser has permission to access the microphone
+- WebRTC capabilities must be enabled
+- JavaScript must be enabled
+- Mobile browsers are supported, but performance may vary based on device capabilities
+
+## Placement and Visibility
+
+- **Consistent positioning**: Place the Web Call button in a consistent location across your site, typically in the bottom right corner.
+- **Visual contrast**: Ensure the button contrasts well with your website's background for better visibility.
+- **Attention indicators**: Consider using subtle animations like pulsing to draw attention to the feature without being distracting.
+- **Mobile optimization**: Ensure the button is appropriately sized and positioned on mobile devices.
+
+## User Experience
+
+- **Clear instructions**: Provide brief instructions on how to interact with the assistant when the call begins.
+- **Introduction message**: Include a concise introduction explaining what the assistant can help with.
+- **Text alternatives**: Offer text-based interaction options for users who prefer not to use voice.
+- **Visual feedback**: Provide clear visual cues when the microphone is active or when the assistant is processing.
+
+## Performance Optimization
+
+- **Asynchronous loading**: Load the Web Call script asynchronously to prevent blocking page rendering.
+- **Lazy loading**: Consider loading the Web Call component only when the user scrolls near it.
+- **Error handling**: Implement proper error handling to gracefully degrade if the service is unavailable.
+- **Bandwidth management**: Inform users about potential data usage for voice calls, especially on mobile connections.
+
+## Integration Setup
+
+- **Domain whitelisting**: Add all domains where the assistant will be embedded to the whitelist.
+- **CDN permissions**: Ensure your Content Security Policy allows the required CDN resources.
+- **Cross-browser testing**: Test the integration across all major browsers and devices.
+- **Version pinning**: Consider pinning to a specific version of the SDK instead of using "latest" for production environments.
+
+## Customization
+
+- **Brand alignment**: Customize button colors and styles to match your brand identity.
+- **Contextual variables**: Pass relevant page or user context to the assistant to provide more personalized responses.
+- **Custom button text**: Modify the button text to clearly communicate the purpose of the assistant.
+- **Responsive design**: Ensure the Web Call interface adapts appropriately to different screen sizes.

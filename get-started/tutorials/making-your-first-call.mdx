@@ -1,0 +1,113 @@
+---
+title: "Making Your First Call"
+description: "This tutorial will guide you through the process of making your first outbound call using Ringg AI's Voice API"
+---
+
+## Prerequisites
+
+Before you begin, make sure you have:
+
+* An active Ringg AI account
+
+* Your API key (X-API-KEY)
+
+* An assistant configured for outbound calls
+
+* A phone number assigned to your workspace
+
+## Execution
+**_Step 1: Choose an Assistant_**
+
+First, retrieve a list of your assistants to find the appropriate assistant ID:
+
+```javascript
+const options = {method: 'GET', headers: {'X-API-KEY': 'your-api-key-here'}};
+
+fetch('https://prod-api.ringg.ai/ca/api/v0/agent/all', options)
+  .then(response => response.json())
+  .then(response => {
+     // Find an assistant with agent_type: "outbound"
+    const outboundAssistants = response.data.agents.filter(agent => agent.agent_type === "outbound");
+    console.log(outboundAssistants);
+  })
+  .catch(err => console.error(err));
+```
+
+**_Step 2: Get Available Phone Numbers_**
+
+Next, retrieve the list of phone numbers in your workspace:
+
+```javascript
+const options = {method: 'GET', headers: {'X-API-KEY': 'your-api-key-here'}};
+
+fetch('https://prod-api.ringg.ai/ca/api/v0/workspace/numbers', options)
+  .then(response => response.json())
+  .then(response => {
+     // Select a phone number to use as caller ID
+    console.log(response.workspace_numbers);
+  })
+  .catch(err => console.error(err));
+```
+
+**_Step 3: Initiate the Call_**
+
+Now, make the call using the assistant ID and phone number ID you obtained:
+
+```javascript
+const options = {
+  method: 'POST',
+  headers: {
+    'X-API-KEY': 'your-api-key-here',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "name": "John Doe",
+    "mobile_number": "+1234567890",
+    "agent_id": "830f767a-397e-4b39-82ff-235cd344e2f9",  // Replace with your assistant ID
+    "from_number_id": "3735b71d-e770-4409-8707-14c795f49970",  // Replace with your phone number ID
+    "custom_args_values": {
+       // Include any custom variables required by your assistant
+      "callee_name": "John",
+      "mobile_number": "+1234567890"
+    }
+  })
+};
+
+fetch('https://prod-api.ringg.ai/ca/api/v0/calling/outbound/individual', options)
+  .then(response => response.json())
+  .then(response => console.log(response))
+  .catch(err => console.error(err));
+```
+
+**_Step 4: Check Call Status_**
+
+After initiating the call, you'll receive a response with the call details:
+
+```json
+{
+  "Call Status": "success",
+  "data": {
+    "Unique Call ID": "dd6c63db-66c7-42ae-9a82-e4988bef428e",
+    "Call Direction": "outbound",
+    "Call Status": "registered",
+    "From Number": "+918035737034",
+    "To Number": "+919994008915",
+    "Initiated at": "2025-04-24T04:22:47.722294",
+    "Agent ID": "cdcf1b39-173a-4492-8396-c493123ea443",
+    "System generated message": "Call initiated successfully"
+  }
+}
+```
+
+**_Step 5: Retrieve Call History_**
+
+You can check the call history to see the status and details of your call:
+
+```javascript
+const options = {method: 'GET', headers: {'X-API-KEY': 'your-api-key-here'}};
+
+fetch('https://prod-api.ringg.ai/ca/api/v0/calling/history', options)
+  .then(response => response.json())
+  .then(response => console.log(response))
+  .catch(err => console.error(err));
+```
