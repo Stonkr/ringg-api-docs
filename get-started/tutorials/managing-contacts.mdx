@@ -1,0 +1,113 @@
+---
+title: "Managing Contacts"
+description: "This tutorial will guide you through the process of managing contact lists for bulk calling campaigns"
+---
+
+
+## Prerequisites
+
+Before you begin, make sure you have:
+
+* An active Ringg AI account
+
+* Your API key (X-API-KEY)
+
+* A CSV file with contact information
+
+## Execution
+
+**_Step 1: Get Existing Contact Lists_**
+
+First, retrieve a list of your existing contact lists:
+
+```javascript
+const options = {method: 'GET', headers: {'X-API-KEY': 'your-api-key-here'}};
+
+fetch('https://prod-api.ringg.ai/ca/api/v0/workspace/lists', options)
+  .then(response => response.json())
+  .then(response => console.log(response))
+  .catch(err => console.error(err));
+```
+
+**_Step 2: Prepare a New Contact List_**
+
+Create a CSV file with the following structure:
+
+```text
+name,mobile_number,custom_variable_1,custom_variable_2
+John Doe,+1234567890,value1,value2
+Jane Smith,+0987654321,value3,value4
+```
+
+Make sure to include all custom variables required by your assistant.
+
+**_Step 3: Upload the Contact List_**
+
+Upload your contact list to Ringg AI:
+
+```javascript
+const formData = new FormData();
+formData.append('variables_map', JSON.stringify({
+  "name": "name",
+  "mobile_number": "mobile_number",
+  "custom_variable_1": "custom_variable_1",
+  "custom_variable_2": "custom_variable_2"
+}));
+formData.append('agent_id', 'your-assistant-id');
+formData.append('call_config', JSON.stringify({
+  "max_concurrent_calls": 5,
+  "retry_count": 1
+}));
+formData.append('country_code', '+1');
+formData.append('file', yourCsvFile);
+
+const options = {
+  method: 'POST',
+  headers: {'X-API-KEY': 'your-api-key-here'},
+  body: formData
+};
+
+fetch('https://prod-api.ringg.ai/ca/api/v0/calling/contact/list', options)
+  .then(response => response.json())
+  .then(response => console.log(response))
+  .catch(err => console.error(err));
+```
+
+**_Step 4: Delete a Contact List_**
+
+If you need to delete a contact list:
+
+```javascript
+const options = {method: 'DELETE', headers: {'X-API-KEY': 'your-api-key-here'}};
+
+fetch('https://prod-api.ringg.ai/ca/api/v0/calling/contact/your-list-id', options)
+  .then(response => response.json())
+  .then(response => console.log(response))
+  .catch(err => console.error(err));
+```
+
+**_Step 5: Use Contact Lists for Bulk Calls_**
+
+Once your contact list is uploaded, you can use it for bulk calling campaigns:
+
+```javascript
+const options = {
+  method: 'POST',
+  headers: {
+    'X-API-KEY': 'your-api-key-here',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "agent_id": "your-assistant-id",
+    "list_id": "your-list-id",
+    "from_numbers": [
+      "phone-number-id-1",
+      "phone-number-id-2"
+    ]
+  })
+};
+
+fetch('https://prod-api.ringg.ai/ca/api/v0/calling/outbound/bulk', options)
+  .then(response => response.json())
+  .then(response => console.log(response))
+  .catch(err => console.error(err));

@@ -1,0 +1,101 @@
+---
+title: "API Overview"
+description: "Understand the structure, versioning, and usage patterns of the Ringg AI API"
+---
+
+The Ringg AI API follows RESTful principles, making it intuitive and easy to integrate with your applications. This overview will help you understand the core concepts and structure of our API.
+
+## API Architecture
+
+Ringg AI provides a RESTful API that allows you to:
+
+- Create and manage AI voice assistants
+- Initiate individual and bulk calls
+- Embed voice assistants on websites
+- Manage contacts and phone numbers
+- Access call history and analytics
+
+## Base URL
+
+All API requests should be made to the following base URL:
+
+```
+https://prod-api.ringg.ai/ca/api/v0
+```
+
+## Available Resources
+
+The Ringg AI API is organized around the following main resources:
+
+- **Workspace**: Manage your workspace settings and users
+- **Assistant**: Create and configure AI voice assistants
+- **Voice**: Access available assistant voices
+- **Number**: Manage phone numbers for outbound calls
+- **Contact**: Upload and manage contact lists
+- **Calling**: Initiate and manage voice calls
+- **WebCall**: Embed voice assistants on websites
+
+## Request and Response Formats
+
+The Ringg AI API accepts and returns data in JSON format. Ensure your requests include the appropriate `Content-Type` header:
+
+```
+Content-Type: application/json
+```
+
+## Common Headers
+
+All API requests require the following headers:
+
+- `X-API-KEY`: Your API key for authentication
+- `Content-Type`: Set to `application/json` for POST and PATCH requests
+
+## Error Handling
+
+The Ringg AI API uses conventional HTTP response codes to indicate the success or failure of requests:
+
+- `2xx`: Success
+- `4xx`: Client errors (invalid request, authentication issues)
+- `5xx`: Server errors
+
+Error responses include a JSON body with details about what went wrong:
+
+```json
+{
+  "error": {
+    "code": "invalid_request",
+    "message": "The mobile_number parameter is required"
+  }
+}
+```
+
+### Common Error Codes
+
+- **400**: Bad Request – Invalid parameters or request format
+- **401**: Unauthorized – Invalid or missing API key
+- **404**: Not Found – Resource doesn’t exist
+- **429**: Too Many Requests – Rate limit exceeded
+- **500**: Internal Server Error – Something went wrong on our end
+
+## API Versioning
+
+The current version of the Ringg AI API is `v0`. The version is included in the base URL:
+
+```
+https://prod-api.ringg.ai/ca/api/v0
+```
+
+Future versions will follow the pattern `v1`, `v2`, etc. We’ll provide ample notice before deprecating any API version to ensure a smooth transition for your applications.
+
+## Pagination
+
+For endpoints that return lists of objects, the API supports pagination through the following query parameters:
+
+- **limit**: Number of items to return (default: 20, max: 100)
+- **offset**: Number of items to skip (default: 0)
+
+## Next Steps
+
+Now that you understand the basics of the Ringg AI API, you’re ready to start building!
+
+>Check out our detailed documentation for each resource to learn more about specific endpoints and capabilities.
