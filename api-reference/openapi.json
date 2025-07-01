@@ -1601,10 +1601,5 @@
         "name": "X-API-KEY"
       }
     }
-  },
-  "security": [
-    {
-      "ApiKeyAuth": []
-    }
-  ]
+  }
 }
