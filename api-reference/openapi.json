@@ -3,7 +3,7 @@
   "info": {
     "title": "Ringg AI API Documentation",
     "description": "This is the documentation for the Ringg AI APIs. The Ringg AI API follows RESTful principles, making it intuitive and easy to integrate with your applications. All API requests should be made to the base URL. The API accepts and returns data in JSON format. Ensure your requests include the appropriate Content-Type header for POST and PATCH requests.",
-    "version": "1.0.0"
+    "version": "2.0.0"
   },
   "servers": [
     {
@@ -61,7 +61,7 @@
                       "properties": {
                         "id": {
                           "type": "string",
-                          "example": "7251cb4b-72a3-42dc-9586-edf0328e2973"
+                          "example": "d079bcb3-72a3-42dc-9586-edf0328e2973"
                         },
                         "name": {
                           "type": "string",
@@ -82,7 +82,7 @@
                         },
                         "api_key": {
                           "type": "string",
-                          "example": "d079bcb3-f52b-4b47-a230-f626ecad3e85"
+                          "example": "7251cb4b--f52b-4b47-a230-f626ecad3e85"
                         }
                       }
                     }
@@ -196,7 +196,7 @@
                         "properties": {
                           "id": {
                             "type": "string",
-                            "example": "9a3001e2-3373-43a4-844c-b27a1d45e0c9"
+                            "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
                           },
                           "username": {
                             "type": "string",
@@ -282,32 +282,39 @@
                         "type": "object",
                         "properties": {
                           "id": {
-                            "type": "string"
+                            "type": "string",
+                            "example": "5d7f9a2b-1c3e-4f6g-8h9i-0j1k2l3m4n5o"
                           },
                           "number": {
-                            "type": "string"
+                            "type": "string",
+                            "example": "+1234567890"
                           },
                           "created_at": {
                             "type": "string",
-                            "format": "date-time"
+                            "format": "date-time",
+                            "example": "2024-12-16T13:03:29.947147+00:00"
                           },
                           "call_count": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 0
                           },
                           "agent": {
                             "type": "object",
                             "nullable": true,
                             "properties": {
                               "id": {
-                                "type": "string"
+                                "type": "string",
+                                "example": "830f767a-397e-4b39-82ff-235cd344e2f9"
                               },
                               "agent_display_name": {
-                                "type": "string"
+                                "type": "string",
+                                "example": "Sales Assistant"
                               }
                             }
                           },
                           "is_inbound_enabled": {
-                            "type": "boolean"
+                            "type": "boolean",
+                            "example": true
                           }
                         }
                       }
@@ -326,14 +333,14 @@
         }
       }
     },
-    "/workspace/lists": {
+    "/workspace/all": {
       "get": {
         "tags": [
           "workspace"
         ],
-        "summary": "Get Contact List",
-        "description": "Retrieves a list of saved contact CSV files.",
-        "operationId": "getContactList",
+        "summary": "Get All User Workspaces",
+        "description": "Retrieves a list of all workspaces accessible to the current user.",
+        "operationId": "getAllUserWorkspaces",
         "parameters": [
           {
             "name": "X-API-KEY",
@@ -343,54 +350,93 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Number of items to return (default: 20, max: 100).",
-            "schema": {
-              "type": "integer",
-              "default": 10
-            }
-          },
-          {
-            "name": "offset",
-            "in": "query",
-            "description": "Number of items to skip (default: 0).",
-            "schema": {
-              "type": "integer",
-              "default": 0
-            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Successful Response: A list of contact list metadata.",
+            "description": "Successful Response: A list of user workspaces.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "contact_lists": {
+                    "workspaces": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "properties": {
-                          "list_id": {
-                            "type": "string"
+                          "id": {
+                            "type": "string",
+                            "example": "d079bcb3-72a3-42dc-9586-edf0328e2973"
                           },
-                          "file_name": {
-                            "type": "string"
+                          "name": {
+                            "type": "string",
+                            "example": "Siddharth @ DesiVocal's Workspace"
                           },
                           "created_at": {
                             "type": "string",
-                            "format": "date-time"
+                            "format": "date-time",
+                            "example": "2024-12-16T13:03:29.947147+00:00"
                           },
-                          "status": {
-                            "type": "string"
+                          "role": {
+                            "type": "string",
+                            "example": "owner"
+                          },
+                          "credits": {
+                            "type": "integer",
+                            "example": 3025
+                          },
+                          "locked_credits": {
+                            "type": "integer",
+                            "example": 0
                           }
                         }
                       }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key."
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end."
+          }
+        }
+      }
+    },
+    "/workspace/api-key": {
+      "patch": {
+        "tags": [
+          "workspace"
+        ],
+        "summary": "Regenerate API Key",
+        "description": "Regenerates a new API key for the current workspace.",
+        "operationId": "regenerateApiKey",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your current Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response: New API key generated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "new_api_key": {
+                      "type": "string",
+                      "example": "e89b12d3-a456-426c-8001-f05de02b54b4"
                     }
                   }
                 }
@@ -463,45 +509,80 @@
                             "type": "object",
                             "properties": {
                               "id": {
-                                "type": "string"
+                                "type": "string",
+                                "example": "830f767a-397e-4b39-82ff-235cd344e2f9"
                               },
                               "agent_display_name": {
-                                "type": "string"
+                                "type": "string",
+                                "example": "Sales Assistant"
                               },
                               "agent_type": {
-                                "type": "string"
+                                "type": "string",
+                                "example": "outbound"
                               },
                               "created_at": {
                                 "type": "string",
-                                "format": "date-time"
+                                "format": "date-time",
+                                "example": "2024-12-16T13:03:29.947147+00:00"
                               },
                               "updated_at": {
                                 "type": "string",
-                                "format": "date-time"
+                                "format": "date-time",
+                                "example": "2024-12-16T14:15:32.123456+00:00"
                               },
                               "template_name": {
-                                "type": "string"
+                                "type": "string",
+                                "example": "sales"
                               },
                               "template_label": {
-                                "type": "string"
+                                "type": "string",
+                                "example": "Sales Agent"
                               },
                               "template_icon": {
-                                "type": "string"
+                                "type": "string",
+                                "example": "💼"
                               },
                               "template_source": {
-                                "type": "string"
+                                "type": "string",
+                                "example": "custom"
                               },
                               "call_count": {
-                                "type": "integer"
+                                "type": "integer",
+                                "example": 47
                               },
                               "custom_variables": {
-                                "type": "array",
-                                "items": {
-                                  "type": "string"
+                                "type": "object",
+                                "example": {
+                                  "callee_name": "string",
+                                  "mobile_number": "string",
+                                  "company": "string",
+                                  "lead_source": "string"
                                 }
                               },
+                              "tools": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object"
+                                },
+                                "example": []
+                              },
                               "is_archived": {
-                                "type": "boolean"
+                                "type": "boolean",
+                                "example": false
+                              },
+                              "secondary_language": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "hi-IN"
+                              },
+                              "secondary_voice_id": {
+                                "type": "string",
+                                "nullable": true,
+                                "example": "4c6d8e3b-9f0a-5b2c-ad7e-3f6a9b8c5d7e"
+                              },
+                              "template_type": {
+                                "type": "string",
+                                "example": "outbound"
                               }
                             }
                           }
@@ -518,6 +599,372 @@
           },
           "500": {
             "description": "Internal Server Error - Something went wrong on our end."
+          }
+        }
+      }
+    },
+    "/agent/voices": {
+      "get": {
+        "tags": [
+          "agent"
+        ],
+        "summary": "Get Assistant Voices",
+        "description": "Retrieves a list of available voices for assistants, optionally filtered by language.",
+        "operationId": "getAssistantVoices",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "description": "Filter voices by language (e.g., 'en-US', 'hi-IN'). Multiple languages can be comma-separated.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response: A list of available voices.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "voices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "3b5c7d2a-8e9f-4a1b-9c6d-2e5f8a7b3c4d"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Sarah"
+                          },
+                          "languages": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "example": [
+                              "en-US",
+                              "en-GB"
+                            ]
+                          },
+                          "voice_previews": {
+                            "type": "object",
+                            "properties": {
+                              "en-US": {
+                                "type": "string",
+                                "format": "uri",
+                                "example": "https://example.com/voice-preview-en-us.mp3"
+                              }
+                            }
+                          },
+                          "image_url": {
+                            "type": "string",
+                            "format": "uri",
+                            "example": "https://example.com/voice-avatar.jpg",
+                            "nullable": true
+                          },
+                          "gender": {
+                            "type": "string",
+                            "example": "female"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2024-12-16T13:03:29.947147+00:00"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2024-12-16T13:03:29.947147+00:00"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key."
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Failed to fetch agent voices"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/agent/v1": {
+      "patch": {
+        "tags": [
+          "agent"
+        ],
+        "summary": "Edit Assistant",
+        "description": "Updates an existing assistant with new configuration settings. Each operation requires specific fields to be provided.",
+        "operationId": "editAssistant",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "operation",
+                  "agent_id"
+                ],
+                "properties": {
+                  "operation": {
+                    "type": "string",
+                    "enum": [
+                      "attach_inbound_number",
+                      "remove_inbound_number",
+                      "attach_kb",
+                      "remove_kb",
+                      "edit_custom_vars",
+                      "edit_language",
+                      "edit_voice",
+                      "edit_prompt",
+                      "edit_noise_settings",
+                      "edit_agent_display_name",
+                      "edit_intro_message",
+                      "edit_query_phrases",
+                      "edit_dtmf_settings",
+                      "edit_vad_settings",
+                      "edit_agent_whitelisted_domains",
+                      "edit_voice_speed",
+                      "edit_extract_callee_name",
+                      "edit_vocab",
+                      "edit_api_settings",
+                      "edit_secondary_language",
+                      "edit_secondary_voice"
+                    ],
+                    "example": "edit_agent_display_name"
+                  },
+                  "agent_id": {
+                    "type": "string",
+                    "example": "830f767a-397e-4b39-82ff-235cd344e2f9"
+                  },
+                  "agent_display_name": {
+                    "type": "string",
+                    "example": "Updated Sales Assistant"
+                  },
+                  "language": {
+                    "type": "string",
+                    "enum": [
+                      "en-US",
+                      "en-IN",
+                      "hi-IN",
+                      "ta-IN",
+                      "te-IN",
+                      "kn-IN",
+                      "mr-IN",
+                      "gu-IN",
+                      "ar-AE"
+                    ],
+                    "example": "en-US"
+                  },
+                  "voice_id": {
+                    "type": "string",
+                    "example": "3b5c7d2a-8e9f-4a1b-9c6d-2e5f8a7b3c4d"
+                  },
+                  "secondary_voice_id": {
+                    "type": "string",
+                    "example": "4c6d8e3b-9f0a-5b2c-ad7e-3f6a9b8c5d7e"
+                  },
+                  "secondary_language": {
+                    "type": "string",
+                    "enum": [
+                      "en-US",
+                      "en-IN",
+                      "hi-IN",
+                      "ta-IN",
+                      "te-IN",
+                      "kn-IN",
+                      "mr-IN",
+                      "gu-IN",
+                      "ar-AE"
+                    ],
+                    "example": "hi-IN"
+                  },
+                  "agent_prompt": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "example": "You are a helpful sales assistant."
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "prompt_sections": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "section_title": {
+                                  "type": "string"
+                                },
+                                "section_content": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "custom_variables": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": [
+                      "callee_name",
+                      "mobile_number",
+                      "company",
+                      "lead_source"
+                    ]
+                  },
+                  "number_id": {
+                    "type": "string",
+                    "example": "5d7f9a2b-1c3e-4f6g-8h9i-0j1k2l3m4n5o"
+                  },
+                  "kb_id": {
+                    "type": "string",
+                    "example": "7a9c2d5e-4f6b-1a2b-3c4d-5e6f7a8b9c0d"
+                  },
+                  "whitelisted_domains": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": [
+                      "https://www.ringg.ai",
+                      "https://example.com"
+                    ]
+                  },
+                  "voice_speed": {
+                    "type": "number",
+                    "example": 1.2
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response: Assistant updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Agent updated successfully!"
+                    },
+                    "agent_id": {
+                      "type": "string",
+                      "example": "830f767a-397e-4b39-82ff-235cd344e2f9"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid parameters or request format.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Selected voice does not support the specified language"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key."
+          },
+          "404": {
+            "description": "Not Found - Assistant not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Agent not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Failed to edit agent"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -562,37 +1009,147 @@
                       "type": "object",
                       "properties": {
                         "id": {
-                          "type": "string"
+                          "type": "string",
+                          "example": "830f767a-397e-4b39-82ff-235cd344e2f9"
                         },
                         "agent_display_name": {
-                          "type": "string"
+                          "type": "string",
+                          "example": "Sales Assistant"
                         },
                         "agent_type": {
-                          "type": "string"
+                          "type": "string",
+                          "example": "outbound"
                         },
                         "whitelisted_domains": {
                           "type": "array",
                           "items": {
                             "type": "string"
-                          }
+                          },
+                          "example": [
+                            "https://www.ringg.ai",
+                            "https://example.com"
+                          ]
                         },
                         "language": {
-                          "type": "string"
+                          "type": "string",
+                          "example": "en-US"
+                        },
+                        "form_fields": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "key": {
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "example": [
+                            {
+                              "key": "company_name",
+                              "value": "Ringg AI"
+                            },
+                            {
+                              "key": "product",
+                              "value": "AI calling platform"
+                            }
+                          ]
                         },
                         "voice": {
                           "type": "object",
                           "properties": {
                             "id": {
-                              "type": "string"
+                              "type": "string",
+                              "example": "3b5c7d2a-8e9f-4a1b-9c6d-2e5f8a7b3c4d"
                             },
                             "name": {
-                              "type": "string"
+                              "type": "string",
+                              "example": "Sarah"
                             },
                             "voice_preview": {
                               "type": "string",
-                              "format": "uri"
+                              "format": "uri",
+                              "example": "https://example.com/voice-preview.mp3"
                             }
                           }
+                        },
+                        "agent_config": {
+                          "type": "object",
+                          "example": {
+                            "custom_variables": {
+                              "callee_name": "string",
+                              "mobile_number": "string"
+                            },
+                            "agent_prompt": "You are a helpful sales assistant.",
+                            "intro_message": "Hello! I'm calling from Ringg AI."
+                          }
+                        },
+                        "knowledge_base_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "7a9c2d5e-4f6b-1a2b-3c4d-5e6f7a8b9c0d"
+                        },
+                        "knowledge_base_name": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "Product FAQ"
+                        },
+                        "template_name": {
+                          "type": "string",
+                          "example": "sales"
+                        },
+                        "template_label": {
+                          "type": "string",
+                          "example": "Sales Agent"
+                        },
+                        "template_icon": {
+                          "type": "string",
+                          "example": "💼"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-12-16T13:03:29.947147+00:00"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-12-16T14:15:32.123456+00:00"
+                        },
+                        "tools": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "config": {
+                                "type": "object"
+                              },
+                              "tool_type": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "example": []
+                        },
+                        "secondary_language": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "hi-IN"
+                        },
+                        "secondary_voice_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "4c6d8e3b-9f0a-5b2c-ad7e-3f6a9b8c5d7e"
+                        },
+                        "template_type": {
+                          "type": "string",
+                          "example": "outbound"
                         }
                       }
                     }
@@ -606,6 +1163,61 @@
           },
           "404": {
             "description": "Not Found - Resource doesn't exist."
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "agent"
+        ],
+        "summary": "Delete Assistant",
+        "description": "Deletes an assistant by archiving it (soft delete).",
+        "operationId": "deleteAssistant",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "path",
+            "description": "(Required) ID of the assistant to delete.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response: Assistant deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Agent deleted successfully!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key."
+          },
+          "404": {
+            "description": "Not Found - Assistant not found."
           },
           "500": {
             "description": "Internal Server Error - Something went wrong on our end."
@@ -1138,6 +1750,63 @@
         }
       }
     },
+    "/calling/contact/{list_id}": {
+      "delete": {
+        "tags": [
+          "calling"
+        ],
+        "summary": "Delete Contact List",
+        "description": "Deletes a contact list and all associated contacts by list ID.",
+        "operationId": "deleteContactList",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "list_id",
+            "in": "path",
+            "description": "(Required) The unique identifier of the contact list to delete.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact list deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Bulk list deleted successfully!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key."
+          },
+          "404": {
+            "description": "Not Found - Contact list not found."
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end."
+          }
+        }
+      }
+    },
     "/campaign/all": {
       "get": {
         "tags": [
@@ -1534,7 +2203,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "example": "Calls terminated successfully."
+                      "example": "Calls terminated successfully!"
                     }
                   }
                 }

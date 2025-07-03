@@ -45,7 +45,7 @@
           },
           {
             "group": "Best Practices",
-            "icon": "thumbs-up" ,
+            "icon": "thumbs-up",
             "pages": [
               "get-started/best-practices/voice-call-optimization",
               "get-started/best-practices/web-call-integration",
@@ -59,35 +59,51 @@
         "tag": "NEW",
         "pages": [
           {
-            "group": "Workspace Management",
+            "group": "Workspace",
             "pages": [
               "api-reference/endpoint/workspace/get-workspace-info",
-              "api-reference/endpoint/workspace/list-workspace-users"
+              "api-reference/endpoint/workspace/list-workspace-users",
+              "api-reference/endpoint/workspace/get-all-user-workspaces",
+              "api-reference/endpoint/workspace/regenerate-api-key"
             ]
           },
           {
-            "group": "Assistant Management",
+            "group": "Assistant",
             "pages": [
+              "api-reference/endpoint/assistant/get-assistant-voices",
               "api-reference/endpoint/assistant/get-assistants",
-              "api-reference/endpoint/assistant/get-assistant-by-id"
+              "api-reference/endpoint/assistant/get-assistant-by-id",
+              "api-reference/endpoint/assistant/edit-assistant"
             ]
           },
           {
-            "group": "Voice Calling",
+            "group": "Numbers",
             "pages": [
-              "api-reference/endpoint/calling/get-call-history",
-              "api-reference/endpoint/calling/initiate-individual-call",
-              "api-reference/endpoint/calling/get-all-campaigns",
-              "api-reference/endpoint/calling/start-campaign",
-              "api-reference/endpoint/calling/terminate-calls"
+              "api-reference/endpoint/numbers/get-workspace-numbers"
             ]
           },
           {
-            "group": "Contact Management",
+            "group": "Contacts",
             "pages": [
-              "api-reference/endpoint/contact/get-workspace-numbers",
               "api-reference/endpoint/contact/get-contact-list",
-              "api-reference/endpoint/contact/upload-campaign-contact-list"
+              "api-reference/endpoint/contact/upload-campaign-contact-list",
+              "api-reference/endpoint/contact/delete-contact-list"
+            ]
+          },
+          {
+            "group": "Campaign",
+            "pages": [
+              "api-reference/endpoint/campaign/initiate-individual-call",
+              "api-reference/endpoint/campaign/get-all-campaigns",
+              "api-reference/endpoint/campaign/start-campaign",
+              "api-reference/endpoint/campaign/terminate-calls"
+            ]
+          },
+          {
+            "group": "History",
+            "pages": [
+              "api-reference/endpoint/history/get-call-history",
+              "api-reference/endpoint/history/get-call-details"
             ]
           }
         ]
@@ -96,8 +112,8 @@
   },
   "seo": {
     "metatags": {
-      "og:title" : "Ringg AI APIs for Developers | Voice Agents",
-      "og:description" : "Setup AI calls for your business with Ringg AI API",
+      "og:title": "Ringg AI APIs for Developers | Voice Agents",
+      "og:description": "Setup AI calls for your business with Ringg AI API",
       "canonical": "https://docs.ringg.ai"
     },
     "indexing": "all"
