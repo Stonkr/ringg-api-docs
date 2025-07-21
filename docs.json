@@ -40,6 +40,7 @@
               "get-started/tutorials/making-your-first-call",
               "get-started/tutorials/setting-up-bulk-calls",
               "get-started/tutorials/managing-contacts",
+              "get-started/tutorials/webhooks",
               "get-started/tutorials/embedding-web-call-assistant"
             ]
           },
@@ -91,12 +92,16 @@
             ]
           },
           {
+            "group": "Calling",
+            "pages": [
+              "api-reference/endpoint/calling/initiate-individual-call"
+            ]
+          },
+          {
             "group": "Campaign",
             "pages": [
-              "api-reference/endpoint/campaign/initiate-individual-call",
               "api-reference/endpoint/campaign/get-all-campaigns",
-              "api-reference/endpoint/campaign/start-campaign",
-              "api-reference/endpoint/campaign/terminate-calls"
+              "api-reference/endpoint/campaign/start-campaign"
             ]
           },
           {
@@ -104,6 +109,12 @@
             "pages": [
               "api-reference/endpoint/history/get-call-history",
               "api-reference/endpoint/history/get-call-details"
+            ]
+          },
+          {
+            "group": "Termination",
+            "pages": [
+              "api-reference/endpoint/terminate/terminate-calls"
             ]
           }
         ]

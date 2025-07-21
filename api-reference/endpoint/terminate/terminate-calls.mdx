@@ -1,0 +1,74 @@
+---
+openapi: patch /campaign/terminate
+---
+
+## Call Termination
+
+This endpoint allows you to terminate active (registered/retry) calls at different levels. You can terminate calls by:
+
+### 1. Terminate All Calls for an Agent
+
+Terminate all active calls associated with a specific agent.
+
+```json
+{
+  "agent_id": "196d8d88-591e-4e08-8324-2f928d152fff"
+}
+```
+
+### 2. Terminate Specific Calls by Call IDs
+
+Terminate individual calls based on their unique call IDs.
+
+```json
+{
+  "call_ids": ["86815974-8a87-4e32-9953-aca4f97868ab", "9ab99d2d-595c-4ca1-bab7-07d13f253156"]
+}
+```
+
+### 3. Terminate All Calls within a Campaign
+
+Terminate all active calls belonging to a specific campaign.
+
+```json
+{
+  "campaign_id": "0b52ca2b-7767-4cb5-ac4c-b2a4f892a856"
+}
+```
+
+### 4. Terminate Specific Calls within a Campaign by Mobile Numbers
+
+Terminate specific calls within a campaign based on their associated mobile numbers.
+
+```json
+{
+  "campaign_id": "0b52ca2b-7767-4cb5-ac4c-b2a4f892a856",
+  "mobile_numbers": ["+918882876897", "+918882876898"]
+}
+```
+
+### 5. Terminate All Calls Associated with Mobile Numbers
+
+Terminate all active calls linked to specific mobile numbers.
+
+```json
+{
+  "mobile_numbers": ["+918882876897"]
+}
+```
+
+**Note:** Maximum of 100 mobile numbers allowed per request.
+
+### Response
+
+```json
+{
+  "message": "Calls terminated successfully!"
+}
+```
+
+### Error Responses
+
+- **400 Bad Request**: No terminable calls found for the specified parameters
+- **401 Unauthorized**: Invalid or missing API key
+- **500 Internal Server Error**: Server error occurred
