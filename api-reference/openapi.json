@@ -1231,7 +1231,7 @@
           "calling"
         ],
         "summary": "Initiate Individual Call",
-        "description": "Starts a new individual outbound call to a specified recipient.",
+        "description": "Starts a new individual outbound call to a specified recipient. The from_number field is required and should be a valid phone number with country code.",
         "operationId": "initiateIndividualCall",
         "parameters": [
           {
@@ -1250,29 +1250,209 @@
             "application/json": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "name",
+                  "mobile_number",
+                  "agent_id",
+                  "from_number"
+                ],
                 "properties": {
                   "name": {
                     "type": "string",
+                    "description": "The name of the person to call",
                     "example": "John Doe"
                   },
                   "mobile_number": {
                     "type": "string",
+                    "description": "The phone number to call",
                     "example": "+1234567890"
                   },
                   "agent_id": {
                     "type": "string",
+                    "description": "UUID of the agent that will handle the call",
                     "example": "830f767a-397e-4b39-82ff-235cd344e2f9"
                   },
-                  "from_number_id": {
+                  "from_number": {
                     "type": "string",
-                    "example": "a1b2c3d4-e5f6-7890-abcd-1234567890ab"
+                    "description": "The phone number to call from (with country code)",
+                    "example": "+1987654321"
                   },
                   "custom_args_values": {
                     "type": "object",
+                    "description": "Custom variables that will be replaced in the agent's prompt using @{{variable_name}} syntax",
                     "properties": {
-                      "custom_variable_1": {
+                      "company_name": {
                         "type": "string",
-                        "example": "value1"
+                        "description": "Company name for context",
+                        "example": "XYZ Corp"
+                      },
+                      "appointment_date": {
+                        "type": "string",
+                        "description": "Appointment date",
+                        "example": "2025-01-20"
+                      },
+                      "product_name": {
+                        "type": "string",
+                        "description": "Product name for sales calls",
+                        "example": "Premium Service"
+                      }
+                    },
+                    "example": {
+                      "company_name": "XYZ Corp",
+                      "appointment_date": "2025-01-20",
+                      "product_name": "Premium Service"
+                    }
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "description": "Webhook URL to receive call status updates and analysis results. Callbacks are sent when call status changes (completed, failed, etc.) and when analysis is complete.",
+                    "format": "uri",
+                    "example": "https://your-webhook-url.com/callback"
+                  },
+                  "callback_args": {
+                      "type": "object",
+                      "description": "Additional arguments for the webhook callback",
+                      "properties": {
+                        "headers": {
+                          "type": "object",
+                          "description": "Custom HTTP headers for the webhook request.",
+                          "properties": {
+                            "X-API-Key": {
+                              "type": "string",
+                              "description": "API key for webhook authentication",
+                              "example": "sk_coffee_1234567890abcdef"
+                            },
+                            "Content-Type": {
+                              "type": "string",
+                              "description": "Content type for the webhook request",
+                              "example": "application/json"
+                            }
+                          },
+                          "example": {
+                            "X-API-Key": "sk_coffee_1234567890abcdef",
+                            "Content-Type": "application/json"
+                          }
+                        },
+                        "params": {
+                          "type": "object",
+                          "description": "URL query parameters to append to the callback URL. These are added as ?key=value pairs to the webhook URL.",
+                          "properties": {
+                            "source": {
+                              "type": "string",
+                              "description": "Source identifier for the webhook",
+                              "example": "api"
+                            },
+                            "version": {
+                              "type": "string",
+                              "description": "API version identifier",
+                              "example": "v1"
+                            }
+                          },
+                          "example": {
+                            "source": "api",
+                            "version": "v1"
+                          }
+                        }
+                      }
+                    },
+                  "call_config": {
+                    "type": "object",
+                    "description": "Override default call configuration",
+                    "properties": {
+                      "idle_timeout_warning": {
+                        "type": "integer",
+                        "description": "Seconds before idle warning (default: 5)",
+                        "default": 5,
+                        "example": 10
+                      },
+                      "idle_timeout_end": {
+                        "type": "integer",
+                        "description": "Seconds before call termination (default: 10)",
+                        "default": 10,
+                        "example": 15
+                      },
+                      "max_call_length": {
+                        "type": "integer",
+                        "description": "Maximum call duration in seconds (default: 240)",
+                        "default": 240,
+                        "example": 300
+                      },
+                      "call_retry_config": {
+                        "type": "object",
+                        "description": "Retry configuration for failed calls",
+                        "properties": {
+                          "retry_count": {
+                            "type": "integer",
+                            "description": "Number of retry attempts",
+                            "example": 3
+                          },
+                          "retry_busy": {
+                            "type": "integer",
+                            "description": "Minutes to wait if busy (default: 30)",
+                            "example": 30
+                          },
+                          "retry_not_picked": {
+                            "type": "integer",
+                            "description": "Minutes to wait if not picked (default: 30)",
+                            "example": 30
+                          },
+                          "retry_failed": {
+                            "type": "integer",
+                            "description": "Minutes to wait if failed (default: 30)",
+                            "example": 30
+                          }
+                        },
+                        "example": {
+                          "retry_count": 3,
+                          "retry_busy": 30,
+                          "retry_not_picked": 30,
+                          "retry_failed": 30
+                        }
+                      },
+                      "call_time": {
+                        "type": "object",
+                        "description": "Time window configuration for calls",
+                        "properties": {
+                          "call_start_time": {
+                            "type": "string",
+                            "description": "When calls can start (default: 08:00)",
+                            "default": "08:00",
+                            "example": "09:00"
+                          },
+                          "call_end_time": {
+                            "type": "string",
+                            "description": "When calls must end (default: 20:00)",
+                            "default": "20:00",
+                            "example": "18:00"
+                          },
+                          "timezone": {
+                            "type": "string",
+                            "description": "Timezone for call times (default: Asia/Kolkata)",
+                            "default": "Asia/Kolkata",
+                            "example": "America/New_York"
+                          }
+                        },
+                        "example": {
+                          "call_start_time": "09:00",
+                          "call_end_time": "18:00",
+                          "timezone": "America/New_York"
+                        }
+                      }
+                    },
+                    "example": {
+                      "idle_timeout_warning": 10,
+                      "idle_timeout_end": 15,
+                      "max_call_length": 300,
+                      "call_retry_config": {
+                        "retry_count": 3,
+                        "retry_busy": 30,
+                        "retry_not_picked": 30,
+                        "retry_failed": 30
+                      },
+                      "call_time": {
+                        "call_start_time": "09:00",
+                        "call_end_time": "18:00",
+                        "timezone": "America/New_York"
                       }
                     }
                   }
@@ -1290,35 +1470,44 @@
                   "type": "object",
                   "properties": {
                     "Call Status": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Call initiated successfully"
                     },
                     "data": {
                       "type": "object",
                       "properties": {
                         "Unique Call ID": {
-                          "type": "string"
+                          "type": "string",
+                          "example": "550e8400-e29b-41d4-a716-446655440000"
                         },
                         "Call Direction": {
-                          "type": "string"
+                          "type": "string",
+                          "example": "outbound"
                         },
                         "Call Status": {
-                          "type": "string"
+                          "type": "string",
+                          "example": "ongoing"
                         },
                         "From Number": {
-                          "type": "string"
+                          "type": "string",
+                          "example": "+1987654321"
                         },
                         "To Number": {
-                          "type": "string"
+                          "type": "string",
+                          "example": "+1234567890"
                         },
                         "Initiated at": {
                           "type": "string",
-                          "format": "date-time"
+                          "format": "date-time",
+                          "example": "2025-01-15T10:30:00Z"
                         },
                         "Agent ID": {
-                          "type": "string"
+                          "type": "string",
+                          "example": "830f767a-397e-4b39-82ff-235cd344e2f9"
                         },
-                        "System generated message": {
-                          "type": "string"
+                        "message": {
+                          "type": "string",
+                          "example": "Call initiated successfully"
                         }
                       }
                     }
@@ -1343,7 +1532,7 @@
                         },
                         "message": {
                           "type": "string",
-                          "example": "Missing required field: mobile_number."
+                          "example": "Missing required field"
                         }
                       }
                     }
@@ -1405,6 +1594,7 @@
         }
       }
     },
+
     "/calling/history": {
       "get": {
         "tags": [
@@ -1807,6 +1997,7 @@
         }
       }
     },
+
     "/campaign/all": {
       "get": {
         "tags": [
@@ -2153,10 +2344,11 @@
     "/campaign/terminate": {
       "patch": {
         "tags": [
-          "campaign"
+          "campaign",
+          "calling"
         ],
         "summary": "Terminate Calls",
-        "description": "Terminates calls for a campaign, agent, or specific call IDs.",
+        "description": "Terminates active (registered/retry) calls at different levels: all calls for an agent, specific calls by call IDs, all calls within a campaign, specific calls within a campaign by mobile numbers, or all calls associated with mobile numbers.",
         "operationId": "terminateCalls",
         "parameters": [
           {
@@ -2177,16 +2369,30 @@
                 "type": "object",
                 "properties": {
                   "agent_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Terminate all active calls for a specific agent",
+                    "example": "196d8d88-591e-4e08-8324-2f928d152fff"
                   },
                   "call_ids": {
                     "type": "array",
                     "items": {
                       "type": "string"
-                    }
+                    },
+                    "description": "Array of specific call IDs to terminate",
+                    "example": ["86815974-8a87-4e32-9953-aca4f97868ab", "9ab99d2d-595c-4ca1-bab7-07d13f253156"]
                   },
                   "campaign_id": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Campaign ID to terminate all calls within a campaign",
+                    "example": "0b52ca2b-7767-4cb5-ac4c-b2a4f892a856"
+                  },
+                  "mobile_numbers": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Array of mobile numbers to terminate calls for (max 100). Can be used with campaign_id or alone for individual calls",
+                    "example": ["+918882876897", "+918882876898"]
                   }
                 }
               }
@@ -2219,7 +2425,7 @@
                   "properties": {
                     "detail": {
                       "type": "string",
-                      "example": "Either 'agent_id' or 'call_ids' or 'campaign_id' must be provided."
+                      "example": "Either 'agent_id', 'call_ids', 'campaign_id', or 'mobile_numbers' must be provided."
                     }
                   }
                 }

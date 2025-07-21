@@ -1,0 +1,275 @@
+---
+title: "Webhook Callbacks Guide"
+description: "Learn how to implement webhook callbacks to receive real-time call status updates and analysis results from Ringg AI"
+---
+
+## Overview
+
+Webhook callbacks allow you to receive real-time notifications when call status changes, eliminating the need to continuously poll our API for updates. When you provide a `callback_url` in your call requests, our system will send HTTP POST requests to your endpoint whenever the call status changes.
+
+## Prerequisites
+
+Before implementing webhook callbacks, ensure you have:
+
+* A publicly accessible HTTPS endpoint
+* Your API key (X-API-KEY)
+* Basic understanding of HTTP webhooks
+
+## Implementation
+
+**_Step 1: Create a Webhook Endpoint_**
+
+Set up an HTTP endpoint that can receive POST requests. Here's an example using Node.js:
+
+**Node.js (Express):**
+```javascript
+const express = require('express');
+const app = express();
+
+app.use(express.json());
+
+app.post('/callback', (req, res) => {
+  const { status, data, message } = req.body;
+  
+  if (status === 'success' && data) {
+    const { call_id, call_direction, status: callStatus, call_duration, custom_args_values } = data;
+    
+    console.log(`Call ${call_id} status: ${callStatus} with duration: ${call_duration}s`);
+    
+    // Process the webhook data
+    if (callStatus === 'completed') {
+      console.log(`Call completed with duration: ${call_duration} seconds`);
+      console.log('Custom args:', custom_args_values);
+    }
+  }
+  
+  // Always respond with 200 to acknowledge receipt
+  res.status(200).json({ received: true });
+});
+
+app.listen(3000, () => {
+  console.log('Webhook server running on port 3000');
+});
+```
+
+**_Step 2: Add Callback URL to Your API Calls_**
+
+Include the `callback_url` parameter in your call initiation requests:
+
+```javascript
+const options = {
+  method: 'POST',
+  headers: {
+    'X-API-KEY': 'your-api-key-here',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    "name": "John Doe",
+    "mobile_number": "+1234567890",
+    "agent_id": "830f767a-397e-4b39-82ff-235cd344e2f9",
+    "from_number": "+1987654321",
+    "callback_url": "https://your-webhook-url.com/callback",
+    "callback_args": {
+      "headers": {
+        "X-API-Key": "sk_live_1234567890abcdef",
+        "Content-Type": "application/json"
+      },
+      "params": {
+        "source": "api",
+        "version": "v1"
+      }
+    },
+    "custom_args_values": {
+      "callee_name": "John",
+      "company_name": "Acme Corp"
+    }
+  })
+};
+
+fetch('https://prod-api.ringg.ai/ca/api/v0/calling/outbound/individual', options)
+  .then(response => response.json())
+  .then(response => console.log(response))
+  .catch(err => console.error(err));
+```
+
+**_Step 3: Handle Webhook Payloads_**
+
+Your webhook endpoint will receive JSON payloads with the following structure:
+
+```json
+{
+  "status": "success",
+  "data": {
+    "call_id": "550e8400-e29b-41d4-a716-446655440000",
+    "call_direction": "outbound",
+    "status": "completed",
+    "call_duration": 120.5,
+    "recording_url": "https://example.com/recording.mp3",
+    "transcript": "Hello, this is John from Acme Corp...",
+    "agent_id": "830f767a-397e-4b39-82ff-235cd344e2f9",
+    "retry": 0,
+    "from_number": "+1987654321",
+    "to_number": "+1234567890",
+    "custom_args_values": {
+      "callee_name": "John",
+      "company_name": "Acme Corp"
+    }
+  },
+  "message": "Call Details"
+}
+```
+
+## Call Status Flow
+
+Calls typically follow this status progression:
+
+1. **`registered`** - Call has been queued and is waiting to be processed
+2. **`ongoing`** - Call is currently in progress
+3. **`completed`** - Call has finished successfully
+
+Other possible statuses:
+- **`failed`** - Call was not answered or failed
+- **`error`** - Call failed to connect
+- **`cancelled`** - Call was cancelled
+
+## Webhook Payload Fields
+
+| Field | Type | Description | Example |
+|-------|------|-------------|---------|
+| `status` | string | Always "success" for successful webhooks | `"success"` |
+| `data.call_id` | string | Unique identifier for the call | `"550e8400-e29b-41d4-a716-446655440000"` |
+| `data.call_direction` | string | Direction of the call | `"outbound"` |
+| `data.status` | string | Current status of the call | `"completed"` |
+| `data.call_duration` | number | Call duration in seconds (if completed) | `120.5` |
+| `data.recording_url` | string | URL to call recording (if available) | `"https://..."` |
+| `data.transcript` | string | Call transcript text | `"Hello, this is..."` |
+| `data.agent_id` | string | ID of the agent that handled the call | `"830f767a-397e-4b39-82ff-235cd344e2f9"` |
+| `data.retry` | number | Number of retry attempts | `0` |
+| `data.from_number` | string | Phone number that made the call | `"+1987654321"` |
+| `data.to_number` | string | Phone number that received the call | `"+1234567890"` |
+| `data.custom_args_values` | object | Custom data from your original request | `{"callee_name": "John", "company_name": "Acme Corp"}` |
+| `message` | string | Descriptive message | `"Call Details"` |
+
+## Security Best Practices
+
+1. **Use HTTPS** - Always use HTTPS endpoints for security
+2. **Verify Headers** - Check the X-API-Key header or custom headers provided in `callback_args`
+3. **Implement Idempotency** - Handle duplicate webhooks gracefully using `call_id`
+4. **Log Webhooks** - Keep logs for debugging and monitoring
+5. **Process Asynchronously** - Handle webhooks asynchronously to avoid timeouts
+6. **Implement Retry Logic** - Add retry logic for failed webhook processing
+
+## Error Handling
+
+**Timeout Behavior:**
+- Webhooks timeout after 10 seconds
+- If your endpoint doesn't respond within this time, we'll retry up to 3 times
+
+**Retry Schedule:**
+- 1st retry: 1 minute later
+- 2nd retry: 5 minutes later  
+- 3rd retry: 15 minutes later
+
+**After Retries Fail:**
+- Webhook delivery stops after 3 failed attempts
+- You can still check call status via the API
+
+## Testing Your Webhook
+
+You can test your webhook endpoint using tools like:
+
+**cURL:**
+```bash
+curl -X POST https://your-webhook-url.com/callback \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: sk_live_1234567890abcdef" \
+  -d '{
+    "status": "success",
+    "data": {
+      "call_id": "test-call-123",
+      "call_direction": "outbound",
+      "status": "completed",
+      "call_duration": 120.5,
+      "recording_url": "https://example.com/recording.mp3",
+      "transcript": "Hello, this is a test call...",
+      "agent_id": "830f767a-397e-4b39-82ff-235cd344e2f9",
+      "retry": 0,
+      "from_number": "+1987654321",
+      "to_number": "+1234567890",
+      "custom_args_values": {
+        "callee_name": "John",
+        "company_name": "Acme Corp"
+      }
+    },
+    "message": "Call Details"
+  }'
+```
+
+**Postman:**
+- Method: POST
+- URL: `https://your-webhook-url.com/callback`
+- Headers: 
+  - `Content-Type: application/json`
+  - `X-API-Key: sk_live_1234567890abcdef`
+- Body: Use the JSON payload above
+
+## Troubleshooting
+
+**Common Issues:**
+
+1. **Webhook not receiving calls**
+   - Check if your endpoint is publicly accessible
+   - Verify HTTPS is enabled
+   - Ensure your server responds with HTTP 200
+
+2. **Timeout errors**
+   - Process webhooks asynchronously
+   - Use lightweight processing
+
+3. **Duplicate webhooks**
+   - Implement idempotency using `call_id`
+   - Check for existing records before processing
+
+4. **Security concerns**
+   - Use custom headers for authentication
+   - Validate webhook signatures if needed
+   - Monitor webhook logs for suspicious activity
+
+## Advanced Usage
+
+**Custom Headers:**
+```javascript
+"callback_args": {
+  "headers": {
+    "X-API-Key": "sk_live_1234567890abcdef",
+    "Content-Type": "application/json"
+  }
+}
+```
+
+**URL Parameters:**
+```javascript
+"callback_args": {
+  "params": {
+    "source": "api",
+    "version": "v1"
+  }
+}
+```
+
+This will result in webhook calls to:
+`https://your-webhook-url.com/callback?source=api&version=v1`
+
+With headers:
+```
+X-API-Key: sk_live_1234567890abcdef
+Content-Type: application/json
+```
+
+## Important Notes
+
+1. **Content-Type Header**: For call status callbacks, you MUST include `"Content-Type": "application/json"` in your `callback_args.headers` as it's not automatically set.
+
+2. **Analysis Callbacks**: When call analysis completes, you'll receive an additional webhook with analysis results in the `data.analysis` field.
+
+3. **Webhook URL**: The URL can be any valid HTTPS endpoint - the `/callback` path is just an example. 
