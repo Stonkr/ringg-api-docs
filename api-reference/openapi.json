@@ -1417,25 +1417,25 @@
                             "type": "string",
                             "description": "When calls can start (default: 08:00)",
                             "default": "08:00",
-                            "example": "09:00"
+                            "example": "08:00"
                           },
                           "call_end_time": {
                             "type": "string",
                             "description": "When calls must end (default: 20:00)",
                             "default": "20:00",
-                            "example": "18:00"
+                            "example": "20:00"
                           },
                           "timezone": {
                             "type": "string",
                             "description": "Timezone for call times (default: Asia/Kolkata)",
                             "default": "Asia/Kolkata",
-                            "example": "America/New_York"
+                            "example": "Asia/Kolkata"
                           }
                         },
                         "example": {
-                          "call_start_time": "09:00",
-                          "call_end_time": "18:00",
-                          "timezone": "America/New_York"
+                          "call_start_time": "08:00",
+                          "call_end_time": "20:00",
+                          "timezone": "Asia/Kolkata"
                         }
                       }
                     },
@@ -1450,9 +1450,9 @@
                         "retry_failed": 30
                       },
                       "call_time": {
-                        "call_start_time": "09:00",
-                        "call_end_time": "18:00",
-                        "timezone": "America/New_York"
+                        "call_start_time": "08:00",
+                        "call_end_time": "20:00",
+                        "timezone": "Asia/Kolkata"
                       }
                     }
                   }
