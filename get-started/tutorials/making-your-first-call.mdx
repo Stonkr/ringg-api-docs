@@ -99,6 +99,16 @@ After initiating the call, you'll receive a response with the call details:
 }
 ```
 
+The `Call Status` field shows the current status of your call. Here are the possible statuses:
+
+* **`registered`** - Call has been queued and is waiting to be processed
+* **`ongoing`** - Call is currently in progress
+* **`retry`** - System has to retry at the next_attempt_time
+* **`completed`** - User has picked the call and discussion happened
+* **`failed`** - All the retries have been exhausted
+* **`error`** - One of the terminal state. Any unknown error
+* **`cancelled`** - Call was cancelled
+
 **_Step 5: Retrieve Call History_**
 
 You can check the call history to see the status and details of your call:
