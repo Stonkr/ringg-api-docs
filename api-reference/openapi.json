@@ -1303,58 +1303,6 @@
                       "product_name": "Premium Service"
                     }
                   },
-                  "callback_url": {
-                    "type": "string",
-                    "description": "Webhook URL to receive call status updates and analysis results. Callbacks are sent when call status changes (completed, failed, etc.) and when analysis is complete.",
-                    "format": "uri",
-                    "example": "https://your-webhook-url.com/callback"
-                  },
-                  "callback_args": {
-                      "type": "object",
-                      "description": "Additional arguments for the webhook callback",
-                      "properties": {
-                        "headers": {
-                          "type": "object",
-                          "description": "Custom HTTP headers for the webhook request.",
-                          "properties": {
-                            "X-API-Key": {
-                              "type": "string",
-                              "description": "API key for webhook authentication",
-                              "example": "sk_coffee_1234567890abcdef"
-                            },
-                            "Content-Type": {
-                              "type": "string",
-                              "description": "Content type for the webhook request",
-                              "example": "application/json"
-                            }
-                          },
-                          "example": {
-                            "X-API-Key": "sk_coffee_1234567890abcdef",
-                            "Content-Type": "application/json"
-                          }
-                        },
-                        "params": {
-                          "type": "object",
-                          "description": "URL query parameters to append to the callback URL. These are added as ?key=value pairs to the webhook URL.",
-                          "properties": {
-                            "source": {
-                              "type": "string",
-                              "description": "Source identifier for the webhook",
-                              "example": "api"
-                            },
-                            "version": {
-                              "type": "string",
-                              "description": "API version identifier",
-                              "example": "v1"
-                            }
-                          },
-                          "example": {
-                            "source": "api",
-                            "version": "v1"
-                          }
-                        }
-                      }
-                    },
                   "call_config": {
                     "type": "object",
                     "description": "Override default call configuration",

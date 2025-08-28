@@ -1,0 +1,147 @@
+---
+title: "Initial Setup"
+description: "Learn how to configure webhook subscriptions for your AI agents to receive real-time event notifications"
+---
+
+## Overview
+
+Ringg AI's event-based webhook system allows you to subscribe to specific events for your AI agents and receive real-time callbacks when those events occur. This eliminates the need to continuously poll our API for updates.
+
+## Event Types
+
+Our webhook system supports four main event types. You can subscribe to **any or all** of these events based on your needs:
+
+| Event Type | Trigger | Data Included |
+|------------|---------|---------------|
+| `call_completed` | Every call attempt finishes | Transcript, duration, status, custom args |
+| `recording_completed` | Recording is processed and ready | Recording URL and duration |
+| `platform_analysis_completed` | AI analysis completes | Key points, summary, classification |
+| `client_analysis_completed` | Custom analysis completes | Results based on your custom prompts |
+
+## Configuration
+
+To subscribe an agent to webhook events, use this PATCH request:
+
+```bash
+curl --location --request PATCH 'https://prod-api.ringg.ai/ca/api/v0/agent/v1' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer your_token_here' \
+--header 'X-API-KEY: your-api-key-here' \
+--data '{
+    "operation": "edit_event_subscriptions",
+    "agent_id": "your-agent-id",
+    "event_subscriptions": [
+        {
+            "event_type": "call_completed",
+            "callback_url": "https://your-domain.com/webhooks/call-completed",
+            "headers": {
+                "Authorization": "Bearer your-webhook-token",
+                "Content-Type": "application/json"
+            },
+            "method_type": "POST"
+        },
+        {
+            "event_type": "recording_completed",
+            "callback_url": "https://your-domain.com/webhooks/recording-completed",
+            "headers": {
+                "Authorization": "Bearer your-webhook-token",
+                "Content-Type": "application/json"
+            },
+            "method_type": "POST"
+        },
+        {
+            "event_type": "platform_analysis_completed",
+            "callback_url": "https://your-domain.com/webhooks/platform-analysis",
+            "headers": {
+                "Authorization": "Bearer your-webhook-token",
+                "Content-Type": "application/json"
+            },
+            "method_type": "POST"
+        },
+        {
+            "event_type": "client_analysis_completed",
+            "callback_url": "https://your-domain.com/webhooks/client-analysis",
+            "headers": {
+                "Authorization": "Bearer your-webhook-token",
+                "Content-Type": "application/json"
+            },
+            "method_type": "POST"
+        }
+    ]
+}'
+```
+
+## Subscription Flexibility
+
+You have complete flexibility in choosing which events to subscribe to:
+
+
+### Subscribe to Only Call Completion
+```json
+{
+    "operation": "edit_event_subscriptions",
+    "agent_id": "your-agent-id",
+    "event_subscriptions": [
+        {
+            "event_type": "call_completed",
+            "callback_url": "https://your-domain.com/webhooks/calls",
+            "headers": {
+                "Authorization": "Bearer your-webhook-token",
+                "Content-Type": "application/json"
+            },
+            "method_type": "POST"
+        }
+    ]
+}
+```
+
+### Subscribe to Analysis Events Only
+```json
+{
+    "operation": "edit_event_subscriptions",
+    "agent_id": "your-agent-id",
+    "event_subscriptions": [
+        {
+            "event_type": "platform_analysis_completed",
+            "callback_url": "https://your-domain.com/webhooks/analysis",
+            "headers": {
+                "Authorization": "Bearer your-webhook-token",
+                "Content-Type": "application/json"
+            },
+            "method_type": "POST"
+        },
+        {
+            "event_type": "client_analysis_completed",
+            "callback_url": "https://your-domain.com/webhooks/custom",
+            "headers": {
+                "Authorization": "Bearer your-webhook-token",
+                "Content-Type": "application/json"
+            },
+            "method_type": "POST"
+        }
+    ]
+}
+```
+
+## Requirements
+
+### HTTPS Endpoint
+Your webhook endpoint must be publicly accessible via HTTPS. HTTP endpoints are not supported for security reasons.
+
+### Authentication
+Configure custom headers for secure webhook delivery. Common patterns:
+- `Authorization: Bearer your-webhook-token`
+- Custom API keys in headers
+- Additional security headers as needed
+
+### HTTP Methods
+Supported methods:
+- **POST** (recommended)
+- **PUT** 
+- **PATCH**
+
+### Response Requirements
+Your endpoint must:
+- Return HTTP 200 status code to acknowledge receipt
+- Respond within 30 seconds to avoid timeout
+- Handle duplicate events using `call_id` for idempotency
