@@ -40,7 +40,6 @@
               "get-started/tutorials/making-your-first-call",
               "get-started/tutorials/setting-up-bulk-calls",
               "get-started/tutorials/managing-contacts",
-              "get-started/tutorials/webhooks",
               "get-started/tutorials/embedding-web-call-assistant"
             ]
           },
@@ -53,6 +52,15 @@
               "get-started/best-practices/security-guidelines"
             ]
           }
+        ]
+      },
+      {
+        "group": "Webhooks Setup",
+        "tag": "NEW",
+        "pages": [
+          "get-started/webhooks/setup",
+          "get-started/webhooks/payloads",
+          "get-started/webhooks/error-handling"
         ]
       },
       {

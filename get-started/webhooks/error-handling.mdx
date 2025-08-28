@@ -1,0 +1,149 @@
+---
+title: "Error Handling"
+description: "Learn how to handle webhook errors, implement retry logic, and troubleshoot common issues"
+---
+
+## Retry Logic
+
+### Timeout Behavior
+- **Timeout**: 30 seconds maximum
+- **Retries**: Up to 3 attempts
+- **Total attempts**: 4 (initial + 3 retries)
+
+### Retry Schedule
+When your webhook endpoint fails to respond or returns a non-200 status code:
+
+| Attempt | Timing | Action |
+|--------------|-------------|--------------|
+| 1st (Initial) | Immediate | Send webhook |
+| 2nd (Retry 1) | 10 seconds later | First retry |
+| 3rd (Retry 2) | 1 minute later | Second retry |
+| 4th (Retry 3) | 2 minutes later | Final retry |
+
+### After All Retries Fail
+- Webhook delivery stops permanently for that event
+- Event data is still available via API calls
+- No notification is sent about the failure
+- Subsequent events will still be attempted
+
+## Error Responses
+
+### Success Criteria
+Your endpoint must return:
+- **HTTP Status**: 200 OK
+- **Response Time**: Under 30 seconds
+- **Content**: Any valid JSON (optional)
+
+### Failure Conditions
+Webhooks will be retried for:
+- HTTP status codes other than 200
+- Network timeouts (>30 seconds)
+- Connection refused/unreachable endpoint
+- Invalid SSL certificates
+- DNS resolution failures
+
+## Common Configuration Issues
+
+### Duplicate Event Subscriptions
+
+**Issue:** Attempting to subscribe to the same event type multiple times for the same agent with different URLs.
+
+**Error Behavior:**
+- The new subscription will overwrite the previous one
+- Only the latest webhook URL will receive events
+- No error message is returned during setup
+
+**Example of Problematic Configuration:**
+```bash
+# First subscription
+curl --location --request PATCH 'https://prod-api.ringg.ai/ca/api/v0/agent/v1' \
+--data '{
+    "operation": "edit_event_subscriptions",
+    "agent_id": "same-agent-id",
+    "event_subscriptions": [
+        {
+            "event_type": "call_completed",
+            "callback_url": "https://domain1.com/webhooks/calls"
+        }
+    ]
+}'
+
+# Later, adding another subscription for the same event type
+curl --location --request PATCH 'https://prod-api.ringg.ai/ca/api/v0/agent/v1' \
+--data '{
+    "operation": "edit_event_subscriptions", 
+    "agent_id": "same-agent-id",  # Same agent ID
+    "event_subscriptions": [
+        {
+            "event_type": "call_completed",  # Same event type
+            "callback_url": "https://domain2.com/webhooks/calls"  # Different URL
+        }
+    ]
+}'
+```
+
+**Result:** Only `https://domain1.com/webhooks/calls` will receive `call_completed` events. The second URL will throw error while subscribing.
+
+**Solutions:**
+
+1. **Use a single webhook URL with routing:**
+   ```javascript
+   app.post('/webhooks/unified', (req, res) => {
+     const eventData = req.body;
+     
+     // Route to different handlers based on event type
+     switch(eventData.event_type) {
+       case 'call_completed':
+         // Route to multiple internal services
+         notifyService1(eventData);
+         notifyService2(eventData);
+         break;
+     }
+     
+     res.status(200).json({ received: true });
+   });
+   ```
+
+2. **Check existing subscriptions before adding new ones:**
+   ```bash
+   # First, get current subscriptions
+   curl -X GET 'https://prod-api.ringg.ai/ca/api/v0/agent/v1/{agent_id}' \
+   --header 'X-API-KEY: your-api-key'
+   
+   # Review existing event_subscriptions array before modifying
+   ```
+
+3. **Use idempotent subscription management:**
+   ```javascript
+   async function manageWebhookSubscriptions(agentId, newSubscriptions) {
+     // Get existing subscriptions
+     const agent = await getAgent(agentId);
+     const existing = agent.event_subscriptions || [];
+     
+     // Merge without duplicates by event_type
+     const merged = {};
+     existing.forEach(sub => merged[sub.event_type] = sub);
+     newSubscriptions.forEach(sub => merged[sub.event_type] = sub);
+     
+     // Update with merged subscriptions
+     return updateAgentSubscriptions(agentId, Object.values(merged));
+   }
+   ```
+
+### Agent ID Validation Errors
+
+**Issue:** Using incorrect or non-existent agent IDs in subscription requests.
+
+**Symptoms:**
+- HTTP 404 errors when setting up subscriptions
+- Events not being triggered despite correct webhook setup
+
+**Solution:**
+```bash
+# Verify agent exists and get correct ID
+curl -X GET 'https://prod-api.ringg.ai/ca/api/v0/assistant' \
+--header 'X-API-KEY: your-api-key'
+
+# Look for the correct agent_id in the response
+```
+
