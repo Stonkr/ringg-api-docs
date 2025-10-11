@@ -1798,7 +1798,7 @@
           "calling"
         ],
         "summary": "Get Call Details",
-        "description": "Retrieves detailed information about a specific call using its unique identifier.",
+        "description": "Retrieves detailed information about a specific call using its unique identifier. Use the send_analysis parameter to include analysis data in the response.",
         "operationId": "getCallDetails",
         "parameters": [
           {
@@ -1818,6 +1818,16 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "send_analysis",
+            "in": "query",
+            "description": "(Optional) Whether to include analysis data (platform_analysis and client_analysis) in the response. Defaults to false.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
           }
         ],
         "responses": {
@@ -1828,24 +1838,138 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
                     "status": {
-                      "type": "string"
-                    },
-                    "start_time": {
                       "type": "string",
-                      "format": "date-time"
+                      "example": "success"
                     },
-                    "end_time": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "participants": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The unique identifier of the call",
+                          "example": "550e8400-e29b-41d4-a716-446655440000"
+                        },
+                        "call_direction": {
+                          "type": "string",
+                          "description": "The direction of the call",
+                          "enum": ["inbound", "outbound", "webcall"],
+                          "example": "outbound"
+                        },
+                        "call_status": {
+                          "type": "string",
+                          "description": "The current status of the call",
+                          "example": "completed"
+                        },
+                        "call_sub_status": {
+                          "type": "string",
+                          "description": "The sub-status of the call",
+                          "example": "ACCEPTED"
+                        },
+                        "from_number": {
+                          "type": "string",
+                          "description": "The phone number the call was made from",
+                          "example": "+1234567890"
+                        },
+                        "to_number": {
+                          "type": "string",
+                          "description": "The phone number the call was made to",
+                          "example": "+0987654321"
+                        },
+                        "callee_name": {
+                          "type": "string",
+                          "description": "The name of the person called",
+                          "example": "John Doe"
+                        },
+                        "agent_id": {
+                          "type": "string",
+                          "description": "The ID of the agent that handled the call",
+                          "example": "agent-123-456"
+                        },
+                        "initiation_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "When the call was initiated",
+                          "example": "2024-01-15T14:30:00Z"
+                        },
+                        "recording_url": {
+                          "type": "string",
+                          "description": "URL to the call recording",
+                          "example": "https://example.com/recordings/call-123.mp3"
+                        },
+                        "transcription_url": {
+                          "type": "string",
+                          "description": "URL to the call transcription",
+                          "example": "https://example.com/transcripts/call-123.txt"
+                        },
+                        "platform_analysis": {
+                          "type": "object",
+                          "description": "Platform-generated analysis of the call (only included when send_analysis=true)",
+                          "example": {
+                            "sentiment": "positive",
+                            "call_outcome": "successful",
+                            "duration_score": 8.5
+                          }
+                        },
+                        "client_analysis": {
+                          "type": "object",
+                          "description": "Client-specific analysis of the call (only included when send_analysis=true)",
+                          "example": {
+                            "lead_score": 85,
+                            "follow_up_required": true,
+                            "customer_satisfaction": "high"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "basic_response": {
+                    "summary": "Basic call details (send_analysis=false)",
+                    "value": {
+                      "status": "success",
+                      "data": {
+                        "id": "550e8400-e29b-41d4-a716-446655440000",
+                        "call_direction": "outbound",
+                        "call_status": "completed",
+                        "call_sub_status": "ACCEPTED",
+                        "from_number": "+1234567890",
+                        "to_number": "+0987654321",
+                        "callee_name": "John Doe",
+                        "agent_id": "agent-123-456",
+                        "initiation_time": "2024-01-15T14:30:00Z",
+                        "recording_url": "https://example.com/recordings/call-123.mp3",
+                        "transcription_url": "https://example.com/transcripts/call-123.txt"
+                      }
+                    }
+                  },
+                  "with_analysis": {
+                    "summary": "Call details with analysis (send_analysis=true)",
+                    "value": {
+                      "status": "success",
+                      "data": {
+                        "id": "550e8400-e29b-41d4-a716-446655440000",
+                        "call_direction": "outbound",
+                        "call_status": "completed",
+                        "call_sub_status": "ACCEPTED",
+                        "from_number": "+1234567890",
+                        "to_number": "+0987654321",
+                        "callee_name": "John Doe",
+                        "agent_id": "agent-123-456",
+                        "initiation_time": "2024-01-15T14:30:00Z",
+                        "recording_url": "https://example.com/recordings/call-123.mp3",
+                        "transcription_url": "https://example.com/transcripts/call-123.txt",
+                        "platform_analysis": {
+                          "sentiment": "positive",
+                          "call_outcome": "successful",
+                          "duration_score": 8.5
+                        },
+                        "client_analysis": {
+                          "lead_score": 85,
+                          "follow_up_required": true,
+                          "customer_satisfaction": "high"
+                        }
                       }
                     }
                   }
