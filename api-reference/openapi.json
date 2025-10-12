@@ -1549,7 +1549,7 @@
           "calling"
         ],
         "summary": "Get Call History",
-        "description": "Retrieves the history of calls made through the Ringg AI platform.",
+        "description": "Retrieves the history of calls made through the Ringg AI platform. Supports multiple download formats: email (default) or direct file download. User can choose any format regardless of file size.",
         "operationId": "getCallHistory",
         "parameters": [
           {
@@ -1622,6 +1622,17 @@
             }
           },
           {
+            "name": "download_format",
+            "in": "query",
+            "description": "(Optional) Format for downloading call history. Options: 'email' (default, sends via email), 'direct' (returns file directly in response). User choice is respected regardless of file size. Only applicable when download=true.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["email", "direct"],
+              "default": "email"
+            }
+          },
+          {
             "name": "bulk_list_id",
             "in": "query",
             "description": "Filter calls by bulk list ID.",
@@ -1632,7 +1643,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful Response: Call history.",
+            "description": "Successful Response: Call history. Response format depends on download_format parameter.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1710,6 +1721,39 @@
                       "type": "integer"
                     }
                   }
+                },
+                "examples": {
+                  "regular_response": {
+                    "summary": "Regular call history (download=false)",
+                    "value": {
+                      "calls": [
+                        {
+                          "id": "550e8400-e29b-41d4-a716-446655440000",
+                          "to_number": "+1234567890",
+                          "name": "John Doe",
+                          "status": "completed",
+                          "transcript": "https://example.com/transcript.txt"
+                        }
+                      ],
+                      "limit": 10,
+                      "offset": 0,
+                      "count": 1,
+                      "total": 1
+                    }
+                  },
+                  "email_download": {
+                    "summary": "Email download (download=true, download_format=email)",
+                    "value": {
+                      "message": "Call history report is being sent to your email."
+                    }
+                  }
+                }
+              },
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary",
+                  "description": "ZIP file containing CSV call history data (when download_format=direct)"
                 }
               }
             }
@@ -2076,7 +2120,7 @@
           "campaign"
         ],
         "summary": "Get All Campaigns",
-        "description": "Retrieves a list of all campaigns for the current user.",
+        "description": "Retrieves a paginated list of campaigns for the current user with optional call count information.",
         "operationId": "getAllCampaigns",
         "parameters": [
           {
@@ -2091,9 +2135,34 @@
           {
             "name": "call_count",
             "in": "query",
-            "description": "Whether to include call count for each campaign.",
+            "description": "Whether to include call count for each campaign (default: true).",
+            "required": false,
             "schema": {
-              "type": "boolean"
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of campaigns to return (default: 10).",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "minimum": 1,
+              "maximum": 1000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of campaigns to skip for pagination (default: 0).",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "minimum": 0
             }
           }
         ],
@@ -2111,14 +2180,80 @@
                         "type": "object",
                         "properties": {
                           "id": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "Campaign unique identifier",
+                            "example": "550e8400-e29b-41d4-a716-446655440000"
                           },
                           "name": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "Campaign name",
+                            "example": "Q4 Sales Campaign"
                           },
-                          "status": {
-                            "type": "string"
+                          "campaign_status": {
+                            "type": "string",
+                            "description": "Current status of the campaign",
+                            "example": "completed",
+                            "enum": ["pending", "registered", "running", "completed", "paused"]
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Campaign creation timestamp",
+                            "example": "2024-01-15T14:30:00Z"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Campaign last update timestamp",
+                            "example": "2024-01-15T16:45:00Z"
+                          },
+                          "campaign_start_time": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Scheduled start time for the campaign",
+                            "example": "2024-01-16T09:00:00Z"
+                          },
+                          "campaign_end_time": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Scheduled end time for the campaign",
+                            "example": "2024-01-16T17:00:00Z"
+                          },
+                          "total_count": {
+                            "type": "integer",
+                            "description": "Total number of calls in campaign (only included when call_count=true)",
+                            "example": 150
+                          },
+                          "registered_count": {
+                            "type": "integer",
+                            "description": "Number of registered calls (only included when call_count=true)",
+                            "example": 120
+                          },
+                          "completed_count": {
+                            "type": "integer",
+                            "description": "Number of completed calls (only included when call_count=true)",
+                            "example": 85
                           }
+                        }
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer",
+                          "description": "Total number of campaigns available",
+                          "example": 25
+                        },
+                        "limit": {
+                          "type": "integer",
+                          "description": "Number of campaigns requested per page",
+                          "example": 10
+                        },
+                        "offset": {
+                          "type": "integer",
+                          "description": "Number of campaigns skipped",
+                          "example": 0
                         }
                       }
                     }
