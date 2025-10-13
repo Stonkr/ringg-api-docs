@@ -1549,7 +1549,7 @@
           "calling"
         ],
         "summary": "Get Call History",
-        "description": "Retrieves the history of calls made through the Ringg AI platform. Supports multiple download formats: email (default) or direct file download. User can choose any format regardless of file size.",
+        "description": "Retrieves the history of calls made through the Ringg AI platform. Supports multiple download formats: email (default) or file file download. User can choose any format regardless of file size.",
         "operationId": "getCallHistory",
         "parameters": [
           {
@@ -1624,11 +1624,11 @@
           {
             "name": "download_format",
             "in": "query",
-            "description": "(Optional) Format for downloading call history. Options: 'email' (default, sends via email), 'direct' (returns file directly in response). User choice is respected regardless of file size. Only applicable when download=true.",
+            "description": "(Optional) Format for downloading call history. Options: 'email' (default, sends via email), 'file' (returns file directly in response). User choice is respected regardless of file size. Only applicable when download=true.",
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["email", "direct"],
+              "enum": ["email", "file"],
               "default": "email"
             }
           },
@@ -1753,7 +1753,7 @@
                 "schema": {
                   "type": "string",
                   "format": "binary",
-                  "description": "ZIP file containing CSV call history data (when download_format=direct)"
+                  "description": "ZIP file containing CSV call history data (when download_format=file)"
                 }
               }
             }
