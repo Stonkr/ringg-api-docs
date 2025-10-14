@@ -26,6 +26,10 @@
     {
       "name": "campaign",
       "description": "Endpoints for managing campaigns."
+    },
+    {
+      "name": "analytics",
+      "description": "Endpoints for accessing call analytics and performance metrics."
     }
   ],
   "paths": {
@@ -540,7 +544,7 @@
                               },
                               "template_icon": {
                                 "type": "string",
-                                "example": "💼"
+                                "example": "\ud83d\udcbc"
                               },
                               "template_source": {
                                 "type": "string",
@@ -1107,7 +1111,7 @@
                         },
                         "template_icon": {
                           "type": "string",
-                          "example": "💼"
+                          "example": "\ud83d\udcbc"
                         },
                         "created_at": {
                           "type": "string",
@@ -1542,7 +1546,6 @@
         }
       }
     },
-
     "/calling/history": {
       "get": {
         "tags": [
@@ -1628,7 +1631,10 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["email", "file"],
+              "enum": [
+                "email",
+                "file"
+              ],
               "default": "email"
             }
           },
@@ -1897,7 +1903,11 @@
                         "call_direction": {
                           "type": "string",
                           "description": "The direction of the call",
-                          "enum": ["inbound", "outbound", "webcall"],
+                          "enum": [
+                            "inbound",
+                            "outbound",
+                            "webcall"
+                          ],
                           "example": "outbound"
                         },
                         "call_status": {
@@ -2113,7 +2123,6 @@
         }
       }
     },
-
     "/campaign/all": {
       "get": {
         "tags": [
@@ -2193,7 +2202,13 @@
                             "type": "string",
                             "description": "Current status of the campaign",
                             "example": "completed",
-                            "enum": ["pending", "registered", "running", "completed", "paused"]
+                            "enum": [
+                              "pending",
+                              "registered",
+                              "running",
+                              "completed",
+                              "paused"
+                            ]
                           },
                           "created_at": {
                             "type": "string",
@@ -2586,7 +2601,10 @@
                       "type": "string"
                     },
                     "description": "Array of specific call IDs to terminate",
-                    "example": ["86815974-8a87-4e32-9953-aca4f97868ab", "9ab99d2d-595c-4ca1-bab7-07d13f253156"]
+                    "example": [
+                      "86815974-8a87-4e32-9953-aca4f97868ab",
+                      "9ab99d2d-595c-4ca1-bab7-07d13f253156"
+                    ]
                   },
                   "campaign_id": {
                     "type": "string",
@@ -2599,7 +2617,10 @@
                       "type": "string"
                     },
                     "description": "Array of mobile numbers to terminate calls for (max 100). Can be used with campaign_id or alone for individual calls",
-                    "example": ["+918882876897", "+918882876898"]
+                    "example": [
+                      "+918882876897",
+                      "+918882876898"
+                    ]
                   }
                 }
               }
@@ -2670,6 +2691,714 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/analytics/platform-analytics": {
+      "get": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Get Platform Analytics",
+        "description": "Retrieves comprehensive platform analytics including performance metrics and summaries.",
+        "operationId": "getPlatformAnalytics",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Start date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "End date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-31"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "description": "Filter by specific agent ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "bulk_list_id",
+            "in": "query",
+            "description": "Filter by specific bulk list/campaign ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "voicemail",
+            "in": "query",
+            "description": "Filter by voicemail status",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Platform analytics retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "performance_metrics": {
+                      "type": "object",
+                      "description": "Performance metrics by different categories"
+                    },
+                    "metrics_summary": {
+                      "type": "object",
+                      "description": "Summary of key metrics"
+                    },
+                    "cached": {
+                      "type": "boolean",
+                      "description": "Whether the response was served from cache"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/analytics/drill-down-analytics": {
+      "get": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Get Drill-Down Analytics",
+        "description": "Retrieves detailed analytics for a specific bulk list/campaign with drill-down capabilities.",
+        "operationId": "getDrillDownAnalytics",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bulk_list_id",
+            "in": "query",
+            "description": "(Required) Bulk list/campaign ID to get drill-down analytics for",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Start date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "End date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-31"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "description": "Filter by specific agent ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "voicemail",
+            "in": "query",
+            "description": "Filter by voicemail status",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Drill-down analytics retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "performance_metrics": {
+                      "type": "object",
+                      "description": "Detailed performance metrics for the bulk list"
+                    },
+                    "cached": {
+                      "type": "boolean",
+                      "description": "Whether the response was served from cache"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing required bulk_list_id parameter."
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/analytics/number-analytics": {
+      "get": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Get Number Analytics",
+        "description": "Retrieves analytics broken down by phone numbers.",
+        "operationId": "getNumberAnalytics",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Start date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "End date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-31"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "description": "Filter by specific agent ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "bulk_list_id",
+            "in": "query",
+            "description": "Filter by specific bulk list/campaign ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "voicemail",
+            "in": "query",
+            "description": "Filter by voicemail status",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Number analytics retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "number_analytics": {
+                      "type": "array",
+                      "description": "Analytics data grouped by phone numbers"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/analytics/duration-distribution": {
+      "get": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Get Duration Distribution",
+        "description": "Retrieves call duration distribution analytics.",
+        "operationId": "getDurationDistribution",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Start date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "End date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-31"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "description": "Filter by specific agent ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "bulk_list_id",
+            "in": "query",
+            "description": "Filter by specific bulk list/campaign ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "voicemail",
+            "in": "query",
+            "description": "Filter by voicemail status",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Duration distribution retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "duration_distribution": {
+                      "type": "object",
+                      "description": "Call duration distribution data"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/analytics/classification-analytics": {
+      "get": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Get Classification Analytics",
+        "description": "Retrieves call classification analytics data.",
+        "operationId": "getClassificationAnalytics",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Start date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "End date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-31"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "description": "Filter by specific agent ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "bulk_list_id",
+            "in": "query",
+            "description": "Filter by specific bulk list/campaign ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "voicemail",
+            "in": "query",
+            "description": "Filter by voicemail status",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Classification analytics retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "classification_analytics": {
+                      "type": "object",
+                      "description": "Call classification analytics data"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/analytics/version-analytics": {
+      "get": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Get Version Analytics",
+        "description": "Retrieves analytics for different agent versions with performance metrics.",
+        "operationId": "getVersionAnalytics",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "description": "(Required) Agent ID to get analytics for",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "time_range",
+            "in": "query",
+            "description": "Time range for analytics",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "1d",
+                "7d",
+                "30d"
+              ],
+              "default": "1d",
+              "example": "7d"
+            }
+          },
+          {
+            "name": "metric_keys",
+            "in": "query",
+            "description": "Comma-separated metric keys to filter",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "success_rate,avg_duration"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Version analytics retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "agent_id": {
+                        "type": "string"
+                      },
+                      "agent_version_id": {
+                        "type": "string"
+                      },
+                      "version_slug": {
+                        "type": "string"
+                      },
+                      "hour_start": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "hour_end": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "standard_metrics": {
+                        "type": "object",
+                        "properties": {
+                          "completed_calls": {
+                            "type": "integer"
+                          },
+                          "total_calls_without_retries": {
+                            "type": "integer"
+                          },
+                          "retry_calls": {
+                            "type": "integer"
+                          },
+                          "failed_calls": {
+                            "type": "integer"
+                          },
+                          "total_calls": {
+                            "type": "integer"
+                          },
+                          "success_rate": {
+                            "type": "number"
+                          },
+                          "avg_duration": {
+                            "type": "number"
+                          },
+                          "total_duration": {
+                            "type": "number"
+                          }
+                        }
+                      },
+                      "derived_metrics": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "metric_key": {
+                              "type": "string"
+                            },
+                            "metric_label": {
+                              "type": "string"
+                            },
+                            "description": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "number"
+                            }
+                          }
+                        }
+                      },
+                      "last_computed_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing required agent_id parameter."
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/analytics/refresh-analytics": {
+      "post": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Refresh Analytics",
+        "description": "Refreshes analytics data for a specific agent.",
+        "operationId": "refreshAnalytics",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "description": "(Required) Agent ID to refresh analytics for",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Analytics refresh initiated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Analytics refresh initiated successfully"
+                    },
+                    "refreshed_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "processed_versions": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing required agent_id parameter."
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "500": {
+            "description": "Internal Server Error."
           }
         }
       }
