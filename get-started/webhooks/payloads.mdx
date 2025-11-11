@@ -15,6 +15,7 @@ Triggered when a call attempt finishes (completed, failed, or retry).
 {
   "event_type": "call_completed",
   "call_id": "adb64369-bb56-461e-a38a-9cc704e3210f",
+  "call_sid": "CA1234567890abcdef123456789012345",
   "call_duration": 9.4,
   "call_type": "outbound",
   "status": "completed",
@@ -45,8 +46,14 @@ Triggered when call recording is processed and ready for download.
 {
   "event_type": "recording_completed",
   "call_id": "adb64369-bb56-461e-a38a-9cc704e3210f",
+  "call_sid": "CA1234567890abcdef123456789012345",
   "recording_url": "https://recordings.ringg.ai/v1/recordings/8c92980b-f47c-4b8b-877f-6daa81ab1d9e.mp3",
-  "recording_duration": 19.3
+  "recording_duration": 19.3,
+  "custom_args_values": {
+    "callee_name": "John",
+    "order_value": "70000",
+    "company_name": "Acme Corp"
+  }
 }
 ```
 
@@ -58,6 +65,7 @@ Triggered when Ringg AI's built-in analysis completes.
 {
   "event_type": "platform_analysis_completed",
   "call_id": "adb64369-bb56-461e-a38a-9cc704e3210f",
+  "call_sid": "CA1234567890abcdef123456789012345",
   "analysis_data": {
     "key_points": [
       "Customer inquired about order status",
@@ -77,6 +85,11 @@ Triggered when Ringg AI's built-in analysis completes.
   "status": "completed",
   "agent_id": "8e1ba144-884f-49be-97ad-137cebc56913",
   "workspace_id": "442a9db3-0fd4-47dc-b8cd-cc7eedfa272f",
+  "custom_args_values": {
+    "callee_name": "John",
+    "order_value": "70000",
+    "company_name": "Acme Corp"
+  },
   "transcript": [
     {"bot": "Hello, how can I help you today?"},
     {"user": "I need information about my order"},
@@ -94,6 +107,7 @@ Triggered when your custom analysis completes based on your configured prompts.
 {
   "event_type": "client_analysis_completed",
   "call_id": "adb64369-bb56-461e-a38a-9cc704e3210f",
+  "call_sid": "CA1234567890abcdef123456789012345",
   "analysis_data": {
     "lead_quality": "high",
     "intent_score": 8.5,
@@ -105,7 +119,12 @@ Triggered when your custom analysis completes based on your configured prompts.
   "call_type": "outbound",
   "status": "completed",
   "agent_id": "8e1ba144-884f-49be-97ad-137cebc56913",
-  "workspace_id": "442a9db3-0fd4-47dc-b8cd-cc7eedfa272f"
+  "workspace_id": "442a9db3-0fd4-47dc-b8cd-cc7eedfa272f",
+  "custom_args_values": {
+    "callee_name": "John",
+    "order_value": "70000",
+    "company_name": "Acme Corp"
+  }
 }
 ```
 
@@ -165,8 +184,10 @@ app.listen(3000);
 |-------|------|-------------|
 | `event_type` | string | Type of event: `call_completed`, `recording_completed`, `platform_analysis_completed`, `client_analysis_completed` |
 | `call_id` | string | Unique identifier for the call |
+| `call_sid` | string | Telephony provider's call identifier (e.g., Twilio Call SID, Plivo Call UUID) |
 | `agent_id` | string | ID of the AI agent that handled the call |
 | `workspace_id` | string | ID of your workspace |
+| `custom_args_values` | object | Custom data you provided when initiating the call |
 
 ### Call Completed Fields
 
@@ -178,7 +199,6 @@ app.listen(3000);
 | `to_number` | string | Phone number that received the call |
 | `from_number` | string | Phone number that made the call |
 | `transcript` | array | Array of conversation turns with `bot` and `user` messages |
-| `custom_args_values` | object | Custom data you provided when initiating the call |
 | `retry_count` | number | Number of retry attempts (0 for first attempt) |
 
 ### Recording Fields
