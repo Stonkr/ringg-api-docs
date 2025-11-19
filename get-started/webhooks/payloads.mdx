@@ -67,19 +67,30 @@ Triggered when Ringg AI's built-in analysis completes.
   "call_id": "adb64369-bb56-461e-a38a-9cc704e3210f",
   "call_sid": "CA1234567890abcdef123456789012345",
   "analysis_data": {
+    "summary": "Concise summary of the conversation purpose and outcome",
+    "classification": "One of the classification labels (e.g., 'qualified_lead', 'support_ticket_requested')",
     "key_points": [
-      "Customer inquired about order status",
-      "Order number provided: ORDER-12345",
-      "Customer satisfied with response"
+      "Important takeaway 1",
+      "Important takeaway 2"
     ],
-    "summary": "Customer called to check order delivery status. Agent provided tracking information and estimated delivery date.",
-    "classification": "Order Inquiry",
-    "sentiment": "positive",
-    "call_disconnect_reason": "customer_hangup",
     "action_items": [
-      "Follow up on delivery confirmation",
-      "Send tracking number via SMS"
-    ]
+      "Task or follow-up action 1",
+      "Task or follow-up action 2"
+    ],
+    "callback_requested_time": "2023-10-27T14:30:00",
+    "status": "analyzed",
+    "call_disconnect_reason": "agent_hangup",
+    "timezone": "Asia/Kolkata"
+  },
+  "call_id": "uuid-string",
+  "agent_id": "uuid-string",
+  "workspace_id": "uuid-string",
+  "call_type": "inbound",
+  "call_sid": "string",
+  "to_number": "+1234567890",
+  "from_number": "+1234567890",
+  "custom_args_values": {
+    "custom_field": "value"
   },
   "call_type": "outbound",
   "status": "completed",
@@ -91,10 +102,14 @@ Triggered when Ringg AI's built-in analysis completes.
     "company_name": "Acme Corp"
   },
   "transcript": [
-    {"bot": "Hello, how can I help you today?"},
-    {"user": "I need information about my order"},
-    {"bot": "I'd be happy to help you with that. Can you provide your order number?"},
-    {"user": "Sure, it's ORDER-12345"}
+    {
+      "role": "assistant",
+      "content": "Hello, how can I help you?"
+    },
+    {
+      "role": "user",
+      "content": "I need to schedule a demo."
+    }
   ]
 }
 ```
@@ -193,13 +208,16 @@ app.listen(3000);
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `call_duration` | number | Duration of the call in seconds |
-| `call_type` | string | Direction: `outbound` or `inbound` |
-| `status` | string | Final call status: `completed`, `failed`, `retry` |
+| `call_duration` | number | Duration of the call in seconds (call_completed only) |
+| `call_type` | string | Direction: `inbound`, `outbound`, or `webcall` |
+| `status` | string | Final call status: `completed`, `failed`, `retry` (call_completed only) |
 | `to_number` | string | Phone number that received the call |
 | `from_number` | string | Phone number that made the call |
-| `transcript` | array | Array of conversation turns with `bot` and `user` messages |
-| `retry_count` | number | Number of retry attempts (0 for first attempt) |
+| `call_sid` | string | Provider call ID (e.g., from Twilio/Plivo) |
+| `transcript` | array | Array of conversation turns with `role` and `content` fields |
+| `custom_args_values` | object | Custom data you provided when initiating the call |
+| `retry_count` | number | Number of retry attempts (0 for first attempt) (call_completed only) |
+
 
 ### Recording Fields
 
@@ -213,7 +231,11 @@ app.listen(3000);
 | Field | Type | Description |
 |-------|------|-------------|
 | `analysis_data` | object | Analysis results - structure varies by analysis type |
-| `key_points` | array | Main points extracted from the conversation (platform analysis) |
-| `summary` | string | Brief summary of the call (platform analysis) |
-| `classification` | string | Call category/type (platform analysis) |
-| `sentiment` | string | Overall sentiment: `positive`, `negative`, `neutral` (platform analysis) | 
+| `summary` | string | Concise summary of conversation purpose and outcome (platform analysis) |
+| `classification` | string | Call category label (e.g., 'qualified_lead') (platform analysis) |
+| `key_points` | array | Array of important conversation takeaways (platform analysis) |
+| `action_items` | array | Array of tasks or follow-up actions (platform analysis) |
+| `callback_requested_time` | string | ISO 8601 timestamp when callback was requested (platform analysis) |
+| `status` | string | Analysis status, always 'analyzed' (platform analysis) |
+| `call_disconnect_reason` | string | Reason call ended: 'agent_hangup' or 'user_hangup' (platform analysis) |
+| `timezone` | string | Timezone used for the call (platform analysis) | 
