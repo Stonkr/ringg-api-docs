@@ -26,6 +26,10 @@
     {
       "name": "campaign",
       "description": "Endpoints for managing campaigns."
+    },
+    {
+      "name": "analytics",
+      "description": "Endpoints for accessing call analytics and performance metrics."
     }
   ],
   "paths": {
@@ -540,7 +544,7 @@
                               },
                               "template_icon": {
                                 "type": "string",
-                                "example": "💼"
+                                "example": "\ud83d\udcbc"
                               },
                               "template_source": {
                                 "type": "string",
@@ -1107,7 +1111,7 @@
                         },
                         "template_icon": {
                           "type": "string",
-                          "example": "💼"
+                          "example": "\ud83d\udcbc"
                         },
                         "created_at": {
                           "type": "string",
@@ -1542,14 +1546,13 @@
         }
       }
     },
-
     "/calling/history": {
       "get": {
         "tags": [
           "calling"
         ],
         "summary": "Get Call History",
-        "description": "Retrieves the history of calls made through the Ringg AI platform.",
+        "description": "Retrieves the history of calls made through the Ringg AI platform. Supports multiple download formats: email (default) or file file download. User can choose any format regardless of file size.",
         "operationId": "getCallHistory",
         "parameters": [
           {
@@ -1622,6 +1625,20 @@
             }
           },
           {
+            "name": "download_format",
+            "in": "query",
+            "description": "(Optional) Format for downloading call history. Options: 'email' (default, sends via email), 'file' (returns file directly in response). User choice is respected regardless of file size. Only applicable when download=true.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "email",
+                "file"
+              ],
+              "default": "email"
+            }
+          },
+          {
             "name": "bulk_list_id",
             "in": "query",
             "description": "Filter calls by bulk list ID.",
@@ -1632,7 +1649,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful Response: Call history.",
+            "description": "Successful Response: Call history. Response format depends on download_format parameter.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1710,6 +1727,39 @@
                       "type": "integer"
                     }
                   }
+                },
+                "examples": {
+                  "regular_response": {
+                    "summary": "Regular call history (download=false)",
+                    "value": {
+                      "calls": [
+                        {
+                          "id": "550e8400-e29b-41d4-a716-446655440000",
+                          "to_number": "+1234567890",
+                          "name": "John Doe",
+                          "status": "completed",
+                          "transcript": "https://example.com/transcript.txt"
+                        }
+                      ],
+                      "limit": 10,
+                      "offset": 0,
+                      "count": 1,
+                      "total": 1
+                    }
+                  },
+                  "email_download": {
+                    "summary": "Email download (download=true, download_format=email)",
+                    "value": {
+                      "message": "Call history report is being sent to your email."
+                    }
+                  }
+                }
+              },
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary",
+                  "description": "ZIP file containing CSV call history data (when download_format=file)"
                 }
               }
             }
@@ -1798,7 +1848,7 @@
           "calling"
         ],
         "summary": "Get Call Details",
-        "description": "Retrieves detailed information about a specific call using its unique identifier.",
+        "description": "Retrieves detailed information about a specific call using its unique identifier. Use the send_analysis parameter to include analysis data in the response.",
         "operationId": "getCallDetails",
         "parameters": [
           {
@@ -1818,6 +1868,16 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "send_analysis",
+            "in": "query",
+            "description": "(Optional) Whether to include analysis data (platform_analysis and client_analysis) in the response. Defaults to false.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
           }
         ],
         "responses": {
@@ -1828,24 +1888,142 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "id": {
-                      "type": "string"
-                    },
                     "status": {
-                      "type": "string"
-                    },
-                    "start_time": {
                       "type": "string",
-                      "format": "date-time"
+                      "example": "success"
                     },
-                    "end_time": {
-                      "type": "string",
-                      "format": "date-time"
-                    },
-                    "participants": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The unique identifier of the call",
+                          "example": "550e8400-e29b-41d4-a716-446655440000"
+                        },
+                        "call_direction": {
+                          "type": "string",
+                          "description": "The direction of the call",
+                          "enum": [
+                            "inbound",
+                            "outbound",
+                            "webcall"
+                          ],
+                          "example": "outbound"
+                        },
+                        "call_status": {
+                          "type": "string",
+                          "description": "The current status of the call",
+                          "example": "completed"
+                        },
+                        "call_sub_status": {
+                          "type": "string",
+                          "description": "The sub-status of the call",
+                          "example": "ACCEPTED"
+                        },
+                        "from_number": {
+                          "type": "string",
+                          "description": "The phone number the call was made from",
+                          "example": "+1234567890"
+                        },
+                        "to_number": {
+                          "type": "string",
+                          "description": "The phone number the call was made to",
+                          "example": "+0987654321"
+                        },
+                        "callee_name": {
+                          "type": "string",
+                          "description": "The name of the person called",
+                          "example": "John Doe"
+                        },
+                        "agent_id": {
+                          "type": "string",
+                          "description": "The ID of the agent that handled the call",
+                          "example": "agent-123-456"
+                        },
+                        "initiation_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "When the call was initiated",
+                          "example": "2024-01-15T14:30:00Z"
+                        },
+                        "recording_url": {
+                          "type": "string",
+                          "description": "URL to the call recording",
+                          "example": "https://example.com/recordings/call-123.mp3"
+                        },
+                        "transcription_url": {
+                          "type": "string",
+                          "description": "URL to the call transcription",
+                          "example": "https://example.com/transcripts/call-123.txt"
+                        },
+                        "platform_analysis": {
+                          "type": "object",
+                          "description": "Platform-generated analysis of the call (only included when send_analysis=true)",
+                          "example": {
+                            "sentiment": "positive",
+                            "call_outcome": "successful",
+                            "duration_score": 8.5
+                          }
+                        },
+                        "client_analysis": {
+                          "type": "object",
+                          "description": "Client-specific analysis of the call (only included when send_analysis=true)",
+                          "example": {
+                            "lead_score": 85,
+                            "follow_up_required": true,
+                            "customer_satisfaction": "high"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "basic_response": {
+                    "summary": "Basic call details (send_analysis=false)",
+                    "value": {
+                      "status": "success",
+                      "data": {
+                        "id": "550e8400-e29b-41d4-a716-446655440000",
+                        "call_direction": "outbound",
+                        "call_status": "completed",
+                        "call_sub_status": "ACCEPTED",
+                        "from_number": "+1234567890",
+                        "to_number": "+0987654321",
+                        "callee_name": "John Doe",
+                        "agent_id": "agent-123-456",
+                        "initiation_time": "2024-01-15T14:30:00Z",
+                        "recording_url": "https://example.com/recordings/call-123.mp3",
+                        "transcription_url": "https://example.com/transcripts/call-123.txt"
+                      }
+                    }
+                  },
+                  "with_analysis": {
+                    "summary": "Call details with analysis (send_analysis=true)",
+                    "value": {
+                      "status": "success",
+                      "data": {
+                        "id": "550e8400-e29b-41d4-a716-446655440000",
+                        "call_direction": "outbound",
+                        "call_status": "completed",
+                        "call_sub_status": "ACCEPTED",
+                        "from_number": "+1234567890",
+                        "to_number": "+0987654321",
+                        "callee_name": "John Doe",
+                        "agent_id": "agent-123-456",
+                        "initiation_time": "2024-01-15T14:30:00Z",
+                        "recording_url": "https://example.com/recordings/call-123.mp3",
+                        "transcription_url": "https://example.com/transcripts/call-123.txt",
+                        "platform_analysis": {
+                          "sentiment": "positive",
+                          "call_outcome": "successful",
+                          "duration_score": 8.5
+                        },
+                        "client_analysis": {
+                          "lead_score": 85,
+                          "follow_up_required": true,
+                          "customer_satisfaction": "high"
+                        }
                       }
                     }
                   }
@@ -1945,14 +2123,13 @@
         }
       }
     },
-
     "/campaign/all": {
       "get": {
         "tags": [
           "campaign"
         ],
         "summary": "Get All Campaigns",
-        "description": "Retrieves a list of all campaigns for the current user.",
+        "description": "Retrieves a paginated list of campaigns for the current user with optional call count information.",
         "operationId": "getAllCampaigns",
         "parameters": [
           {
@@ -1967,9 +2144,34 @@
           {
             "name": "call_count",
             "in": "query",
-            "description": "Whether to include call count for each campaign.",
+            "description": "Whether to include call count for each campaign (default: true).",
+            "required": false,
             "schema": {
-              "type": "boolean"
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of campaigns to return (default: 10).",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "minimum": 1,
+              "maximum": 1000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of campaigns to skip for pagination (default: 0).",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "minimum": 0
             }
           }
         ],
@@ -1987,14 +2189,86 @@
                         "type": "object",
                         "properties": {
                           "id": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "Campaign unique identifier",
+                            "example": "550e8400-e29b-41d4-a716-446655440000"
                           },
                           "name": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "Campaign name",
+                            "example": "Q4 Sales Campaign"
                           },
-                          "status": {
-                            "type": "string"
+                          "campaign_status": {
+                            "type": "string",
+                            "description": "Current status of the campaign",
+                            "example": "completed",
+                            "enum": [
+                              "pending",
+                              "registered",
+                              "running",
+                              "completed",
+                              "paused"
+                            ]
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Campaign creation timestamp",
+                            "example": "2024-01-15T14:30:00Z"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Campaign last update timestamp",
+                            "example": "2024-01-15T16:45:00Z"
+                          },
+                          "campaign_start_time": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Scheduled start time for the campaign",
+                            "example": "2024-01-16T09:00:00Z"
+                          },
+                          "campaign_end_time": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Scheduled end time for the campaign",
+                            "example": "2024-01-16T17:00:00Z"
+                          },
+                          "total_count": {
+                            "type": "integer",
+                            "description": "Total number of calls in campaign (only included when call_count=true)",
+                            "example": 150
+                          },
+                          "registered_count": {
+                            "type": "integer",
+                            "description": "Number of registered calls (only included when call_count=true)",
+                            "example": 120
+                          },
+                          "completed_count": {
+                            "type": "integer",
+                            "description": "Number of completed calls (only included when call_count=true)",
+                            "example": 85
                           }
+                        }
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer",
+                          "description": "Total number of campaigns available",
+                          "example": 25
+                        },
+                        "limit": {
+                          "type": "integer",
+                          "description": "Number of campaigns requested per page",
+                          "example": 10
+                        },
+                        "offset": {
+                          "type": "integer",
+                          "description": "Number of campaigns skipped",
+                          "example": 0
                         }
                       }
                     }
@@ -2327,7 +2601,10 @@
                       "type": "string"
                     },
                     "description": "Array of specific call IDs to terminate",
-                    "example": ["86815974-8a87-4e32-9953-aca4f97868ab", "9ab99d2d-595c-4ca1-bab7-07d13f253156"]
+                    "example": [
+                      "86815974-8a87-4e32-9953-aca4f97868ab",
+                      "9ab99d2d-595c-4ca1-bab7-07d13f253156"
+                    ]
                   },
                   "campaign_id": {
                     "type": "string",
@@ -2340,7 +2617,10 @@
                       "type": "string"
                     },
                     "description": "Array of mobile numbers to terminate calls for (max 100). Can be used with campaign_id or alone for individual calls",
-                    "example": ["+918882876897", "+918882876898"]
+                    "example": [
+                      "+918882876897",
+                      "+918882876898"
+                    ]
                   }
                 }
               }
@@ -2411,6 +2691,496 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/analytics/platform-analytics": {
+      "get": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Get Platform Analytics",
+        "description": "Retrieves comprehensive platform analytics including performance metrics and summaries.",
+        "operationId": "getPlatformAnalytics",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Start date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "End date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-31"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "description": "Filter by specific agent ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "bulk_list_id",
+            "in": "query",
+            "description": "Filter by specific bulk list/campaign ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "voicemail",
+            "in": "query",
+            "description": "Filter by voicemail status",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Platform analytics retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "performance_metrics": {
+                      "type": "object",
+                      "description": "Performance metrics by different categories"
+                    },
+                    "metrics_summary": {
+                      "type": "object",
+                      "description": "Summary of key metrics"
+                    },
+                    "cached": {
+                      "type": "boolean",
+                      "description": "Whether the response was served from cache"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/analytics/drill-down-analytics": {
+      "get": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Get Drill-Down Analytics",
+        "description": "Retrieves detailed analytics for a specific bulk list/campaign with drill-down capabilities.",
+        "operationId": "getDrillDownAnalytics",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bulk_list_id",
+            "in": "query",
+            "description": "(Required) Bulk list/campaign ID to get drill-down analytics for",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Start date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "End date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-31"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "description": "Filter by specific agent ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "voicemail",
+            "in": "query",
+            "description": "Filter by voicemail status",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Drill-down analytics retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "performance_metrics": {
+                      "type": "object",
+                      "description": "Detailed performance metrics for the bulk list"
+                    },
+                    "cached": {
+                      "type": "boolean",
+                      "description": "Whether the response was served from cache"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Missing required bulk_list_id parameter."
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/analytics/number-analytics": {
+      "get": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Get Number Analytics",
+        "description": "Retrieves analytics broken down by phone numbers.",
+        "operationId": "getNumberAnalytics",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Start date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "End date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-31"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "description": "Filter by specific agent ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "bulk_list_id",
+            "in": "query",
+            "description": "Filter by specific bulk list/campaign ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "voicemail",
+            "in": "query",
+            "description": "Filter by voicemail status",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Number analytics retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "number_analytics": {
+                      "type": "array",
+                      "description": "Analytics data grouped by phone numbers"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/analytics/duration-distribution": {
+      "get": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Get Duration Distribution",
+        "description": "Retrieves call duration distribution analytics.",
+        "operationId": "getDurationDistribution",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Start date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "End date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-31"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "description": "Filter by specific agent ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "bulk_list_id",
+            "in": "query",
+            "description": "Filter by specific bulk list/campaign ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "voicemail",
+            "in": "query",
+            "description": "Filter by voicemail status",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Duration distribution retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "duration_distribution": {
+                      "type": "object",
+                      "description": "Call duration distribution data"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "500": {
+            "description": "Internal Server Error."
+          }
+        }
+      }
+    },
+    "/analytics/classification-analytics": {
+      "get": {
+        "tags": [
+          "analytics"
+        ],
+        "summary": "Get Classification Analytics",
+        "description": "Retrieves call classification analytics data.",
+        "operationId": "getClassificationAnalytics",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Start date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "End date for analytics filter (YYYY-MM-DD format)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2024-01-31"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "description": "Filter by specific agent ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "bulk_list_id",
+            "in": "query",
+            "description": "Filter by specific bulk list/campaign ID",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "123e4567-e89b-12d3-a456-426614174000"
+            }
+          },
+          {
+            "name": "voicemail",
+            "in": "query",
+            "description": "Filter by voicemail status",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Classification analytics retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "classification_analytics": {
+                      "type": "object",
+                      "description": "Call classification analytics data"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "500": {
+            "description": "Internal Server Error."
           }
         }
       }

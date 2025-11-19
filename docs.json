@@ -124,6 +124,16 @@
             "pages": [
               "api-reference/endpoint/terminate/terminate-calls"
             ]
+          },
+          {
+            "group": "Analytics",
+            "pages": [
+              "api-reference/endpoint/analytics/get-platform-analytics",
+              "api-reference/endpoint/analytics/get-drill-down-analytics",
+              "api-reference/endpoint/analytics/get-number-analytics",
+              "api-reference/endpoint/analytics/get-duration-distribution",
+              "api-reference/endpoint/analytics/get-classification-analytics"
+            ]
           }
         ]
       }
