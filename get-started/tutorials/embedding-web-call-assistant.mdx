@@ -75,23 +75,23 @@ loadAgent({
   agentId: "your-agent-id",
   xApiKey: "your-api-key",
   variables: {
-     // Custom variables for your assistant
-    "custom_variable_1": "value1",
-    "custom_variable_2": "value2"
+    // Custom variables for your assistant
+    custom_variable_1: "value1",
+    custom_variable_2: "value2",
   },
   buttons: {
     modalTrigger: {
       styles: {
         backgroundColor: "#4CAF50",
         color: "white",
-        borderRadius: "50%"
-      }
+        borderRadius: "50%",
+      },
     },
     mic: {
       styles: {
         backgroundColor: "#f44336",
-        borderRadius: "50%"
-      }
+        borderRadius: "50%",
+      },
     },
     call: {
       textBeforeCall: "Start Call",
@@ -99,10 +99,34 @@ loadAgent({
       styles: {
         backgroundColor: "#2196F3",
         color: "white",
-        borderRadius: "4px"
-      }
-    }
-  }
+        borderRadius: "4px",
+      },
+    },
+  },
+  defaultTab?: "audio" | "text";
+  /**
+   * The tab shown by default when the component loads.
+   * Supported from v1.0.8+
+   * @default "audio"
+   */
+
+  hideTabSelector?: boolean;
+  /**
+   * Whether to hide the tab selector UI.
+   * Supported from v1.0.8+
+   * @default false
+   */
+
+  innerWindowProps?: {
+    /**
+     * Inner window dimensions when a call is connected.
+     * All values accept a number (px) or any valid CSS size string.
+     * Supported from v1.0.8+
+     */
+    width?: number | string;
+    height?: number | string;
+    borderRadius?: number | string;
+  };
 });
 ```
 
