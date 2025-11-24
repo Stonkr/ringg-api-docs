@@ -1,0 +1,69 @@
+---
+openapi: patch /campaign/terminate/campaign-numbers
+---
+
+## Terminate Campaign Numbers
+
+Stop calls to specific phone numbers within a particular campaign. This gives you precise control to remove individual contacts from an active campaign.
+
+<Warning>
+**Targeted Termination**: This only affects the specified numbers within the given campaign. The same numbers in other campaigns will continue.
+</Warning>
+
+## When to Use This
+
+- **Customer Requests**: When contacts ask to be removed from calls
+- **Data Quality**: Remove invalid or problematic numbers from campaign
+- **Compliance**: Honor do-not-call requests for specific numbers
+- **Selective Control**: Keep campaign running but exclude certain contacts
+- **A/B Testing**: Stop calls to control group numbers
+
+## Perfect For
+
+### Customer Opt-Outs
+Quickly remove customers who requested to stop receiving calls:
+```json
+{
+  "campaign_id": "0b52ca2b-7767-4cb5-ac4c-b2a4f892a856",
+  "mobile_numbers": ["+918882876897", "+918882876898"]
+}
+```
+
+### Data Cleanup
+Remove invalid or problematic numbers while keeping campaign active.
+
+### Compliance Management
+Honor do-not-call requests without stopping entire campaign.
+
+## Important Details
+
+### Number Format
+- ✅ Include country code: `+918882876897`
+- ✅ Use international format: `+1234567890`
+- ❌ Don't use local format: `8882876897`
+
+### Limitations
+- **Maximum**: 100 numbers per request
+- **Scope**: Only affects specified campaign
+- **Status**: Only terminates registered/retry calls
+
+### What Happens
+- **Immediate**: Queued calls to these numbers are cancelled
+- **Retry Calls**: Scheduled retries are also cancelled  
+- **Other Campaigns**: Same numbers in other campaigns continue
+- **Completed Calls**: Already finished calls remain in history
+
+<Info>
+**Pro Tip**: Use this endpoint to implement real-time opt-out functionality in your application. Customers can request removal and you can immediately stop their calls.
+</Info>
+
+## Response
+
+Successful termination returns:
+```json
+{
+  "message": "Calls terminated successfully!"
+}
+```
+
+The response doesn't specify how many calls were actually terminated, but all matching calls for the provided numbers within the campaign will be stopped.

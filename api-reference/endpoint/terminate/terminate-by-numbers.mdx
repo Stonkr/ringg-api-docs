@@ -1,0 +1,105 @@
+---
+openapi: patch /campaign/terminate/numbers
+---
+
+## Terminate All Calls to Numbers
+
+Stop ALL active calls to specific phone numbers across ALL campaigns. This is the most comprehensive way to ensure certain numbers are no longer contacted.
+
+<Warning>
+**Global Impact**: This terminates calls to the specified numbers across ALL active campaigns, not just one campaign.
+</Warning>
+
+## When to Use This
+
+- **Global Opt-Outs**: Customers who want to stop ALL calls from your organization
+- **Legal Compliance**: Honor comprehensive do-not-call requests
+- **Data Privacy**: Implement "right to be forgotten" requests
+- **Emergency Stops**: Immediately halt all contact attempts to specific numbers
+- **Account Closure**: Stop all calls when customers close accounts
+
+## Scope of Termination
+
+### ✅ What Gets Terminated:
+- **All Campaigns**: Calls across every active campaign
+- **All Call Types**: Both individual and campaign calls
+- **Queued Calls**: All registered/retry status calls
+- **Future Calls**: Prevents these numbers from being called again in current campaigns
+
+### ❌ What Continues:
+- **Other Numbers**: Calls to different numbers continue normally
+- **Completed Calls**: Historical call data remains intact
+- **Active Calls**: Currently connected calls finish naturally
+
+## Perfect Use Cases
+
+### Customer Service Integration
+```json
+// When customer calls support requesting no more calls
+{
+  "mobile_numbers": ["+918882876897"]
+}
+```
+
+### Bulk Opt-Out Processing
+```json
+// Process multiple opt-out requests at once
+{
+  "mobile_numbers": [
+    "+918882876897",
+    "+918882876898", 
+    "+918882876899"
+  ]
+}
+```
+
+### Account Deletion Workflow
+When customers delete accounts, ensure no future contact across all campaigns.
+
+## Important Considerations
+
+### Number Format Requirements
+- ✅ **Correct**: `+918882876897` (with country code)
+- ✅ **Correct**: `+1234567890` (international format)
+- ❌ **Wrong**: `8882876897` (missing country code)
+
+### Limits & Constraints
+- **Maximum**: 100 numbers per request
+- **Rate Limits**: Standard API rate limits apply
+- **Permanent**: Cannot undo this action for current campaigns
+
+### Impact Analysis
+Before using this endpoint, consider:
+- **Business Impact**: How many campaigns will be affected?
+- **Legal Requirements**: Is this necessary for compliance?
+- **Alternative Actions**: Could campaign-specific termination work instead?
+
+<Info>
+**Best Practice**: Use this endpoint for definitive opt-outs. For temporary or campaign-specific issues, consider using the campaign-numbers endpoint instead.
+</Info>
+
+## Integration Example
+
+```javascript
+// Example: Customer support integration
+async function globalOptOut(phoneNumber) {
+  try {
+    const response = await fetch('/campaign/terminate/numbers', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-KEY': 'your-api-key'
+      },
+      body: JSON.stringify({
+        mobile_numbers: [phoneNumber]
+      })
+    });
+    
+    if (response.ok) {
+      console.log('Customer successfully opted out of all campaigns');
+    }
+  } catch (error) {
+    console.error('Opt-out failed:', error);
+  }
+}
+```

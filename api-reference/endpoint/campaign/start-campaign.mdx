@@ -1,3 +1,37 @@
 ---
 openapi: post /campaign/start
 ---
+
+## Campaign Start Process
+
+This endpoint starts a previously uploaded campaign by initiating outbound calls to all contacts in the specified campaign list. 
+
+<Warning>
+Before starting a campaign, ensure you have:
+- Uploaded a contact list using the campaign upload endpoint
+- Configured your agent with the appropriate prompts and settings
+- Set up valid from_numbers that are provisioned for your workspace
+</Warning>
+
+## Request Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `agent_id` | string | ✅ | ID of the agent that will handle all campaign calls |
+| `list_id` | string | ✅ | ID of the uploaded campaign contact list |
+| `from_numbers` | array | ✅ | Phone numbers to use for outbound calls |
+
+
+## Important Notes
+
+- **Credits Required**: Ensure your workspace has sufficient credits for all contacts in the campaign
+- **International Calls**: For international numbers, only Twilio from_numbers are supported
+- **Campaign Status**: Once started, the campaign status changes to "scheduled" or "ongoing"
+- **Duplicate Prevention**: Cannot start a campaign that's already in "scheduled" or "ongoing" status
+
+## Error Responses
+
+- **400**: Invalid agent_id, campaign not found, insufficient credits, or campaign already started
+- **401**: Invalid or missing API key
+- **404**: Campaign or agent not found
+- **402**: Insufficient credits to initiate campaign

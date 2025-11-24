@@ -1,0 +1,33 @@
+---
+openapi: patch /campaign/terminate/agent
+---
+
+## Terminate All Agent Calls
+
+Stop all active calls for a specific AI agent across all campaigns. This is useful when you need to halt all operations for a particular agent.
+
+<Warning>
+**Impact**: This will terminate ALL active calls for the specified agent, regardless of which campaign they belong to.
+</Warning>
+
+## When to Use This
+
+- **Agent Issues**: When an agent has problems and needs to stop all calls
+- **Emergency Stop**: Quick way to halt all calls for a specific agent
+- **Agent Maintenance**: Before updating or modifying an agent configuration
+- **Resource Management**: When an agent is consuming too many resources
+
+## What Gets Terminated
+
+✅ **Calls that will be terminated:**
+- Calls in "registered" status (queued and waiting)
+- Calls in "retry" status (scheduled for retry)
+
+❌ **Calls that won't be affected:**
+- Already completed calls
+- Calls currently in progress (connected)
+- Calls that haven't started yet
+
+<Info>
+**Note**: You can find your agent ID in the agent the top of your dashboard.
+</Info>
