@@ -126,7 +126,48 @@ loadAgent({
     width?: number | string,
     height?: number | string,
     borderRadius?: number | string,
-  };
+  },
+
+  title?: string,
+    /**
+     * Custom title displayed in the header.
+     */
+
+    description?: string,
+    /**
+     * Custom description displayed below the title.
+     */
+
+    logoUrl?: string,
+    /**
+     * Custom logo URL displayed in the header.
+     * Supported from v1.0.10+
+     */
+
+    logoStyles?: Partial<React.CSSProperties>,
+    /**
+     * Custom CSS styles for the logo container.
+     * Example: { backgroundColor: "#4CAF50", padding: "8px", border: "2px solid #333" }
+     * Supported from v1.0.10+
+     */
+
+    legalDisclaimer?: {
+      text: string,
+      links?: Record<string, string>
+    },
+    /**
+     * Custom legal disclaimer with clickable links.
+     * Supported from v1.0.10+
+     * Words in 'text' that match keys in 'links' become clickable (case-sensitive).
+     * Example:
+     * {
+     *   text: "By continuing, you agree to our Terms and Privacy Policy",
+     *   links: {
+     *     "Terms": "https://example.com/terms",
+     *     "Privacy Policy": "https://example.com/privacy"
+     *   }
+     * }
+     */
 });
 ```
 
