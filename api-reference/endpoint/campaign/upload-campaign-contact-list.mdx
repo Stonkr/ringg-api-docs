@@ -1,0 +1,142 @@
+---
+openapi: post /campaign/save
+---
+
+# Upload Campaign Contact List
+
+Upload a CSV file with contact data to create a new campaign. Once uploaded, you can start the campaign to begin making calls.
+
+## 📋 Quick Start
+
+1. **Prepare your CSV** - Download template from your campaigns tab
+2. **Configure your agent** - Set up prompts and custom variables  
+3. **Upload & configure** - Submit CSV with campaign settings
+4. **Start calling** - Use the returned `list_id` to start your campaign
+
+## 📁 CSV File Requirements
+
+<Warning>
+**Important File Rules:**
+- ✅ CSV format only
+- ✅ Must include "Mobile Number" column  
+- ✅ Phone numbers need country code (e.g., +91xxxxxxxxxx)
+- ✅ Download exact template from campaigns tab for your agent
+</Warning>
+
+### Example CSV Structure
+```
+Mobile Number,Name,Company,Email
++918882876897,John Doe,XYZ Corp,john@example.com
++918882876898,Jane Smith,ABC Inc,jane@example.com
+```
+
+## ⚙️ Configuration Parameters
+
+### Required Fields
+| Field | Format | Example |
+|-------|---------|---------|
+| **CSV File** | .csv file | contacts.csv |
+| **Agent ID** | UUID | 830f767a-397e-4b39-82ff-235cd344e2f9 |
+| **Campaign Name** | Text | "Q1 Sales Outreach" |
+| **Country Code** | 2-letter code | "IN", "US" |
+| **Start Time** | DD/MM/YYYY, HH:MM | 18/10/2025, 09:00 |
+| **End Time** | DD/MM/YYYY, HH:MM | 18/10/2025, 21:00 |
+
+### Optional Settings
+| Setting | Default | Purpose |
+|---------|---------|---------|
+| Remove Invalid Rows | false | Auto-remove bad data |
+| Transliterate Names | false | Convert to English |
+
+## CSV File Format
+
+**Download the exact CSV template from your campaigns tab** to get the correct format according to your specific agent configuration. The required columns vary based on your agent's custom variables.
+
+
+## 🔗 Variable Mapping
+
+Connect your CSV columns to agent variables so your AI can use the contact data during calls.
+
+### How It Works
+Map CSV column names to your agent's custom variables:
+
+```json
+{
+  "callee_name": "Name",
+  "company_name": "Company", 
+  "email": "Email",
+  "custom_field": "Custom Field 1"
+}
+```
+
+### Using Variables
+Reference mapped variables in your agent prompt with `@{{variable_name}}`:
+- `@{{callee_name}}` → "John Doe"
+- `@{{company_name}}` → "XYZ Corp"
+
+## ⏰ Call Configuration
+
+Control when and how your campaign calls are made:
+
+<details>
+<summary><strong>📞 Call Timing & Limits</strong></summary>
+
+```json
+{
+  "idle_timeout_warning": 10,
+  "idle_timeout_end": 15,
+  "max_call_length": 300,
+  "call_time": {
+    "call_start_time": "09:00",
+    "call_end_time": "18:00",
+    "timezone": "Asia/Kolkata"
+  }
+}
+```
+</details>
+
+<details>
+<summary><strong>🔄 Retry Settings</strong></summary>
+
+```json
+{
+  "call_retry_config": {
+    "retry_count": 3,
+    "retry_busy": 30,
+    "retry_not_picked": 30,
+    "retry_failed": 30
+  }
+}
+```
+</details>
+
+## ✅ What Happens Next?
+
+### Success Response
+You'll receive a `list_id` - **save this!** You need it to start your campaign.
+
+```json
+{
+  "message": "Contacts imported successfully!",
+  "list_id": "123e4567-e89b-12d3-a456-426614174000",
+  "total_rows": 100,
+  "successful_rows": 98,
+  "failed_rows": 2
+}
+```
+
+### Next Steps
+1. **Save the `list_id`** from the response
+2. **[Start your campaign](/api-reference/endpoint/campaign/start-campaign)** using the `list_id`
+3. **[Monitor progress](/api-reference/endpoint/campaign/get-all-campaigns)** and view results
+
+### Error Handling
+If upload fails, check:
+- ✅ CSV format and required columns
+- ✅ Valid phone number format with country codes
+- ✅ Agent ID exists and is active
+- ✅ API key permissions
+
+<Info>
+**💡 Pro Tip**: Set `remove_invalid_rows=true` to automatically skip problematic contacts instead of failing the entire upload.
+</Info>

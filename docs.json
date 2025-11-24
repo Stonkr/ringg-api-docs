@@ -92,14 +92,6 @@
             ]
           },
           {
-            "group": "Contacts",
-            "pages": [
-              "api-reference/endpoint/contact/get-contact-list",
-              "api-reference/endpoint/contact/upload-campaign-contact-list",
-              "api-reference/endpoint/contact/delete-contact-list"
-            ]
-          },
-          {
             "group": "Calling",
             "pages": [
               "api-reference/endpoint/calling/initiate-individual-call"
@@ -108,21 +100,27 @@
           {
             "group": "Campaign",
             "pages": [
-              "api-reference/endpoint/campaign/get-all-campaigns",
-              "api-reference/endpoint/campaign/start-campaign"
+              "api-reference/endpoint/campaign/upload-campaign-contact-list",
+              "api-reference/endpoint/campaign/start-campaign",
+              "api-reference/endpoint/campaign/get-all-campaigns"
             ]
           },
           {
             "group": "History",
             "pages": [
               "api-reference/endpoint/history/get-call-history",
+              "api-reference/endpoint/history/download-call-history",
               "api-reference/endpoint/history/get-call-details"
             ]
           },
           {
             "group": "Termination",
             "pages": [
-              "api-reference/endpoint/terminate/terminate-calls"
+              "api-reference/endpoint/terminate/terminate-by-agent",
+              "api-reference/endpoint/terminate/terminate-by-call-ids", 
+              "api-reference/endpoint/terminate/terminate-by-campaign",
+              "api-reference/endpoint/terminate/terminate-by-campaign-numbers",
+              "api-reference/endpoint/terminate/terminate-by-numbers"
             ]
           },
           {

@@ -1,3 +1,42 @@
 ---
 openapi: post /calling/outbound/individual
 ---
+
+## Initiate Individual Call
+
+Start a new outbound call to a specific recipient using your configured AI agent. This endpoint supports both immediate calls and scheduled calls for future execution.
+
+<Warning>
+**Phone Number Format**: 
+- All phone numbers must include country code (e.g., +91 for India, +1 for US)
+- Invalid formats will result in call failure
+</Warning>
+
+## Scheduled Calls
+Use `scheduled_at` to schedule calls for a specific date and time:
+```json
+"call_time": {
+  "call_start_time": "09:00",
+  "call_end_time": "18:00", 
+  "timezone": "Asia/Kolkata",
+  "scheduled_at": "2025-11-24T01:55:00"
+}
+```
+
+<Note>
+**Scheduled Calls**: When `scheduled_at` is provided, the call will be queued and executed at that specific date and time. The time window (`call_start_time` and `call_end_time`) still applies as additional validation. Use this for precise scheduling of important calls.
+</Note>
+
+## Custom Variables
+
+Use the `custom_args_values` field to pass dynamic data to your agent:
+- Reference variables in your agent prompt using `@{{variable_name}}` syntax
+- Common variables: `callee_name`, `company_name`, `appointment_date`, etc.
+- Variables are replaced with actual values during the call
+
+## Important Notes
+
+- **Agent Configuration**: Ensure your agent is properly configured with prompts and variables
+- **From Numbers**: Use phone numbers that are provisioned in your workspace
+- **Credits**: Each call consumes credits based on duration and destination
+- **Retry Logic**: Configure retry attempts for busy/failed calls in `call_config`

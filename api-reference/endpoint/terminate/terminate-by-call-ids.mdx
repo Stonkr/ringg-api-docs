@@ -1,0 +1,43 @@
+---
+openapi: patch /campaign/terminate/calls
+---
+
+## Terminate Specific Calls
+
+Stop individual calls by providing their unique call IDs. This gives you precise control over which calls to terminate.
+
+<Warning>
+**Precision Required**: Make sure you have the correct call IDs. Invalid IDs will be ignored.
+</Warning>
+
+## When to Use This
+
+- **Selective Termination**: Stop only specific problematic calls
+- **Quality Control**: Terminate calls that aren't performing well
+- **Customer Requests**: Stop calls to specific contacts who requested removal
+- **Targeted Control**: Fine-grained call management
+
+## How to Get Call IDs
+
+You can find call IDs from:
+- **Call History API**: Use the [Get Call History](/api-reference/endpoint/history/get-call-history) endpoint
+- **Real-time Monitoring**: Dashboard call monitoring section
+- **Webhook Notifications**: Call status updates include call IDs
+- **Campaign Reports**: Export campaign data to get call IDs
+
+## Request Format
+
+Send an array of call IDs to terminate:
+
+```json
+{
+  "call_ids": [
+    "86815974-8a87-4e32-9953-aca4f97868ab",
+    "9ab99d2d-595c-4ca1-bab7-07d13f253156"
+  ]
+}
+```
+
+<Info>
+**Tip**: You can terminate up to 100 calls in a single request for efficient bulk operations.
+</Info>

@@ -1,0 +1,36 @@
+---
+openapi: post /calling/history/download
+---
+
+## Download Call History
+
+This endpoint queues call history data for download and sends it via email. The export includes comprehensive call records with optional filtering capabilities.
+
+<Warning>
+**Email Delivery**: 
+- Large datasets may take several minutes to process
+- You'll receive an email with the download link once processing is complete
+</Warning>
+
+## Key Features
+
+- **Comprehensive Data Export**: Includes call details, transcripts, recordings, and metadata
+- **Flexible Filtering**: Filter by date range, agent, status, and more
+- **Analysis Data**: Optionally include call analysis and insights
+- **Email Delivery**: Secure download link sent to your email
+
+## Export Format
+
+The download contains a CSV file with the following data:
+- Call basic information (ID, numbers, duration, cost)
+- Call status and timestamps
+- Agent and campaign details  
+- Transcript and recording URLs
+- Custom variables and analysis data (when enabled)
+
+## Important Notes
+
+- **Processing Time**: Large exports may take 5-10 minutes to process
+- **File Size**: Very large datasets are automatically compressed
+- **Data Retention**: Export files are retained for 7 days on our servers
+- **Rate Limiting**: Maximum 3 export requests per hour per workspace
