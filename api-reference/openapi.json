@@ -1586,6 +1586,13 @@
         "summary": "Get Call History",
         "description": "Retrieves the history of calls made through the Ringg AI platform with optional filtering and pagination.",
         "operationId": "getCallHistory",
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl --request GET \\\n  --url 'https://prod-api.ringg.ai/ca/api/v0/calling/history?start_date=2025-09-25T00:00:00%2B05:30&end_date=2025-09-25T23:59:59%2B05:30&limit=50&offset=20&agent_id=830f767a-397e-4b39-82ff-235cd344e2f9&status=completed&bulk_list_id=123e4567-e89b-12d3-a456-426614174000' \\\n  --header 'X-API-KEY: <x-api-key>'"
+          }
+        ],
         "parameters": [
           {
             "name": "X-API-KEY",
@@ -1879,6 +1886,13 @@
         "summary": "Download Call History",
         "description": "Downloads call history data in CSV format. Supports bulk download of call records with optional filtering. Use 'include_analysis=true' to include call analysis data (platform_analysis and client_analysis) in the export.",
         "operationId": "downloadCallHistory",
+        "x-code-samples": [
+          {
+            "lang": "curl",
+            "label": "cURL",
+            "source": "curl --request POST \\\n  --url 'https://prod-api.ringg.ai/ca/api/v0/calling/history/download?start_date=2025-09-25T00:00:00%2B05:30&end_date=2025-09-25T23:59:59%2B05:30&agent_id=830f767a-397e-4b39-82ff-235cd344e2f9&status=completed&include_analysis=true&call_type=outbound&bulk_list_id=123e4567-e89b-12d3-a456-426614174000&voicemail=false&from_number=%2B1234567890&to_number=%2B0987654321&call_id=550e8400-e29b-41d4-a716-446655440000&limit=5000&offset=0' \\\n  --header 'X-API-KEY: <x-api-key>'"
+          }
+        ],
         "parameters": [
           {
             "name": "X-API-KEY",
@@ -2007,6 +2021,28 @@
             "schema": {
               "type": "string",
               "example": "550e8400-e29b-41d4-a716-446655440000"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Maximum number of call records to download.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1000,
+              "example": 5000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of call records to skip for pagination.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "example": 100
             }
           }
         ],
