@@ -74,11 +74,12 @@ Modify the configuration object to customize the appearance and behavior of the 
 loadAgent({
   agentId: "your-agent-id",
   xApiKey: "your-api-key",
+
   variables: {
-    // Custom variables for your assistant
     custom_variable_1: "value1",
     custom_variable_2: "value2",
   },
+
   buttons: {
     modalTrigger: {
       styles: {
@@ -103,6 +104,7 @@ loadAgent({
       },
     },
   },
+
   defaultTab?: "audio" | "text",
   /**
    * The tab shown by default when the component loads.
@@ -120,7 +122,7 @@ loadAgent({
   innerWindowProps?: {
     /**
      * Inner window dimensions when a call is connected.
-     * All values accept a number (px) or any valid CSS size string.
+     * Accepts a number (px) or any valid CSS size string.
      * Supported from v1.0.8+
      */
     width?: number | string,
@@ -129,46 +131,50 @@ loadAgent({
   },
 
   title?: string,
-    /**
-     * Custom title displayed in the header.
-     */
+  /** Custom title displayed in the header. */
 
-    description?: string,
-    /**
-     * Custom description displayed below the title.
-     */
+  description?: string,
+  /** Custom description displayed below the title. */
 
-    logoUrl?: string,
-    /**
-     * Custom logo URL displayed in the header.
-     * Supported from v1.0.10+
-     */
+  logoUrl?: string,
+  /**
+   * Custom logo URL displayed in the header.
+   * Supported from v1.0.10+
+   */
 
-    logoStyles?: Partial<React.CSSProperties>,
-    /**
-     * Custom CSS styles for the logo container.
-     * Example: { backgroundColor: "#4CAF50", padding: "8px", border: "2px solid #333" }
-     * Supported from v1.0.10+
-     */
+  logoStyles?: Partial<React.CSSProperties>,
+  /**
+   * Custom CSS styles for the logo container.
+   * Supported from v1.0.10+
+   */
 
-    legalDisclaimer?: {
-      text: string,
-      links?: Record<string, string>
-    },
-    /**
-     * Custom legal disclaimer with clickable links.
-     * Supported from v1.0.10+
-     * Words in 'text' that match keys in 'links' become clickable (case-sensitive).
-     * Example:
-     * {
-     *   text: "By continuing, you agree to our Terms and Privacy Policy",
-     *   links: {
-     *     "Terms": "https://example.com/terms",
-     *     "Privacy Policy": "https://example.com/privacy"
-     *   }
-     * }
-     */
+  legalDisclaimer?: {
+    text: string,
+    links?: Record<string, string>
+  },
+  /**
+   * Custom legal disclaimer with clickable links.
+   * Supported from v1.0.10+
+   */
+
+  feedbackScreen?: {
+    title?: string,               // Default: "How was your call/chat?"
+    description?: string,         // Default: "Your feedback helps us improve!"
+    starsCount?: number,          // Default: 5
+    placeholder?: string,         // Default: "We'd love to hear more..."
+    submitBtnCTA?: string,        // Default: "Submit Feedback"
+    submitBtnStyles?: Partial<React.CSSProperties>,
+    starsStyles?: {
+      filledColor?: string,       // Default: #FBBF24 (yellow)
+      emptyColor?: string         // Default: #D1D5DB (gray)
+    }
+  },
+  /**
+   * Optional feedback UI props
+   * Supported from v1.0.11+
+   */
 });
+
 ```
 
 **_Step 4: Add the Code to Your Website_**
