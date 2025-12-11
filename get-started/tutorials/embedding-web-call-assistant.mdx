@@ -199,3 +199,32 @@ script-src: https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@latest/dist/dv-ag
 * Click the button to start a call
 
 * Speak to test the voice interaction
+
+
+# Widget Events
+
+Subscribe to widget events and perform your custom actions based on them. Supported from v1.0.17.
+
+<Card>
+| Event | Payload |
+|-------|---------|
+| `ringg:widget_status` | `status`: `"maximised"` \| `"minimised"`<br/>`mode`: `"audio"` \| `"text"` |
+| `ringg:conversation_status` | `status`: `"started"` \| `"ended"`<br/>`mode`: `"audio"` \| `"text"`<br/>`callId`: `string` |
+| `ringg:feedback_status` | `status`: `"submitted"` \| `"skipped"`<br/>`callId`: `string`<br/>`rating?`: `number` |
+</Card>
+
+## Usage
+
+```javascript
+window.addEventListener("ringg:widget_status", (e) => {
+  console.log(e.detail); // { status: "maximised", mode: "audio" }
+});
+
+window.addEventListener("ringg:conversation_status", (e) => {
+  console.log(e.detail); // { status: "started", mode: "audio", callId: "abc123" }
+});
+
+window.addEventListener("ringg:feedback_status", (e) => {
+  console.log(e.detail); // { status: "submitted", callId: "abc123", rating: 5 }
+});
+```
