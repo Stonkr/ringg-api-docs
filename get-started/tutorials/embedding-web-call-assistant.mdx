@@ -87,6 +87,10 @@ loadAgent({
         color: "white",
         borderRadius: "50%",
       },
+      icon: {
+        url: "https://example.com/custom-icon.svg",
+        size: 24,
+      },
     },
     mic: {
       styles: {
@@ -103,6 +107,37 @@ loadAgent({
         borderRadius: "4px",
       },
     },
+  },
+
+  widgetPosition?: {
+    triggerPlacement?: "fixed" | "absolute",
+    /**
+     * Widget positioning mode.
+     * "fixed" - floats over the page, fixed to viewport (default)
+     * "absolute" - embeds inside a container with id="ringg_ai_container"
+     * Supported from v1.0.19+
+     */
+
+    triggerAlignment?: "bottom-right" | "bottom-left" | "top-right" | "top-left" | "center",
+    /**
+     * Position of the trigger button.
+     * Supported from v1.0.19+
+     * @default "bottom-right"
+     */
+
+    hideTriggerOnExpand?: boolean,
+    /**
+     * Hide the trigger button when widget is open.
+     * Supported from v1.0.19+
+     * @default true
+     */
+
+    widgetAlignment?: "bottom-right" | "bottom-center" | "bottom-left",
+    /**
+     * Position of the expanded widget.
+     * Supported from v1.0.19+
+     * @default "bottom-right"
+     */
   },
 
   defaultTab?: "audio" | "text",
@@ -199,6 +234,88 @@ script-src: https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@latest/dist/dv-ag
 * Click the button to start a call
 
 * Speak to test the voice interaction
+
+
+# Widget Positioning
+
+Control where the widget appears on your page. Supported from v1.0.19+.
+
+## Fixed Mode (Default)
+
+The widget floats over your page, fixed to the browser viewport. No additional setup required.
+
+## Absolute Mode
+
+Embed the widget inside a specific container on your page.
+
+**_Step 1: Add a container with the required ID_**
+
+```html
+<div id="ringg_ai_container" style="position: relative; width: 100%; height: 500px;">
+</div>
+```
+
+**_Step 2: Enable absolute positioning_**
+
+```javascript
+loadAgent({
+  agentId: "your-agent-id",
+  xApiKey: "your-api-key",
+  widgetPosition: {
+    triggerPlacement: "absolute",
+    triggerAlignment: "center"
+  }
+});
+```
+
+<Card>
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `triggerPlacement` | `string` | `"fixed"` | `"fixed"` for viewport, `"absolute"` for container |
+| `triggerAlignment` | `string` | `"bottom-right"` | Trigger button position |
+| `hideTriggerOnExpand` | `boolean` | `true` | Hide trigger when widget is open |
+| `widgetAlignment` | `string` | `"bottom-right"` | Expanded widget position |
+</Card>
+
+
+# Trigger Button Customization
+
+Customize the floating action button that opens the widget. Supported from v1.0.19+.
+
+## Button Styles
+
+```javascript
+buttons: {
+  modalTrigger: {
+    styles: {
+      backgroundColor: "#4F46E5",
+      width: 64,
+      height: 64
+    }
+  }
+}
+```
+
+## Custom Icon
+
+```javascript
+buttons: {
+  modalTrigger: {
+    icon: {
+      url: "https://example.com/my-icon.svg",
+      size: 24
+    }
+  }
+}
+```
+
+<Card>
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `styles` | `CSSProperties` | — | Button CSS styles (width, height, backgroundColor, etc.) |
+| `icon.url` | `string` | Ringg phone icon | Custom icon URL |
+| `icon.size` | `number` | `20` | Icon size in pixels |
+</Card>
 
 
 # Widget Events
