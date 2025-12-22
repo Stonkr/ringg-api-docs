@@ -43,6 +43,12 @@
           "workspace"
         ],
         "summary": "Get Workspace Info",
+        "x-mint": {
+          "metadata": {
+            "title": "Get Workspace Info | Ringg AI",
+            "og:title": "Get Workspace Info | Ringg AI"
+          }
+        },
         "description": "Retrieves information about your current workspace.",
         "operationId": "getWorkspaceInfo",
         "parameters": [
@@ -159,6 +165,11 @@
           "workspace"
         ],
         "summary": "List Workspace Users",
+        "x-mint": {
+          "metadata": {
+            "og:title": "List Workspace Users | Ringg AI"
+          }
+        },
         "description": "Retrieves a list of all users in your current workspace.",
         "operationId": "listWorkspaceUsers",
         "parameters": [
@@ -216,7 +227,7 @@
                           },
                           "email": {
                             "type": "string",
-                            "example": "sahil@desivocal.com"
+                            "example": "user@example.com"
                           },
                           "role": {
                             "type": "string",
@@ -249,6 +260,11 @@
           "workspace"
         ],
         "summary": "Get Workspace Numbers",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Workspace Numbers | Ringg AI"
+          }
+        },
         "description": "Retrieves a list of available phone numbers in your workspace.",
         "operationId": "getWorkspaceNumbers",
         "parameters": [
@@ -354,6 +370,11 @@
           "workspace"
         ],
         "summary": "Get All User Workspaces",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get All User Workspaces | Ringg AI"
+          }
+        },
         "description": "Retrieves a list of all workspaces accessible to the current user.",
         "operationId": "getAllUserWorkspaces",
         "parameters": [
@@ -429,6 +450,11 @@
           "workspace"
         ],
         "summary": "Regenerate API Key",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Regenerate API Key | Ringg AI"
+          }
+        },
         "description": "Regenerates a new API key for the current workspace.",
         "operationId": "regenerateApiKey",
         "parameters": [
@@ -475,6 +501,11 @@
           "agent"
         ],
         "summary": "Get Assistants",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Assistants | Ringg AI"
+          }
+        },
         "description": "Retrieves a list of all available assistants in your workspace.",
         "operationId": "getAssistants",
         "parameters": [
@@ -629,6 +660,11 @@
           "agent"
         ],
         "summary": "Get Assistant Voices",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Assistant Voices | Ringg AI"
+          }
+        },
         "description": "Retrieves a list of available voices for assistants, optionally filtered by language.",
         "operationId": "getAssistantVoices",
         "parameters": [
@@ -752,6 +788,11 @@
           "agent"
         ],
         "summary": "Edit Assistant",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Edit Assistant | Ringg AI"
+          }
+        },
         "description": "Updates an existing assistant with new configuration settings. Each operation requires specific fields to be provided.",
         "operationId": "editAssistant",
         "parameters": [
@@ -997,6 +1038,11 @@
           "agent"
         ],
         "summary": "Get Assistant By ID",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Assistant By ID | Ringg AI"
+          }
+        },
         "description": "Retrieves detailed information about a specific assistant by its ID.",
         "operationId": "getAssistantById",
         "parameters": [
@@ -1198,6 +1244,11 @@
           "agent"
         ],
         "summary": "Delete Assistant",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Delete Assistant | Ringg AI"
+          }
+        },
         "description": "Deletes an assistant by archiving it (soft delete).",
         "operationId": "deleteAssistant",
         "parameters": [
@@ -1257,6 +1308,11 @@
           "calling"
         ],
         "summary": "Initiate Individual Call",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Initiate Individual Call | Ringg AI"
+          }
+        },
         "description": "Starts a new individual outbound call to a specified recipient. The from_number field is required and should be a valid phone number with country code.",
         "operationId": "initiateIndividualCall",
         "parameters": [
@@ -1584,6 +1640,11 @@
           "calling"
         ],
         "summary": "Get Call History",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Call History | Ringg AI"
+          }
+        },
         "description": "Retrieves the history of calls made through the Ringg AI platform with optional filtering and pagination.",
         "operationId": "getCallHistory",
         "x-code-samples": [
@@ -1884,6 +1945,11 @@
           "calling"
         ],
         "summary": "Download Call History",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Download Call History | Ringg AI"
+          }
+        },
         "description": "Downloads call history data in CSV format. Supports bulk download of call records with optional filtering. Use 'include_analysis=true' to include call analysis data (platform_analysis and client_analysis) in the export.",
         "operationId": "downloadCallHistory",
         "x-code-samples": [
@@ -2165,6 +2231,11 @@
           "calling"
         ],
         "summary": "Get Call Details",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Call Details | Ringg AI"
+          }
+        },
         "description": "Retrieves detailed information about a specific call using its unique identifier. Use the send_analysis parameter to include analysis data in the response.",
         "operationId": "getCallDetails",
         "parameters": [
@@ -2420,6 +2491,11 @@
           "calling"
         ],
         "summary": "Delete Contact List",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Delete Contact List | Ringg AI"
+          }
+        },
         "description": "Deletes a contact list and all associated contacts by list ID.",
         "operationId": "deleteContactList",
         "parameters": [
@@ -2478,6 +2554,11 @@
           "campaign"
         ],
         "summary": "Get All Campaigns",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get All Campaigns | Ringg AI"
+          }
+        },
         "description": "Retrieves a paginated list of campaigns for the current user with optional call count information.",
         "operationId": "getAllCampaigns",
         "parameters": [
@@ -2668,6 +2749,11 @@
           "campaign"
         ],
         "summary": "Start Campaign",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Start Campaign | Ringg AI"
+          }
+        },
         "description": "Initiates a new campaign with the specified configuration.",
         "operationId": "startCampaign",
         "parameters": [
@@ -2806,6 +2892,11 @@
           "campaign"
         ],
         "summary": "Upload Campaign Contact List",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Upload Campaign Contact List | Ringg AI"
+          }
+        },
         "description": "Uploads a contact list for a campaign. Accepts a CSV file and campaign configuration as form data.",
         "operationId": "uploadCampaignContactList",
         "parameters": [
@@ -2981,6 +3072,11 @@
           "analytics"
         ],
         "summary": "Get Platform Analytics",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Platform Analytics | Ringg AI"
+          }
+        },
         "description": "Retrieves comprehensive platform analytics including performance metrics and summaries.",
         "operationId": "getPlatformAnalytics",
         "parameters": [
@@ -3087,6 +3183,11 @@
           "analytics"
         ],
         "summary": "Get Drill-Down Analytics",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Drill-Down Analytics | Ringg AI"
+          }
+        },
         "description": "Retrieves detailed analytics for a specific bulk list/campaign with drill-down capabilities.",
         "operationId": "getDrillDownAnalytics",
         "parameters": [
@@ -3192,6 +3293,11 @@
           "analytics"
         ],
         "summary": "Get Number Analytics",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Number Analytics | Ringg AI"
+          }
+        },
         "description": "Retrieves analytics broken down by phone numbers.",
         "operationId": "getNumberAnalytics",
         "parameters": [
@@ -3290,6 +3396,11 @@
           "analytics"
         ],
         "summary": "Get Duration Distribution",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Duration Distribution | Ringg AI"
+          }
+        },
         "description": "Retrieves call duration distribution analytics.",
         "operationId": "getDurationDistribution",
         "parameters": [
@@ -3388,6 +3499,11 @@
           "analytics"
         ],
         "summary": "Get Classification Analytics",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Classification Analytics | Ringg AI"
+          }
+        },
         "description": "Retrieves call classification analytics data.",
         "operationId": "getClassificationAnalytics",
         "parameters": [
@@ -3486,6 +3602,11 @@
           "termination"
         ],
         "summary": "Terminate All Calls by Agent ID",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Terminate All Calls by Agent ID | Ringg AI"
+          }
+        },
         "description": "Terminates all active (registered/retry) calls associated with a specific agent across all campaigns.",
         "operationId": "terminateCallsByAgent",
         "parameters": [
@@ -3550,6 +3671,11 @@
           "termination"
         ],
         "summary": "Terminate Specific Calls by Call IDs",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Terminate Specific Calls by Call IDs | Ringg AI"
+          }
+        },
         "description": "Terminates specific calls using their unique call IDs. Useful when you know exactly which calls to stop.",
         "operationId": "terminateCallsByIds",
         "parameters": [
@@ -3617,6 +3743,11 @@
           "termination"
         ],
         "summary": "Terminate All Calls in Campaign",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Terminate All Calls in Campaign | Ringg AI"
+          }
+        },
         "description": "Terminates all active (registered/retry) calls within a specific campaign.",
         "operationId": "terminateCallsByCampaign",
         "parameters": [
@@ -3681,6 +3812,11 @@
           "termination"
         ],
         "summary": "Terminate Specific Numbers in Campaign",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Terminate Specific Numbers in Campaign | Ringg AI"
+          }
+        },
         "description": "Terminates calls to specific mobile numbers within a campaign. Useful for stopping calls to particular contacts in a campaign.",
         "operationId": "terminateCallsByCampaignNumbers",
         "parameters": [
@@ -3753,6 +3889,11 @@
           "termination"
         ],
         "summary": "Terminate All Calls to Numbers",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Terminate All Calls to Numbers | Ringg AI"
+          }
+        },
         "description": "Terminates all active calls (across all campaigns) to specific mobile numbers.",
         "operationId": "terminateCallsByNumbers",
         "parameters": [
