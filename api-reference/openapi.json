@@ -2004,7 +2004,9 @@
               "items": {
                 "type": "string"
               },
-              "example": ["830f767a-397e-4b39-82ff-235cd344e2f9"]
+              "example": [
+                "830f767a-397e-4b39-82ff-235cd344e2f9"
+              ]
             }
           },
           {
@@ -2035,7 +2037,11 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": ["inbound", "outbound", "webcall"],
+              "enum": [
+                "inbound",
+                "outbound",
+                "webcall"
+              ],
               "example": "outbound"
             }
           },
@@ -2359,10 +2365,18 @@
                             }
                           },
                           "example": [
-                            {"bot": "Hello, how can I help you today?"},
-                            {"user": "I need information about my order"},
-                            {"bot": "I'd be happy to help you with that. Can you provide your order number?"},
-                            {"user": "Sure, it's ORDER-12345"}
+                            {
+                              "bot": "Hello, how can I help you today?"
+                            },
+                            {
+                              "user": "I need information about my order"
+                            },
+                            {
+                              "bot": "I'd be happy to help you with that. Can you provide your order number?"
+                            },
+                            {
+                              "user": "Sure, it's ORDER-12345"
+                            }
                           ]
                         },
                         "platform_analysis": {
@@ -2404,10 +2418,18 @@
                         "initiation_time": "2024-01-15T14:30:00Z",
                         "recording_url": "https://example.com/recordings/call-123.mp3",
                         "transcription_url": [
-                          {"bot": "Hello, how can I help you today?"},
-                          {"user": "I need information about my order"},
-                          {"bot": "I'd be happy to help you with that. Can you provide your order number?"},
-                          {"user": "Sure, it's ORDER-12345"}
+                          {
+                            "bot": "Hello, how can I help you today?"
+                          },
+                          {
+                            "user": "I need information about my order"
+                          },
+                          {
+                            "bot": "I'd be happy to help you with that. Can you provide your order number?"
+                          },
+                          {
+                            "user": "Sure, it's ORDER-12345"
+                          }
                         ]
                       }
                     }
@@ -2428,10 +2450,18 @@
                         "initiation_time": "2024-01-15T14:30:00Z",
                         "recording_url": "https://example.com/recordings/call-123.mp3",
                         "transcription_url": [
-                          {"bot": "Hello, how can I help you today?"},
-                          {"user": "I need information about my order"},
-                          {"bot": "I'd be happy to help you with that. Can you provide your order number?"},
-                          {"user": "Sure, it's ORDER-12345"}
+                          {
+                            "bot": "Hello, how can I help you today?"
+                          },
+                          {
+                            "user": "I need information about my order"
+                          },
+                          {
+                            "bot": "I'd be happy to help you with that. Can you provide your order number?"
+                          },
+                          {
+                            "user": "Sure, it's ORDER-12345"
+                          }
                         ],
                         "platform_analysis": {
                           "sentiment": "positive",
@@ -2776,7 +2806,7 @@
                 "type": "object",
                 "required": [
                   "agent_id",
-                  "list_id", 
+                  "list_id",
                   "from_numbers"
                 ],
                 "properties": {
@@ -2786,7 +2816,7 @@
                     "example": "830f767a-397e-4b39-82ff-235cd344e2f9"
                   },
                   "list_id": {
-                    "type": "string", 
+                    "type": "string",
                     "description": "(Required) ID of the uploaded campaign contact list.",
                     "example": "123e4567-e89b-12d3-a456-426614174000"
                   },
@@ -2796,13 +2826,18 @@
                     "items": {
                       "type": "string"
                     },
-                    "example": ["+1234567890", "+0987654321"]
+                    "example": [
+                      "+1234567890",
+                      "+0987654321"
+                    ]
                   }
                 },
                 "example": {
                   "agent_id": "830f767a-397e-4b39-82ff-235cd344e2f9",
                   "list_id": "123e4567-e89b-12d3-a456-426614174000",
-                  "from_numbers": ["+1234567890"]
+                  "from_numbers": [
+                    "+1234567890"
+                  ]
                 }
               }
             }
@@ -2921,7 +2956,10 @@
                   "variables_map": {
                     "type": "string",
                     "description": "(Required) JSON string mapping variable names to columns",
-                    "example": {"callee_name":"Name","company_name":"Company"}
+                    "example": {
+                      "callee_name": "Name",
+                      "company_name": "Company"
+                    }
                   },
                   "agent_id": {
                     "type": "string",
@@ -2931,7 +2969,10 @@
                   "call_config": {
                     "type": "string",
                     "description": "(Required) JSON string of call configuration",
-                    "example": {"idle_timeout_warning":10,"max_call_length":300}
+                    "example": {
+                      "idle_timeout_warning": 10,
+                      "max_call_length": 300
+                    }
                   },
                   "country_code": {
                     "type": "string",
@@ -3627,7 +3668,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["agent_id"],
+                "required": [
+                  "agent_id"
+                ],
                 "properties": {
                   "agent_id": {
                     "type": "string",
@@ -3696,7 +3739,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["call_ids"],
+                "required": [
+                  "call_ids"
+                ],
                 "properties": {
                   "call_ids": {
                     "type": "array",
@@ -3704,7 +3749,10 @@
                       "type": "string"
                     },
                     "description": "(Required) Array of call IDs to terminate",
-                    "example": ["86815974-8a87-4e32-9953-aca4f97868ab", "9ab99d2d-595c-4ca1-bab7-07d13f253156"]
+                    "example": [
+                      "86815974-8a87-4e32-9953-aca4f97868ab",
+                      "9ab99d2d-595c-4ca1-bab7-07d13f253156"
+                    ]
                   }
                 }
               }
@@ -3768,7 +3816,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["campaign_id"],
+                "required": [
+                  "campaign_id"
+                ],
                 "properties": {
                   "campaign_id": {
                     "type": "string",
@@ -3837,7 +3887,10 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["campaign_id", "mobile_numbers"],
+                "required": [
+                  "campaign_id",
+                  "mobile_numbers"
+                ],
                 "properties": {
                   "campaign_id": {
                     "type": "string",
@@ -3850,7 +3903,10 @@
                       "type": "string"
                     },
                     "description": "(Required) Array of mobile numbers to terminate within the campaign (max 100)",
-                    "example": ["+918882876897", "+918882876898"]
+                    "example": [
+                      "+918882876897",
+                      "+918882876898"
+                    ]
                   }
                 }
               }
@@ -3914,7 +3970,9 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["mobile_numbers"],
+                "required": [
+                  "mobile_numbers"
+                ],
                 "properties": {
                   "mobile_numbers": {
                     "type": "array",
@@ -3922,7 +3980,10 @@
                       "type": "string"
                     },
                     "description": "(Required) Array of mobile numbers to terminate calls for across all campaigns (max 100)",
-                    "example": ["+918882876897", "+918882876898"]
+                    "example": [
+                      "+918882876897",
+                      "+918882876898"
+                    ]
                   }
                 }
               }
