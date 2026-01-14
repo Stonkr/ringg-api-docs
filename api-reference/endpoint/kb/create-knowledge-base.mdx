@@ -1,0 +1,49 @@
+---
+openapi: post /external/kb
+---
+
+## Create Knowledge Base
+
+Create a new non-deterministic knowledge base that can be used to provide context and information to your AI agents. Knowledge bases support multiple content types including files, URLs, and FAQs.
+
+<Warning>
+**Rate Limits**:
+- Maximum 10 requests per hour per workspace
+- File size limit: 2 MB per file, 5 MB total
+- Maximum 10 files and 20 URLs per request
+</Warning>
+
+## Content Types
+
+### Files
+Upload documents (PDF, TXT, DOCX, etc.) to provide structured information to your knowledge base.
+- Max 10 files per request
+- 2 MB per file limit
+- 5 MB total size limit
+
+### URLs
+Index web pages to automatically extract and store their content.
+- Max 20 URLs per request
+- URLs are crawled and indexed automatically
+- Content is refreshed periodically
+
+### FAQs
+Provide question-answer pairs for deterministic responses to common queries.
+```json
+"faqs": "[{\"question\": \"What is your return policy?\", \"answer\": \"30-day money back guarantee\"}]"
+```
+
+## Processing Status
+
+Knowledge base creation is asynchronous. The response includes:
+- `kb_id`: Unique identifier for the knowledge base
+- `processing_status`: Current status (`pending`, `processing`, `completed`)
+- `files_queued`: Number of files being processed
+
+Use the [Get Knowledge Base by ID](/api-reference/endpoint/kb/get-knowledge-base-by-id) endpoint to check processing status.
+
+## Important Notes
+
+- **Asynchronous Processing**: Files and URLs are processed in the background
+- **Content Updates**: Use the [Edit Knowledge Base](/api-reference/endpoint/kb/edit-knowledge-base) endpoint to update content
+- **Agent Integration**: Link knowledge bases to agents via the assistant configuration
