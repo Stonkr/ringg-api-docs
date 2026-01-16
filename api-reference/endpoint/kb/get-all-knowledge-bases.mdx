@@ -1,0 +1,65 @@
+---
+openapi: get /external/kb/all
+---
+
+## Get All Knowledge Bases
+
+Retrieve a list of all knowledge bases in your workspace with basic information about each one.
+
+<Warning>
+**Rate Limit**: Maximum 60 requests per hour per workspace
+</Warning>
+
+## Response Format
+
+Returns an array of knowledge base objects, each containing:
+- `kb_id`: Unique identifier
+- `kb_name`: Name of the knowledge base
+- `type`: Knowledge base type (e.g., "non_deterministic")
+- `created_at`: Creation timestamp
+
+## Use Cases
+
+### Dashboard View
+Display all knowledge bases in your application or dashboard:
+```javascript
+const response = await fetch('https://api.ringg.ai/external/kb/all', {
+  headers: { 'X-API-KEY': 'your-api-key' }
+});
+const knowledgeBases = await response.json();
+```
+
+### Dropdown Selection
+Populate a dropdown for users to select a knowledge base when configuring agents.
+
+### Audit and Management
+- Review all knowledge bases in your workspace
+- Identify unused or outdated knowledge bases
+- Track knowledge base creation dates
+
+## Getting Detailed Information
+
+This endpoint returns only basic information. For detailed content including files, URLs, and FAQs, use [Get Knowledge Base by ID](/api-reference/endpoint/kb/get-knowledge-base-by-id) with a specific `kb_id`.
+
+<Note>
+**Pagination**: Currently, this endpoint returns all knowledge bases. For workspaces with many knowledge bases, consider caching this data to reduce API calls.
+</Note>
+
+## Example Response
+
+```json
+[
+  {
+    "kb_id": "550e8400-e29b-41d4-a716-446655440000",
+    "kb_name": "Product Documentation",
+    "type": "non_deterministic",
+    "created_at": "2024-12-16T13:03:29.947147+00:00"
+  },
+  {
+    "kb_id": "660e8400-e29b-41d4-a716-446655440001",
+    "kb_name": "Customer Support FAQs",
+    "type": "non_deterministic",
+    "created_at": "2024-12-17T10:15:42.123456+00:00"
+  }
+]
+```
