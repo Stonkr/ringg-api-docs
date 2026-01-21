@@ -4555,6 +4555,390 @@
           }
         }
       }
+    },
+    "/public/agent": {
+      "post": {
+        "tags": [
+          "agent"
+        ],
+        "summary": "Create Agent",
+        "x-mint": {
+          "metadata": {
+            "title": "Create Agent | Ringg AI",
+            "og:title": "Create Agent | Ringg AI"
+          }
+        },
+        "description": "Creates a new AI agent with the specified configuration. The agent will be created with a single prompt-based flow.",
+        "operationId": "createAgent",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "agent_name",
+                  "introduction_and_objective",
+                  "response_guidelines",
+                  "task",
+                  "primary_language",
+                  "voice_id",
+                  "intro_message"
+                ],
+                "properties": {
+                  "agent_name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "description": "(Required) Name of the agent",
+                    "example": "My Sales Agent"
+                  },
+                  "introduction_and_objective": {
+                    "type": "string",
+                    "maxLength": 2000,
+                    "description": "(Required) Introduction and objective of the agent",
+                    "example": "You are a customer support agent for Acme Corp."
+                  },
+                  "response_guidelines": {
+                    "type": "string",
+                    "maxLength": 3000,
+                    "description": "(Required) Guidelines for how the agent should respond",
+                    "example": "Be polite, helpful, and concise. Always confirm understanding."
+                  },
+                  "task": {
+                    "type": "string",
+                    "maxLength": 1500,
+                    "description": "(Required) The task the agent should perform",
+                    "example": "Help customers with their orders and answer product questions."
+                  },
+                  "faq": {
+                    "type": "string",
+                    "maxLength": 5000,
+                    "description": "(Optional) FAQ content for the agent",
+                    "example": "Q: What are your hours? A: We are open 9am-6pm IST."
+                  },
+                  "sample_conversations": {
+                    "type": "string",
+                    "maxLength": 5000,
+                    "description": "(Optional) Example conversations for the agent. Use \\n for newlines between turns.",
+                    "example": "User: Hi\nAgent: Hello! How can I help you today?"
+                  },
+                  "primary_language": {
+                    "type": "string",
+                    "enum": ["en-US", "en-IN", "hi-IN", "ta-IN", "te-IN", "bn-IN", "mr-IN", "kn-IN", "ka-IN"],
+                    "description": "(Required) Primary language locale for the agent",
+                    "example": "en-IN"
+                  },
+                  "secondary_language": {
+                    "type": "string",
+                    "enum": ["en-US", "en-IN", "hi-IN", "ta-IN", "te-IN", "bn-IN", "mr-IN", "kn-IN", "ka-IN"],
+                    "description": "(Optional) Secondary language locale for the agent",
+                    "example": "hi-IN"
+                  },
+                  "voice_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "(Required) Internal AgentVoice ID (UUID). Get available voices from the Get Assistant Voices endpoint.",
+                    "example": "02ad256b-092b-4048-bea0-5af46a452b98"
+                  },
+                  "intro_message": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "description": "(Required) Introduction message the agent will speak when the call starts",
+                    "example": "Hello, this is Sarah from Acme Corp. How can I assist you today?"
+                  },
+                  "agent_type": {
+                    "type": "string",
+                    "enum": ["inbound", "outbound", "outbound_inbound"],
+                    "default": "outbound",
+                    "description": "(Optional) Type of agent. Defaults to outbound.",
+                    "example": "outbound"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Agent created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The unique ID of the created agent",
+                          "example": "edd618d3-f473-4ac1-b5fa-f1a3981666ff"
+                        },
+                        "version": {
+                          "type": "string",
+                          "description": "The version slug of the agent",
+                          "example": "v1"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-12-16T13:03:29.947147+00:00"
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Agent created successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid parameters or voice does not support the selected language.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "VOICE_LANGUAGE_MISMATCH"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Voice does not support language 'en-US'"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key."
+          }
+        }
+      }
+    },
+    "/public/agent/{agent_id}": {
+      "patch": {
+        "tags": [
+          "agent"
+        ],
+        "summary": "Update Agent",
+        "x-mint": {
+          "metadata": {
+            "title": "Update Agent | Ringg AI",
+            "og:title": "Update Agent | Ringg AI"
+          }
+        },
+        "description": "Updates an existing agent with new configuration. Only provide the fields you want to update.",
+        "operationId": "updateAgent",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "path",
+            "description": "(Required) The unique ID of the agent to update",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "edd618d3-f473-4ac1-b5fa-f1a3981666ff"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "agent_name": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "description": "(Optional) Name of the agent",
+                    "example": "My Updated Agent"
+                  },
+                  "introduction_and_objective": {
+                    "type": "string",
+                    "maxLength": 2000,
+                    "description": "(Optional) Introduction and objective of the agent",
+                    "example": "You are a customer support agent for Acme Corp."
+                  },
+                  "response_guidelines": {
+                    "type": "string",
+                    "maxLength": 3000,
+                    "description": "(Optional) Guidelines for how the agent should respond",
+                    "example": "Be polite, helpful, and concise. Always confirm understanding."
+                  },
+                  "task": {
+                    "type": "string",
+                    "maxLength": 1500,
+                    "description": "(Optional) The task the agent should perform",
+                    "example": "Help customers with their orders and answer product questions."
+                  },
+                  "faq": {
+                    "type": "string",
+                    "maxLength": 5000,
+                    "description": "(Optional) FAQ content for the agent",
+                    "example": "Q: What are your hours? A: We are open 9am-6pm IST."
+                  },
+                  "sample_conversations": {
+                    "type": "string",
+                    "maxLength": 5000,
+                    "description": "(Optional) Example conversations for the agent. Use \\n for newlines between turns.",
+                    "example": "User: Hi\nAgent: Hello! How can I help you today?"
+                  },
+                  "primary_language": {
+                    "type": "string",
+                    "enum": ["en-US", "en-IN", "hi-IN", "ta-IN", "te-IN", "bn-IN", "mr-IN", "kn-IN", "ka-IN"],
+                    "description": "(Optional) Primary language locale for the agent",
+                    "example": "en-IN"
+                  },
+                  "secondary_language": {
+                    "type": "string",
+                    "enum": ["en-US", "en-IN", "hi-IN", "ta-IN", "te-IN", "bn-IN", "mr-IN", "kn-IN", "ka-IN"],
+                    "description": "(Optional) Secondary language locale for the agent",
+                    "example": "hi-IN"
+                  },
+                  "voice_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "(Optional) Internal AgentVoice ID (UUID). Get available voices from the Get Assistant Voices endpoint.",
+                    "example": "02ad256b-092b-4048-bea0-5af46a452b98"
+                  },
+                  "intro_message": {
+                    "type": "string",
+                    "maxLength": 500,
+                    "description": "(Optional) Introduction message the agent will speak when the call starts",
+                    "example": "Hello, this is Sarah from Acme Corp. How can I assist you today?"
+                  },
+                  "agent_type": {
+                    "type": "string",
+                    "enum": ["inbound", "outbound", "outbound_inbound"],
+                    "description": "(Optional) Type of agent",
+                    "example": "outbound"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Agent updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The unique ID of the updated agent",
+                          "example": "edd618d3-f473-4ac1-b5fa-f1a3981666ff"
+                        },
+                        "version": {
+                          "type": "string",
+                          "description": "The version slug of the agent",
+                          "example": "v1"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2024-12-16T14:15:32.123456+00:00"
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Agent updated successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid parameters or voice does not support the selected language.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "VOICE_LANGUAGE_MISMATCH"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Voice does not support language 'en-US'"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key."
+          },
+          "404": {
+            "description": "Agent not found or does not belong to your workspace."
+          }
+        }
+      }
     }
   },
   "components": {
