@@ -86,6 +86,13 @@
             ]
           },
           {
+            "group": "Agent (Public API)",
+            "pages": [
+              "api-reference/endpoint/agent/create-agent",
+              "api-reference/endpoint/agent/update-agent"
+            ]
+          },
+          {
             "group": "Numbers",
             "pages": [
               "api-reference/endpoint/numbers/get-workspace-numbers"
