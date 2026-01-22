@@ -86,8 +86,10 @@
             ]
           },
           {
-            "group": "Agent (Public API)",
+            "group": "Agent",
             "pages": [
+              "api-reference/endpoint/agent/get-all-agents",
+              "api-reference/endpoint/agent/get-agent-by-id",
               "api-reference/endpoint/agent/create-agent",
               "api-reference/endpoint/agent/update-agent"
             ]

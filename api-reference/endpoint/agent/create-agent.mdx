@@ -1,3 +1,42 @@
 ---
 openapi: post /public/agent
 ---
+
+## Create Agent
+
+Create a new AI agent in your workspace with custom prompts, voice settings, and configurations.
+
+<Note>
+**Content Formatting**: All prompt and form content is stored exactly as provided. Our platform includes an HTML editor, so you can submit HTML-formatted content for enhanced visual presentation in the dashboard. Plain text strings are also fully supported.
+</Note>
+
+## Variable Mentions
+
+Use these syntaxes to reference dynamic variables in your agent prompts:
+
+| Syntax | Description | Example |
+|--------|-------------|---------|
+| `@{{var_name}}` | Regular variable mentions - replaced with values from `custom_args_values` | `@{{callee_name}}`, `@{{company_name}}` |
+| `((pre_call_api))` | Pre-call API mentions - data fetched before the call starts | `((customer_details))`, `((account_info))` |
+| `\|\|on_call_api\|\|` | On-call API mentions - data fetched dynamically during the call | `\|\|live_status\|\|`, `\|\|real_time_data\|\|` |
+
+<Tip>
+**HTML Support**: When using HTML in your prompts, the content will render properly in the Ringg dashboard editor. This allows for better formatting, lists, and structured content display.
+</Tip>
+
+## Example Usage in Prompt
+
+```
+Hello @{{callee_name}}, I'm calling from @{{company_name}}.
+
+Based on your account ((account_info)), I can see your current status.
+
+Let me check the latest updates: ||live_status||
+```
+
+## Important Notes
+
+- **Authentication**: Requires a valid Bearer token
+- **Variables**: Define all referenced variables in your agent configuration
+- **Pre-call API**: Configure the API endpoint that returns data before the call
+- **On-call API**: Configure the API endpoint for real-time data during the call

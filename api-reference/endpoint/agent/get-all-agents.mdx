@@ -1,0 +1,21 @@
+---
+openapi: get /agent/all
+---
+
+## Get All Agents
+
+Retrieve all agents in your workspace. Returns a list of all configured AI agents with their settings and configurations.
+
+## Example Request
+
+```bash
+curl 'https://prod-api.ringg.ai/ca/api/v0/agent/all' \
+  -H 'accept: application/json' \
+  -H 'authorization: Bearer YOUR_ACCESS_TOKEN' \
+  -H 'content-type: application/json'
+```
+
+## Important Notes
+
+- **Authentication**: Requires a valid Bearer token
+- **Workspace Scope**: Returns only agents belonging to your current workspace

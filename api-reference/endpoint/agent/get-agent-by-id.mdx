@@ -1,0 +1,23 @@
+---
+openapi: get /agent/{agent_id}
+---
+
+## Get Agent by ID
+
+Retrieve detailed information about a specific agent using its unique identifier.
+
+## Example Request
+
+```bash
+curl 'https://prod-api.ringg.ai/ca/api/v0/agent/{agent_id}' \
+  -H 'accept: application/json' \
+  -H 'authorization: Bearer YOUR_ACCESS_TOKEN' \
+  -H 'content-type: application/json'
+```
+
+Replace `{agent_id}` with your actual agent ID (e.g., `5b84e4d3-6fe8-4a71-8e5a-2293dfa3f57e`).
+
+## Important Notes
+
+- **Authentication**: Requires a valid Bearer token
+- **Agent ID**: Must be a valid UUID of an agent in your workspace
