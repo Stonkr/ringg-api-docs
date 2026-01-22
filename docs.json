@@ -82,14 +82,8 @@
               "api-reference/endpoint/assistant/get-assistant-voices",
               "api-reference/endpoint/assistant/get-assistants",
               "api-reference/endpoint/assistant/get-assistant-by-id",
-              "api-reference/endpoint/assistant/edit-assistant"
-            ]
-          },
-          {
-            "group": "Agent (Public API)",
-            "pages": [
-              "api-reference/endpoint/agent/create-agent",
-              "api-reference/endpoint/agent/update-agent"
+              "api-reference/endpoint/assistant/edit-assistant",
+              "api-reference/endpoint/agent/create-agent"
             ]
           },
           {
