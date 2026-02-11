@@ -1450,34 +1450,27 @@
                         "properties": {
                           "call_start_time": {
                             "type": "string",
-                            "description": "When calls can start (default: 08:00)",
-                            "default": "08:00",
-                            "example": "08:00"
+                            "description": "When calls can start (default: 00:00)",
+                            "default": "00:00",
+                            "example": "00:00"
                           },
                           "call_end_time": {
                             "type": "string",
-                            "description": "When calls must end (default: 20:00)",
-                            "default": "20:00",
-                            "example": "20:00"
+                            "description": "When calls must end (default: 23:00)",
+                            "default": "23:00",
+                            "example": "23:00"
                           },
                           "timezone": {
                             "type": "string",
                             "description": "Timezone for call times (default: Asia/Kolkata)",
                             "default": "Asia/Kolkata",
                             "example": "Asia/Kolkata"
-                          },
-                          "scheduled_at": {
-                            "type": "string",
-                            "format": "date-time",
-                            "description": "Schedule the call for a specific date and time (ISO 8601 format). When provided, the call will be queued and executed at this exact time. The call_start_time and call_end_time window still applies as additional validation. Use this for precise scheduling of individual calls. Format: YYYY-MM-DDTHH:MM:SS",
-                            "example": "2025-11-24T01:55:00"
                           }
                         },
                         "example": {
-                          "call_start_time": "08:00",
-                          "call_end_time": "20:00",
-                          "timezone": "Asia/Kolkata",
-                          "scheduled_at": "2025-11-24T01:55:00"
+                          "call_start_time": "00:00",
+                          "call_end_time": "23:00",
+                          "timezone": "Asia/Kolkata"
                         }
                       }
                     },
@@ -1492,10 +1485,9 @@
                         "retry_failed": 30
                       },
                       "call_time": {
-                        "call_start_time": "08:00",
-                        "call_end_time": "20:00",
-                        "timezone": "Asia/Kolkata",
-                        "scheduled_at": "2025-11-24T01:55:00"
+                        "call_start_time": "00:00",
+                        "call_end_time": "23:00",
+                        "timezone": "Asia/Kolkata"
                       }
                     }
                   }
@@ -4662,8 +4654,16 @@
                     "type": "string",
                     "enum": ["inbound", "outbound", "outbound_inbound"],
                     "default": "outbound",
-                    "description": "(Optional) Type of agent. Defaults to outbound.",
+                    "description": "(Required) Type of agent. Defaults to outbound.",
                     "example": "outbound"
+                  },
+                  "custom_variables": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "(Optional) Custom variables for the agent. For outbound agents, callee_name and mobile_number are always included automatically.",
+                    "example": ["callee_name", "mobile_number", "company", "lead_source"]
                   }
                 }
               }
@@ -4855,6 +4855,14 @@
                     "enum": ["inbound", "outbound", "outbound_inbound"],
                     "description": "(Optional) Type of agent",
                     "example": "outbound"
+                  },
+                  "custom_variables": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "(Optional) Custom variables for the agent. For outbound agents, callee_name and mobile_number cannot be removed.",
+                    "example": ["callee_name", "mobile_number", "company", "lead_source"]
                   }
                 }
               }
