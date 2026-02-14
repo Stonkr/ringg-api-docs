@@ -1469,7 +1469,7 @@
                         },
                         "example": {
                           "call_start_time": "00:00",
-                          "call_end_time": "23:00",
+                          "call_end_time": "23:59",
                           "timezone": "Asia/Kolkata"
                         }
                       }
@@ -1486,7 +1486,7 @@
                       },
                       "call_time": {
                         "call_start_time": "00:00",
-                        "call_end_time": "23:00",
+                        "call_end_time": "23:59",
                         "timezone": "Asia/Kolkata"
                       }
                     }
@@ -1521,6 +1521,17 @@
                         },
                         "call_status": {
                           "type": "string",
+                          "description": "The current status of the call",
+                          "enum": [
+                            "registered",
+                            "ongoing",
+                            "retry",
+                            "error",
+                            "completed",
+                            "failed",
+                            "cancelled",
+                            "forwarded"
+                          ],
                           "example": "ongoing"
                         },
                         "initiated_at": {
@@ -1718,6 +1729,16 @@
             "description": "Filter calls by status.",
             "schema": {
               "type": "string",
+              "enum": [
+                "registered",
+                "ongoing",
+                "retry",
+                "error",
+                "completed",
+                "failed",
+                "cancelled",
+                "forwarded"
+              ],
               "example": "completed"
             }
           },
@@ -1754,7 +1775,47 @@
                             "type": "string"
                           },
                           "status": {
-                            "type": "string"
+                            "type": "string",
+                            "description": "The current status of the call",
+                            "enum": [
+                              "registered",
+                              "ongoing",
+                              "retry",
+                              "error",
+                              "completed",
+                              "failed",
+                              "cancelled",
+                              "forwarded"
+                            ]
+                          },
+                          "sub_status": {
+                            "type": "string",
+                            "description": "The sub-status of the call providing more detail on the call outcome",
+                            "enum": [
+                              "IN_DB",
+                              "QUEUED",
+                              "ACCEPTED",
+                              "RATE_LIMITED",
+                              "RETRY_LIMIT_REACHED",
+                              "RETRY_SCHEDULED",
+                              "FAILED",
+                              "USER_DID_NOT_JOIN",
+                              "USER_LEFT",
+                              "USER_BECAME_IDLE",
+                              "CAMPAIGN_TIME_EXCEEDED",
+                              "MAX_CALL_DURATION",
+                              "NOT_ABLE_TO_CALL",
+                              "USER_TERMINATED",
+                              "DND_SKIPPED",
+                              "VOICEMAIL_DETECTED",
+                              "VOICEMAIL_DETECTED_VIA_LLM",
+                              "PIPECAT_TIMEOUT",
+                              "PRE_CALL_API_FAILED",
+                              "RECONCILED_TO_ERROR_FROM_REGISTERED",
+                              "RECONCILED_TO_ERROR_FROM_RETRY",
+                              "RECONCILED_TO_ERROR_FROM_ONGOING",
+                              "RECONCILED_TO_COMPLETED_FROM_ONGOING"
+                            ]
                           },
                           "transcript": {
                             "type": "string"
@@ -1822,6 +1883,7 @@
                           "to_number": "+918882876897",
                           "name": "abhishek",
                           "status": "completed",
+                          "sub_status": "ACCEPTED",
                           "transcript": "[{\"bot\": \"Hi there! I'm Marcel from sdfasd. We're conducting a brief survey about asdfasdf to improve our services. Your feedback\"}, {\"bot\": \"is valuable to us.\"}]",
                           "audio_recording": "https://aps1.media.plivo.com/v1/Account/MAZJNLNJIYNWMZYZHIMM/Recording/e99c9f6b-1d1e-4290-857d-1524d8204aad.mp3",
                           "created_at": "2025-11-24T11:37:43.678043+00:00",
@@ -2012,6 +2074,16 @@
             "required": false,
             "schema": {
               "type": "string",
+              "enum": [
+                "registered",
+                "ongoing",
+                "retry",
+                "error",
+                "completed",
+                "failed",
+                "cancelled",
+                "forwarded"
+              ],
               "example": "completed"
             }
           },
@@ -2306,11 +2378,46 @@
                         "call_status": {
                           "type": "string",
                           "description": "The current status of the call",
+                          "enum": [
+                            "registered",
+                            "ongoing",
+                            "retry",
+                            "error",
+                            "completed",
+                            "failed",
+                            "cancelled",
+                            "forwarded"
+                          ],
                           "example": "completed"
                         },
                         "call_sub_status": {
                           "type": "string",
-                          "description": "The sub-status of the call",
+                          "description": "The sub-status of the call providing more detail on the call outcome",
+                          "enum": [
+                            "IN_DB",
+                            "QUEUED",
+                            "ACCEPTED",
+                            "RATE_LIMITED",
+                            "RETRY_LIMIT_REACHED",
+                            "RETRY_SCHEDULED",
+                            "FAILED",
+                            "USER_DID_NOT_JOIN",
+                            "USER_LEFT",
+                            "USER_BECAME_IDLE",
+                            "CAMPAIGN_TIME_EXCEEDED",
+                            "MAX_CALL_DURATION",
+                            "NOT_ABLE_TO_CALL",
+                            "USER_TERMINATED",
+                            "DND_SKIPPED",
+                            "VOICEMAIL_DETECTED",
+                            "VOICEMAIL_DETECTED_VIA_LLM",
+                            "PIPECAT_TIMEOUT",
+                            "PRE_CALL_API_FAILED",
+                            "RECONCILED_TO_ERROR_FROM_REGISTERED",
+                            "RECONCILED_TO_ERROR_FROM_RETRY",
+                            "RECONCILED_TO_ERROR_FROM_ONGOING",
+                            "RECONCILED_TO_COMPLETED_FROM_ONGOING"
+                          ],
                           "example": "ACCEPTED"
                         },
                         "from_number": {
