@@ -51,6 +51,14 @@
               "get-started/best-practices/web-call-integration",
               "get-started/best-practices/security-guidelines"
             ]
+          },
+          {
+            "group": "Integrations",
+            "icon": "plug",
+            "pages": [
+              "get-started/integrations/tatatele-setup",
+              "get-started/integrations/sip-onboarding"
+            ]
           }
         ]
       },

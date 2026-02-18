@@ -1,0 +1,358 @@
+---
+title: "TataTele Smartflo Integration"
+description: "Step-by-step guide to connect your TataTele Smartflo account with Ringg AI for voice AI calls"
+"og:title": "TataTele Smartflo + Ringg AI Integration Guide | Ringg AI"
+---
+
+This guide walks you through connecting your **TataTele Smartflo** account with the **Ringg AI** platform for voice AI calls. The setup involves two parts:
+
+1. **Part A** — Configuring endpoints, numbers, API keys, and webhooks on the TataTele Smartflo dashboard
+2. **Part B** — Adding your TataTele credentials and numbers on the Ringg platform
+
+---
+
+## Prerequisites
+
+- An active **TataTele Smartflo** account with admin access
+- An active **Ringg AI** account
+- At least one DID (phone) number provisioned on your TataTele account
+
+---
+
+## Part A: TataTele Smartflo Dashboard Setup
+
+### Step 1: Log in to TataTele Smartflo
+
+Navigate to [cloudphone.tatateleservices.com](https://cloudphone.tatateleservices.com) and log in with your credentials. You will land on the dashboard home page.
+
+<Frame caption="TataTele Dashboard Home">
+    <img src="/images/tatatele/01_tata_dashboard_home.jpg" />
+</Frame>
+
+---
+
+### Step 2: Navigate to Channels > Voice Streaming
+
+1. Click on the **Settings** icon (gear icon) in the left sidebar
+2. Select **Channels** from the submenu
+3. You will see the Channels page with sections: Messaging, Voice, and Video
+
+<Frame caption="Channels Page">
+    <img src="/images/tatatele/02_tata_channels_page.jpg" />
+</Frame>
+
+4. Click on **Voice Bot** under the Voice section to open the **Voice Streaming** configuration page
+
+---
+
+### Step 3: Create Voice Streaming Endpoints
+
+You need to create **two endpoints** — one for inbound calls and one for outbound calls.
+
+<Frame caption="Voice Streaming Endpoints">
+    <img src="/images/tatatele/03_tata_voice_streaming_endpoints.jpg" />
+</Frame>
+
+Click **"+ Add an Endpoint"** to create each endpoint.
+
+#### 3a: Create the Inbound Endpoint
+
+Configure the **inbound** endpoint with the following settings:
+
+| Field | Value |
+|-------|-------|
+| **Endpoint name** | `ringg_us_inbound` (or any descriptive name) |
+| **Description** | `Inbound endpoint for Ringg, have to be attached for all inbound numbers` |
+| **Endpoint Type** | **Dynamic** |
+| **Endpoint** | `https://use1-api.ringg.ai/pc/v1/tatatele/get_ws_url` |
+| **Endpoint Method** | **POST** |
+
+Under **Body**, add the following key-value pairs:
+
+| Key | Value |
+|-----|-------|
+| `callId` | `$callId` |
+| `fromNumber` | `$fromNumber` |
+| `toNumber` | `$toNumber` |
+| `region` | `in` (parameter for India) |
+
+<Frame caption="Edit Inbound Endpoint — Full Form">
+    <img src="/images/tatatele/04_tata_edit_inbound_endpoint_full.jpg" />
+</Frame>
+
+The body section and generated curl command will look like this:
+
+<Frame caption="Edit Inbound Endpoint — Body & Curl">
+    <img src="/images/tatatele/05_tata_edit_inbound_endpoint_body.jpg" />
+</Frame>
+
+Make sure **Status** is set to **Enabled**, then click **Update** to save.
+
+#### 3b: Create the Outbound Endpoint
+
+Configure the **outbound** endpoint with the following settings:
+
+| Field | Value |
+|-------|-------|
+| **Endpoint name** | `ringg_us_outbound` (or any descriptive name) |
+| **Description** | `Outbound endpoint for Ringg` |
+| **Endpoint Type** | **Static** |
+| **Endpoint** | `wss://use1-api.ringg.ai/pc/v1/tatatele/ws` |
+
+<Warning>
+The outbound endpoint uses **Static** type with a **WebSocket (wss://)** URL. The inbound endpoint uses **Dynamic** type with an **HTTPS** URL. Do not mix these up.
+</Warning>
+
+After creating both endpoints, your Voice Streaming page should look like this:
+
+<Frame caption="Voice Streaming — Both Endpoints">
+    <img src="/images/tatatele/06_tata_voice_streaming_back.jpg" />
+</Frame>
+
+---
+
+### Step 4: Assign Inbound Endpoint to Phone Numbers
+
+For inbound calls to work, you must assign the **inbound Voice Streaming endpoint** as the destination for your phone numbers.
+
+1. Navigate to **Services > My Numbers** from the left sidebar
+
+<Frame caption="My Numbers Page">
+    <img src="/images/tatatele/07_tata_my_numbers.jpg" />
+</Frame>
+
+2. For each number you want to use for inbound calls, click **Select an Action** and choose a relevant option (or click on the number) to open the **Edit Number** dialog
+
+3. In the **Edit Number** dialog:
+   - Set **Destination** to your inbound Voice Streaming endpoint (e.g., `ringg_us_inbound`)
+   - The Destination dropdown shows options grouped by type. Select from the **Voice Streaming** group
+
+<Frame caption="Edit Number — Destination">
+    <img src="/images/tatatele/08_tata_edit_number_destination.jpg" />
+</Frame>
+
+<Frame caption="Edit Number — Destination Dropdown">
+    <img src="/images/tatatele/09_tata_edit_number_destination_dropdown.jpg" />
+</Frame>
+
+4. Click **SAVE** to apply
+
+<Note>
+Repeat this for each number you want to receive inbound calls on. Only numbers with the Voice Streaming destination assigned will route calls to Ringg.
+</Note>
+
+---
+
+### Step 5: Configure Click-to-Call API Key (for Outbound Calls)
+
+The Click-to-Call Support API Key is needed to initiate outbound calls from Ringg.
+
+1. Navigate to **Outbound Services > Click to Call Support API** (or go to `cloudphone.tatateleservices.com/click_to_call_api_keys`)
+
+<Frame caption="Click to Call API Tokens">
+    <img src="/images/tatatele/10_tata_click_to_call_tokens.jpg" />
+</Frame>
+
+2. Click **"+ Generate API Key"** to create a new key, or edit an existing one
+
+3. Configure the API Key with the following settings:
+
+| Field | Value |
+|-------|-------|
+| **My Number** | Select the DID number to use as caller ID for outbound calls |
+| **Destination Type** | **Voice Streaming** |
+| **Destination** | Select your **outbound** endpoint (e.g., `ringg_us_outbound`) |
+
+<Frame caption="Generate API Key">
+    <img src="/images/tatatele/11_tata_generate_api_key.jpg" />
+</Frame>
+
+4. Click **Save** / **Update** to save the configuration
+
+5. Copy the generated **API Key** — you will need this when configuring Ringg
+
+<Frame caption="API Key Final">
+    <img src="/images/tatatele/12_tata_api_key_final.jpg" />
+</Frame>
+
+<Warning>
+The API Key shown is partially masked (e.g., `f4aa5488****4ca`). Copy the full key using the copy icon and store it securely. This is the `api_key` credential you will enter in Ringg.
+</Warning>
+
+---
+
+### Step 6: Get the Auth Token (Account API Token)
+
+The Auth Token is needed for API authentication (used for call status checks, live calls monitoring, etc.).
+
+1. Navigate to **API Connect > API Tokens** from the left sidebar (or go to `cloudphone.tatateleservices.com/tokens`)
+
+<Frame caption="API Connect Menu">
+    <img src="/images/tatatele/13_tata_api_connect_menu.jpg" />
+</Frame>
+
+2. On the **Account API Tokens** page, you will see your existing tokens. Click **"Copy Token"** to copy the token value.
+
+<Frame caption="Account API Tokens">
+    <img src="/images/tatatele/14_tata_account_api_tokens.jpg" />
+</Frame>
+
+3. If you don't have a token, click **"Generate Token"** to create one
+
+<Warning>
+This is the `auth_token` credential you will enter in Ringg. Store it securely.
+</Warning>
+
+---
+
+### Step 7: Configure Webhooks (for Call Status Notifications)
+
+Webhooks notify Ringg when a call ends (answered or missed), enabling proper call cleanup and status tracking.
+
+1. Navigate to **API Connect > Webhook** from the left sidebar (or go to `cloudphone.tatateleservices.com/webhook`)
+
+2. Click **"+ Add Webhook"** and configure:
+
+| Field | Value |
+|-------|-------|
+| **Name** | Any descriptive name (e.g., `RinggCallStatusWebhook`) |
+| **URL** | `https://use1-api.ringg.ai/pc/v1/tatatele/call_status?region=in` |
+| **Method** | **POST** |
+| **Channel** | **Voice** |
+| **Call Direction** | **Outbound** (or both Inbound + Outbound as needed) |
+| **Call Type** | **Click to call** |
+| **Trigger** | **Call hangup (Missed) (updated)** |
+| **Content Type** | **JSON** |
+| **My Numbers** | Select the DID numbers to monitor |
+
+<Frame caption="Webhook Configuration">
+    <img src="/images/tatatele/15_tata_webhook_config.jpg" />
+</Frame>
+
+3. Click **Save** to create the webhook
+
+4. Your webhook will appear in the webhooks list:
+
+<Frame caption="Webhooks List">
+    <img src="/images/tatatele/16_tata_webhooks_list.jpg" />
+</Frame>
+
+<Note>
+The `region=in` query parameter is for India.
+</Note>
+
+---
+
+## Part B: Ringg Platform Setup
+
+### Step 8: Add TataTele Provider in Ringg
+
+1. Log in to your **Ringg AI** dashboard and navigate to **Dashboard > Integrations**
+
+2. On the **Bring your own telephony** (BYOT) page, click **"+ Add New"**
+
+<Frame caption="Ringg Integrations Page">
+    <img src="/images/tatatele/17_ringg_integrations_page.jpg" />
+</Frame>
+
+3. Select **TataTele** as the provider. The **Configure TataTele Provider** dialog will appear:
+
+<Frame caption="Configure TataTele — Empty">
+    <img src="/images/tatatele/18_ringg_configure_tatatele_empty.jpg" />
+</Frame>
+
+4. Fill in the required fields:
+
+| Field | Value |
+|-------|-------|
+| **Name** | A descriptive name for this integration (e.g., `My TataTele Account`) |
+| **API Key** | The Click-to-Call API Key from [Step 5](#step-5-configure-click-to-call-api-key-for-outbound-calls) |
+| **Auth Token** | The Account API Token from [Step 6](#step-6-get-the-auth-token-account-api-token) |
+
+<Frame caption="Configure TataTele — Filled">
+    <img src="/images/tatatele/19_ringg_configure_tatatele_filled.jpg" />
+</Frame>
+
+5. Click **"Save and Test"** — Ringg will validate your credentials by calling the TataTele API. If successful, the integration will be saved.
+
+6. You should now see the TataTele integration card on the Integrations page:
+
+<Frame caption="Ringg Integrations Done">
+    <img src="/images/tatatele/20_ringg_integrations_done.jpg" />
+</Frame>
+
+---
+
+### Step 9: Import Phone Numbers
+
+1. Navigate to **Dashboard > Numbers** from the left sidebar
+
+2. Select your TataTele integration from the **Telephony** dropdown
+
+3. You will see any previously imported numbers. Click **"+ Add new numbers"** to import more:
+
+<Frame caption="Numbers Page">
+    <img src="/images/tatatele/21_ringg_numbers_page.jpg" />
+</Frame>
+
+4. In the **Add new numbers** dialog, enter the phone numbers to import (with country code) and click **Save**:
+
+<Frame caption="Add Numbers Dialog">
+    <img src="/images/tatatele/22_ringg_add_numbers_dialog.jpg" />
+</Frame>
+
+<Note>
+Enter the numbers in the format shown in your TataTele dashboard (e.g., `918065251285`). These must match the numbers configured in your TataTele account.
+</Note>
+
+---
+
+### Step 10: Assign Number to an Assistant and Test
+
+1. Navigate to **Dashboard > Assistants** and open your AI assistant's configuration
+
+2. In the assistant settings, make sure the **Call Settings** section uses your TataTele numbers
+
+<Frame caption="Assistant Settings">
+    <img src="/images/tatatele/23_ringg_assistant_settings.jpg" />
+</Frame>
+
+3. Click **"Test call"** to make a test call
+
+4. In the **Test call** dialog:
+   - Select your TataTele number from the **Call from Number** dropdown
+   - Enter the phone number to call
+   - Fill in any required custom variables
+   - Click **"Start a Test Call"**
+
+<Frame caption="Test Call Dialog">
+    <img src="/images/tatatele/24_ringg_test_call_dialog.jpg" />
+</Frame>
+
+> If the call connects and you hear the AI assistant, the integration is working correctly.
+
+---
+
+## Summary of Credentials Needed
+
+| Credential | Where to Find | Used For |
+|-----------|---------------|----------|
+| **API Key** | TataTele > Outbound Services > Click to Call Support API | Initiating outbound calls |
+| **Auth Token** | TataTele > API Connect > API Tokens | API authentication (credential validation, live calls) |
+
+## Summary of Endpoints to Configure
+
+| Endpoint | Type | URL Pattern | Purpose |
+|----------|------|-------------|---------|
+| **Inbound** | Dynamic (HTTPS POST) | `https://use1-api.ringg.ai/pc/v1/tatatele/get_ws_url` | TataTele calls this to get WebSocket URL for inbound calls |
+| **Outbound** | Static (WSS) | `wss://use1-api.ringg.ai/pc/v1/tatatele/ws` | TataTele connects directly for outbound call audio streaming |
+| **Webhook** | POST | `https://use1-api.ringg.ai/pc/v1/tatatele/call_status?region=in` | Call status notifications (hangup, missed) |
+
+---
+
+## Troubleshooting
+
+- **Credentials test fails**: Verify the Auth Token is correct and not expired. Go to TataTele > API Connect > API Tokens and generate a new one if needed.
+- **Outbound calls not connecting**: Check that the API Key is assigned to the correct number and the destination is set to your outbound Voice Streaming endpoint.
+- **Inbound calls not routing**: Ensure the phone number's Destination is set to your inbound Voice Streaming endpoint in TataTele > Services > My Numbers.
+- **Call status not updating**: Verify the webhook URL, ensure Content Type is JSON, and check that the correct numbers are selected in the webhook configuration.
