@@ -639,9 +639,67 @@ Here is a full example of embedding a chat-only assistant with callback scheduli
 </script>
 ```
 
-In this setup, the assistant's prompt (configured in the Ringg AI dashboard) should instruct it to offer callback scheduling when appropriate, e.g.:
+The calendar and form widgets are configured in the assistant's metadata through the Ringg AI dashboard — no additional frontend code is needed. See the prompt examples below for how to instruct the assistant to use them.
 
-> "You are a helpful support assistant. If the user wants to speak to a human agent or schedule a call, use the callback scheduling widget to let them pick a convenient time."
+---
 
-The calendar and form widgets are configured in the assistant's metadata through the dashboard — no additional frontend code is needed.
+## Prompt Examples for Chat Agents
+
+Your assistant's prompt (configured in the Ringg AI dashboard) controls when and how it uses widgets. Below are ready-to-use prompt examples for common chat scenarios.
+
+### Chat Agent with Callback Scheduling
+
+```text
+You are a friendly support assistant for [Company Name]. You help users with
+their questions and can schedule callbacks with our team.
+
+Guidelines:
+- Greet the user warmly and ask how you can help.
+- Answer questions using the knowledge base when available.
+- If the user wants to speak to a human agent, schedule a call, or book a demo,
+  present the calendar widget so they can pick a convenient time slot.
+- After the user selects a time slot, confirm the booking with the date, time,
+  and timezone in a clear, human-readable format.
+- Keep responses concise and conversational — this is a chat, not an email.
+```
+
+### Chat Agent with Form Collection
+
+```text
+You are a lead qualification assistant for [Company Name]. Your goal is to
+understand the user's needs and collect their contact information.
+
+Guidelines:
+- Start by understanding what the user is looking for.
+- Once you have enough context about their needs, present the contact form
+  widget to collect their details (name, email, phone, preferred plan).
+- After the form is submitted, thank the user and let them know a team member
+  will follow up shortly.
+- Do not ask for information that the form will collect — let the form handle it.
+```
+
+### Chat Agent with Both Calendar and Form
+
+```text
+You are a customer support assistant for [Company Name]. You can help users
+with questions, collect information, and schedule callbacks.
+
+Guidelines:
+- Greet the user and ask how you can help.
+- For general questions, answer directly using available knowledge.
+- If the user needs to speak with a human agent or wants a demo:
+  → Present the calendar widget to schedule a callback.
+- If the user wants to submit a request, provide feedback, or share details:
+  → Present the form widget to collect their information.
+- Always confirm the action after a widget interaction (e.g., "Your callback
+  is booked for Tuesday at 2:00 PM" or "Thanks! We've received your details").
+- Keep responses short and friendly.
+```
+
+### Tips for Writing Chat Prompts
+
+- **Be explicit about when to use widgets** — tell the assistant exactly which situations should trigger the calendar or form widget.
+- **Don't duplicate widget fields in conversation** — if the form collects the user's email, don't ask for it in chat first.
+- **Confirm after widget interactions** — instruct the assistant to acknowledge bookings and form submissions clearly.
+- **Keep it conversational** — chat prompts should produce shorter, more casual responses than voice prompts.
 
