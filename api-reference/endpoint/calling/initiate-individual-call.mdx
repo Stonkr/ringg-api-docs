@@ -34,6 +34,30 @@ Use the `custom_args_values` field to pass dynamic data to your agent:
 - Common variables: `callee_name`, `company_name`, `appointment_date`, etc.
 - Variables are replaced with actual values during the call
 
+## Smart Formatter
+
+Use `smart_formatter` to automatically process callee names before the call:
+
+- **`extract_first_name`**: Extracts the first actual name, skipping common prefixes like Mr, Mrs, Dr, Shri, Mohammad, etc.
+- **`transliteration`**: Transliterates the extracted name to the target language (e.g., Hindi) using a local dictionary. Automatically enables `extract_first_name`.
+
+```json
+"smart_formatter": {
+  "extract_first_name": true,
+  "transliteration": true,
+  "transliteration_language": {
+    "source": "en",
+    "target": "hi"
+  }
+}
+```
+
+For example, with the above config, `"Mr Rajesh Kumar"` becomes `"राजेश"` in `callee_name`, and the original name is preserved in `original_callee_name`.
+
+<Note>
+When transliteration is enabled, the original name is stored as `original_callee_name` in `custom_args_values` for reference. If a name is not found in the dictionary, the original extracted name is used as-is.
+</Note>
+
 ## Important Notes
 
 - **Agent Configuration**: Ensure your agent is properly configured with prompts and variables

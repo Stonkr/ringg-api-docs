@@ -1390,6 +1390,54 @@
                       "product_name": "Premium Service"
                     }
                   },
+                  "smart_formatter": {
+                    "type": "object",
+                    "description": "(Optional) Smart formatting for callee name — supports first name extraction and dictionary-based transliteration",
+                    "properties": {
+                      "extract_first_name": {
+                        "type": "boolean",
+                        "description": "Extract the first actual name from the full name, skipping common prefixes (Mr, Mrs, Dr, etc.)",
+                        "default": false,
+                        "example": true
+                      },
+                      "transliteration": {
+                        "type": "boolean",
+                        "description": "Transliterate the extracted name to the target language using a local dictionary. When enabled, extract_first_name is automatically applied.",
+                        "default": false,
+                        "example": true
+                      },
+                      "transliteration_language": {
+                        "type": "object",
+                        "description": "Language configuration for transliteration",
+                        "properties": {
+                          "source": {
+                            "type": "string",
+                            "description": "Source language code (default: en)",
+                            "default": "en",
+                            "example": "en"
+                          },
+                          "target": {
+                            "type": "string",
+                            "description": "Target language code (default: hi)",
+                            "default": "hi",
+                            "example": "hi"
+                          }
+                        },
+                        "example": {
+                          "source": "en",
+                          "target": "hi"
+                        }
+                      }
+                    },
+                    "example": {
+                      "extract_first_name": true,
+                      "transliteration": true,
+                      "transliteration_language": {
+                        "source": "en",
+                        "target": "hi"
+                      }
+                    }
+                  },
                   "call_config": {
                     "type": "object",
                     "description": "(Optional) Override default call configuration",
