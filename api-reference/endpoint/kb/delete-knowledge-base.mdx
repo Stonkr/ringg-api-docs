@@ -1,0 +1,48 @@
+---
+openapi: delete /external/kb/{kb_id}
+---
+
+## Delete Knowledge Base
+
+Permanently delete a knowledge base and all its associated content including files, URLs, and FAQs.
+
+<Warning>
+**Permanent Action**:
+- This operation cannot be undone
+- All associated content will be permanently deleted
+- Agents using this knowledge base will lose access to its content
+- Rate limit: Maximum 10 requests per minute per workspace
+</Warning>
+
+## Before Deleting
+
+Consider these steps before deleting a knowledge base:
+
+1. **Check Agent Dependencies**: Verify no active agents are using this knowledge base
+2. **Backup Important Content**: Download or note any critical information
+3. **Review Usage**: Check if the knowledge base is referenced in any campaigns
+
+## Response
+
+On successful deletion, you'll receive:
+- `message`: Confirmation message
+- `kb_id`: ID of the deleted knowledge base
+
+## Common Use Cases
+
+- **Cleanup**: Remove test or outdated knowledge bases
+- **Reorganization**: Delete before recreating with updated structure
+- **Resource Management**: Free up workspace resources
+
+<Note>
+**Agent Impact**: If agents are actively using this knowledge base, they will immediately lose access. Update agent configurations before deletion to avoid disruptions.
+</Note>
+
+## Alternative: Edit Instead
+
+Consider using [Edit Knowledge Base](/api-reference/endpoint/kb/edit-knowledge-base) instead if you only need to:
+- Remove specific files or URLs
+- Update content
+- Add new information
+
+Editing preserves the knowledge base ID and agent associations.

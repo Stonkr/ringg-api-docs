@@ -1,0 +1,58 @@
+---
+openapi: get /external/kb/{kb_id}
+---
+
+## Get Knowledge Base by ID
+
+Retrieve detailed information about a specific knowledge base, including all files, URLs, and FAQs along with their processing status.
+
+<Warning>
+**Rate Limit**: Maximum 60 requests per hour per workspace
+</Warning>
+
+## Response Structure
+
+The response includes comprehensive details about your knowledge base:
+
+### Basic Information
+- `kb_id`: Unique identifier
+- `kb_name`: Name of the knowledge base
+- `status`: Overall processing status (`pending`, `processing`, `completed`, `failed`)
+- `created_at`: Creation timestamp
+- `updated_at`: Last modification timestamp
+
+### Content Arrays
+
+#### Files
+Each file object includes:
+- `file_id`: Unique identifier for removal operations
+- `file_type`: Document type (pdf, txt, docx, etc.)
+- `file_size`: Size in bytes
+- `filename`: Original filename
+- `file_path`: Storage path
+
+#### URLs
+Each URL object includes:
+- `file_id`: Unique identifier for removal operations
+- `file_type`: Content type
+- `file_size`: Extracted content size
+- `url`: Original URL
+- `file_path`: Storage path for indexed content
+
+#### FAQs
+Each FAQ object includes:
+- `file_id`: Unique identifier for removal operations
+- `file_type`: Always "faq"
+- `file_size`: Content size
+- `content`: Question and answer object
+
+## Use Cases
+
+- **Check Processing Status**: Monitor when content is ready for use
+- **Get Content IDs**: Retrieve file and FAQ IDs for removal operations
+- **Audit Content**: Review what's currently in your knowledge base
+- **Debug Issues**: Identify failed or pending items
+
+<Note>
+**Processing Time**: Large files or many URLs may take several minutes to process. Check the `status` field to confirm completion.
+</Note>

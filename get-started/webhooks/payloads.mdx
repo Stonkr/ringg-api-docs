@@ -33,6 +33,11 @@ Triggered when a call attempt finishes (completed, failed, or retry).
   "workspace_id": "442a9db3-0fd4-47dc-b8cd-cc7eedfa272f",
   "status": "completed",
   "called_on": "2025-12-14T19:37:13.310707Z",
+  "agent_name": "Payment Reminder Agent",
+  "version_id": "a1b2c3d4-5e6f-7890-abcd-ef1234567890",
+  "call_cost": 0.15,
+  "overall_latency_seconds": 0.892345,
+  "first_utterance_seconds": 0.456789,
   "transcript": [
     {
       "bot": "Hello abhishek, this is Caroline from Ringg AI. I'm calling to remind you about your upcoming payment of dads due on twelve. Let's ensure everything is on track!"
@@ -72,7 +77,12 @@ Triggered when call recording is processed and ready for download.
     "order_value": "70000",
     "company_name": "Acme Corp"
   },
-  "bulk_list_id": "f46cb9f4-f6ca-4d7d-abc9-02c226b95ec0"
+  "bulk_list_id": "f46cb9f4-f6ca-4d7d-abc9-02c226b95ec0",
+  "agent_name": "Payment Reminder Agent",
+  "version_id": "a1b2c3d4-5e6f-7890-abcd-ef1234567890",
+  "call_cost": 0.15,
+  "overall_latency_seconds": 0.892345,
+  "first_utterance_seconds": 0.456789
 }
 
 ```
@@ -114,6 +124,11 @@ Triggered when Ringg AI's built-in analysis completes.
   "workspace_id": "442a9db3-0fd4-47dc-b8cd-cc7eedfa272f",
   "status": "completed",
   "called_on": "2025-12-14T19:37:13.310707Z", (UTC)
+  "agent_name": "Payment Reminder Agent",
+  "version_id": "a1b2c3d4-5e6f-7890-abcd-ef1234567890",
+  "call_cost": 0.15,
+  "overall_latency_seconds": 0.892345,
+  "first_utterance_seconds": 0.456789,
   "transcript": [
     {
       "bot": "Hello abhishek, this is Caroline from Ringg AI. I'm calling to remind you about your upcoming payment of dads due on twelve. Let's ensure everything is on track!"
@@ -170,6 +185,11 @@ Triggered when your custom analysis completes based on your configured prompts.
   "workspace_id": "442a9db3-0fd4-47dc-b8cd-cc7eedfa272f",
   "status": "completed",
   "called_on": "2025-12-14T19:37:13.310707Z",
+  "agent_name": "Payment Reminder Agent",
+  "version_id": "a1b2c3d4-5e6f-7890-abcd-ef1234567890",
+  "call_cost": 0.15,
+  "overall_latency_seconds": 0.892345,
+  "first_utterance_seconds": 0.456789,
   "transcript": [
     {
       "bot": "Hello abhishek, this is Caroline from Ringg AI. I'm calling to remind you about your upcoming payment of dads due on twelve. Let's ensure everything is on track!"
@@ -254,6 +274,11 @@ app.listen(3000);
 | `agent_id` | string | ID of the AI agent that handled the call |
 | `workspace_id` | string | ID of your workspace |
 | `custom_args_values` | object | Custom data you provided when initiating the call |
+| `agent_name` | string | Display name of the AI agent that handled the call |
+| `version_id` | string | UUID of the agent version used for this call |
+| `call_cost` | number | Cost of the call in credits (null if not yet calculated) |
+| `overall_latency_seconds` | number | Total response latency in seconds (sum of median latencies across all metrics) |
+| `first_utterance_seconds` | number | Time to first AI response (TTS) in seconds |
 
 ### Call Completed Fields
 

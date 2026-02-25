@@ -1,0 +1,53 @@
+---
+openapi: patch /external/kb
+---
+
+## Edit Knowledge Base
+
+Update an existing knowledge base by adding new content or removing existing files, URLs, and FAQs. This endpoint allows you to maintain and refine your knowledge base over time.
+
+<Warning>
+**Rate Limits**:
+- Maximum 20 requests per hour per workspace
+- File size limit: 2 MB per file, 5 MB total
+</Warning>
+
+## Adding Content
+
+Add new files, URLs, or FAQs to expand your knowledge base:
+- `new_files`: Upload additional documents
+- `new_urls`: Index new web pages
+- `new_faqs`: Add more question-answer pairs
+
+## Removing Content
+
+Remove outdated or incorrect content using IDs:
+- `files_to_remove`: JSON array of file IDs
+- `urls_to_remove`: JSON array of URLs
+- `faqs_to_remove`: JSON array of FAQ IDs
+
+### Example Removal
+```json
+{
+  "files_to_remove": "[\"7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d\"]",
+  "urls_to_remove": "[\"https://example.com/old-page\"]",
+  "faqs_to_remove": "[\"9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f\"]"
+}
+```
+
+<Note>
+**Get Content IDs**: Use [Get Knowledge Base by ID](/api-reference/endpoint/kb/get-knowledge-base-by-id) to retrieve file IDs, URLs, and FAQ IDs before removing them.
+</Note>
+
+## Response Details
+
+The response includes:
+- `items_removed`: Count of items successfully removed
+- `new_files_queued`: Count of new files being processed
+- `new_files`: Array of newly added files with their IDs and processing status
+
+## Important Notes
+
+- **Atomic Operations**: Additions and removals are processed together
+- **Processing Time**: New content is processed asynchronously
+- **No Rollback**: Removals are permanent - ensure you have the correct IDs
