@@ -51,6 +51,17 @@
               "get-started/best-practices/web-call-integration",
               "get-started/best-practices/security-guidelines"
             ]
+          },
+          {
+            "group": "Telephony Integration",
+            "icon": "phone",
+            "pages": [
+              "get-started/telephony/byot-overview",
+              "get-started/telephony/plivo-integration",
+              "get-started/telephony/exotel-integration",
+              "get-started/telephony/twilio-integration",
+              "get-started/telephony/number-management"
+            ]
           }
         ]
       },
