@@ -8,6 +8,31 @@ description: "Detailed examples of webhook request and response payloads for all
 
 These are the JSON payloads your webhook endpoint will receive for different events.
 
+### Call Started Event
+
+Triggered immediately when a call is initiated.
+
+```json
+{
+  "event_type": "call_started",
+  "call_id": "4b30f5dc-7f86-4e4c-a3aa-15c01138559b",
+  "call_sid": "f46cb9f4-f6ca-4d7d-abc9-02c226b95ec0",
+  "agent_id": "cbaf9944-3e34-43b6-b3e8-6a905de16639",
+  "workspace_id": "442a9db3-0fd4-47dc-b8cd-cc7eedfa272f",
+  "custom_args_values": {
+    "callee_name": "John",
+    "order_value": "70000",
+    "company_name": "Acme Corp"
+  },
+  "sub_status": "ACCEPTED",
+  "agent_name": "Payment Reminder Agent",
+  "version_id": "a1b2c3d4-5e6f-7890-abcd-ef1234567890",
+  "version_slug": "v1",
+  "version_description": "Initial version",
+  "tool_call_logs": []
+}
+```
+
 ### Call Completed Event
 
 Triggered when a call attempt finishes (completed, failed, or retry).
@@ -56,7 +81,8 @@ Triggered when a call attempt finishes (completed, failed, or retry).
     }
   ],
   "retry_count": 0,
-  "recording_url": null
+  "recording_url": null,
+  "tool_call_logs": []
 }
 
 ```
@@ -82,7 +108,8 @@ Triggered when call recording is processed and ready for download.
   "version_id": "a1b2c3d4-5e6f-7890-abcd-ef1234567890",
   "call_cost": 0.15,
   "overall_latency_seconds": 0.892345,
-  "first_utterance_seconds": 0.456789
+  "first_utterance_seconds": 0.456789,
+  "tool_call_logs": []
 }
 
 ```
@@ -148,7 +175,8 @@ Triggered when Ringg AI's built-in analysis completes.
   ],
   "call_duration": 15.73,
   "agent_message_count": 3,
-  "user_message_count": 2
+  "user_message_count": 2,
+  "tool_call_logs": []
 }
 
 ```
@@ -209,7 +237,8 @@ Triggered when your custom analysis completes based on your configured prompts.
   ],
   "call_duration": 15.73,
   "agent_message_count": 3,
-  "user_message_count": 2
+  "user_message_count": 2,
+  "tool_call_logs": []
 }
 
 ```
@@ -234,6 +263,11 @@ app.post('/webhooks/:eventType', (req, res) => {
   
   // Process based on event type
   switch(eventData.event_type) {
+    case 'call_started':
+      // Log call initiation
+      console.log(`Call started for agent: ${eventData.agent_name}`);
+      break;
+
     case 'call_completed':
       // Store transcript, update call status
       console.log(`Call duration: ${eventData.call_duration}s`);
@@ -268,7 +302,7 @@ app.listen(3000);
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `event_type` | string | Type of event: `call_completed`, `recording_completed`, `platform_analysis_completed`, `client_analysis_completed` |
+| `event_type` | string | Type of event: `call_started`, `call_completed`, `recording_completed`, `platform_analysis_completed`, `client_analysis_completed` |
 | `call_id` | string | Unique identifier for the call |
 | `call_sid` | string | Telephony provider's call identifier (e.g., Twilio Call SID, Plivo Call UUID) |
 | `agent_id` | string | ID of the AI agent that handled the call |
@@ -279,6 +313,15 @@ app.listen(3000);
 | `call_cost` | number | Cost of the call in credits (null if not yet calculated) |
 | `overall_latency_seconds` | number | Total response latency in seconds (sum of median latencies across all metrics) |
 | `first_utterance_seconds` | number | Time to first AI response (TTS) in seconds |
+| `tool_call_logs` | array | Tool execution logs (pre-call, on-call) for the call |
+
+### Call Started Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `sub_status` | string | Current call sub-status (e.g., `ACCEPTED`) |
+| `version_slug` | string | Slug of the agent version used |
+| `version_description` | string | Description of the agent version (nullable) |
 
 ### Call Completed Fields
 
