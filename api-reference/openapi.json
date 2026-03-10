@@ -3103,6 +3103,16 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
+                "required": [
+                  "variables_map",
+                  "agent_id",
+                  "call_config",
+                  "country_code",
+                  "campaign_start_time",
+                  "campaign_end_time",
+                  "campaign_name",
+                  "file"
+                ],
                 "properties": {
                   "variables_map": {
                     "type": "string",
@@ -3150,6 +3160,18 @@
                     "format": "binary",
                     "description": "(Required) CSV file containing the contact list.",
                     "example": "contacts.csv"
+                  },
+                  "remove_invalid_rows": {
+                    "type": "boolean",
+                    "description": "(Optional) Auto-remove invalid rows from CSV",
+                    "default": false,
+                    "example": false
+                  },
+                  "transliterate_callee_name": {
+                    "type": "boolean",
+                    "description": "(Optional) Transliterate callee names to the agent's language",
+                    "default": false,
+                    "example": false
                   }
                 }
               }
@@ -3788,19 +3810,19 @@
         }
       }
     },
-    "/campaign/terminate/agent": {
+    "/campaign/terminate": {
       "patch": {
         "tags": [
           "termination"
         ],
-        "summary": "Terminate All Calls by Agent ID",
+        "summary": "Terminate Calls",
         "x-mint": {
           "metadata": {
-            "og:title": "Terminate All Calls by Agent ID | Ringg AI"
+            "og:title": "Terminate Calls | Ringg AI"
           }
         },
-        "description": "Terminates all active (registered/retry) calls associated with a specific agent across all campaigns.",
-        "operationId": "terminateCallsByAgent",
+        "description": "Terminates active (registered/retry) calls. You can terminate by agent ID, call IDs, campaign ID, campaign numbers, or mobile numbers across all campaigns.",
+        "operationId": "terminateCalls",
         "parameters": [
           {
             "name": "X-API-KEY",
@@ -3819,233 +3841,26 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "agent_id"
-                ],
                 "properties": {
                   "agent_id": {
                     "type": "string",
-                    "description": "(Required) ID of the agent whose calls should be terminated",
+                    "description": "ID of the agent whose calls should be terminated",
                     "example": "196d8d88-591e-4e08-8324-2f928d152fff"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Calls terminated successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Calls terminated successfully!"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Invalid agent ID or no terminable calls found."
-          },
-          "401": {
-            "description": "Unauthorized - Invalid or missing API key."
-          }
-        }
-      }
-    },
-    "/campaign/terminate/calls": {
-      "patch": {
-        "tags": [
-          "termination"
-        ],
-        "summary": "Terminate Specific Calls by Call IDs",
-        "x-mint": {
-          "metadata": {
-            "og:title": "Terminate Specific Calls by Call IDs | Ringg AI"
-          }
-        },
-        "description": "Terminates specific calls using their unique call IDs. Useful when you know exactly which calls to stop.",
-        "operationId": "terminateCallsByIds",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "call_ids"
-                ],
-                "properties": {
+                  },
                   "call_ids": {
                     "type": "array",
                     "items": {
                       "type": "string"
                     },
-                    "description": "(Required) Array of call IDs to terminate",
+                    "description": "Array of call IDs to terminate",
                     "example": [
                       "86815974-8a87-4e32-9953-aca4f97868ab",
                       "9ab99d2d-595c-4ca1-bab7-07d13f253156"
                     ]
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Calls terminated successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Calls terminated successfully!"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Invalid call IDs or no terminable calls found."
-          },
-          "401": {
-            "description": "Unauthorized - Invalid or missing API key."
-          }
-        }
-      }
-    },
-    "/campaign/terminate/campaign": {
-      "patch": {
-        "tags": [
-          "termination"
-        ],
-        "summary": "Terminate All Calls in Campaign",
-        "x-mint": {
-          "metadata": {
-            "og:title": "Terminate All Calls in Campaign | Ringg AI"
-          }
-        },
-        "description": "Terminates all active (registered/retry) calls within a specific campaign.",
-        "operationId": "terminateCallsByCampaign",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "campaign_id"
-                ],
-                "properties": {
+                  },
                   "campaign_id": {
                     "type": "string",
-                    "description": "(Required) ID of the campaign whose calls should be terminated",
-                    "example": "0b52ca2b-7767-4cb5-ac4c-b2a4f892a856"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Calls terminated successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Calls terminated successfully!"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Invalid campaign ID or no terminable calls found."
-          },
-          "401": {
-            "description": "Unauthorized - Invalid or missing API key."
-          }
-        }
-      }
-    },
-    "/campaign/terminate/campaign-numbers": {
-      "patch": {
-        "tags": [
-          "termination"
-        ],
-        "summary": "Terminate Specific Numbers in Campaign",
-        "x-mint": {
-          "metadata": {
-            "og:title": "Terminate Specific Numbers in Campaign | Ringg AI"
-          }
-        },
-        "description": "Terminates calls to specific mobile numbers within a campaign. Useful for stopping calls to particular contacts in a campaign.",
-        "operationId": "terminateCallsByCampaignNumbers",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "campaign_id",
-                  "mobile_numbers"
-                ],
-                "properties": {
-                  "campaign_id": {
-                    "type": "string",
-                    "description": "(Required) ID of the campaign",
+                    "description": "ID of the campaign whose calls should be terminated",
                     "example": "0b52ca2b-7767-4cb5-ac4c-b2a4f892a856"
                   },
                   "mobile_numbers": {
@@ -4053,7 +3868,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "description": "(Required) Array of mobile numbers to terminate within the campaign (max 100)",
+                    "description": "Array of mobile numbers to terminate calls for (max 100)",
                     "example": [
                       "+918882876897",
                       "+918882876898"
@@ -4083,83 +3898,6 @@
           },
           "400": {
             "description": "Bad Request - Invalid parameters or no terminable calls found."
-          },
-          "401": {
-            "description": "Unauthorized - Invalid or missing API key."
-          }
-        }
-      }
-    },
-    "/campaign/terminate/numbers": {
-      "patch": {
-        "tags": [
-          "termination"
-        ],
-        "summary": "Terminate All Calls to Numbers",
-        "x-mint": {
-          "metadata": {
-            "og:title": "Terminate All Calls to Numbers | Ringg AI"
-          }
-        },
-        "description": "Terminates all active calls (across all campaigns) to specific mobile numbers.",
-        "operationId": "terminateCallsByNumbers",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "mobile_numbers"
-                ],
-                "properties": {
-                  "mobile_numbers": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "description": "(Required) Array of mobile numbers to terminate calls for across all campaigns (max 100)",
-                    "example": [
-                      "+918882876897",
-                      "+918882876898"
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Calls terminated successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Calls terminated successfully!"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request - Invalid mobile numbers or no terminable calls found."
           },
           "401": {
             "description": "Unauthorized - Invalid or missing API key."
