@@ -1,0 +1,237 @@
+---
+title: "Configure an Assistant"
+sidebarTitle: "Configure an Assistant"
+description: "Set up your assistant's prompt, voice, call behaviour, and advanced options."
+icon: "sliders-horizontal"
+---
+
+After creating an assistant, use the configuration page to set up its prompt, voice, call behaviour, and advanced options.
+
+Navigate to **Assistants**, then click on any existing assistant card to open its configuration page.
+
+{/* <Frame>
+  <img src="/images/documentation/assistant-config-overview.png" alt="Assistant Configuration Page" />
+</Frame> */}
+
+---
+
+## Configuration Sections
+
+The left panel organises all settings into three groups:
+
+- **Assistant Settings:** Prompt · Voice · Custom Variables · Knowledge Base
+- **Call Settings:** Call · Chat
+- **Advanced Settings:** Embed · Keyword Boosting · Custom Analysis
+
+---
+
+## 1. Prompt
+
+**Assistant Settings → Prompt**
+
+The Prompt section defines what the assistant says and how it behaves.
+
+{/* <Frame>
+  <img src="/images/documentation/prompt-settings.png" alt="Prompt Settings" />
+</Frame> */}
+
+### First Message
+
+The exact opening line the assistant speaks when the call connects.
+
+- Use `@{{variable_name}}` to insert dynamic values (e.g. `@{{callee_name}}`)
+- Type `@` to open the variable picker
+- The **Interruptible** toggle: when ON, the callee can speak before the assistant finishes the opening line
+
+**Example:**
+```
+Hello, नमस्कार! क्या मैं @{{callee_name}} जी से बात कर रही हूं, या उनके parents से?
+```
+
+### Objective
+
+A paragraph that tells the assistant who it is, what it's doing, and what it's trying to achieve.
+
+**Example:**
+```
+You are Ananya, a warm and knowledgeable academic counsellor calling on behalf of Aakash Digital.
+Your goal is to identify preparation gaps and secure an enrollment confirmation or demo booking.
+```
+
+### Response Guidelines
+
+Rules the assistant follows throughout the conversation:
+
+- Tone and persona rules (e.g. "Keep responses 20–45 words per turn")
+- Language switching logic (e.g. "Use formal आप when speaking Hindi")
+- Escalation or handoff conditions
+
+---
+
+## 2. Voice
+
+**Assistant Settings → Voice**
+
+{/* <Frame>
+  <img src="/images/documentation/voice-settings.png" alt="Voice Settings" />
+</Frame> */}
+
+| Field | Description |
+|---|---|
+| **Primary Language** | The main language for the conversation (e.g. Hindi, English (IN)) |
+| **Secondary Language** | Optional fallback language |
+| **Voice Character** | The voice persona (Tanya, Naina, Raj, Rahul, Anya, etc.) |
+
+Toggle between **Most Used** and **Neutral** to filter available voices.
+
+---
+
+## 3. Custom Variables
+
+**Assistant Settings → Custom Variables**
+
+Custom Variables are dynamic placeholders that get filled at call time — typically from your campaign's calling list CSV.
+
+**Examples:**
+- `{{callee_name}}` → "Vikram"
+- `{{mrp}}` → "50000"
+- `{{loan_amount}}` → "₹1,20,000"
+
+<Tip>
+  Use these in your First Message and Objective to personalise every call automatically.
+</Tip>
+
+---
+
+## 4. Knowledge Base
+
+**Assistant Settings → Knowledge Base**
+
+Attach a pre-created Knowledge Base so the assistant can look up information in real time during calls.
+
+<Steps>
+  <Step title="Select Knowledge Base">
+    Click **Knowledge Base** in the left panel.
+  </Step>
+  <Step title="Choose a KB">
+    Select a KB from the list.
+  </Step>
+  <Step title="Save">
+    Save your changes.
+  </Step>
+</Steps>
+
+See [How to Create a Knowledge Base](/get-started/guides/create-knowledge-base) to set one up first.
+
+---
+
+## 5. Call Settings
+
+**Call Settings → Call**
+
+{/* <Frame>
+  <img src="/images/documentation/call-settings.png" alt="Call Settings" />
+</Frame> */}
+
+| Setting | Description |
+|---|---|
+| **Maximum Call Duration** | Max length of a single call (in minutes) before auto-hangup |
+| **Inactivity Duration** | Seconds of silence before the assistant treats the call as inactive |
+| **Timezone** | Timezone used for scheduling and logging calls |
+| **Noise Filtering** | Reduces background noise for clearer audio |
+| **Voicemail Detection** | Automatically detects when the call reaches a voicemail inbox |
+| **Leave Voicemail Message** | When ON, the assistant leaves a pre-recorded message on voicemail |
+| **Retry Call** | When ON, the assistant retries if voicemail is detected |
+| **Silence Callee During Introduction** | Mutes the callee's audio only during the opening message |
+| **Silence Callee When Assistant is Speaking** | Prevents callee audio from interrupting the assistant mid-sentence |
+| **Enable Background Audio** | Plays ambient sound during calls for a more natural feel |
+| **Enable Graceful Exit Warning** | Assistant announces the call is ending before hanging up |
+
+---
+
+## 6. Chat Settings
+
+**Call Settings → Chat**
+
+<Note>
+  Applies to **Webcall** assistants only.
+</Note>
+
+| Setting | Default | Description |
+|---|---|---|
+| **Maximum Call Length** | 480 seconds | Total allowed session duration |
+| **Idle Timeout Warning** | 20 seconds | Time before warning the user about inactivity |
+| **Idle Timeout End** | 25 seconds | Time before ending the session due to inactivity |
+
+---
+
+## 7. Embed
+
+**Advanced Settings → Embed**
+
+Generates an embeddable JavaScript widget for your website.
+
+<Steps>
+  <Step title="Configure Widget">
+    Configure **Theme**, **Widget Size**, **Feedback Screen**, and **Branding** in the right panel.
+  </Step>
+  <Step title="Select SDK Version">
+    Select the SDK version from the dropdown.
+  </Step>
+  <Step title="Preview">
+    Click **Preview** to see a live preview.
+  </Step>
+  <Step title="Copy Code">
+    Copy the **Generated Code** and paste it into your website's HTML.
+  </Step>
+</Steps>
+
+{/* <Frame>
+  <img src="/images/documentation/embed-settings.png" alt="Embed Settings" />
+</Frame> */}
+
+---
+
+## 8. Keyword Boosting
+
+**Advanced Settings → Keyword Boosting**
+
+Improve speech recognition accuracy for domain-specific words the assistant frequently hears.
+
+1. Type a keyword in the input field.
+2. Click **Add**.
+3. Repeat for all relevant terms (product names, brand names, technical jargon).
+
+---
+
+## 9. Custom Analysis
+
+**Advanced Settings → Custom Analysis**
+
+Define a post-call analysis prompt that runs automatically after every call.
+
+<Steps>
+  <Step title="Enter a Prompt">
+    Describe what information to extract from the call transcript.
+  </Step>
+  <Step title="Define Required Keys">
+    Name the output fields and their data types (e.g. `enrollment_status: String`).
+  </Step>
+  <Step title="Save & Test">
+    Click **Save**, then **Test Analysis** to validate.
+  </Step>
+</Steps>
+
+**Example Prompt:**
+```
+From the call transcript, extract:
+- Whether the student agreed to a demo booking
+- The student's preferred course
+- Any objections raised
+```
+
+---
+
+## Running a Test Call
+
+At any point, click **Test call** (top-right) to make a live call to a real phone number and verify the assistant behaves as expected.

@@ -1,0 +1,93 @@
+---
+title: "Analytics"
+sidebarTitle: "Analytics"
+description: "Monitor call performance, connectivity, and agent efficiency."
+icon: "chart-spline"
+---
+
+The **Analytics** page gives you a high-level view of your workspace's call performance over time. Use it to track efficiency, identify issues, and measure assistant outcomes.
+
+---
+
+## Accessing Analytics
+
+Click **Analytics** in the left sidebar.
+
+{/* <Frame>
+  <img src="/images/documentation/analytics-page.png" alt="Analytics Page" />
+</Frame> */}
+
+---
+
+## Setting the Date Range
+
+By default, the analytics view shows the last 7 days. Click the **date range picker** to change the period, or click the ✕ to reset.
+
+Click **Filter** to further narrow results by assistant, number, or call status.
+
+---
+
+## Key Metrics
+
+The top of the page displays a grid of summary metrics:
+
+| Metric | Description |
+|---|---|
+| **Total Calls** | Total number of calls made or received in the selected period |
+| **Calls Connected** | Number of calls where the callee answered |
+| **Connectivity** | Percentage of total calls that were successfully connected (Connected / Total × 100) |
+| **Avg. Duration** | Average call length (shown as X Min Y Sec) |
+| **Total Cost** | Total credit spent on calls in the period (in ₹) |
+| **Registered** | Number of contacts that completed a registration or key action (as tracked by your assistant) |
+| **Voicemail Detected** | Number of calls that hit a voicemail inbox |
+| **Workspace Numbers** | Total active numbers in your workspace |
+
+---
+
+## Call Status Distribution
+
+A **donut chart** showing the breakdown of calls by outcome:
+
+- Completed
+- Failed
+- No Answer
+- Voicemail
+- etc.
+
+Hover over segments to see exact counts. This helps you understand what proportion of your calls are reaching real people vs. hitting voicemail or failing.
+
+---
+
+## Calls by Day
+
+A **line chart** showing call volume over time. Use the **All** dropdown to filter by a specific assistant.
+
+This chart helps you identify:
+- Peak calling days
+- Drops in call volume (potential campaign issues)
+- The impact of scheduling changes
+
+---
+
+## Assistants in Action
+
+A table at the bottom showing per-assistant performance:
+
+| Column | Description |
+|---|---|
+| **Agent Name** | The assistant's name |
+| **Call Counts** | Total calls made by this assistant in the period |
+| **Total Connected** | Calls that were answered |
+
+Sort by any column to find your best or worst performing assistants.
+
+---
+
+## Using Analytics to Improve Performance
+
+| If you see... | Try... |
+|---|---|
+| Low connectivity (< 50%) | Check if your numbers are flagged as spam; try different caller IDs |
+| High voicemail rate | Adjust calling hours to when contacts are more likely to answer |
+| Short avg. duration | Review your assistant's prompt — it may be ending calls too quickly |
+| High total cost, low registered | Improve your prompt's conversion logic; test alternate scripts |

@@ -1,0 +1,83 @@
+---
+title: "Campaigns"
+sidebarTitle: "Campaigns"
+description: "Learn about campaigns — scheduled batches of outbound calls made by your AI assistants."
+icon: "notebook-tabs"
+---
+
+A **Campaign** is a scheduled batch of outbound calls made by a selected assistant to a list of contacts. Campaigns let you automate high-volume outreach without manual dialling.
+
+---
+
+## Campaign Overview
+
+The Campaigns page shows all your campaigns in a table with the following columns:
+
+| Column | Description |
+|---|---|
+| **Campaign** | Campaign name (with a copy icon) |
+| **Status** | Current state: `Completed`, `Running`, `Scheduled`, `Paused`, or `Failed` |
+| **Total Calls** | Number of calls made in this campaign |
+| **Campaign Time** | Scheduled start → end date and time |
+| **Actions** | View history or manage the campaign |
+
+{/* <Frame>
+  <img src="/images/documentation/campaigns-list.png" alt="Campaigns List" />
+</Frame> */}
+
+---
+
+## Campaign Settings
+
+When creating a campaign, you configure two tabs:
+
+### Tab 1 — Campaign Settings
+
+| Field | Description |
+|---|---|
+| **Campaign Name** | A label to identify this campaign |
+| **Assistant** | The AI voice agent that will make the calls |
+| **Numbers** | One or more telephony numbers to dial from |
+| **Campaign Start Date/Time** | When the campaign starts making calls |
+| **Campaign End Date/Time** | When the campaign stops, even if there are remaining contacts |
+| **Timezone** | The timezone for scheduling (e.g. UTC+5:30 IST) |
+| **Email Notifications** | Workspace members who receive campaign status updates |
+
+### Tab 2 — Calling List
+
+Upload the list of contacts the campaign will call. Typically a CSV with columns for phone number and any custom variables used in your assistant's prompt (e.g. `callee_name`, `mrp`).
+
+---
+
+## Campaign Concurrency
+
+**Concurrency** controls how many simultaneous calls a campaign can make.
+
+Click **Manage Concurrency** on the Campaigns page to configure:
+
+### Workspace Concurrency
+
+Sets the split between API-initiated calls and campaign calls:
+
+- **API Concurrency** — Percentage of workspace capacity reserved for API calls (default: 100%)
+- **Campaign Concurrency** — Percentage allocated to campaigns (default: 0%)
+
+<Note>
+  If Campaign Concurrency is 0%, campaign concurrency is distributed equally across all running campaigns.
+</Note>
+
+### Campaigns Concurrency
+
+When multiple campaigns run simultaneously, this tab lets you manually allocate concurrent call slots per campaign.
+
+---
+
+## Campaign Status Reference
+
+| Status | Meaning |
+|---|---|
+| `Scheduled` | Campaign is queued and hasn't started yet |
+| `Running` | Campaign is actively making calls |
+| `Paused` | Campaign has been manually paused |
+| `Completed` | Campaign has finished (reached end time or called all contacts) |
+| `Failed` | Campaign encountered a fatal error |
