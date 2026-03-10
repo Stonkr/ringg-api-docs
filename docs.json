@@ -21,21 +21,14 @@
     "groups": [
       {
         "group": "Get Started",
+        "tag": "NEW",
         "pages": [
           {
             "group": "Overview",
             "pages": [
-              "get-started/overview/ringg-overview",
-              "get-started/overview/platform-overview",
-              "get-started/overview/dashboard-overview"
-            ]
-          },
-          {
-            "group": "Quick Start",
-            "pages": [
-              "get-started/quick-start/quick-start-guide",
-              "get-started/quick-start/authentication",
-              "get-started/quick-start/api-overview"
+              "get-started/overview/ringg-ai",
+              "get-started/overview/platform",
+              "get-started/overview/dashboard"
             ]
           },
           {
@@ -55,19 +48,10 @@
               "get-started/guides/create-campaign",
               "get-started/guides/create-knowledge-base",
               "get-started/guides/manage-numbers",
-              "get-started/guides/view-history",
+              "get-started/guides/view-call-history",
               "get-started/guides/analytics",
-              "get-started/guides/workspace-settings"
-            ]
-          },
-          {
-            "group": "Tutorials",
-            "pages": [
-              "get-started/tutorials/voice-calling",
-              "get-started/tutorials/making-your-first-call",
-              "get-started/tutorials/setting-up-bulk-calls",
-              "get-started/tutorials/managing-contacts",
-              "get-started/tutorials/embedding-web-call-assistant"
+              "get-started/guides/workspace-settings",
+              "get-started/guides/embedding-widget"
             ]
           },
           {
@@ -92,17 +76,34 @@
       },
       {
         "group": "Webhooks Setup",
-        "tag": "NEW",
         "pages": [
-          "webhooks/setup",
+          "webhooks/initial-setup",
           "webhooks/payloads",
           "webhooks/error-handling"
         ]
       },
       {
         "group": "API Reference",
-        "tag": "NEW",
         "pages": [
+          {
+            "group": "Quick Start",
+            "icon": "rocket",
+            "pages": [
+              "api-reference/quick-start/guide",
+              "api-reference/quick-start/authentication",
+              "api-reference/quick-start/api-overview"
+            ]
+          },
+          {
+            "group": "Tutorials",
+            "icon": "graduation-cap",
+            "pages": [
+              "api-reference/tutorials/voice-calling",
+              "api-reference/tutorials/making-your-first-call",
+              "api-reference/tutorials/setting-up-bulk-calls",
+              "api-reference/tutorials/managing-contacts"
+            ]
+          },
           {
             "group": "Workspace",
             "pages": [

@@ -1,0 +1,113 @@
+---
+title: "View Call History"
+sidebarTitle: "View Call History"
+description: "Browse call logs, listen to recordings, and read transcripts."
+icon: "history"
+---
+
+The **History** section gives you a full log of every call made or received by your assistants, including audio recordings and transcripts.
+
+---
+
+## Accessing Call History
+
+1. Click **History** in the left sidebar.
+2. The page loads with calls from the last 30 days by default.
+
+{/* <Frame>
+  <img src="/images/documentation/history-page.png" alt="History Page" />
+</Frame> */}
+
+---
+
+## Understanding the Call Log
+
+The table shows the following columns:
+
+| Column | Description |
+|---|---|
+| **Direction** | Arrow icon — ↗ Outbound, ↙ Inbound |
+| **Assistant Name** | The assistant that handled the call (with version number) |
+| **Callee Name** | Contact's name and phone number |
+| **Called On** | Date and time of the call |
+| **Call Status** | `Completed`, `Voicemail`, etc. |
+| **Call Duration** | Length of the call in seconds |
+
+---
+
+## Filtering Calls
+
+### By Date Range
+
+Click the **date picker** (e.g. `2026-02-07 – 2026-03-09`) to adjust the date range. Click the ✕ to reset to the default range.
+
+### By Other Filters
+
+Click **Filter** to open the filter panel and narrow results by:
+- Assistant
+- Call status
+- Call direction
+- And more
+
+---
+
+## Exporting Call History
+
+Click **Export** (top-right) to download the filtered call list as a CSV file. Use this for reporting, audits, or CRM uploads.
+
+---
+
+## Viewing a Call's Details
+
+Click any row to open the **Call Analysis** panel on the right.
+
+{/* <Frame>
+  <img src="/images/documentation/call-analysis-panel.png" alt="Call Analysis Panel" />
+</Frame> */}
+
+### Call Summary
+
+The top of the panel shows:
+- **Assistant name** and direction (Outbound/Inbound)
+- **Call ID** (UUID, with copy button)
+- **Call Time** — when the call was made
+- **Call Duration** — in seconds
+- **Call Status** — e.g. Completed
+
+### Audio Playback
+
+An audio waveform player lets you listen to the full call recording. Click ▶ to play, and use the download button to save the audio file.
+
+---
+
+## Call Details Tab
+
+Click **Call Details** to see structured metadata:
+
+| Field | Description |
+|---|---|
+| **Call Latency** | Time (in seconds) before the assistant's first utterance began |
+| **Call Duration** | Start and end timestamps |
+| **Custom Variables** | The values injected for this specific call (e.g. `Mrp: 50000`) |
+
+---
+
+## Transcript Tab
+
+Click **Transcript** to read the full conversation.
+
+{/* <Frame>
+  <img src="/images/documentation/call-transcript.png" alt="Call Transcript" />
+</Frame> */}
+
+The transcript shows:
+- Each turn of the conversation with speaker labels (assistant vs. callee)
+- **Phase labels** at the start of each section (e.g. `Greetings ~32.6ms`) showing the prompt node that was active
+- Timestamps for each message
+- A **copy** and **download** button to export the transcript
+
+---
+
+## Sharing a Call
+
+Use the **link icon** in the Call Analysis panel header to generate a shareable URL for this specific call — useful for team review or escalation.
