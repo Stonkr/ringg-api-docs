@@ -15,17 +15,23 @@
     "decoration": "grid"
   },
   "icons": {
-    "library": "fontawesome"
+    "library": "lucide"
   },
   "navigation": {
     "groups": [
       {
         "group": "Get Started",
         "pages": [
-          "get-started/overview",
+          {
+            "group": "Overview",
+            "pages": [
+              "get-started/overview/ringg-overview",
+              "get-started/overview/platform-overview",
+              "get-started/overview/dashboard-overview"
+            ]
+          },
           {
             "group": "Quick Start",
-            "icon": "rocket",
             "pages": [
               "get-started/quick-start/quick-start-guide",
               "get-started/quick-start/authentication",
@@ -33,8 +39,29 @@
             ]
           },
           {
+            "group": "Key Concepts",
+            "pages": [
+              "get-started/key-concepts/assistants",
+              "get-started/key-concepts/campaigns",
+              "get-started/key-concepts/knowledge-base",
+              "get-started/key-concepts/numbers"
+            ]
+          },
+          {
+            "group": "How-to Guides",
+            "pages": [
+              "get-started/guides/create-assistant",
+              "get-started/guides/configure-assistant",
+              "get-started/guides/create-campaign",
+              "get-started/guides/create-knowledge-base",
+              "get-started/guides/manage-numbers",
+              "get-started/guides/view-history",
+              "get-started/guides/analytics",
+              "get-started/guides/workspace-settings"
+            ]
+          },
+          {
             "group": "Tutorials",
-            "icon": "code",
             "pages": [
               "get-started/tutorials/voice-calling",
               "get-started/tutorials/making-your-first-call",
@@ -45,33 +72,31 @@
           },
           {
             "group": "Best Practices",
-            "icon": "thumbs-up",
             "pages": [
               "get-started/best-practices/voice-call-optimization",
               "get-started/best-practices/web-call-integration",
               "get-started/best-practices/security-guidelines"
             ]
-          },
-          {
-            "group": "Telephony Integration",
-            "icon": "phone",
-            "pages": [
-              "get-started/telephony/byot-overview",
-              "get-started/telephony/plivo-integration",
-              "get-started/telephony/exotel-integration",
-              "get-started/telephony/twilio-integration",
-              "get-started/telephony/number-management"
-            ]
           }
+        ]
+      },
+      {
+        "group": "Telephony Integration",
+        "pages": [
+          "telephony/byot-overview",
+          "telephony/plivo-integration",
+          "telephony/exotel-integration",
+          "telephony/twilio-integration",
+          "telephony/number-management"
         ]
       },
       {
         "group": "Webhooks Setup",
         "tag": "NEW",
         "pages": [
-          "get-started/webhooks/setup",
-          "get-started/webhooks/payloads",
-          "get-started/webhooks/error-handling"
+          "webhooks/setup",
+          "webhooks/payloads",
+          "webhooks/error-handling"
         ]
       },
       {

@@ -1,0 +1,58 @@
+---
+title: "Numbers"
+sidebarTitle: "Numbers"
+description: "Learn about telephony numbers — the phone lines your assistants use to make and receive calls."
+icon: "hash"
+---
+
+**Numbers** are the telephony phone numbers your assistants use to make and receive calls. Ringg AI supports both purchased numbers and numbers from your own telephony provider (Bring Your Own Telephony).
+
+---
+
+## Numbers Overview
+
+The Numbers page lists all numbers in your workspace with the following details:
+
+| Column | Description |
+|---|---|
+| **Number** | The full phone number (e.g. +918031136540) |
+| **Country** | Flag icon indicating the country of the number |
+| **Added On** | Date and time the number was added |
+| **Used By** | Which assistant is currently assigned to this number |
+| **Tags** | Labels for organising numbers (e.g. Default Number) |
+
+{/* <Frame>
+  <img src="/images/documentation/numbers-page.png" alt="Numbers Page" />
+</Frame> */}
+
+---
+
+## Telephony Provider
+
+At the top of the Numbers page, a **Telephony** dropdown shows which provider your numbers are routed through (e.g. Ringg). This can be changed via **Integrations → Your Telephony**.
+
+---
+
+## Default Number
+
+<Note>
+  Numbers tagged as **Default Number** are automatically used by assistants when no specific number is assigned.
+</Note>
+
+---
+
+## Number Assignment
+
+Numbers are assigned to assistants when creating a **Campaign**. An assistant uses the selected number(s) as the caller ID when dialling contacts.
+
+For **Inbound** assistants, the number is the one that contacts call into.
+
+---
+
+## Removing a Number
+
+Click **Remove** next to any number to delete it from your workspace.
+
+<Warning>
+  Removing a number that is actively used by a running campaign will interrupt those calls.
+</Warning>

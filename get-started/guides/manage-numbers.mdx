@@ -1,0 +1,100 @@
+---
+title: "Manage Numbers"
+sidebarTitle: "Manage Numbers"
+description: "Buy numbers, bring your own telephony, and manage your existing phone lines."
+icon: "hash"
+---
+
+Numbers are the telephony lines your assistants use to make and receive calls. This guide covers buying numbers, bringing your own, and managing your existing ones.
+
+---
+
+## Viewing Your Numbers
+
+1. Click **Numbers** in the left sidebar.
+2. You'll see a list of all numbers in your workspace.
+
+{/* <Frame>
+  <img src="/images/documentation/numbers-page.png" alt="Numbers Page" />
+</Frame> */}
+
+Each row shows:
+- **Phone number** (with a copy icon)
+- **Country** flag
+- **Date added**
+- **Used By** — which assistant is assigned to this number (blank if unassigned)
+- **Tags** — e.g. `Default Number`
+
+---
+
+## Buying a New Number
+
+<Steps>
+  <Step title="Click Buy New Number">
+    On the Numbers page, click **Buy new number** (top-right).
+  </Step>
+  <Step title="Select Number Details">
+    Follow the purchase flow to select a country, area code, and number type.
+  </Step>
+  <Step title="Confirm Purchase">
+    Confirm the purchase. The number will appear in your list immediately.
+  </Step>
+</Steps>
+
+<Note>
+  Number availability and pricing depend on the country and telephony provider.
+</Note>
+
+---
+
+## Bring Your Own Telephony (BYOT)
+
+If you have existing numbers with a third-party provider (Twilio, Exotel, etc.), you can connect them via **Integrations**.
+
+<Steps>
+  <Step title="Go to Integrations">
+    Go to **Integrations** in the left sidebar.
+  </Step>
+  <Step title="Add New Provider">
+    On the **Your Telephony** tab, click **Add New**.
+  </Step>
+  <Step title="Select Provider">
+    Select your provider from the dropdown.
+  </Step>
+  <Step title="Enter Credentials">
+    Enter your provider credentials.
+  </Step>
+  <Step title="Save">
+    Save. Your numbers from that provider will appear in the Numbers list.
+  </Step>
+</Steps>
+
+The **Telephony** dropdown at the top of the Numbers page shows which provider is active (e.g. "Ringg").
+
+---
+
+## Setting a Default Number
+
+If a number is tagged as **Default Number**, it is used automatically when no specific number is assigned to a campaign.
+
+To tag a number as default:
+1. Click the tag icon next to the number.
+2. Add the tag `Default Number`.
+
+---
+
+## Removing a Number
+
+Click **Remove** next to any number to remove it from your workspace.
+
+<Warning>
+  Removing a number that is actively used in a running campaign will interrupt those calls. Always pause or complete campaigns before removing numbers.
+</Warning>
+
+---
+
+## Assigning Numbers to Campaigns
+
+Numbers are assigned during campaign creation in the **Numbers** field. You can assign multiple numbers to distribute call load — the system will rotate through them.
+
+For **Inbound** assistants, the assigned number is the one contacts dial into.

@@ -1,0 +1,167 @@
+---
+title: "Workspace Settings"
+sidebarTitle: "Workspace Settings"
+description: "Manage workspace members, API keys, and integrations."
+icon: "settings"
+---
+
+This guide covers the three workspace-level settings: **Workspace Members**, **API Key**, and **Integrations**.
+
+---
+
+## Workspace Members
+
+### Accessing Workspace Members
+
+Click **Workspace Members** in the left sidebar (under "More").
+
+{/* <Frame>
+  <img src="/images/documentation/workspace-members.png" alt="Workspace Members Page" />
+</Frame> */}
+
+The table shows all current members with:
+- **Name** and **Owner** badge (for the account owner)
+- **Email** address
+- **Permissions** level
+- **Status** (Success = active invitation)
+
+### Inviting a New Member
+
+<Steps>
+  <Step title="Click Invite Member">
+    Click **Invite Member** (top-right).
+  </Step>
+  <Step title="Enter Email">
+    Enter the member's email address.
+  </Step>
+  <Step title="Set Permissions">
+    Set their permission level.
+  </Step>
+  <Step title="Send Invitation">
+    Send the invitation. They'll receive an email to join the workspace.
+  </Step>
+</Steps>
+
+### Permission Levels
+
+| Permission | Description |
+|---|---|
+| **View & Edit** | Can view and modify all assets (assistants, campaigns, etc.) |
+| **View Only** | Can view assets but cannot create or modify |
+
+Click the permission dropdown next to any member to change their access level.
+
+### Removing a Member
+
+Click **Remove User** next to any non-owner member to revoke their access immediately.
+
+<Note>
+  You cannot remove yourself as the workspace Owner. Transfer ownership before leaving a workspace.
+</Note>
+
+---
+
+## API Key
+
+### Accessing Your API Key
+
+Click **API Key** in the left sidebar.
+
+{/* <Frame>
+  <img src="/images/documentation/api-key-page.png" alt="API Key Page" />
+</Frame> */}
+
+Your workspace **X-API-KEY** is displayed (masked by default).
+
+### Using the API Key
+
+The API key is required to authenticate all programmatic calls to the Ringg AI API. Include it as a header:
+
+```http
+X-API-KEY: your-api-key-here
+```
+
+Click the **copy icon** to copy the key to your clipboard.
+Click the **eye icon** to reveal the full key on screen.
+
+### Regenerating the API Key
+
+Click **Regenerate** to create a new API key.
+
+<Warning>
+  Regenerating invalidates the old key immediately. Any existing integrations using the old key will stop working. Update all systems before regenerating.
+</Warning>
+
+### API Documentation
+
+Click the **Docs** link to access the full Ringg AI API reference.
+
+---
+
+## Integrations
+
+Click **Integrations** in the left sidebar. There are two tabs:
+
+### Your Telephony (Bring Your Own Telephony)
+
+Connect your own telephony provider to use your existing phone numbers.
+
+{/* <Frame>
+  <img src="/images/documentation/integrations-telephony.png" alt="Telephony Integration" />
+</Frame> */}
+
+<Steps>
+  <Step title="Click Add New">
+    Click **Add New**.
+  </Step>
+  <Step title="Select Provider">
+    Select your provider from the **All** dropdown (e.g. Twilio, Exotel, Plivo).
+  </Step>
+  <Step title="Enter Credentials">
+    Enter your provider's API credentials.
+  </Step>
+  <Step title="Save">
+    Save. Your numbers will sync to the **Numbers** page.
+  </Step>
+</Steps>
+
+<Note>
+  If you don't connect a custom provider, Ringg AI uses its own telephony by default.
+</Note>
+
+### Zapier
+
+Connect Ringg AI to thousands of other apps through Zapier workflows.
+
+{/* <Frame>
+  <img src="/images/documentation/integrations-zapier.png" alt="Zapier Integration" />
+</Frame> */}
+
+**Popular pre-built workflows:**
+
+<CardGroup cols={2}>
+  <Card title="Google Sheets → Ringg AI" icon="table">
+    Initiate Ringg AI calls when new rows are added in Google Sheets — great for dynamic calling lists
+  </Card>
+  <Card title="Shopify → Ringg AI" icon="shopping-cart">
+    Initiate Ringg AI calls for new Shopify orders — automate order confirmations or delivery updates
+  </Card>
+</CardGroup>
+
+**To connect:**
+
+<Steps>
+  <Step title="Sign Up or Log In">
+    Click **Sign up** to create a Zapier account, or **Log in** if you already have one.
+  </Step>
+  <Step title="Select Apps">
+    In the "Connect this app" field, **Ringg AI** is pre-selected. Search for the app you want to connect in the "with this one!" field.
+  </Step>
+  <Step title="Create Your Zap">
+    Follow Zapier's guided setup to create your Zap.
+  </Step>
+</Steps>
+
+<Tip>
+  Your Ringg AI API key is used to authenticate the Zapier connection.
+</Tip>

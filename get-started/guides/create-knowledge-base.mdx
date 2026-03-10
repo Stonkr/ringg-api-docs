@@ -1,0 +1,110 @@
+---
+title: "Create a Knowledge Base"
+sidebarTitle: "Create a Knowledge Base"
+description: "Create Deterministic and Non-Deterministic Knowledge Bases for your assistants."
+icon: "folder-git-2"
+---
+
+A Knowledge Base lets your assistant look up information during live calls. This guide walks you through creating both Deterministic and Non-Deterministic KBs.
+
+---
+
+## Step 1 — Open the Knowledge Base Page
+
+1. Click **Knowledge Base** in the left sidebar.
+2. Click **Create Knowledge Base** in the top-right corner.
+
+{/* <Frame>
+  <img src="/images/documentation/knowledge-base-page.png" alt="Knowledge Base Page" />
+</Frame> */}
+
+A dropdown appears with two options:
+
+| Option | Best For |
+|---|---|
+| **Deterministic KB** | Structured data — you control the retrieval schema |
+| **Non Deterministic KB** | Unstructured documents — AI determines what to retrieve |
+
+---
+
+## Creating a Deterministic Knowledge Base
+
+<Steps>
+  <Step title="Choose Deterministic KB">
+    Click **Deterministic KB** from the dropdown.
+  </Step>
+  <Step title="Name Your KB">
+    Enter a **KB Name** to identify it (e.g. "Product Pricing Q1 2026").
+  </Step>
+  <Step title="Upload Files">
+    Drag and drop your files into the upload area, or click to browse.
+
+    - **Up to 4 files** per Knowledge Base
+    - **Up to 512 MB** per file
+    - Supported formats: PDF, CSV, XLSX, DOCX, and other common document types
+  </Step>
+  <Step title="Edit the Schema">
+    Click **Edit Schema** to define the fields that will be extracted from your documents.
+
+    For each field, set:
+    - **Field name** (e.g. `product_name`, `price`, `policy_code`)
+    - **Data type** (String, Number, Boolean, etc.)
+  </Step>
+  <Step title="Train the Knowledge Base">
+    Click **Train Knowledge Base** to process your uploaded files against the schema.
+
+    Training may take a few minutes depending on file size. Once complete, the KB will appear in your list.
+  </Step>
+</Steps>
+
+{/* <Frame>
+  <img src="/images/documentation/new-kb-form.png" alt="New Knowledge Base Form" />
+</Frame> */}
+
+---
+
+## Creating a Non-Deterministic Knowledge Base
+
+<Steps>
+  <Step title="Choose Non Deterministic KB">
+    Click **Non Deterministic KB** from the dropdown.
+  </Step>
+  <Step title="Name Your KB">
+    Enter a **KB Name**.
+  </Step>
+  <Step title="Upload Files">
+    Upload your files (same limits: 4 files, 512 MB each). These can be FAQs, policy documents, SOPs, product manuals, or any text-heavy document.
+  </Step>
+  <Step title="Train the Knowledge Base">
+    Click **Train Knowledge Base**. The AI will index the content and handle retrieval automatically without a predefined schema.
+  </Step>
+</Steps>
+
+---
+
+## Attaching a KB to an Assistant
+
+<Steps>
+  <Step title="Open the Assistant">
+    Go to **Assistants** and open the assistant you want to update.
+  </Step>
+  <Step title="Select Knowledge Base">
+    In the left panel, click **Assistant Settings → Knowledge Base**.
+  </Step>
+  <Step title="Choose and Save">
+    Select your trained Knowledge Base from the list and save.
+  </Step>
+</Steps>
+
+The assistant will now reference this KB during calls when it needs to look up information.
+
+---
+
+## Tips for Best Results
+
+<Tip>
+  - Keep documents clean and well-structured (avoid scanned PDFs without OCR)
+  - For Deterministic KBs, ensure column headers in CSV/XLSX match the schema field names
+  - For Non-Deterministic KBs, split very large documents into logical sections for more precise retrieval
+  - Re-train the KB whenever you update the source documents
+</Tip>

@@ -1,0 +1,110 @@
+---
+title: "Assistants"
+sidebarTitle: "Assistants"
+description: "Understand the core building block of Ringg AI — AI-powered voice agents that conduct phone conversations on your behalf."
+icon: "bot-message-square"
+---
+
+An **Assistant** is the core building block of Ringg AI. It is an AI-powered voice agent that conducts phone conversations on your behalf, following a defined objective, script, and voice persona.
+
+---
+
+## Assistant Types
+
+### By Orchestration
+
+| Type | Description | Best For |
+|---|---|---|
+| **Single Prompt** | One unified prompt drives the entire conversation | Simple, linear workflows (e.g. reminders, quick surveys) |
+| **Multi Prompt** | Multiple prompt nodes form a branching conversation flow | Complex workflows with conditional paths (e.g. loan collections, onboarding) |
+
+### By Call Direction
+
+| Direction | Description |
+|---|---|
+| **Outbound** | The assistant dials the contact's number |
+| **Inbound** | The assistant answers calls made to your number |
+| **Webcall** | The assistant handles calls initiated from a web widget embedded on your site |
+
+---
+
+## Industry Templates
+
+When creating an assistant, you can choose from pre-built industry templates:
+
+<CardGroup cols={3}>
+  <Card title="Logistics" icon="truck" />
+  <Card title="Healthcare" icon="hospital" />
+  <Card title="Financial" icon="landmark" />
+  <Card title="Education" icon="graduation-cap" />
+  <Card title="HR & Recruitment" icon="users" />
+  <Card title="eCommerce" icon="shopping-cart" />
+</CardGroup>
+
+<Tip>
+  Templates pre-populate prompt structures suited to that industry, saving setup time.
+</Tip>
+
+---
+
+## Assistant Settings
+
+Every assistant has the following configurable settings:
+
+### Assistant Settings
+
+| Setting | Description |
+|---|---|
+| **Prompt** | The first message the assistant speaks, the conversation objective, and response guidelines |
+| **Voice** | Language (primary + secondary) and voice character (Tanya, Naina, Raj, Rahul, Anya, etc.) |
+| **Custom Variables** | Dynamic variables injected into the prompt at call time (e.g. `{{callee_name}}`, `{{mrp}}`) |
+| **Knowledge Base** | Attach a Knowledge Base so the assistant can look up information during calls |
+
+### Call Settings
+
+| Setting | Description |
+|---|---|
+| **Call** | Maximum call duration, inactivity timeout, timezone, noise filtering, voicemail detection, retry logic, and audio behaviour |
+| **Chat** | Session duration and idle timeout settings for webcall/chat interactions |
+
+### Advanced Settings
+
+| Setting | Description |
+|---|---|
+| **Embed** | Widget configuration and auto-generated embed code for webcall integration |
+| **Keyword Boosting** | Add domain-specific words to improve the assistant's speech recognition accuracy |
+| **Custom Analysis** | Define a post-call analysis prompt and output schema to extract structured data from each call |
+
+---
+
+## The Prompt Structure
+
+A well-structured prompt typically contains:
+
+<Steps>
+  <Step title="First Message">
+    The exact opening line the assistant speaks when the call connects. Supports `@{{variable}}` syntax for dynamic personalisation.
+  </Step>
+  <Step title="Objective">
+    A paragraph describing the assistant's role, context, and goals.
+  </Step>
+  <Step title="Response Guidelines">
+    Rules for tone, persona, length of responses, and language switching.
+  </Step>
+</Steps>
+
+<Note>
+  The **Interruptible** toggle on the first message controls whether the callee can speak before the assistant finishes its opening line.
+</Note>
+
+---
+
+## Agent ID
+
+Every assistant gets a unique **Agent ID** (UUID). This is used for API calls and integrations.
+
+---
+
+## Test Call
+
+Use the **Test call** button (top-right of any assistant page) to trigger a live test call before deploying to a campaign.

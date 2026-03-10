@@ -1,0 +1,128 @@
+---
+title: "Create an Assistant"
+sidebarTitle: "Create an Assistant"
+description: "Step-by-step guide to creating a new AI voice assistant in Ringg AI."
+icon: "sparkles"
+---
+
+This guide walks you through creating a new AI voice assistant in Ringg AI from scratch.
+
+---
+
+## Step 1 — Open the Create Assistant Modal
+
+1. Go to **Assistants** in the left sidebar.
+2. Click **+ Create Assistant** in the top-right corner.
+
+{/* <Frame>
+  <img src="/images/documentation/assistants-page.png" alt="Assistants Page with Create Button" />
+</Frame> */}
+
+The **Create Assistant** modal will open.
+
+---
+
+## Step 2 — Choose a Call Type
+
+At the top of the modal, select the call direction for your assistant:
+
+| Tab | Description |
+|---|---|
+| **Outbound** | Assistant dials the contact (campaigns, follow-ups) |
+| **Inbound** | Assistant picks up calls made to your number |
+| **Webcall** | Assistant handles calls from a web widget on your site |
+
+{/* <Frame>
+  <img src="/images/documentation/create-assistant-modal.png" alt="Create Assistant Modal - Call Type Tabs" />
+</Frame> */}
+
+---
+
+## Step 3 — Select a Template or Start from Scratch
+
+<Tabs>
+  <Tab title="Use an Industry Template">
+    In the left panel, choose from:
+    - Logistics
+    - Healthcare
+    - Financial
+    - Education
+    - HR & Recruitment
+    - eCommerce
+
+    Templates pre-fill your assistant's prompt with industry-appropriate language and structure.
+  </Tab>
+  <Tab title="Start from Scratch">
+    Click **Blank Template** (top of the left panel), then choose your orchestration type from the right panel:
+
+    | Option | Description |
+    |---|---|
+    | **Single Prompt** | One prompt drives the entire conversation — ideal for simple flows |
+    | **Multi Prompt** | Multiple connected prompt nodes — ideal for branching conversations |
+  </Tab>
+</Tabs>
+
+---
+
+## Step 4 — Fill in Agent Basics
+
+After selecting your template and orchestration type, you'll be taken to the assistant setup form.
+
+Fill in:
+
+1. **Agent Name** *(required)* — A descriptive name for your assistant (e.g. "Loan Collection Agent – Hindi")
+2. **Primary Language** *(required)* — The main language the assistant will speak (e.g. English (IN), Hindi)
+3. **Secondary Language** *(optional)* — A fallback language if the caller switches (e.g. English if primary is Hindi)
+
+{/* <Frame>
+  <img src="/images/documentation/agent-basics-form.png" alt="Agent Basics Form" />
+</Frame> */}
+
+<Tip>
+  Name your assistants descriptively so they're easy to find later — include the use case and language (e.g. "Aakash – Outbound – Hindi/English").
+</Tip>
+
+---
+
+## Step 5 — Choose a Voice
+
+In the **Set up voice** section, pick the voice character your assistant will use:
+
+1. Toggle between **Most Used** and **Neutral** to filter voices by category.
+2. Click a voice card (e.g. Tanya, Naina, Raj, Rahul, Anya) to select it.
+3. Click **See more** to browse all available voices.
+
+{/* <Frame>
+  <img src="/images/documentation/voice-selection.png" alt="Voice Selection" />
+</Frame> */}
+
+<Note>
+  Each voice has a distinct tone and personality. Test a few with your target audience before finalising.
+</Note>
+
+---
+
+## Step 6 — Click Next
+
+Click **Next** to proceed. If any required fields are missing, the form will highlight them in red with a validation message.
+
+---
+
+## What's Next?
+
+After creating your assistant, you'll be taken to the assistant configuration page where you can:
+
+<CardGroup cols={2}>
+  <Card title="Write Your Prompt" icon="pen" href="/get-started/guides/configure-assistant#1-prompt">
+    Set up first message, objective, and response guidelines
+  </Card>
+  <Card title="Attach a Knowledge Base" icon="folder-git-2" href="/get-started/guides/configure-assistant#4-knowledge-base">
+    Connect reference documents for live call lookups
+  </Card>
+  <Card title="Configure Call Settings" icon="settings" href="/get-started/guides/configure-assistant#5-call-settings">
+    Set duration, voicemail detection, noise filtering, and more
+  </Card>
+  <Card title="Run a Test Call" icon="phone-call" href="/get-started/guides/configure-assistant#running-a-test-call">
+    Verify your assistant works before going live
+  </Card>
+</CardGroup>

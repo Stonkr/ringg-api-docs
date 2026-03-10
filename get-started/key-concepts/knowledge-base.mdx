@@ -1,0 +1,58 @@
+---
+title: "Knowledge Base"
+sidebarTitle: "Knowledge Base"
+description: "Learn about Knowledge Bases — document collections your assistants can search during live calls."
+icon: "folder-git-2"
+---
+
+A **Knowledge Base (KB)** is a collection of documents that an assistant can search during a live call to retrieve accurate information. This is useful when your assistant needs to answer questions about products, policies, pricing, or FAQs that can't be hardcoded into a prompt.
+
+---
+
+## Knowledge Base Types
+
+Ringg AI offers two types of Knowledge Bases:
+
+<CardGroup cols={2}>
+  <Card title="Deterministic KB" icon="target">
+    **More accurate results. You choose what to search.**
+
+    - You define the exact fields/schema that will be queried
+    - Best for structured data (e.g. product catalogues, pricing tables, policy documents)
+    - Higher accuracy because the retrieval logic is explicit
+  </Card>
+  <Card title="Non-Deterministic KB" icon="sparkles">
+    **More flexible. AI figures it out, but may be less accurate.**
+
+    - The AI decides what to search and how to answer
+    - Best for unstructured documents (e.g. FAQs, knowledge articles, SOPs)
+    - More flexible but may occasionally return less precise results
+  </Card>
+</CardGroup>
+
+---
+
+## Attaching a KB to an Assistant
+
+Once a Knowledge Base is created, you can attach it to any assistant via **Assistant Settings → Knowledge Base**.
+
+<Tip>
+  Multiple assistants can share the same Knowledge Base.
+</Tip>
+
+---
+
+## File Limits
+
+| Limit | Value |
+|---|---|
+| Max files per KB | 4 files |
+| Max file size | 512 MB each |
+
+---
+
+## Schema (Deterministic KB)
+
+For Deterministic KBs, you define a schema that maps the fields in your uploaded documents. Click **Edit Schema** during KB creation to configure field names and types.
+
+After uploading your files, click **Train Knowledge Base** to process the data and make it available to your assistants.
