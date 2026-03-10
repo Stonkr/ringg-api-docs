@@ -273,6 +273,10 @@
       {
         "label": "Contact Us",
         "href": "mailto:admin@ringg.ai"
+      },
+      {
+        "label": "Skills",
+        "href": "https://docs.ringg.ai/skill.md"
       }
     ],
     "primary": {
