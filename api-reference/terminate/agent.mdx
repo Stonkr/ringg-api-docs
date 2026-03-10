@@ -1,14 +1,21 @@
 ---
-openapi: patch /campaign/terminate/agent
+title: Terminate All Calls by Agent ID
+api: "PATCH /campaign/terminate"
 ---
-
-## Terminate All Agent Calls
 
 Stop all active calls for a specific AI agent across all campaigns. This is useful when you need to halt all operations for a particular agent.
 
 <Warning>
 **Impact**: This will terminate ALL active calls for the specified agent, regardless of which campaign they belong to.
 </Warning>
+
+<ParamField header="X-API-KEY" type="string" required>
+  Your Ringg AI API key.
+</ParamField>
+
+<ParamField body="agent_id" type="string" required>
+  ID of the agent whose calls should be terminated. Example: `196d8d88-591e-4e08-8324-2f928d152fff`
+</ParamField>
 
 ## When to Use This
 

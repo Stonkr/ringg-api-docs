@@ -1,0 +1,39 @@
+---
+title: Terminate Calls by Numbers
+api: "PATCH /campaign/terminate"
+---
+
+Stop ALL active calls to specific phone numbers across ALL campaigns. This is the most comprehensive way to ensure certain numbers are no longer contacted.
+
+<Warning>
+**Global Impact**: This terminates calls to the specified numbers across ALL active campaigns, not just one campaign.
+</Warning>
+
+<ParamField header="X-API-KEY" type="string" required>
+  Your Ringg AI API key.
+</ParamField>
+
+<ParamField body="mobile_numbers" type="string[]" required>
+  Array of mobile numbers to terminate calls for across all campaigns (max 100). Example: `["+918882876897", "+918882876898"]`
+</ParamField>
+
+## When to Use This
+
+- **Global Opt-Outs**: Customers who want to stop ALL calls from your organization
+- **Legal Compliance**: Honor comprehensive do-not-call requests
+- **Data Privacy**: Implement "right to be forgotten" requests
+- **Emergency Stops**: Immediately halt all contact attempts to specific numbers
+- **Account Closure**: Stop all calls when customers close accounts
+
+## Number Format Requirements
+- ✅ **Correct**: `+918882876897` (with country code)
+- ✅ **Correct**: `+1234567890` (international format)
+- ❌ **Wrong**: `8882876897` (missing country code)
+
+### Limits & Constraints
+- **Maximum**: 100 numbers per request
+- **Rate Limits**: Standard API rate limits apply
+
+<Info>
+**Best Practice**: Use this endpoint for definitive opt-outs. For temporary or campaign-specific issues, consider using the campaign-numbers endpoint instead.
+</Info>
