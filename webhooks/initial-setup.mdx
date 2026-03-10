@@ -10,10 +10,11 @@ Ringg AI's event-based webhook system allows you to subscribe to specific events
 
 ## Event Types
 
-Our webhook system supports four main event types. You can subscribe to **any or all** of these events based on your needs:
+Our webhook system supports five event types. You can subscribe to **any or all** of these events based on your needs:
 
 | Event Type | Trigger | Data Included |
 |------------|---------|---------------|
+| `call_started` | A call is initiated | Agent name, version info, custom args |
 | `call_completed` | Every call attempt finishes | Transcript, duration, status, custom args |
 | `recording_completed` | Recording is processed and ready | Recording URL and duration |
 | `platform_analysis_completed` | AI analysis completes | Key points, summary, classification |
@@ -33,8 +34,8 @@ curl --location --request PATCH 'https://prod-api.ringg.ai/ca/api/v0/agent/v1' \
     "agent_id": "your-agent-id",
     "event_subscriptions": [
         {
-            "event_type": "call_completed",
-            "callback_url": "https://your-domain.com/webhooks/call-completed",
+            "event_type": ["call_started", "call_completed", "recording_completed", "platform_analysis_completed", "client_analysis_completed"],
+            "callback_url": "https://your-domain.com/webhooks",
             "headers": {
                 "Authorization": "Bearer your-webhook-token",
                 "Content-Type": "application/json"
@@ -42,26 +43,8 @@ curl --location --request PATCH 'https://prod-api.ringg.ai/ca/api/v0/agent/v1' \
             "method_type": "POST"
         },
         {
-            "event_type": "recording_completed",
-            "callback_url": "https://your-domain.com/webhooks/recording-completed",
-            "headers": {
-                "Authorization": "Bearer your-webhook-token",
-                "Content-Type": "application/json"
-            },
-            "method_type": "POST"
-        },
-        {
-            "event_type": "platform_analysis_completed",
-            "callback_url": "https://your-domain.com/webhooks/platform-analysis",
-            "headers": {
-                "Authorization": "Bearer your-webhook-token",
-                "Content-Type": "application/json"
-            },
-            "method_type": "POST"
-        },
-        {
-            "event_type": "client_analysis_completed",
-            "callback_url": "https://your-domain.com/webhooks/client-analysis",
+            "event_type": ["call_completed", "recording_completed"],
+            "callback_url": "https://your-another-domain.com/webhooks",
             "headers": {
                 "Authorization": "Bearer your-webhook-token",
                 "Content-Type": "application/json"
@@ -84,7 +67,7 @@ You have complete flexibility in choosing which events to subscribe to:
     "agent_id": "your-agent-id",
     "event_subscriptions": [
         {
-            "event_type": "call_completed",
+            "event_type": ["call_completed"],
             "callback_url": "https://your-domain.com/webhooks/calls",
             "headers": {
                 "Authorization": "Bearer your-webhook-token",
@@ -103,17 +86,8 @@ You have complete flexibility in choosing which events to subscribe to:
     "agent_id": "your-agent-id",
     "event_subscriptions": [
         {
-            "event_type": "platform_analysis_completed",
+            "event_type": ["platform_analysis_completed", "client_analysis_completed"],
             "callback_url": "https://your-domain.com/webhooks/analysis",
-            "headers": {
-                "Authorization": "Bearer your-webhook-token",
-                "Content-Type": "application/json"
-            },
-            "method_type": "POST"
-        },
-        {
-            "event_type": "client_analysis_completed",
-            "callback_url": "https://your-domain.com/webhooks/custom",
             "headers": {
                 "Authorization": "Bearer your-webhook-token",
                 "Content-Type": "application/json"
