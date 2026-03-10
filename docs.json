@@ -7,7 +7,7 @@
     "light": "#9AADEC",
     "dark": "#9AADEC"
   },
-  "favicon": "/favicon.png",
+  "favicon": "https://assets.ringg.ai/images/logo/favicon.ico",
   "styling": {
     "eyebrows": "breadcrumbs"
   },
@@ -184,7 +184,7 @@
   },
   "logo": {
     "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg",
+    "dark": "/logo/dark.png",
     "href": "https://www.ringg.ai"
   },
   "api": {
