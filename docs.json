@@ -120,7 +120,7 @@
               "api-reference/endpoint/assistant/get-assistants",
               "api-reference/endpoint/assistant/get-assistant-by-id",
               "api-reference/endpoint/assistant/edit-assistant",
-              "api-reference/endpoint/agent/create-agent"
+              "api-reference/endpoint/assistant/create-agent"
             ]
           },
           {
@@ -154,11 +154,11 @@
           {
             "group": "Termination",
             "pages": [
-              "api-reference/endpoint/terminate/terminate-by-agent",
-              "api-reference/endpoint/terminate/terminate-by-call-ids", 
-              "api-reference/endpoint/terminate/terminate-by-campaign",
-              "api-reference/endpoint/terminate/terminate-by-campaign-numbers",
-              "api-reference/endpoint/terminate/terminate-by-numbers"
+              "api-reference/terminate/agent",
+              "api-reference/terminate/call-ids", 
+              "api-reference/terminate/campaign",
+              "api-reference/terminate/campaign-numbers",
+              "api-reference/terminate/numbers"
             ]
           },
           {

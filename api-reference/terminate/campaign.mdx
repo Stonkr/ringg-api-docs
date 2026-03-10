@@ -1,8 +1,7 @@
 ---
-openapi: patch /campaign/terminate/campaign
+title: Terminate Calls by Campaign ID
+api: "PATCH /campaign/terminate"
 ---
-
-## Terminate Campaign Calls
 
 Stop all active calls within a specific campaign. This terminates all queued and retry calls for the entire campaign.
 
@@ -10,10 +9,18 @@ Stop all active calls within a specific campaign. This terminates all queued and
 **Campaign Impact**: This will terminate ALL active calls in the specified campaign, affecting all contacts in that campaign.
 </Warning>
 
+<ParamField header="X-API-KEY" type="string" required>
+  Your Ringg AI API key.
+</ParamField>
+
+<ParamField body="campaign_id" type="string" required>
+  ID of the campaign whose calls should be terminated. Example: `0b52ca2b-7767-4cb5-ac4c-b2a4f892a856`
+</ParamField>
+
 ## When to Use This
 
 - **Campaign Issues**: When a campaign has problems and needs to be stopped
-- **Content Problems**: If the campaign script or agent has errors  
+- **Content Problems**: If the campaign script or agent has errors
 - **Budget Management**: When campaign costs exceed budget
 - **Schedule Changes**: If campaign timing needs to be adjusted
 - **Quality Control**: When campaign performance is poor
@@ -41,20 +48,3 @@ Find your campaign ID from:
 <Info>
 **Note**: After terminating a campaign, you can restart it later if needed using the original campaign configuration.
 </Info>
-
-## Use Cases
-
-### Emergency Stop
-Quickly halt a problematic campaign:
-```bash
-# Stop campaign immediately
-curl -X PATCH /campaign/terminate/campaign \
-  -H "Content-Type: application/json" \
-  -d '{"campaign_id": "0b52ca2b-7767-4cb5-ac4c-b2a4f892a856"}'
-```
-
-### Budget Control
-Stop campaigns that exceed budget limits before more calls are made.
-
-### Quality Issues
-Halt campaigns with script problems or poor performance metrics.

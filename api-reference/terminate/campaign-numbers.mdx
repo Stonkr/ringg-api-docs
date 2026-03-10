@@ -1,8 +1,7 @@
 ---
-openapi: patch /campaign/terminate/campaign-numbers
+title: Terminate Calls by Campaign Numbers
+api: "PATCH /campaign/terminate"
 ---
-
-## Terminate Campaign Numbers
 
 Stop calls to specific phone numbers within a particular campaign. This gives you precise control to remove individual contacts from an active campaign.
 
@@ -10,30 +9,24 @@ Stop calls to specific phone numbers within a particular campaign. This gives yo
 **Targeted Termination**: This only affects the specified numbers within the given campaign. The same numbers in other campaigns will continue.
 </Warning>
 
+<ParamField header="X-API-KEY" type="string" required>
+  Your Ringg AI API key.
+</ParamField>
+
+<ParamField body="campaign_id" type="string" required>
+  ID of the campaign. Example: `0b52ca2b-7767-4cb5-ac4c-b2a4f892a856`
+</ParamField>
+
+<ParamField body="mobile_numbers" type="string[]" required>
+  Array of mobile numbers to terminate within the campaign (max 100). Example: `["+918882876897", "+918882876898"]`
+</ParamField>
+
 ## When to Use This
 
 - **Customer Requests**: When contacts ask to be removed from calls
 - **Data Quality**: Remove invalid or problematic numbers from campaign
 - **Compliance**: Honor do-not-call requests for specific numbers
 - **Selective Control**: Keep campaign running but exclude certain contacts
-- **A/B Testing**: Stop calls to control group numbers
-
-## Perfect For
-
-### Customer Opt-Outs
-Quickly remove customers who requested to stop receiving calls:
-```json
-{
-  "campaign_id": "0b52ca2b-7767-4cb5-ac4c-b2a4f892a856",
-  "mobile_numbers": ["+918882876897", "+918882876898"]
-}
-```
-
-### Data Cleanup
-Remove invalid or problematic numbers while keeping campaign active.
-
-### Compliance Management
-Honor do-not-call requests without stopping entire campaign.
 
 ## Important Details
 
@@ -47,23 +40,6 @@ Honor do-not-call requests without stopping entire campaign.
 - **Scope**: Only affects specified campaign
 - **Status**: Only terminates registered/retry calls
 
-### What Happens
-- **Immediate**: Queued calls to these numbers are cancelled
-- **Retry Calls**: Scheduled retries are also cancelled  
-- **Other Campaigns**: Same numbers in other campaigns continue
-- **Completed Calls**: Already finished calls remain in history
-
 <Info>
 **Pro Tip**: Use this endpoint to implement real-time opt-out functionality in your application. Customers can request removal and you can immediately stop their calls.
 </Info>
-
-## Response
-
-Successful termination returns:
-```json
-{
-  "message": "Calls terminated successfully!"
-}
-```
-
-The response doesn't specify how many calls were actually terminated, but all matching calls for the provided numbers within the campaign will be stopped.
