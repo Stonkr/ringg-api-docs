@@ -175,6 +175,76 @@
       }
     ]
   },
+  "redirects": [
+    {
+      "source": "/get-started/overview",
+      "destination": "/get-started/overview/ringg-ai"
+    },
+    {
+      "source": "/get-started/quick-start/quick-start-guide",
+      "destination": "/api-reference/quick-start/guide"
+    },
+    {
+      "source": "/get-started/quick-start/authentication",
+      "destination": "/api-reference/quick-start/authentication"
+    },
+    {
+      "source": "/get-started/quick-start/api-overview",
+      "destination": "/api-reference/quick-start/api-overview"
+    },
+    {
+      "source": "/get-started/tutorials/voice-calling",
+      "destination": "/api-reference/tutorials/voice-calling"
+    },
+    {
+      "source": "/get-started/tutorials/making-your-first-call",
+      "destination": "/api-reference/tutorials/making-your-first-call"
+    },
+    {
+      "source": "/get-started/tutorials/setting-up-bulk-calls",
+      "destination": "/api-reference/tutorials/setting-up-bulk-calls"
+    },
+    {
+      "source": "/get-started/tutorials/managing-contacts",
+      "destination": "/api-reference/tutorials/managing-contacts"
+    },
+    {
+      "source": "/get-started/tutorials/embedding-web-call-assistant",
+      "destination": "/get-started/guides/embedding-widget"
+    },
+    {
+      "source": "/get-started/telephony/byot-overview",
+      "destination": "/telephony/byot-overview"
+    },
+    {
+      "source": "/get-started/telephony/plivo-integration",
+      "destination": "/telephony/plivo-integration"
+    },
+    {
+      "source": "/get-started/telephony/exotel-integration",
+      "destination": "/telephony/exotel-integration"
+    },
+    {
+      "source": "/get-started/telephony/twilio-integration",
+      "destination": "/telephony/twilio-integration"
+    },
+    {
+      "source": "/get-started/telephony/number-management",
+      "destination": "/telephony/number-management"
+    },
+    {
+      "source": "/get-started/webhooks/setup",
+      "destination": "/webhooks/initial-setup"
+    },
+    {
+      "source": "/get-started/webhooks/payloads",
+      "destination": "/webhooks/payloads"
+    },
+    {
+      "source": "/get-started/webhooks/error-handling",
+      "destination": "/webhooks/error-handling"
+    }
+  ],
   "seo": {
     "metatags": {
       "og:description": "Setup AI calls for your business with Ringg AI API",
@@ -225,7 +295,8 @@
   "contextual": {
     "options": [
       "copy",
-      "chatgpt"
+      "chatgpt",
+      "claude"
     ]
   }
 }
