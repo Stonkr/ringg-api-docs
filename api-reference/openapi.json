@@ -3137,8 +3137,8 @@
                   },
                   "country_code": {
                     "type": "string",
-                    "description": "(Required) Country code for the campaign",
-                    "example": "US"
+                    "description": "(Required) Phone number country code (e.g., +91 for India, +1 for US)",
+                    "example": "+91"
                   },
                   "campaign_start_time": {
                     "type": "string",
