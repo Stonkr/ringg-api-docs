@@ -68,6 +68,7 @@
         "group": "Telephony Integration",
         "pages": [
           "telephony/byot-overview",
+          "telephony/new-provider-requirements",
           "telephony/plivo-integration",
           "telephony/exotel-integration",
           "telephony/twilio-integration",
