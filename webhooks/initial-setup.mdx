@@ -10,7 +10,7 @@ Ringg AI's event-based webhook system allows you to subscribe to specific events
 
 ## Event Types
 
-Our webhook system supports five event types. You can subscribe to **any or all** of these events based on your needs:
+Our webhook system supports six event types. You can subscribe to **any or all** of these events based on your needs:
 
 | Event Type | Trigger | Data Included |
 |------------|---------|---------------|
@@ -19,6 +19,7 @@ Our webhook system supports five event types. You can subscribe to **any or all*
 | `recording_completed` | Recording is processed and ready | Recording URL and duration |
 | `platform_analysis_completed` | AI analysis completes | Key points, summary, classification |
 | `client_analysis_completed` | Custom analysis completes | Results based on your custom prompts |
+| `all_processing_completed` | All post-call processing is done | Full call data: transcript, recording, both analyses |
 
 ## Configuration
 
@@ -34,7 +35,7 @@ curl --location --request PATCH 'https://prod-api.ringg.ai/ca/api/v0/agent/v1' \
     "agent_id": "your-agent-id",
     "event_subscriptions": [
         {
-            "event_type": ["call_started", "call_completed", "recording_completed", "platform_analysis_completed", "client_analysis_completed"],
+            "event_type": ["call_started", "call_completed", "recording_completed", "platform_analysis_completed", "client_analysis_completed", "all_processing_completed"],
             "callback_url": "https://your-domain.com/webhooks",
             "headers": {
                 "Authorization": "Bearer your-webhook-token",
