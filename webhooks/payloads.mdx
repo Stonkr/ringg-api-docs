@@ -244,6 +244,82 @@ Triggered when your custom analysis completes based on your configured prompts.
 ```
 
 
+### All Processing Completed Event
+
+Triggered once all post-call processing is finished — recording uploaded, transcript generated, and both platform and client analysis complete. This single consolidated event carries the full call dataset in one payload.
+
+```json
+{
+  "event_type": "all_processing_completed",
+  "call_id": "4b30f5dc-7f86-4e4c-a3aa-15c01138559b",
+  "call_sid": "f46cb9f4-f6ca-4d7d-abc9-02c226b95ec0",
+  "agent_id": "cbaf9944-3e34-43b6-b3e8-6a905de16639",
+  "workspace_id": "442a9db3-0fd4-47dc-b8cd-cc7eedfa272f",
+  "status": "completed",
+  "sub_status": "ACCEPTED",
+  "call_type": "outbound",
+  "call_duration": 15.73,
+  "called_on": "2025-12-14T19:37:13.310707Z",
+  "created_at": "2025-12-14T19:37:13.315211Z",
+  "to_number": "+918882876897",
+  "from_number": "+918035736726",
+  "custom_args_values": {
+    "callee_name": "John",
+    "order_value": "70000",
+    "company_name": "Acme Corp"
+  },
+  "bulk_list_id": null,
+  "agent_name": "Payment Reminder Agent",
+  "version_id": "a1b2c3d4-5e6f-7890-abcd-ef1234567890",
+  "version_slug": "v1",
+  "version_description": "Initial version",
+  "call_cost": 0.15,
+  "agent_message_count": 3,
+  "user_message_count": 2,
+  "overall_latency_seconds": 0.892345,
+  "first_utterance_seconds": 0.456789,
+  "transcript": [
+    {
+      "bot": "Hello abhishek, this is Caroline from Ringg AI. I'm calling to remind you about your upcoming payment of dads due on twelve. Let's ensure everything is on track!"
+    },
+    {
+      "user": "Yes. Yes. Everything is on track. Thank you so much,"
+    },
+    {
+      "user": "Bye."
+    },
+    {
+      "bot": "Thank you for confirming. Have a great day!"
+    }
+  ],
+  "recording_url": "https://storage.googleapis.com/calling_agent_call_recordings/vobiz/6b382cad-a8d7-4489.mp3",
+  "platform_analysis": {
+    "key_points": [
+      "Reminder about upcoming payment due on the 12th for dad's payment.",
+      "User acknowledged the reminder and stated everything is on track.",
+      "No issues or new concerns were raised; conversation ended amicably."
+    ],
+    "action_items": [],
+    "summary": "Agent reminded the customer about an upcoming payment due on the 12th. The customer confirmed that everything is on track.",
+    "classification": "payment_confirmed",
+    "callback_requested": false,
+    "callback_requested_time": null,
+    "status": "analyzed",
+    "call_disconnect_reason": "agent_hangup",
+    "timezone": "Asia/Kolkata"
+  },
+  "platform_analysis_status": "success",
+  "client_analysis": {
+    "lead_quality": "high",
+    "intent_score": 8.5,
+    "next_action": "follow_up",
+    "purchase_probability": 0.75
+  },
+  "client_analysis_status": "success",
+  "tool_call_logs": []
+}
+```
+
 ## Implementation Examples
 
 ### Node.js/Express
@@ -287,6 +363,13 @@ app.post('/webhooks/:eventType', (req, res) => {
       // Handle custom analysis
       console.log(`Lead quality: ${eventData.analysis_data.lead_quality}`);
       break;
+
+    case 'all_processing_completed':
+      // All data ready — transcript, recording, and both analyses
+      console.log(`Recording: ${eventData.recording_url}`);
+      console.log(`Classification: ${eventData.platform_analysis.classification}`);
+      console.log(`Client analysis: ${JSON.stringify(eventData.client_analysis)}`);
+      break;
   }
   
   // Always acknowledge receipt
@@ -302,7 +385,7 @@ app.listen(3000);
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `event_type` | string | Type of event: `call_started`, `call_completed`, `recording_completed`, `platform_analysis_completed`, `client_analysis_completed` |
+| `event_type` | string | Type of event: `call_started`, `call_completed`, `recording_completed`, `platform_analysis_completed`, `client_analysis_completed`, `all_processing_completed` |
 | `call_id` | string | Unique identifier for the call |
 | `call_sid` | string | Telephony provider's call identifier (e.g., Twilio Call SID, Plivo Call UUID) |
 | `agent_id` | string | ID of the AI agent that handled the call |
@@ -357,4 +440,27 @@ app.listen(3000);
 | `callback_requested_time` | string | ISO 8601 timestamp when callback was requested (platform analysis) |
 | `status` | string | Analysis status, always 'analyzed' (platform analysis) |
 | `call_disconnect_reason` | string | Reason call ended: 'agent_hangup' or 'user_hangup' (platform analysis) |
-| `timezone` | string | Timezone used for the call (platform analysis) | 
+| `timezone` | string | Timezone used for the call (platform analysis) |
+
+### All Processing Completed Fields
+
+This event combines all data from the call lifecycle into a single payload. It includes every common field plus:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `call_duration` | number | Duration of the call in seconds |
+| `call_type` | string | Direction: `inbound`, `outbound`, or `webcall` |
+| `status` | string | Final call status: `completed`, `failed`, `error`, `cancelled`, `forwarded` |
+| `sub_status` | string | Detailed call sub-status (e.g., `ACCEPTED`, `VOICEMAIL_DETECTED`) |
+| `to_number` | string | Phone number that received the call |
+| `from_number` | string | Phone number that made the call |
+| `called_on` | string | ISO 8601 timestamp when the call was initiated (UTC) |
+| `created_at` | string | ISO 8601 timestamp when the call record was created (UTC) |
+| `transcript` | array | Full conversation transcript with `bot`/`user` content, `message_id`, and `timestamp` |
+| `recording_url` | string | URL of the call recording |
+| `platform_analysis` | object | Ringg AI's built-in analysis (same structure as `platform_analysis_completed.analysis_data`) |
+| `platform_analysis_status` | string | Status: `success`, `failed`, `not_enabled`, `cancelled` |
+| `client_analysis` | object | Your custom analysis results (same structure as `client_analysis_completed.analysis_data`) |
+| `client_analysis_status` | string | Status: `success`, `failed`, `not_enabled`, `cancelled` |
+| `version_slug` | string | Slug of the agent version used |
+| `version_description` | string | Description of the agent version (nullable) |
