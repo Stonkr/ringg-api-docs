@@ -157,6 +157,13 @@ loadAgent({
    * @default false
    */
 
+  bypassStartScreen?: boolean,
+  /**
+   * Skip the start screen and begin a call/chat immediately when the trigger
+   * button is clicked. Uses the mode set by defaultTab (defaults to "audio").
+   * @default false
+   */
+
   innerWindowProps?: {
     /**
      * Inner window dimensions when a call is connected.
@@ -422,6 +429,7 @@ The chat agent uses the same underlying assistant configuration as voice mode wi
 |--------|------|---------|-------------|
 | `defaultTab` | `"audio" \| "text"` | `"audio"` | Tab shown when the widget loads. Use `"text"` for chat mode. Supported from v1.0.8+ |
 | `hideTabSelector` | `boolean` | `false` | Hides the audio/text tab switcher for a single-mode experience. Supported from v1.0.8+ |
+| `bypassStartScreen` | `boolean` | `false` | Skips the start screen and begins a call/chat immediately on trigger click. Uses the `defaultTab` mode. |
 </Card>
 
 ---
