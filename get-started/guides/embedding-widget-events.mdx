@@ -1,0 +1,107 @@
+---
+title: "Embedding Widget Events"
+sidebarTitle: "Widget Events"
+icon: "radio"
+description: "Subscribe to Ringg AI widget browser events for UI state, conversations, and feedback."
+---
+
+The Ringg AI widget dispatches browser `CustomEvent` events on `window`. Use these events to sync your page UI, track analytics, or run post-conversation workflows. Widget events are supported from v1.0.17+.
+
+## Event reference
+
+| Event | Fires when | `event.detail` |
+|---|---|---|
+| `ringg:widget_status` | The widget opens or closes. | `status`: `"maximised"` or `"minimised"`; `mode`: `"audio"` or `"text"`. |
+| `ringg:conversation_status` | A voice or chat conversation starts or ends. | `status`: `"started"` or `"ended"`; `mode`: `"audio"` or `"text"`; `callId`: `string`. |
+| `ringg:feedback_status` | The user submits or skips feedback. | `status`: `"submitted"` or `"skipped"`; `callId`: `string`; optional `rating`: `number`. |
+
+## Basic listeners
+
+```javascript
+window.addEventListener("ringg:widget_status", (event) => {
+  console.log(event.detail);
+  // { status: "maximised", mode: "audio" }
+});
+
+window.addEventListener("ringg:conversation_status", (event) => {
+  console.log(event.detail);
+  // { status: "started", mode: "audio", callId: "abc123" }
+});
+
+window.addEventListener("ringg:feedback_status", (event) => {
+  console.log(event.detail);
+  // { status: "submitted", callId: "abc123", rating: 5 }
+});
+```
+
+## Analytics example
+
+```javascript
+window.addEventListener("ringg:conversation_status", (event) => {
+  const { status, mode, callId } = event.detail;
+
+  if (status === "started") {
+    analytics.track("Ringg Conversation Started", {
+      callId,
+      mode,
+    });
+  }
+
+  if (status === "ended") {
+    analytics.track("Ringg Conversation Ended", {
+      callId,
+      mode,
+    });
+  }
+});
+```
+
+## Page UI example
+
+Use `ringg:widget_status` when your page needs to react to the widget state, such as hiding a competing chat launcher.
+
+```javascript
+const supportLauncher = document.querySelector("[data-support-launcher]");
+
+window.addEventListener("ringg:widget_status", (event) => {
+  const { status } = event.detail;
+
+  if (!supportLauncher) {
+    return;
+  }
+
+  supportLauncher.hidden = status === "maximised";
+});
+```
+
+## React cleanup example
+
+If you attach listeners in a single-page app, remove them when the component unmounts so navigation does not create duplicate handlers.
+
+```javascript
+import { useEffect } from "react";
+
+export function RinggEventBridge() {
+  useEffect(() => {
+    function handleConversationStatus(event) {
+      const { status, mode, callId } = event.detail;
+      console.log({ status, mode, callId });
+    }
+
+    window.addEventListener("ringg:conversation_status", handleConversationStatus);
+
+    return () => {
+      window.removeEventListener("ringg:conversation_status", handleConversationStatus);
+    };
+  }, []);
+
+  return null;
+}
+```
+
+## QA notes
+
+<Check>Open and close the widget once, then confirm one `ringg:widget_status` event per action.</Check>
+<Check>Start and end one voice call, then confirm `ringg:conversation_status` includes a `callId`.</Check>
+<Check>Submit and skip feedback in separate tests if feedback is enabled.</Check>
+<Check>In single-page apps, navigate away and back, then confirm listeners are not duplicated.</Check>

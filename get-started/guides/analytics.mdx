@@ -1,93 +1,114 @@
 ---
 title: "Analytics"
 sidebarTitle: "Analytics"
-description: "Monitor call performance, connectivity, and agent efficiency."
+description: "Review call performance, connection rates, costs, and assistant results."
 icon: "chart-spline"
 ---
 
-The **Analytics** page gives you a high-level view of your workspace's call performance over time. Use it to track efficiency, identify issues, and measure assistant outcomes.
+Use **Analytics** to understand how calls are performing across your workspace. It helps business teams answer questions like: Are people picking up? Which assistant is working best? Are calls too short? Are costs aligned with results?
 
 ---
 
-## Accessing Analytics
+## Open Analytics
 
-Click **Analytics** in the left sidebar.
-
-{/* <Frame>
-  <img src="/images/documentation/analytics-page.png" alt="Analytics Page" />
-</Frame> */}
+1. Click **Analytics** in the left sidebar.
+2. Review the default date range.
+3. Use the date picker or filters to narrow the report.
 
 ---
 
-## Setting the Date Range
+## Set the Date Range
 
-By default, the analytics view shows the last 7 days. Click the **date range picker** to change the period, or click the ✕ to reset.
+1. Click the date range picker.
+2. Choose the period you want to review.
+3. Apply the date range.
+4. Click the clear icon to reset when needed.
 
-Click **Filter** to further narrow results by assistant, number, or call status.
+Click **Filter** to narrow results by assistant, number, campaign, status, or other available fields.
 
 ---
 
-## Key Metrics
+## Read the Top Metrics
 
-The top of the page displays a grid of summary metrics:
+The top cards summarize performance for the selected filters.
 
-| Metric | Description |
+| Metric | What It Means |
 |---|---|
-| **Total Calls** | Total number of calls made or received in the selected period |
-| **Calls Connected** | Number of calls where the callee answered |
-| **Connectivity** | Percentage of total calls that were successfully connected (Connected / Total × 100) |
-| **Avg. Duration** | Average call length (shown as X Min Y Sec) |
-| **Total Cost** | Total credit spent on calls in the period (in ₹) |
-| **Registered** | Number of contacts that completed a registration or key action (as tracked by your assistant) |
-| **Voicemail Detected** | Number of calls that hit a voicemail inbox |
-| **Workspace Numbers** | Total active numbers in your workspace |
+| **Total Calls** | All calls in the selected period |
+| **Calls Connected** | Calls where a person answered |
+| **Connectivity** | Connected calls divided by total calls |
+| **Avg. Duration** | Average call length |
+| **Total Cost** | Credits spent in the selected period |
+| **Registered** | Contacts who completed the tracked business action, if configured |
+| **Voicemail Detected** | Calls that reached voicemail |
+| **Workspace Numbers** | Active phone numbers in the workspace |
 
 ---
 
-## Call Status Distribution
+## Review Call Status Distribution
 
-A **donut chart** showing the breakdown of calls by outcome:
+The call status chart shows how calls ended.
 
-- Completed
-- Failed
-- No Answer
-- Voicemail
-- etc.
+Common statuses include:
 
-Hover over segments to see exact counts. This helps you understand what proportion of your calls are reaching real people vs. hitting voicemail or failing.
+- Completed.
+- Failed.
+- No answer.
+- Voicemail.
 
----
-
-## Calls by Day
-
-A **line chart** showing call volume over time. Use the **All** dropdown to filter by a specific assistant.
-
-This chart helps you identify:
-- Peak calling days
-- Drops in call volume (potential campaign issues)
-- The impact of scheduling changes
+Use this chart to spot delivery problems. For example, a high voicemail rate may mean you should change calling hours.
 
 ---
 
-## Assistants in Action
+## Review Calls by Day
 
-A table at the bottom showing per-assistant performance:
+The calls-by-day chart shows volume over time.
 
-| Column | Description |
+Use it to find:
+
+- Peak calling days.
+- Drops in calling volume.
+- Campaign schedule problems.
+- The effect of changing numbers, prompts, or calling windows.
+
+---
+
+## Compare Assistants
+
+The assistant table shows performance by assistant.
+
+| Column | What It Means |
 |---|---|
-| **Agent Name** | The assistant's name |
-| **Call Counts** | Total calls made by this assistant in the period |
-| **Total Connected** | Calls that were answered |
+| **Agent Name** | Assistant name |
+| **Call Counts** | Total calls handled by that assistant |
+| **Total Connected** | Calls answered by a person |
 
-Sort by any column to find your best or worst performing assistants.
+Sort the table to find assistants that need prompt changes, better numbers, or a different audience.
 
 ---
 
-## Using Analytics to Improve Performance
+## What to Try Next
 
-| If you see... | Try... |
+| If You See | Try This |
 |---|---|
-| Low connectivity (< 50%) | Check if your numbers are flagged as spam; try different caller IDs |
-| High voicemail rate | Adjust calling hours to when contacts are more likely to answer |
-| Short avg. duration | Review your assistant's prompt — it may be ending calls too quickly |
-| High total cost, low registered | Improve your prompt's conversion logic; test alternate scripts |
+| Low connectivity | Review caller numbers, calling hours, and audience quality |
+| High voicemail rate | Shift calls to hours when contacts are more likely to answer |
+| Very short calls | Listen to recordings and improve the assistant opening line |
+| High cost with low conversion | Improve targeting, prompt logic, or follow-up rules |
+| One assistant underperforms | Compare its prompt, voice, and knowledge base against better performers |
+
+---
+
+## Developer Handoff
+
+If engineers are building dashboards or investigating analytics, send them:
+
+| Item | Why They Need It |
+|---|---|
+| Date range and timezone | Ensures their report matches the dashboard |
+| Assistant name and `agent_id` | Filters analytics to one assistant |
+| Campaign name and `bulk_list_id` | Filters analytics to one campaign or uploaded list |
+| Status filters | Explains which calls should be included |
+| Business metric definition | Clarifies what counts as registered, qualified, booked, or converted |
+
+For live product dashboards, ask developers to combine analytics APIs with webhook events and call history exports.

@@ -11,22 +11,19 @@ Ringg AI gives your product programmable voice agents for outbound calls, inboun
 Use `X-API-KEY` only from trusted server-side code. Do not put workspace API keys in browser or mobile app source code unless you are using the managed Ringg web widget flow.
 </Warning>
 
-## Start building
+## Choose your path
 
-Pick the path that matches what you need to ship first.
+Start with the path that matches your role. Each path links to the smallest useful guide first, then to deeper reference pages.
 
-<CardGroup cols={2}>
-  <Card title="Make one outbound call" icon="phone-outgoing" href="/api-reference/quick-start/guide">
-    Validate authentication, choose an assistant and number, then call one user from your backend.
+<CardGroup cols={3}>
+  <Card title="Backend/API integration" icon="server-cog" href="/api-reference/quick-start/guide">
+    Make outbound calls, run campaigns, receive webhooks, query history, and build production backend workflows.
   </Card>
-  <Card title="Run a campaign" icon="list-start" href="/api-reference/tutorials/setting-up-bulk-calls">
-    Upload contacts, map variables, start bulk calls, and monitor campaign progress.
+  <Card title="Web widget integration" icon="globe" href="/get-started/guides/embedding-widget">
+    Embed Ringg voice or chat assistance in a website, then configure styling, events, chat widgets, CSP, and QA.
   </Card>
-  <Card title="Embed web calls" icon="globe-2" href="/get-started/guides/embedding-widget">
-    Add Ringg voice or chat assistance to a website with the hosted widget.
-  </Card>
-  <Card title="Receive call results" icon="webhook" href="/webhooks/initial-setup">
-    Subscribe to call, recording, analysis, and all-processing-completed webhook events.
+  <Card title="Dashboard setup" icon="layout-dashboard" href="/get-started/guides/create-assistant">
+    Create assistants, prompts, knowledge bases, numbers, campaigns, and analytics views without reading API docs first.
   </Card>
 </CardGroup>
 
@@ -43,7 +40,7 @@ Pick the path that matches what you need to ship first.
     Call `GET /agent/all` and select an assistant configured for your channel, such as outbound calls or web calls.
   </Step>
   <Step title="Choose a caller number" icon="hash">
-    Call `GET /workspace/numbers` and use a provisioned number as `from_number_id`, or rely on the assistant's default outbound number.
+    Call `GET /workspace/numbers` and use a provisioned number as `from_number_id`. The individual-call API requires exactly one caller-number option: `from_number_id` or `from_number`.
   </Step>
   <Step title="Initiate the call" icon="phone-call">
     Call `POST /calling/outbound/individual` with the recipient, assistant, caller number, and any `custom_args_values` your prompt uses.

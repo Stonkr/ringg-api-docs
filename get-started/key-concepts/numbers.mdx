@@ -1,58 +1,85 @@
 ---
 title: "Numbers"
 sidebarTitle: "Numbers"
-description: "Learn about telephony numbers — the phone lines your assistants use to make and receive calls."
+description: "Understand caller numbers and how assistants use them."
 icon: "hash"
 ---
 
-**Numbers** are the telephony phone numbers your assistants use to make and receive calls. Ringg AI supports both purchased numbers and numbers from your own telephony provider (Bring Your Own Telephony).
+**Numbers** are the phone lines Ringg AI uses to make and receive calls. A number can come from Ringg AI or from your own telephony provider.
 
 ---
 
-## Numbers Overview
+## What Numbers Are Used For
 
-The Numbers page lists all numbers in your workspace with the following details:
-
-| Column | Description |
+| Use Case | How the Number Is Used |
 |---|---|
-| **Number** | The full phone number (e.g. +918031136540) |
-| **Country** | Flag icon indicating the country of the number |
-| **Added On** | Date and time the number was added |
-| **Used By** | Which assistant is currently assigned to this number |
-| **Tags** | Labels for organising numbers (e.g. Default Number) |
+| Outbound campaign | Shows as the caller ID when Ringg AI dials contacts |
+| Individual outbound call | Identifies the caller number for one API-triggered call |
+| Inbound assistant | Receives calls from customers |
+| Webcall | May be used behind the scenes depending on setup |
 
-{/* <Frame>
-  <img src="/images/documentation/numbers-page.png" alt="Numbers Page" />
-</Frame> */}
+---
+
+## Numbers Page
+
+The **Numbers** page lists the phone numbers in your workspace.
+
+| Field | Meaning |
+|---|---|
+| **Number** | Full phone number |
+| **Country** | Number country |
+| **Added On** | When the number was added |
+| **Used By** | Assistant or campaign currently using the number |
+| **Tags** | Labels such as `Default Number` |
 
 ---
 
 ## Telephony Provider
 
-At the top of the Numbers page, a **Telephony** dropdown shows which provider your numbers are routed through (e.g. Ringg). This can be changed via **Integrations → Your Telephony**.
+The **Telephony** dropdown shows which provider routes your numbers.
+
+Use **Integrations** and then **Your Telephony** if you need to connect a provider such as Twilio, Exotel, or Plivo.
 
 ---
 
 ## Default Number
 
+A number tagged as **Default Number** is used when no specific number is selected.
+
 <Note>
-  Numbers tagged as **Default Number** are automatically used by assistants when no specific number is assigned.
+  Confirm the default number before launching campaigns. The wrong default caller ID can affect answer rates and customer trust.
 </Note>
 
 ---
 
 ## Number Assignment
 
-Numbers are assigned to assistants when creating a **Campaign**. An assistant uses the selected number(s) as the caller ID when dialling contacts.
+You select numbers while creating campaigns. Campaigns can use multiple numbers to distribute call volume.
 
-For **Inbound** assistants, the number is the one that contacts call into.
+Inbound assistants need a number that customers can dial.
 
 ---
 
-## Removing a Number
+## Removing Numbers
 
-Click **Remove** next to any number to delete it from your workspace.
+Remove a number only after confirming it is not used by a live campaign, scheduled campaign, or inbound assistant.
 
 <Warning>
-  Removing a number that is actively used by a running campaign will interrupt those calls.
+  Removing a number that is actively used can interrupt calls.
 </Warning>
+
+---
+
+## Developer Handoff
+
+Developers may need number details for API calls, routing, and troubleshooting.
+
+| Item | Why It Matters |
+|---|---|
+| Phone number | Human-readable caller ID |
+| `from_number_id` | Preferred API identifier when available |
+| `from_number` | Literal phone number used by some API flows |
+| Provider | Confirms whether the number is Ringg AI-owned or BYOT |
+| Assigned assistant or campaign | Confirms where the number is used |
+
+For individual outbound API calls, send exactly one caller-number option: `from_number_id` or `from_number`. Do not send both.

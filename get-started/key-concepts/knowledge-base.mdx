@@ -1,44 +1,45 @@
 ---
 title: "Knowledge Base"
 sidebarTitle: "Knowledge Base"
-description: "Learn about Knowledge Bases — document collections your assistants can search during live calls."
+description: "Understand knowledge bases and when to use them."
 icon: "folder-git-2"
 ---
 
-A **Knowledge Base (KB)** is a collection of documents that an assistant can search during a live call to retrieve accurate information. This is useful when your assistant needs to answer questions about products, policies, pricing, or FAQs that can't be hardcoded into a prompt.
+A **Knowledge Base** is a set of approved documents an assistant can use during a call. It helps the assistant answer questions from the right source instead of relying only on the prompt.
+
+---
+
+## When to Use a Knowledge Base
+
+Use a knowledge base when the assistant needs to answer from:
+
+- FAQs.
+- Pricing or plan details.
+- Product catalogs.
+- Policy documents.
+- Eligibility rules.
+- Support scripts.
+- Standard operating procedures.
+
+Do not use a knowledge base as a replacement for a clear prompt. The prompt still tells the assistant when and how to use the information.
 
 ---
 
 ## Knowledge Base Types
 
-Ringg AI offers two types of Knowledge Bases:
-
 <CardGroup cols={2}>
-  <Card title="Deterministic KB">
-    <span style={{color: "gray"}}>More accurate results. You choose what to search.</span>
-
-    - You define the exact fields/schema that will be queried
-    - Best for structured data (e.g. product catalogues, pricing tables, policy documents)
-    - Higher accuracy because the retrieval logic is explicit
+  <Card title="Deterministic KB" icon="list-checks">
+    Use this for structured data where you define the exact fields to retrieve.
   </Card>
-  <Card title="Non-Deterministic KB">
-    <span style={{color: "gray"}}>More flexible. AI figures it out, but may be less accurate.</span>
-
-    - The AI decides what to search and how to answer
-    - Best for unstructured documents (e.g. FAQs, knowledge articles, SOPs)
-    - More flexible but may occasionally return less precise results
+  <Card title="Non Deterministic KB" icon="file-search">
+    Use this for general documents where Ringg AI searches for the most relevant answer.
   </Card>
 </CardGroup>
 
----
-
-## Attaching a KB to an Assistant
-
-Once a Knowledge Base is created, you can attach it to any assistant via **Assistant Settings → Knowledge Base**.
-
-<Tip>
-  Multiple assistants can share the same Knowledge Base.
-</Tip>
+| Type | Best For | Tradeoff |
+|---|---|---|
+| **Deterministic KB** | Pricing tables, policy fields, product catalogs, eligibility rules | More setup, more predictable answers |
+| **Non Deterministic KB** | FAQs, articles, manuals, SOPs | Faster setup, but answers may need more testing |
 
 ---
 
@@ -46,13 +47,33 @@ Once a Knowledge Base is created, you can attach it to any assistant via **Assis
 
 | Limit | Value |
 |---|---|
-| Max files per KB | 4 files |
-| Max file size | 512 MB each |
+| Files per knowledge base | Up to 4 |
+| File size | Up to 512 MB per file |
+
+Use focused files with clear headings. Remove outdated or conflicting content before upload.
 
 ---
 
-## Schema (Deterministic KB)
+## Attach to Assistants
 
-For Deterministic KBs, you define a schema that maps the fields in your uploaded documents. Click **Edit Schema** during KB creation to configure field names and types.
+After training a knowledge base, attach it to an assistant from **Assistant Settings** and then **Knowledge Base**.
 
-After uploading your files, click **Train Knowledge Base** to process the data and make it available to your assistants.
+<Tip>
+  Multiple assistants can use the same knowledge base, but every assistant should be tested after attachment.
+</Tip>
+
+---
+
+## Developer Handoff
+
+If your product or backend needs to reference knowledge base setup, send developers:
+
+| Item | Why It Matters |
+|---|---|
+| Knowledge base name | Confirms the right document set |
+| Knowledge base type | Explains the retrieval behavior |
+| Assistant name and `agent_id` | Confirms where the KB is attached |
+| Source document owner | Identifies who approves changes |
+| Test questions | Helps QA the assistant and support workflows |
+
+If engineers store knowledge base IDs, ask them to retrieve the current ID after training is complete.

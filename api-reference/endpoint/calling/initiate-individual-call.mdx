@@ -11,10 +11,10 @@ Start one outbound call with a configured assistant. Use this endpoint for trans
 | `name` | Recipient name. Ringg also uses this as `callee_name` if you do not provide one in `custom_args_values`. |
 | `mobile_number` | Recipient phone number in E.164 format, for example `+919876543210`. |
 | `agent_id` | Assistant that will handle the conversation. Get it from `GET /agent/all`. |
-| `from_number_id` or `from_number` | Caller ID to use. Pass one of these, or configure a default outbound number on the assistant. |
+| `from_number_id` or `from_number` | Caller ID to use. Exactly one is required. Use `from_number_id` when possible because it is stable across number formatting changes. |
 
 <Warning>
-Provide either `from_number_id` or `from_number`, not both. Phone numbers must include country code.
+Provide either `from_number_id` or `from_number`, not both. Phone numbers passed as `from_number` must include country code.
 </Warning>
 
 ## Minimal request
