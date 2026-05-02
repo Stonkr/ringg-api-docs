@@ -82,8 +82,7 @@
             "pages": [
               "api-reference/tutorials/voice-calling",
               "api-reference/tutorials/making-your-first-call",
-              "api-reference/tutorials/setting-up-bulk-calls",
-              "api-reference/tutorials/managing-contacts"
+              "api-reference/tutorials/setting-up-bulk-calls"
             ]
           },
           {
@@ -109,13 +108,6 @@
             "group": "Numbers",
             "pages": [
               "api-reference/endpoint/numbers/get-workspace-numbers"
-            ]
-          },
-          {
-            "group": "Contacts",
-            "pages": [
-              "api-reference/endpoint/contact/get-contact-list",
-              "api-reference/endpoint/contact/delete-contact-list"
             ]
           },
           {
@@ -211,10 +203,6 @@
     {
       "source": "/get-started/tutorials/setting-up-bulk-calls",
       "destination": "/api-reference/tutorials/setting-up-bulk-calls"
-    },
-    {
-      "source": "/get-started/tutorials/managing-contacts",
-      "destination": "/api-reference/tutorials/managing-contacts"
     },
     {
       "source": "/get-started/tutorials/embedding-web-call-assistant",
