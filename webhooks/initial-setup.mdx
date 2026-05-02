@@ -1,123 +1,118 @@
 ---
 title: "Initial Setup"
-description: "Learn how to configure webhook subscriptions for your AI agents to receive real-time event notifications"
+description: "Configure webhook event subscriptions for assistants and receive real-time call, recording, and analysis events."
 "og:title": "Real-Time Event Webhooks Setup | Ringg AI Developers"
 ---
 
-## Overview
+Webhooks let your backend receive call events without polling Ringg APIs. Configure subscriptions on an assistant, then Ringg sends HTTP requests to your endpoint whenever selected events occur.
 
-Ringg AI's event-based webhook system allows you to subscribe to specific events for your AI agents and receive real-time callbacks when those events occur. This eliminates the need to continuously poll our API for updates.
+## Event types
 
-## Event Types
+| Event type | Trigger | Typical use |
+|---|---|---|
+| `call_started` | A call is initiated | Mark a call as queued or started in your system |
+| `call_completed` | A call attempt finishes | Update status, duration, transcript, and retry data |
+| `recording_completed` | Recording is processed | Store or display recording URL |
+| `platform_analysis_completed` | Ringg analysis completes | Store summary, classification, and key points |
+| `client_analysis_completed` | Custom analysis completes | Store your configured custom analysis result |
+| `all_processing_completed` | All post-call processing is done | Receive the final consolidated call payload |
 
-Our webhook system supports six event types. You can subscribe to **any or all** of these events based on your needs:
+<Tip>
+For most production integrations, start with `all_processing_completed`. Add earlier events only when your product needs live progress updates.
+</Tip>
 
-| Event Type | Trigger | Data Included |
-|------------|---------|---------------|
-| `call_started` | A call is initiated | Agent name, version info, custom args |
-| `call_completed` | Every call attempt finishes | Transcript, duration, status, custom args |
-| `recording_completed` | Recording is processed and ready | Recording URL and duration |
-| `platform_analysis_completed` | AI analysis completes | Key points, summary, classification |
-| `client_analysis_completed` | Custom analysis completes | Results based on your custom prompts |
-| `all_processing_completed` | All post-call processing is done | Full call data: transcript, recording, both analyses |
+## Configure subscriptions
 
-## Configuration
-
-To subscribe an agent to webhook events, use this PATCH request:
+Use `PATCH /agent/v1` with `operation: "edit_event_subscriptions"`. Authenticate the Ringg API request with `X-API-KEY`.
 
 ```bash
-curl --location --request PATCH 'https://prod-api.ringg.ai/ca/api/v0/agent/v1' \
---header 'Content-Type: application/json' \
---header 'Authorization: Bearer your_token_here' \
---header 'X-API-KEY: your-api-key-here' \
---data '{
+curl --request PATCH "https://prod-api.ringg.ai/ca/api/v0/agent/v1" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
     "operation": "edit_event_subscriptions",
     "agent_id": "your-agent-id",
     "event_subscriptions": [
-        {
-            "event_type": ["call_started", "call_completed", "recording_completed", "platform_analysis_completed", "client_analysis_completed", "all_processing_completed"],
-            "callback_url": "https://your-domain.com/webhooks",
-            "headers": {
-                "Authorization": "Bearer your-webhook-token",
-                "Content-Type": "application/json"
-            },
-            "method_type": "POST"
+      {
+        "event_type": ["all_processing_completed"],
+        "callback_url": "https://api.example.com/webhooks/ringg",
+        "headers": {
+          "Authorization": "Bearer your-webhook-receiver-token",
+          "Content-Type": "application/json"
         },
-        {
-            "event_type": ["call_completed", "recording_completed"],
-            "callback_url": "https://your-another-domain.com/webhooks",
-            "headers": {
-                "Authorization": "Bearer your-webhook-token",
-                "Content-Type": "application/json"
-            },
-            "method_type": "POST"
-        }
+        "method_type": "POST"
+      }
     ]
-}'
+  }'
 ```
 
-## Subscription Flexibility
+The `headers` object is not used to authenticate your call to Ringg. Ringg sends those headers to your webhook endpoint when delivering events.
 
-You have complete flexibility in choosing which events to subscribe to:
+## Subscribe to progress events
 
+If your UI needs live progress, subscribe to earlier events in addition to the final event.
 
-### Subscribe to Only Call Completion
 ```json
 {
-    "operation": "edit_event_subscriptions",
-    "agent_id": "your-agent-id",
-    "event_subscriptions": [
-        {
-            "event_type": ["call_completed"],
-            "callback_url": "https://your-domain.com/webhooks/calls",
-            "headers": {
-                "Authorization": "Bearer your-webhook-token",
-                "Content-Type": "application/json"
-            },
-            "method_type": "POST"
-        }
-    ]
+  "operation": "edit_event_subscriptions",
+  "agent_id": "your-agent-id",
+  "event_subscriptions": [
+    {
+      "event_type": ["call_started", "call_completed", "all_processing_completed"],
+      "callback_url": "https://api.example.com/webhooks/ringg",
+      "headers": {
+        "Authorization": "Bearer your-webhook-receiver-token",
+        "Content-Type": "application/json"
+      },
+      "method_type": "POST"
+    }
+  ]
 }
 ```
 
-### Subscribe to Analysis Events Only
-```json
-{
-    "operation": "edit_event_subscriptions",
-    "agent_id": "your-agent-id",
-    "event_subscriptions": [
-        {
-            "event_type": ["platform_analysis_completed", "client_analysis_completed"],
-            "callback_url": "https://your-domain.com/webhooks/analysis",
-            "headers": {
-                "Authorization": "Bearer your-webhook-token",
-                "Content-Type": "application/json"
-            },
-            "method_type": "POST"
-        }
-    ]
-}
+## Endpoint requirements
+
+Your webhook receiver should:
+
+- Use HTTPS.
+- Accept the method you configured, usually `POST`.
+- Return a `2xx` response quickly after validating and storing the event.
+- Do heavy processing asynchronously in your own queue.
+- Handle duplicate events idempotently.
+- Store `call_id`, `event_type`, and received timestamp for debugging.
+
+## Idempotency key
+
+Use `call_id` plus `event_type` as your primary dedupe key. If your workflow can receive multiple attempts for the same event, update the existing record instead of creating duplicates.
+
+```javascript
+app.post("/webhooks/ringg", async (req, res) => {
+  const event = req.body;
+  const dedupeKey = `${event.call_id}:${event.event_type}`;
+
+  await saveWebhookEventOnce(dedupeKey, event);
+
+  res.status(204).send();
+});
 ```
 
-## Requirements
+## Authentication patterns
 
-### Webhook Endpoint
-Provide the full HTTPS URL where webhook notifications should be sent.
+Secure your endpoint with a token that you control. Put that token in the subscription `headers`.
 
-### Authentication
-Configure custom headers for secure webhook delivery. Common patterns:
-- `Authorization: Bearer your-webhook-token`
-- Custom API keys in headers
-- Additional security headers as needed
+Common patterns:
 
-### HTTP Methods
-Supported methods:
-- **POST** (recommended)
-- **PUT** 
-- **PATCH**
+- `Authorization: Bearer your-webhook-receiver-token`
+- `X-Webhook-Secret: your-shared-secret`
+- Provider-specific gateway authentication in front of your API
 
-### Response Requirements
-Your endpoint must:
-- Return HTTP 200 status code to acknowledge receipt
-- Respond within 30 seconds to avoid timeout
-- Handle duplicate events using `call_id` for idempotency
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Webhook payloads" icon="braces" href="/webhooks/payloads">
+    Review the JSON payloads Ringg sends for each event type.
+  </Card>
+  <Card title="Error handling" icon="circle-alert" href="/webhooks/error-handling">
+    Learn retry behavior, timeouts, and response requirements.
+  </Card>
+</CardGroup>

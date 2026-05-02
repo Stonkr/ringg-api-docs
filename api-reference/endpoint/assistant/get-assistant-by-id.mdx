@@ -1,3 +1,17 @@
 ---
 openapi: get /agent/{agent_id}
 ---
+
+Fetch details for one assistant. Use this after an operator selects an assistant or when debugging why a call did not behave as expected.
+
+## Useful checks
+
+- Confirm the assistant exists in the current workspace.
+- Inspect call direction, prompt configuration, variables, and assigned resources.
+- Verify the assistant is the one your integration intended to use.
+
+## Related endpoints
+
+- [List assistants](/api-reference/endpoint/assistant/get-assistants)
+- [Initiate individual call](/api-reference/endpoint/calling/initiate-individual-call)
+- [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list)

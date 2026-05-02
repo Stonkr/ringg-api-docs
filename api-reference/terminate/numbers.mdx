@@ -1,5 +1,6 @@
 ---
 title: Terminate Calls by Numbers
+description: "Stop queued and retry calls to specific numbers across campaigns."
 api: "PATCH /campaign/terminate"
 ---
 
@@ -26,9 +27,9 @@ Stop ALL active calls to specific phone numbers across ALL campaigns. This is th
 - **Account Closure**: Stop all calls when customers close accounts
 
 ## Number Format Requirements
-- ✅ **Correct**: `+918882876897` (with country code)
-- ✅ **Correct**: `+1234567890` (international format)
-- ❌ **Wrong**: `8882876897` (missing country code)
+- **Correct**: `+918882876897` with country code
+- **Correct**: `+14155550100` in international format
+- **Wrong**: `8882876897` without country code
 
 ### Limits & Constraints
 - **Maximum**: 100 numbers per request

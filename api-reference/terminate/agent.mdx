@@ -1,5 +1,6 @@
 ---
 title: Terminate All Calls by Agent ID
+description: "Stop queued and retry calls for a specific assistant."
 api: "PATCH /campaign/terminate"
 ---
 
@@ -30,10 +31,7 @@ Stop all active calls for a specific AI agent across all campaigns. This is usef
 - Calls in "registered" status (queued and waiting)
 - Calls in "retry" status (scheduled for retry)
 
-❌ **Calls that won't be affected:**
-- Already completed calls
-- Calls currently in progress (connected)
-- Calls that haven't started yet
+Calls already in progress are marked as user-terminated so follow-up retries are suppressed when the live call ends. Already completed calls are not cancelled retroactively.
 
 <Info>
 **Note**: You can find your agent ID in the agent the top of your dashboard.

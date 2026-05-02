@@ -1,3 +1,17 @@
 ---
 openapi: get /analytics/drill-down-analytics
 ---
+
+Return detailed analytics for one campaign or bulk list. This is the endpoint to use when a dashboard user clicks from a summary metric into campaign performance.
+
+## Required input
+
+- `bulk_list_id`: the campaign/contact-list identifier returned by campaign upload and used when starting the campaign.
+
+## Use this for
+
+- Campaign performance views.
+- Status and outcome breakdowns.
+- Detailed campaign troubleshooting.
+
+Pair it with [Get call history](/api-reference/endpoint/history/get-call-history) filtered by the same `bulk_list_id` when users need call-level rows.

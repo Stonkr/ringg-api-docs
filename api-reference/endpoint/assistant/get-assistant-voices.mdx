@@ -1,3 +1,15 @@
 ---
 openapi: get /agent/voices
 ---
+
+List available voices for assistant configuration. You can optionally filter by language when building assistant creation or configuration workflows.
+
+## When to use
+
+- Populate a voice picker in a custom assistant setup UI.
+- Validate that a desired language has available voices before creating an assistant.
+- Let internal operators compare voice options without opening the Ringg dashboard.
+
+## Integration notes
+
+Voice availability can vary by language and provider. Store the selected voice ID only after the operator confirms the assistant configuration.

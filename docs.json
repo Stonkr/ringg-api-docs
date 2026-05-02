@@ -7,7 +7,7 @@
     "light": "#9AADEC",
     "dark": "#9AADEC"
   },
-  "favicon": "https://assets.ringg.ai/images/logo/favicon.ico",
+  "favicon": "/favicon.png",
   "styling": {
     "eyebrows": "breadcrumbs"
   },
@@ -65,25 +65,6 @@
         ]
       },
       {
-        "group": "Telephony Integration",
-        "pages": [
-          "telephony/byot-overview",
-          "telephony/new-provider-requirements",
-          "telephony/plivo-integration",
-          "telephony/exotel-integration",
-          "telephony/twilio-integration",
-          "telephony/number-management"
-        ]
-      },
-      {
-        "group": "Webhooks Setup",
-        "pages": [
-          "webhooks/initial-setup",
-          "webhooks/payloads",
-          "webhooks/error-handling"
-        ]
-      },
-      {
         "group": "API Reference",
         "pages": [
           {
@@ -101,8 +82,7 @@
             "pages": [
               "api-reference/tutorials/voice-calling",
               "api-reference/tutorials/making-your-first-call",
-              "api-reference/tutorials/setting-up-bulk-calls",
-              "api-reference/tutorials/managing-contacts"
+              "api-reference/tutorials/setting-up-bulk-calls"
             ]
           },
           {
@@ -156,7 +136,7 @@
             "group": "Termination",
             "pages": [
               "api-reference/terminate/agent",
-              "api-reference/terminate/call-ids", 
+              "api-reference/terminate/call-ids",
               "api-reference/terminate/campaign",
               "api-reference/terminate/campaign-numbers",
               "api-reference/terminate/numbers"
@@ -172,6 +152,25 @@
               "api-reference/endpoint/analytics/get-classification-analytics"
             ]
           }
+        ]
+      },
+      {
+        "group": "Webhooks Setup",
+        "pages": [
+          "webhooks/initial-setup",
+          "webhooks/payloads",
+          "webhooks/error-handling"
+        ]
+      },
+      {
+        "group": "Telephony Integration",
+        "pages": [
+          "telephony/byot-overview",
+          "telephony/new-provider-requirements",
+          "telephony/plivo-integration",
+          "telephony/exotel-integration",
+          "telephony/twilio-integration",
+          "telephony/number-management"
         ]
       }
     ]
@@ -206,8 +205,16 @@
       "destination": "/api-reference/tutorials/setting-up-bulk-calls"
     },
     {
-      "source": "/get-started/tutorials/managing-contacts",
-      "destination": "/api-reference/tutorials/managing-contacts"
+      "source": "/api-reference/tutorials/managing-contacts",
+      "destination": "/api-reference/tutorials/setting-up-bulk-calls"
+    },
+    {
+      "source": "/api-reference/endpoint/contact/get-contact-list",
+      "destination": "/api-reference/endpoint/campaign/upload-campaign-contact-list"
+    },
+    {
+      "source": "/api-reference/endpoint/contact/delete-contact-list",
+      "destination": "/api-reference/tutorials/setting-up-bulk-calls"
     },
     {
       "source": "/get-started/tutorials/embedding-web-call-assistant",

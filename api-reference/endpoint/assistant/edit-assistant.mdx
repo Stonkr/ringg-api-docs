@@ -1,3 +1,21 @@
 ---
 openapi: patch /agent/v1
 ---
+
+Update an existing assistant. The request uses an `operation` field so each edit is explicit, such as updating prompts, variables, or webhook event subscriptions.
+
+## When to use
+
+- Update assistant configuration from your own admin backend.
+- Configure event subscriptions for webhooks.
+- Keep assistant behavior synchronized with templates in your product.
+
+## Integration notes
+
+- Test configuration changes with one individual call before running a campaign.
+- Avoid overwriting unrelated assistant settings in broad update flows.
+- For webhook setup, use `operation: "edit_event_subscriptions"` and provide the events plus callback URL Ringg should call.
+
+## Related guide
+
+See [webhook setup](/webhooks/initial-setup) for a complete event subscription example.

@@ -2,65 +2,114 @@
 openapi: post /calling/outbound/individual
 ---
 
-## Initiate Individual Call
+Start one outbound call with a configured assistant. Use this endpoint for transactional calls, test calls before campaigns, and product workflows where one user action should trigger one phone call.
 
-Start a new outbound call to a specific recipient using your configured AI agent. This endpoint supports both immediate calls and scheduled calls for future execution.
+## Required inputs
+
+| Field | Purpose |
+|---|---|
+| `name` | Recipient name. Ringg also uses this as `callee_name` if you do not provide one in `custom_args_values`. |
+| `mobile_number` | Recipient phone number in E.164 format, for example `+919876543210`. |
+| `agent_id` | Assistant that will handle the conversation. Get it from `GET /agent/all`. |
+| `from_number_id` or `from_number` | Caller ID to use. Pass one of these, or configure a default outbound number on the assistant. |
 
 <Warning>
-**Phone Number Format**: 
-- All phone numbers must include country code (e.g., +91 for India, +1 for US)
-- Invalid formats will result in call failure
+Provide either `from_number_id` or `from_number`, not both. Phone numbers must include country code.
 </Warning>
 
-## Scheduled Calls
-Use `scheduled_at` to schedule calls for a specific date and time:
-```json
-"call_time": {
-  "call_start_time": "09:00",
-  "call_end_time": "18:00", 
-  "timezone": "Asia/Kolkata",
-  "scheduled_at": "2025-11-24T01:55:00"
-}
-```
-
-<Note>
-**Scheduled Calls**: When `scheduled_at` is provided, the call will be queued and executed at that specific date and time. The time window (`call_start_time` and `call_end_time`) still applies as additional validation. Use this for precise scheduling of important calls.
-</Note>
-
-## Custom Variables
-
-Use the `custom_args_values` field to pass dynamic data to your agent:
-- Reference variables in your agent prompt using `@{{variable_name}}` syntax
-- Common variables: `callee_name`, `company_name`, `appointment_date`, etc.
-- Variables are replaced with actual values during the call
-
-## Smart Formatter
-
-Use `smart_formatter` to automatically process callee names before the call:
-
-- **`extract_first_name`**: Extracts the first actual name, skipping common prefixes like Mr, Mrs, Dr, Shri, Mohammad, etc.
-- **`transliteration`**: Transliterates the extracted name to the target language (e.g., Hindi) using a local dictionary. Automatically enables `extract_first_name`.
+## Minimal request
 
 ```json
-"smart_formatter": {
-  "extract_first_name": true,
-  "transliteration": true,
-  "transliteration_language": {
-    "source": "en",
-    "target": "hi"
+{
+  "name": "John Doe",
+  "mobile_number": "+919876543210",
+  "agent_id": "your-agent-id",
+  "from_number_id": "your-from-number-id",
+  "custom_args_values": {
+    "callee_name": "John",
+    "order_id": "ORD-1042"
   }
 }
 ```
 
-For example, with the above config, `"Mr Rajesh Kumar"` becomes `"राजेश"` in `callee_name`, and the original name is preserved in `original_callee_name`.
+## Custom variables
 
-<Note>
-When transliteration is enabled, the original name is stored as `original_callee_name` in `custom_args_values` for reference. If a name is not found in the dictionary, the original extracted name is used as-is.
-</Note>
+Use `custom_args_values` to pass dynamic data to your assistant.
 
-## Important Notes
+- Reference variables in prompts with `@{{variable_name}}`.
+- Keep keys stable across your code, prompts, CSV mappings, and analytics.
+- Common keys include `callee_name`, `mobile_number`, `company_name`, `appointment_date`, and your product-specific IDs.
 
-- **Agent Configuration**: Ensure your agent is properly configured with prompts and variables
-- **From Numbers**: Use phone numbers that are provisioned in your workspace
-- **Credits**: Each call consumes credits based on duration and destination
-- **Retry Logic**: Configure retry attempts for busy/failed calls in `call_config`
+## Scheduled calls
+
+Add `call_config.call_time.scheduled_at` when the call should be queued for a specific date and time.
+
+```json
+{
+  "call_config": {
+    "call_time": {
+      "call_start_time": "09:00",
+      "call_end_time": "18:00",
+      "timezone": "Asia/Kolkata",
+      "scheduled_at": "2026-10-18T10:30:00"
+    }
+  }
+}
+```
+
+`call_start_time` and `call_end_time` still act as the allowed calling window in the specified timezone.
+
+## Retry configuration
+
+Use retry settings when a recipient is busy, does not answer, or the provider fails the call.
+
+```json
+{
+  "call_config": {
+    "call_retry_config": {
+      "retry_count": 1,
+      "retry_busy": 30,
+      "retry_not_picked": 30,
+      "retry_failed": 30
+    }
+  }
+}
+```
+
+The retry delay values are in minutes.
+
+## Smart formatter
+
+`smart_formatter` can normalize callee names before the call.
+
+```json
+{
+  "smart_formatter": {
+    "extract_first_name": true,
+    "transliteration": true,
+    "transliteration_language": {
+      "source": "en",
+      "target": "hi"
+    }
+  }
+}
+```
+
+For example, `Mr Rajesh Kumar` can become `Rajesh` or a transliterated value in `callee_name`. The original name is preserved as `original_callee_name` in `custom_args_values`.
+
+## Result handling
+
+Store the returned call ID. Use it to:
+
+- Match webhook events to your internal record.
+- Fetch details with [Get call details](/api-reference/endpoint/history/get-call-details).
+- Reconcile rows from [Get call history](/api-reference/endpoint/history/get-call-history).
+
+## Common failure checks
+
+| Symptom | Check |
+|---|---|
+| `401 Unauthorized` | Missing or invalid `X-API-KEY`. |
+| Validation error | Missing required field, both `from_number_id` and `from_number` provided, or invalid phone number. |
+| Call remains queued | Calling window, scheduled time, workspace credits, or provider health. |
+| Assistant says wrong data | Prompt placeholders do not match `custom_args_values` keys. |
