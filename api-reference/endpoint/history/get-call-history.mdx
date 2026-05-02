@@ -1,3 +1,20 @@
 ---
 openapi: get /calling/history
 ---
+
+Retrieve call records for dashboards, support tools, exports, and reconciliation. This is the polling counterpart to webhooks.
+
+## When to use
+
+- Show recent calls in your product.
+- Reconcile webhook events with stored call records.
+- Filter campaign results by `bulk_list_id`.
+- Debug a recipient's latest call status.
+
+## Query guidance
+
+Use date ranges and pagination for production dashboards. Add filters such as `agent_id`, `status`, `call_type`, or `bulk_list_id` to keep responses focused.
+
+## Production note
+
+Prefer webhooks for real-time workflows. Use call history for dashboards, backfills, and periodic consistency checks.

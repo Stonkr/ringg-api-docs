@@ -1,3 +1,18 @@
 ---
 openapi: get /campaign/all
 ---
+
+Return campaigns in the current workspace. Use this for campaign dashboards, monitoring pages, and post-run reconciliation.
+
+## Query guidance
+
+- Use `limit` and `offset` for pagination.
+- Use `call_count=true` when the UI needs call totals with each campaign.
+- Pair this endpoint with call history filtered by `bulk_list_id` for detailed call-level results.
+
+## Typical flow
+
+1. Upload contacts with [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list).
+2. Start calls with [Start campaign](/api-reference/endpoint/campaign/start-campaign).
+3. Monitor campaign state here.
+4. Inspect calls through [Get call history](/api-reference/endpoint/history/get-call-history).

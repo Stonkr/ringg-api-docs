@@ -1,3 +1,59 @@
 ---
-openapi: get /workspace/lists
+title: "Contact Lists"
+sidebarTitle: "Contact Lists"
+description: "Create reusable contact lists, add contacts, and fetch contacts for workflow-driven Ringg integrations."
 ---
+
+Contact list APIs live under `/contacts` and are useful when your product keeps reusable lists that can be connected to workflows. For one-off outbound campaigns, use the [campaign upload endpoint](/api-reference/endpoint/campaign/upload-campaign-contact-list) instead.
+
+## Create a contact list
+
+`POST /contacts/lists` creates a list with a variable schema. Include every variable your assistant or workflow expects.
+
+```bash
+curl --request POST "https://prod-api.ringg.ai/ca/api/v0/contacts/lists" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "name": "Renewal leads",
+    "description": "Customers due for renewal this week",
+    "variables_schema": [
+      {"key": "callee_name", "type": "string"},
+      {"key": "mobile_number", "type": "string"},
+      {"key": "policy_id", "type": "string"}
+    ]
+  }'
+```
+
+## Add one contact
+
+`POST /contacts/lists/add-contacts/{list_id}` accepts `multipart/form-data`. For one contact, send a `contact` form field containing a JSON string.
+
+```bash
+curl --request POST "https://prod-api.ringg.ai/ca/api/v0/contacts/lists/add-contacts/$LIST_ID" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --form 'contact={"custom_args_values":{"callee_name":"John","mobile_number":"+919876543210","policy_id":"POL-123"}}'
+```
+
+## Add contacts from CSV
+
+For CSV uploads, send `csv_file` plus `column_mapping`. The mapping keys are Ringg variable names and values are CSV column names.
+
+```bash
+curl --request POST "https://prod-api.ringg.ai/ca/api/v0/contacts/lists/add-contacts/$LIST_ID" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --form 'csv_file=@contacts.csv' \
+  --form 'column_mapping={"variable_mapping":{"callee_name":"Name","mobile_number":"Mobile Number","policy_id":"Policy ID"}}'
+```
+
+## List contact lists
+
+`GET /contacts/lists` returns visible lists in the workspace with schema and contact counts.
+
+## List contacts in a list
+
+`GET /contacts/lists/{list_id}/contacts?limit=20&offset=0` returns contacts in newest-first order.
+
+## Required fields
+
+Every callable contact should include `callee_name` and `mobile_number` in `custom_args_values`. Phone numbers should use E.164 format with country code, for example `+919876543210`.

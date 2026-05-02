@@ -1,3 +1,24 @@
 ---
 openapi: get /workspace
 ---
+
+Use this endpoint as the first health check for a new integration. It verifies that your API key is valid and returns the workspace context Ringg will use for subsequent API calls.
+
+## When to use
+
+- Confirm backend connectivity during setup.
+- Display workspace name, credit balance, or locked credits in an internal admin screen.
+- Verify that a copied API key belongs to the expected workspace before storing it.
+
+## Integration notes
+
+- Send the API key in the `X-API-KEY` header.
+- Treat the returned `api_key` value as sensitive; do not log or expose it in client applications.
+- If this endpoint returns `401`, stop the flow and ask an administrator to check or regenerate the API key.
+
+## Example
+
+```bash
+curl --request GET "https://prod-api.ringg.ai/ca/api/v0/workspace" \
+  --header "X-API-KEY: $RINGG_API_KEY"
+```

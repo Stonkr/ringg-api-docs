@@ -1,3 +1,17 @@
 ---
 openapi: get /calling/call-details
 ---
+
+Fetch a detailed record for one call. Use this when a user opens a call detail view or when support needs the full context for a specific `call_id`.
+
+## When to use
+
+- Show transcript, recording, status, and metadata for one call.
+- Debug a failed or unexpected call.
+- Fetch analysis for a call after receiving a webhook event.
+
+## Integration notes
+
+- Pass the unique call ID as the `id` query parameter.
+- Use `send_analysis=true` only when the caller needs analysis data; this keeps lightweight detail views faster.
+- Store the `call_id` returned by call initiation and webhook payloads.

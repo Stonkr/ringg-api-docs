@@ -4,17 +4,18 @@ description: "Understand the structure, versioning, and usage patterns of the Ri
 "og:title": "Understand the API Structure & Concepts | Ringg AI"
 ---
 
-The Ringg AI API follows RESTful principles, making it intuitive and easy to integrate with your applications. This overview will help you understand the core concepts and structure of our API.
+The Ringg AI API lets your backend create assistants, initiate calls, run campaigns, manage numbers, and retrieve post-call results. Use this page as the mental model before jumping into individual endpoints.
 
 ## API Architecture
 
-Ringg AI provides a RESTful API that allows you to:
+Ringg AI provides REST-style APIs that allow you to:
 
 - Create and manage AI voice assistants
 - Initiate individual and bulk calls
 - Embed voice assistants on websites
-- Manage contacts and phone numbers
+- Manage reusable contact lists and phone numbers
 - Access call history and analytics
+- Subscribe assistants to webhook events
 
 ## Base URL
 
@@ -28,28 +29,42 @@ https://prod-api.ringg.ai/ca/api/v0
 
 The Ringg AI API is organized around the following main resources:
 
-- **Workspace**: Manage your workspace settings and users
-- **Assistant**: Create and configure AI voice assistants
-- **Voice**: Access available assistant voices
-- **Number**: Manage phone numbers for outbound calls
-- **Contact**: Upload and manage contact lists
-- **Calling**: Initiate and manage voice calls
-- **WebCall**: Embed voice assistants on websites
+- **Workspace**: Verify authentication, manage workspace metadata, users, credits, and API keys.
+- **Assistant**: Create, list, fetch, and configure AI voice assistants.
+- **Numbers**: Fetch caller numbers available for outbound calls and campaigns.
+- **Contacts**: Create reusable contact lists under `/contacts` for workflow-driven integrations.
+- **Calling**: Initiate individual outbound calls and inspect call history.
+- **Campaigns**: Upload campaign CSVs, start bulk calls, and monitor campaign state.
+- **Webhooks**: Subscribe assistants to call, recording, and analysis events.
+- **Analytics**: Build dashboards from call, number, duration, and classification metrics.
 
 ## Request and Response Formats
 
-The Ringg AI API accepts and returns data in JSON format. Ensure your requests include the appropriate `Content-Type` header:
+Most Ringg API endpoints accept and return JSON. Use this header for `POST` and `PATCH` requests with JSON bodies:
 
 ```
 Content-Type: application/json
 ```
 
+For campaign CSV uploads and contact CSV uploads, send `multipart/form-data` and let your HTTP client set the `Content-Type` boundary.
+
 ## Common Headers
 
 All API requests require the following headers:
 
-- `X-API-KEY`: Your API key for authentication
-- `Content-Type`: Set to `application/json` for POST and PATCH requests
+- `X-API-KEY`: Workspace API key for authentication.
+- `Content-Type`: Set to `application/json` for JSON requests. Omit it for `FormData`/multipart requests unless your HTTP client requires otherwise.
+
+## Core ID fields
+
+Store these IDs in your application. They are how Ringg APIs and webhooks connect.
+
+| ID | Where it comes from | Where it is used |
+|---|---|---|
+| `agent_id` | Assistant APIs or dashboard | Individual calls, campaigns, webhook subscriptions |
+| `from_number_id` | `GET /workspace/numbers` | Individual outbound calls |
+| `list_id` / `bulk_list_id` | Campaign upload | Campaign start, campaign analytics, history filters |
+| `call_id` | Call initiation, call history, webhooks | Webhook dedupe, call details, support debugging |
 
 ## Error Handling
 
@@ -94,6 +109,15 @@ For endpoints that return lists of objects, the API supports pagination through 
 
 - **limit**: Number of items to return (default: 20, max: 100)
 - **offset**: Number of items to skip (default: 0)
+
+## Recommended integration order
+
+1. Verify API key with `GET /workspace`.
+2. Select an assistant with `GET /agent/all`.
+3. Select a number with `GET /workspace/numbers`.
+4. Make one call with `POST /calling/outbound/individual`.
+5. Configure webhooks for post-call events.
+6. Add campaigns, analytics, and history views.
 
 ## Next Steps
 

@@ -39,7 +39,7 @@ The provider must expose an API to initiate an outbound call. Ringg will call th
 ### Expected Provider API Format
 
 <CodeGroup>
-```json Request
+```http Request
 POST https://api.newprovider.com/v1/calls
 Authorization: Bearer <api_key>
 Content-Type: application/json
@@ -76,7 +76,7 @@ The provider must expose an API to fetch call details by call ID. This is used f
 ### Expected API Format
 
 <CodeGroup>
-```json Request
+```http Request
 GET https://api.newprovider.com/v1/calls/{call_id}
 Authorization: Bearer <api_key>
 ```
@@ -257,7 +257,7 @@ The provider must support transferring an active call to another phone number. T
 ### Expected Provider API for Transfer
 
 <CodeGroup>
-```json REST API
+```http REST API
 POST https://api.newprovider.com/v1/calls/{call_id}/transfer
 Authorization: Bearer <api_key>
 

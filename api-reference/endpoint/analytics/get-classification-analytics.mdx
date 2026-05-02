@@ -1,3 +1,15 @@
 ---
 openapi: get /analytics/classification-analytics
 ---
+
+Return analytics grouped by call classification. Classifications are useful for outcome dashboards such as interested, not interested, payment confirmed, callback requested, or custom categories configured for your assistant.
+
+## When to use
+
+- Build outcome funnels.
+- Compare campaign quality by classification.
+- Trigger downstream workflows based on call outcomes.
+
+## Related data
+
+For per-call classification values, use [Get call history](/api-reference/endpoint/history/get-call-history), [Get call details](/api-reference/endpoint/history/get-call-details), or webhook payloads.

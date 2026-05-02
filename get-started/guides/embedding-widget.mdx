@@ -19,6 +19,10 @@ Before you begin, make sure you have:
 
 * Access to modify your website's HTML
 
+<Warning>
+The widget snippet runs in the browser and includes `xApiKey`. Only use the embed code generated for a web-call assistant, whitelist the domains where it can run, and avoid using a broad backend integration key in public pages.
+</Warning>
+
 ## Execution
 
 **_Step 1: Configure Your Assistant for Web Calls_**
@@ -38,6 +42,8 @@ Before you begin, make sure you have:
 * Click the Embed button in the top right corner
 
 * Copy the provided code snippet
+
+For production sites, pin a tested CDN version instead of `latest` after you have verified the widget behavior in staging.
 
 The embed code will look similar to this:
 
@@ -71,156 +77,43 @@ The embed code will look similar to this:
 
 **_Step 3: Customize the Embed Code_**
 
-Modify the configuration object to customize the appearance and behavior of the Web Call assistant:
+Modify the configuration object to customize the appearance and behavior of the Web Call assistant. Start with a small working config, then add advanced options as needed.
 
 ```javascript
 loadAgent({
   agentId: "your-agent-id",
   xApiKey: "your-api-key",
-
   variables: {
-    custom_variable_1: "value1",
-    custom_variable_2: "value2",
+    callee_name: "John",
+    account_id: "ACC-42",
   },
-
+  defaultTab: "audio",
+  hideTabSelector: false,
+  title: "Talk to our assistant",
+  description: "Ask a question or start a voice call.",
   buttons: {
     modalTrigger: {
       styles: {
-        backgroundColor: "#4CAF50",
+        backgroundColor: "#4F46E5",
         color: "white",
-        borderRadius: "50%",
-      },
-      icon: {
-        url: "https://example.com/custom-icon.svg",
-        size: 24,
-      },
-    },
-    mic: {
-      styles: {
-        backgroundColor: "#f44336",
         borderRadius: "50%",
       },
     },
     call: {
       textBeforeCall: "Start Call",
       textDuringCall: "End Call",
-      styles: {
-        backgroundColor: "#2196F3",
-        color: "white",
-        borderRadius: "4px",
-      },
     },
   },
-
-  widgetPosition?: {
-    triggerPlacement?: "fixed" | "absolute",
-    /**
-     * Widget positioning mode.
-     * "fixed" - floats over the page, fixed to viewport (default)
-     * "absolute" - embeds inside a container with id="ringg_ai_container"
-     * Supported from v1.0.19+
-     */
-
-    triggerAlignment?: "bottom-right" | "bottom-left" | "top-right" | "top-left" | "center",
-    /**
-     * Position of the trigger button.
-     * Supported from v1.0.19+
-     * @default "bottom-right"
-     */
-
-    hideTriggerOnExpand?: boolean,
-    /**
-     * Hide the trigger button when widget is open.
-     * Supported from v1.0.19+
-     * @default true
-     */
-
-    widgetAlignment?: "bottom-right" | "bottom-center" | "bottom-left",
-    /**
-     * Position of the expanded widget.
-     * Supported from v1.0.19+
-     * @default "bottom-right"
-     */
+  widgetPosition: {
+    triggerPlacement: "fixed",
+    triggerAlignment: "bottom-right",
+    hideTriggerOnExpand: true,
+    widgetAlignment: "bottom-right",
   },
-
-  defaultTab?: "audio" | "text",
-  /**
-   * The tab shown by default when the component loads.
-   * Supported from v1.0.8+
-   * @default "audio"
-   */
-
-  hideTabSelector?: boolean,
-  /**
-   * Whether to hide the tab selector UI.
-   * Supported from v1.0.8+
-   * @default false
-   */
-
-  bypassStartScreen?: boolean,
-  /**
-   * Skip the start screen and begin a call/chat immediately when the trigger
-   * button is clicked. Uses the mode set by defaultTab (defaults to "audio").
-   * @default false
-   */
-
-  innerWindowProps?: {
-    /**
-     * Inner window dimensions when a call is connected.
-     * Accepts a number (px) or any valid CSS size string.
-     * Supported from v1.0.8+
-     */
-    width?: number | string,
-    height?: number | string,
-    borderRadius?: number | string,
-  },
-
-  title?: string,
-  /** Custom title displayed in the header. */
-
-  description?: string,
-  /** Custom description displayed below the title. */
-
-  logoUrl?: string,
-  /**
-   * Custom logo URL displayed in the header.
-   * Supported from v1.0.10+
-   */
-
-  logoStyles?: Partial<React.CSSProperties>,
-  /**
-   * Custom CSS styles for the logo container.
-   * Supported from v1.0.10+
-   */
-
-  legalDisclaimer?: {
-    text: string,
-    links?: Record<string, string>
-  },
-  /**
-   * Custom legal disclaimer with clickable links.
-   * Supported from v1.0.10+
-   */
-
-  feedbackScreen?: {
-    title?: string,               // Default: "How was your call/chat?"
-    description?: string,         // Default: "Your feedback helps us improve!"
-    starsCount?: number,          // Default: 5
-    placeholder?: string,         // Default: "We'd love to hear more..."
-    submitBtnCTA?: string,        // Default: "Submit Feedback"
-    submitBtnStyles?: Partial<React.CSSProperties>,
-    starsStyles?: {
-      filledColor?: string,       // Default: #FBBF24 (yellow)
-      emptyColor?: string         // Default: #D1D5DB (gray)
-    }
-  },
-  /**
-   * Optional feedback UI props
-   * Supported from v1.0.11+
-   */
 });
-
 ```
+
+The sections below list the supported options for positioning, trigger button styling, chat mode, feedback screens, and interactive widgets.
 
 **_Step 4: Add the Code to Your Website_**
 
@@ -234,6 +127,8 @@ If your website uses Content Security Policy (CSP), add the following CDN links 
 style-src: https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@latest/dist/style.css
 script-src: https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@latest/dist/dv-agent.es.js
 ```
+
+If you pin a CDN version, update the CSP entries to match that exact version.
 
 **_Step 6: Test the Integration_**
 
@@ -712,4 +607,3 @@ Guidelines:
 - **Don't duplicate widget fields in conversation** — if the form collects the user's email, don't ask for it in chat first.
 - **Confirm after widget interactions** — instruct the assistant to acknowledge bookings and form submissions clearly.
 - **Keep it conversational** — chat prompts should produce shorter, more casual responses than voice prompts.
-

@@ -1,89 +1,92 @@
 ---
 title: "Authentication"
-description: "How to authenticate with Ringg AI's API using API keys"
+description: "Authenticate Ringg AI API requests with workspace API keys and keep keys secure in production."
 "og:title": "How to Authenticate API Requests Using API Keys | Ringg AI"
 ---
 
-Ringg AI uses API key authentication to secure access to our APIs. This straightforward approach allows you to quickly integrate our voice AI capabilities into your applications while maintaining security.
+Ringg API requests use a workspace API key in the `X-API-KEY` header.
 
-## Obtaining Your API Key
+<Warning>
+Treat the API key as a server-side secret. Do not include it in browser JavaScript, mobile app bundles, public repositories, screenshots, logs, or support tickets.
+</Warning>
 
-To use the Ringg AI API, you'll need an API key (`X-API-KEY`):
+## Get your API key
 
-1. Log in to your [Ringg AI dashboard](https://www.ringg.ai/dashboard/api)
-2. Select **API** from the sidebar navigation
-3. Click the **Regenerate** button to create a new API key
+1. Log in to the [Ringg AI dashboard](https://www.ringg.ai/dashboard/api).
+2. Open **API** from the dashboard sidebar.
+3. Copy the workspace API key, or regenerate it if you intentionally want to rotate the key.
 
 <Frame caption="X-API-KEY">
-    <img src="/images/api_key.png" alt="Obtaining Your Ringg API Key" />
+  <img src="/images/api_key.png" alt="Ringg dashboard API key screen" />
 </Frame>
 
-> **Important:** Regenerating your API key will immediately invalidate any previous key. Ensure you update all your applications with the new key to prevent service disruptions.
+<Warning>
+Regenerating an API key immediately invalidates the previous key. Update every backend service that uses the old key before relying on the new one.
+</Warning>
 
-## Using Your API Key
+## Send the API key
 
-Include your API key in the header of every request to the Ringg AI API:
-
-```javascript
-const options = {
-  method: 'GET',
-  headers: {
-    'X-API-KEY': 'your-api-key-here'
-  }
-};
-
-fetch('https://prod-api.ringg.ai/ca/api/v0/workspace', options)
-  .then(response => response.json())
-  .then(response => console.log(response))
-  .catch(err => console.error(err));
-```
-## Security Best Practices
-
-To keep your API key and data secure, follow these best practices:
-
-- Never expose your API key in client-side code, public repositories, or browser-accessible files
-- Use environment variables to store your API key in server-side applications
-- Implement proper access controls to limit who can use your API key
-- Rotate your API key periodically, especially after team member departures
-- Monitor API usage to detect unusual patterns that might indicate a compromised key
-- Use HTTPS for all API requests to ensure encrypted data transmission
-- Validate and sanitize all inputs before sending them to the API
-- Implement proper error handling to prevent leaking sensitive information
-
-## Rate Limiting
-
-To ensure fair usage and system stability, Ringg AI implements rate limiting on API requests.
-
-## Authentication Example
-
-The following example demonstrates how to authenticate and retrieve your workspace information:
-
-```javascript
-const options = {
-  method: 'GET',
-  headers: {
-    'X-API-KEY': 'your-api-key-here'
-  }
-};
-
-fetch('https://prod-api.ringg.ai/ca/api/v0/workspace', options)
-  .then(response => response.json())
-  .then(response => console.log(response))
-  .catch(err => console.error(err));
+```bash
+curl --request GET "https://prod-api.ringg.ai/ca/api/v0/workspace" \
+  --header "X-API-KEY: $RINGG_API_KEY"
 ```
 
-## Sample Response
+```javascript
+const response = await fetch("https://prod-api.ringg.ai/ca/api/v0/workspace", {
+  headers: {
+    "X-API-KEY": process.env.RINGG_API_KEY
+  }
+});
 
-A successful authentication will return your workspace details:
+if (!response.ok) {
+  throw new Error(`Ringg API error: ${response.status} ${await response.text()}`);
+}
+
+const workspace = await response.json();
+```
+
+## Successful response
+
+`GET /workspace` is the simplest authentication check.
 
 ```json
 {
   "workspace_info": {
     "id": "7251cb4b-72a3-42dc-9586-edf0328e2973",
-    "name": "Siddharth @ DesiVocal's Workspace",
-    "created_at": "2024-12-16T13:03:29.947147+00:00",
+    "name": "Acme Support Workspace",
+    "created_at": "2026-04-15T10:30:00.000000+00:00",
     "credits": 3025.0,
     "locked_credits": 0.0,
-    "api_key": "d079bcb3-f52b-4b47-a230-f626ecad3e85"
+    "api_key": "redacted-api-key"
   }
 }
+```
+
+## Production practices
+
+- Store the key in a secret manager or environment variable.
+- Use one backend service as the integration boundary when possible.
+- Rotate the key when a team member with access leaves.
+- Avoid logging request headers.
+- Alert on unexpected usage volume or repeated `401` responses.
+- Use HTTPS for every API call.
+
+## Troubleshooting
+
+| Response | Meaning | Fix |
+|---|---|---|
+| `401 Unauthorized` | Missing, invalid, or rotated API key | Verify `X-API-KEY` and redeploy secrets |
+| `403 Forbidden` | Key is valid but lacks permission for that action | Check workspace role and API permissions |
+| `429 Too Many Requests` | Rate limit exceeded | Back off and retry later |
+| `5xx` | Ringg server or upstream provider issue | Retry with backoff and log `call_id` or request context |
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Quick Start Guide" icon="rocket" href="/api-reference/quick-start/guide">
+    Use the key to make your first call.
+  </Card>
+  <Card title="Regenerate API Key" icon="rotate-cw" href="/api-reference/endpoint/workspace/regenerate-api-key">
+    Rotate a workspace key intentionally.
+  </Card>
+</CardGroup>

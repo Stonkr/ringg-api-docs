@@ -4,21 +4,21 @@ openapi: post /campaign/save
 
 Upload a CSV file with contact data to create a new campaign. Once uploaded, you can start the campaign to begin making calls.
 
-## 📋 Quick Start
+## Quick start
 
 1. **Prepare your CSV** - Download template from your campaigns tab
 2. **Configure your agent** - Set up prompts and custom variables  
 3. **Upload & configure** - Submit CSV with campaign settings
 4. **Start calling** - Use the returned `list_id` to start your campaign
 
-## 📁 CSV File Requirements
+## CSV file requirements
 
 <Warning>
 **Important File Rules:**
-- ✅ CSV format only
-- ✅ Must include "Mobile Number" column  
-- ✅ Phone numbers need country code (e.g., +91xxxxxxxxxx)
-- ✅ Download exact template from campaigns tab for your agent
+- CSV format only
+- Must include "Mobile Number" column
+- Phone numbers need country code, for example `+919876543210`
+- Download the exact template from the campaign tab for your agent
 </Warning>
 
 ### Example CSV Structure
@@ -28,7 +28,7 @@ Mobile Number,Name,Company,Email
 +918882876898,Jane Smith,ABC Inc,user@example.com
 ```
 
-## ⚙️ Configuration Parameters
+## Configuration parameters
 
 ### Required Fields
 | Field | Format | Example |
@@ -36,15 +36,9 @@ Mobile Number,Name,Company,Email
 | **CSV File** | .csv file | contacts.csv |
 | **Agent ID** | UUID | 830f767a-397e-4b39-82ff-235cd344e2f9 |
 | **Campaign Name** | Text | "Q1 Sales Outreach" |
-<<<<<<< fix/terminate
-| **Country Code** | 2-letter code | "IN", "US" |
-| **Campaign Start Time** | DD/MM/YYYY, HH:MM | 18/10/2025, 09:00 |
-| **Campaign End Time** | DD/MM/YYYY, HH:MM | 18/10/2025, 21:00 |
-=======
-| **Country Code** | Phone number code | "+91", "+1" |
-| **Start Time** | DD/MM/YYYY, HH:MM | 18/10/2025, 09:00 |
-| **End Time** | DD/MM/YYYY, HH:MM | 18/10/2025, 21:00 |
->>>>>>> main
+| **Country Code** | Phone dialing prefix | "+91", "+1" |
+| **Campaign Start Time** | DD/MM/YYYY, HH:MM | 18/10/2026, 09:00 |
+| **Campaign End Time** | DD/MM/YYYY, HH:MM | 18/10/2026, 21:00 |
 
 ### Optional Settings
 | Setting | Default | Purpose |
@@ -56,8 +50,12 @@ Mobile Number,Name,Company,Email
 
 **Download the exact CSV template from your campaigns tab** to get the correct format according to your specific agent configuration. The required columns vary based on your agent's custom variables.
 
+<Info>
+`campaign_start_time` and `campaign_end_time` use the timezone in `call_config.call_time.timezone`. The backend expects the `DD/MM/YYYY, HH:MM` format and validates that the start time is in the future.
+</Info>
 
-## 🔗 Variable Mapping
+
+## Variable mapping
 
 Connect your CSV columns to agent variables so your AI can use the contact data during calls.
 
@@ -78,7 +76,7 @@ Reference mapped variables in your agent prompt with `@{{variable_name}}`:
 - `@{{callee_name}}` → "John Doe"
 - `@{{company_name}}` → "XYZ Corp"
 
-## ⏰ Call Configuration
+## Call configuration
 
 Control when and how your campaign calls are made:
 
@@ -114,10 +112,10 @@ Control when and how your campaign calls are made:
 ```
 </details>
 
-## ✅ What Happens Next?
+## What happens next?
 
 ### Success Response
-You'll receive a `list_id` - **save this!** You need it to start your campaign.
+You'll receive a `list_id`. Save it because you need it to start the campaign.
 
 ```json
 {
@@ -136,11 +134,11 @@ You'll receive a `list_id` - **save this!** You need it to start your campaign.
 
 ### Error Handling
 If upload fails, check:
-- ✅ CSV format and required columns
-- ✅ Valid phone number format with country codes
-- ✅ Agent ID exists and is active
-- ✅ API key permissions
+- CSV format and required columns
+- Valid phone number format with country codes
+- Agent ID exists and is active
+- API key permissions
 
 <Info>
-**💡 Pro Tip**: Set `remove_invalid_rows=true` to automatically skip problematic contacts instead of failing the entire upload.
+Set `remove_invalid_rows=true` to automatically skip problematic contacts instead of failing the entire upload.
 </Info>

@@ -1,3 +1,24 @@
 ---
 openapi: delete /calling/contact/{list_id}
 ---
+
+Delete a contact list by ID. This removes the list and associated contacts from the workspace.
+
+## When to use
+
+- Clean up test uploads.
+- Remove a list that should no longer be used for campaigns or workflows.
+- Delete incorrect imported data before uploading a corrected list.
+
+## Before deleting
+
+- Confirm no active campaign or workflow depends on the list.
+- Store any audit data you need before deletion.
+- Use workspace-level authorization; users cannot delete lists outside their workspace.
+
+## Example
+
+```bash
+curl --request DELETE "https://prod-api.ringg.ai/ca/api/v0/calling/contact/$LIST_ID" \
+  --header "X-API-KEY: $RINGG_API_KEY"
+```
