@@ -1,0 +1,60 @@
+---
+title: "Get large campaign upload status (Beta)"
+description: "Poll asynchronous CSV processing status for a beta large campaign."
+openapi: get /campaign/upload-status/{bulk_list_id}
+---
+
+<Warning>
+This endpoint is beta. Use it only for lists created with [Upload large campaign CSV](/api-reference/endpoint/campaign/upload-large-campaign-csv).
+</Warning>
+
+`GET /campaign/upload-status/{bulk_list_id}` returns the processing state for a large campaign CSV upload.
+
+## Endpoint
+
+```text
+GET /campaign/upload-status/{bulk_list_id}
+```
+
+## Path parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `bulk_list_id` | Yes | Large campaign list ID returned by `POST /campaign/upload-csv` |
+
+## Request
+
+```bash
+curl --request GET "https://prod-api.ringg.ai/ca/api/v0/campaign/upload-status/your-bulk-list-id" \
+  --header "X-API-KEY: $RINGG_API_KEY"
+```
+
+## Status flow
+
+| Status | Meaning | Next action |
+|--------|---------|-------------|
+| `uploaded` | Ringg accepted the CSV and queued processing | Keep polling |
+| `processing` | Rows are being parsed and validated | Keep polling |
+| `completed` | Processing finished and valid rows are ready | Check balance |
+| `failed` | Processing could not complete | Fix the CSV and upload again |
+
+Some beta workspaces may return equivalent status names such as `ready` for a completed upload. Continue only when the response clearly indicates that CSV processing has finished.
+
+## Response guidance
+
+The response includes the upload state and may include row counts or validation details.
+
+```json
+{
+  "bulk_list_id": "123e4567-e89b-12d3-a456-426614174000",
+  "status": "processing",
+  "total_rows": 6200,
+  "processed_rows": 2800,
+  "successful_rows": 2744,
+  "failed_rows": 56
+}
+```
+
+## Next step
+
+When processing is complete, call [Check large campaign balance](/api-reference/endpoint/campaign/check-large-campaign-balance). If the response shows invalid rows, fix and re-upload the CSV unless your workflow intentionally removes invalid rows.

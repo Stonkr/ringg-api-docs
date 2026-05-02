@@ -83,7 +83,7 @@ curl --request GET "$RINGG_BASE_URL/workspace/numbers" \
   --header "X-API-KEY: $RINGG_API_KEY"
 ```
 
-Save the selected `from_number_id`. Some assistants may already have default outbound numbers configured, but passing `from_number_id` keeps the first integration explicit.
+Save the selected `from_number_id`. The individual-call API requires exactly one caller-number option: `from_number_id` or `from_number`. Use `from_number_id` when possible because it is stable across number formatting changes.
 
 ## Step 5: Make the call
 

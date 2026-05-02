@@ -1,85 +1,118 @@
 ---
 title: "Dashboard"
 sidebarTitle: "Dashboard"
-description: "Learn how to navigate the Ringg AI dashboard and workspace."
+description: "Learn how to navigate the Ringg AI dashboard."
 icon: "panels-top-left"
 ---
 
-When you log in to Ringg AI, you land on the **Assistants** page — the main hub of your workspace.
+The Ringg AI dashboard is where your team creates assistants, launches campaigns, manages numbers, reviews calls, and checks performance.
 
-{/* <Frame>
-  <img src="/images/documentation/dashboard-overview.png" alt="Dashboard Overview" />
-</Frame> */}
+When you log in, you usually land on **Assistants**.
 
 ---
 
-## Layout
+## Main Navigation
 
-The dashboard has two main areas:
+Use the left sidebar to move between product areas.
 
-### Left Sidebar — Navigation
-
-The sidebar is split into two groups:
-
-**App**
-
-| Item | Description |
+| Section | What You Do There |
 |---|---|
-| Assistants | View, create, and manage all your AI voice agents |
-| Campaigns | Create and schedule bulk outbound call campaigns |
-| Knowledge Base | Upload reference documents for your assistants |
-| Numbers | Manage purchased or imported telephony numbers |
-| History | Browse individual call logs and transcripts |
-| Analytics | View aggregate call performance metrics |
+| **Assistants** | Create and manage voice assistants |
+| **Campaigns** | Schedule outbound calling campaigns |
+| **Knowledge Base** | Upload documents assistants can use during calls |
+| **Numbers** | Buy, connect, and manage caller numbers |
+| **History** | Review calls, recordings, transcripts, and exports |
+| **Analytics** | Track call volume, connection rates, cost, and outcomes |
+| **Workspace Members** | Invite teammates and manage permissions |
+| **API Key** | Copy or rotate the workspace API key |
+| **Integrations** | Connect telephony providers and tools such as Zapier |
+| **Contact Us** | Reach the Ringg AI support team |
 
-**More**
+---
 
-| Item | Description |
+## Top Bar
+
+The top bar helps you confirm where you are and which workspace you are using.
+
+| Item | What It Means |
 |---|---|
-| Workspace Members | Add/remove team members and set their permissions |
-| API Key | View and regenerate your workspace API key |
-| Integrations | Connect telephony providers (BYOT) and Zapier |
-| Contact Us | Reach the Ringg AI support team |
-
----
-
-### Top Bar
-
-- **Workspace selector** (top-left) — Switch between workspaces if you belong to multiple
-- **Credit balance** (top-right, shown in orange) — Your current call credit balance in ₹
-- **Breadcrumb** (center-top) — Shows your current location, e.g. `Dashboard > Assistants`
-
----
-
-### Main Content Area
-
-The main panel changes based on the section you're in. For **Assistants**, you'll see:
-
-- A **Search** bar to filter assistants by name
-- A filter dropdown (**All** / **Inbound** / **Outbound**)
-- A **+ Create Assistant** button (top-right)
-- Assistant cards grouped by **This week**, **Last month**, and **Older**
-
-Each assistant card shows:
-- Assistant **avatar** and **name**
-- Assistant type (**Single Prompt** or **Multi Prompt**)
-- Call direction (**Outbound**, **Inbound**, or **Webcall**)
-- Total **Calls** made by that assistant
-
-{/* <Frame>
-  <img src="/images/documentation/assistants-list.png" alt="Assistants List" />
-</Frame> */}
-
----
-
-## Workspace Switcher
-
-If you manage multiple workspaces (e.g. different clients or environments), click the **workspace name** in the top-left corner to switch.
-
----
-
-## Credit Balance
+| **Workspace selector** | Switches between workspaces if you belong to more than one |
+| **Breadcrumb** | Shows the current page path |
+| **Credit balance** | Shows available prepaid calling credits |
 
 <Note>
-  The orange balance (e.g. ₹38,133.6) in the top-right is your current prepaid call credit. Credits are consumed based on call duration. Contact the Ringg AI team to top up.
+  Credits are consumed by calls. Contact the Ringg AI team when you need a top-up.
 </Note>
+
+---
+
+## Assistants Page
+
+The **Assistants** page is the main starting point.
+
+Use it to:
+
+- Search for an assistant.
+- Filter assistants by inbound, outbound, or webcall.
+- Create a new assistant.
+- Open an existing assistant.
+- Check how many calls an assistant has handled.
+
+Each assistant card shows the assistant name, type, call direction, and call count.
+
+---
+
+## Typical Dashboard Flow
+
+For most teams, the first setup follows this order:
+
+<Steps>
+  <Step title="Create an assistant">
+    Build the voice agent that will speak to customers.
+  </Step>
+  <Step title="Configure the assistant">
+    Add the prompt, voice, custom variables, knowledge base, and test calls.
+  </Step>
+  <Step title="Add numbers">
+    Buy or connect the caller numbers the assistant will use.
+  </Step>
+  <Step title="Launch a campaign">
+    Upload a CSV list and start outbound calls.
+  </Step>
+  <Step title="Review results">
+    Use History and Analytics to check outcomes and improve the setup.
+  </Step>
+</Steps>
+
+---
+
+## Where to Find Common Tasks
+
+| Task | Go To |
+|---|---|
+| Create a new voice agent | **Assistants** |
+| Upload a list and start calls | **Campaigns** |
+| Add customer FAQs or pricing documents | **Knowledge Base** |
+| Buy or connect phone numbers | **Numbers** |
+| Listen to a recording | **History** |
+| Download call results | **History** |
+| Check connection rate | **Analytics** |
+| Invite a teammate | **Workspace Members** |
+| Give a developer API access | **API Key** |
+| Set up webhooks or telephony | **Integrations** and developer API docs |
+
+---
+
+## Developer Handoff
+
+Some dashboard work creates values engineers need later.
+
+| When You Create | Give Developers |
+|---|---|
+| Assistant | Assistant name and `agent_id` |
+| Campaign | Campaign name and `bulk_list_id` or campaign ID |
+| Number | Phone number and `from_number_id` when available |
+| API integration | Workspace API key through a secure secret-sharing process |
+| Webhook workflow | Assistant `agent_id`, events needed, and destination system |
+
+Use this handoff list when moving from dashboard setup to product or backend integration.

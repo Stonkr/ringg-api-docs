@@ -1,113 +1,121 @@
 ---
 title: "View Call History"
 sidebarTitle: "View Call History"
-description: "Browse call logs, listen to recordings, and read transcripts."
+description: "Find call logs, recordings, transcripts, and call details."
 icon: "history"
 ---
 
-The **History** section gives you a full log of every call made or received by your assistants, including audio recordings and transcripts.
+Use **History** to review every call made or received by your assistants. This is where business teams check outcomes, listen to recordings, read transcripts, and export call data.
 
 ---
 
-## Accessing Call History
+## Open History
 
 1. Click **History** in the left sidebar.
-2. The page loads with calls from the last 30 days by default.
-
-{/* <Frame>
-  <img src="/images/documentation/history-page.png" alt="History Page" />
-</Frame> */}
+2. Review the default date range.
+3. Use filters if you need a smaller list.
 
 ---
 
-## Understanding the Call Log
+## Read the Call Log
 
-The table shows the following columns:
+The call table shows one row per call.
 
-| Column | Description |
+| Column | What It Means |
 |---|---|
-| **Direction** | Arrow icon — ↗ Outbound, ↙ Inbound |
-| **Assistant Name** | The assistant that handled the call (with version number) |
-| **Callee Name** | Contact's name and phone number |
+| **Direction** | Whether the call was outbound or inbound |
+| **Assistant Name** | The assistant that handled the call |
+| **Callee Name** | The contact name and phone number |
 | **Called On** | Date and time of the call |
-| **Call Status** | `Completed`, `Failed`, `No Answer`, `Voicemail`, etc. |
-| **Call Duration** | Length of the call in seconds |
+| **Call Status** | Outcome such as completed, failed, no answer, or voicemail |
+| **Call Duration** | How long the call lasted |
+
+Click any row to open the call details panel.
 
 ---
 
-## Filtering Calls
+## Filter Calls
 
-### By Date Range
+Use filters when you are looking for a specific call or campaign result.
 
-Click the **date picker** (e.g. `2026-02-07 – 2026-03-09`) to adjust the date range. Click the ✕ to reset to the default range.
+### Date Range
 
-### By Other Filters
+1. Click the date range picker.
+2. Choose the start and end dates.
+3. Apply the range.
+4. Click the clear icon to reset if needed.
 
-Click **Filter** to open the filter panel and narrow results by:
-- Assistant
-- Call status
-- Call direction
-- And more
+### Other Filters
 
----
+Click **Filter** and narrow the list by:
 
-## Exporting Call History
-
-Click **Export** (top-right) to download the filtered call list as a CSV file. Use this for reporting, audits, or CRM uploads.
-
----
-
-## Viewing a Call's Details
-
-Click any row to open the **Call Analysis** panel on the right.
-
-{/* <Frame>
-  <img src="/images/documentation/call-analysis-panel.png" alt="Call Analysis Panel" />
-</Frame> */}
-
-### Call Summary
-
-The top of the panel shows:
-- **Assistant name** and direction (Outbound/Inbound)
-- **Call ID** (UUID, with copy button)
-- **Call Time** — when the call was made
-- **Call Duration** — in seconds
-- **Call Status** — e.g. Completed
-
-### Audio Playback
-
-An audio waveform player lets you listen to the full call recording. Click ▶ to play, and use the download button to save the audio file.
+- Assistant.
+- Call status.
+- Call direction.
+- Campaign or list, when available.
+- Other available fields.
 
 ---
 
-## Call Details Tab
+## Export Call History
 
-Click **Call Details** to see structured metadata:
+1. Apply the filters you want.
+2. Click **Export**.
+3. Download the CSV.
 
-| Field | Description |
+Use exports for reports, audits, CRM uploads, QA review, or offline analysis.
+
+---
+
+## Review a Call
+
+Click a call row to open the **Call Analysis** panel.
+
+The panel includes:
+
+| Section | What You Can Do |
 |---|---|
-| **Call Latency** | Time (in seconds) before the assistant's first utterance began |
-| **Call Duration** | Start and end timestamps |
-| **Custom Variables** | The values injected for this specific call (e.g. `Mrp: 50000`) |
+| Summary | Check assistant, direction, call time, duration, and status |
+| Call ID | Copy the unique ID for support or developer debugging |
+| Recording | Play or download the audio recording |
+| Call Details | Review latency, timestamps, and custom variables |
+| Transcript | Read the conversation |
+| Analysis | Review extracted fields if custom analysis is configured |
 
 ---
 
-## Transcript Tab
+## Use the Transcript
 
-Click **Transcript** to read the full conversation.
+Click **Transcript** in the call details panel.
 
-{/* <Frame>
-  <img src="/images/documentation/call-transcript.png" alt="Call Transcript" />
-</Frame> */}
+Use the transcript to:
 
-The transcript shows:
-- Each turn of the conversation with speaker labels (assistant vs. callee)
-- **Phase labels** at the start of each section (e.g. `Greetings ~32.6ms`) showing the prompt node that was active
-- Timestamps for each message
-- A **copy** and **download** button to export the transcript
+- Confirm what the assistant said.
+- Review customer objections.
+- Check whether the assistant followed the prompt.
+- Copy examples for prompt improvements.
+- Share evidence with sales, support, compliance, or operations teams.
 
 ---
 
-## Sharing a Call
+## Share a Call
 
-Use the **link icon** in the Call Analysis panel header to generate a shareable URL for this specific call — useful for team review or escalation.
+Use the link icon in the call details panel to create a shareable URL for one call.
+
+Share call links only with people who should have access to customer conversations and recordings.
+
+---
+
+## Developer Handoff
+
+If engineers are investigating a call or connecting results to another system, send them:
+
+| Item | Why They Need It |
+|---|---|
+| `call_id` | Links dashboard history, API history, webhooks, and support logs |
+| Assistant name and `agent_id` | Helps confirm which assistant handled the call |
+| Campaign name or `bulk_list_id` | Helps find all calls from the same campaign |
+| Call status and timestamp | Speeds up debugging |
+| Transcript or recording link | Helps verify prompt behavior and webhook payloads |
+
+For real-time results, ask the developer to use webhooks. History is best for review, exports, audits, and backfills.

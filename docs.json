@@ -41,7 +41,7 @@
             ]
           },
           {
-            "group": "How-to Guides",
+            "group": "Dashboard Guides",
             "pages": [
               "get-started/guides/create-assistant",
               "get-started/guides/configure-assistant",
@@ -50,8 +50,17 @@
               "get-started/guides/manage-numbers",
               "get-started/guides/view-call-history",
               "get-started/guides/analytics",
-              "get-started/guides/workspace-settings",
-              "get-started/guides/embedding-widget"
+              "get-started/guides/workspace-settings"
+            ]
+          },
+          {
+            "group": "Web Widget",
+            "pages": [
+              "get-started/guides/embedding-widget",
+              "get-started/guides/embedding-widget-configuration",
+              "get-started/guides/embedding-widget-events",
+              "get-started/guides/embedding-widget-chat-widgets",
+              "get-started/guides/embedding-widget-production-qa-security"
             ]
           },
           {
@@ -105,6 +114,16 @@
             ]
           },
           {
+            "group": "Knowledge Base",
+            "pages": [
+              "api-reference/endpoint/kb/create-knowledge-base",
+              "api-reference/endpoint/kb/edit-knowledge-base",
+              "api-reference/endpoint/kb/get-all-knowledge-bases",
+              "api-reference/endpoint/kb/get-knowledge-base-by-id",
+              "api-reference/endpoint/kb/delete-knowledge-base"
+            ]
+          },
+          {
             "group": "Numbers",
             "pages": [
               "api-reference/endpoint/numbers/get-workspace-numbers"
@@ -121,7 +140,11 @@
             "pages": [
               "api-reference/endpoint/campaign/upload-campaign-contact-list",
               "api-reference/endpoint/campaign/start-campaign",
-              "api-reference/endpoint/campaign/get-all-campaigns"
+              "api-reference/endpoint/campaign/get-all-campaigns",
+              "api-reference/endpoint/campaign/upload-large-campaign-csv",
+              "api-reference/endpoint/campaign/get-large-campaign-upload-status",
+              "api-reference/endpoint/campaign/check-large-campaign-balance",
+              "api-reference/endpoint/campaign/make-large-campaign-calls-async"
             ]
           },
           {

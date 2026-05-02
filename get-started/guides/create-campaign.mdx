@@ -1,124 +1,137 @@
 ---
 title: "Create a Campaign"
 sidebarTitle: "Create a Campaign"
-description: "Run bulk outbound calls using an assistant and a contact list."
+description: "Run outbound calls to a contact list from the Ringg AI dashboard."
 icon: "notebook-tabs"
 ---
 
-A Campaign lets you run bulk outbound calls using an assistant and a contact list. Follow these steps to set one up.
+A campaign calls many contacts using one assistant, one or more caller numbers, and a CSV calling list.
 
 ---
 
-## Prerequisites
+## Before You Start
 
-Before creating a campaign, make sure you have:
+Make sure you have:
 
-<Check>An assistant created and configured (see [Create an Assistant](/get-started/guides/create-assistant))</Check>
-<Check>At least one number in your workspace (see [Manage Numbers](/get-started/guides/manage-numbers))</Check>
-<Check>A calling list CSV ready (with phone numbers and any custom variables)</Check>
+<Check>An outbound assistant that has been tested</Check>
+<Check>At least one phone number in your workspace</Check>
+<Check>A CSV file with phone numbers and any fields used by the assistant</Check>
+<Check>Enough call credits for the campaign</Check>
 
 ---
 
-## Step 1 — Open the Campaigns Page
+## Step 1 - Open Campaigns
 
 1. Click **Campaigns** in the left sidebar.
-2. Click **+ Create Campaign** in the top-right corner.
-
-{/* <Frame>
-  <img src="/images/documentation/campaigns-page.png" alt="Campaigns Page" />
-</Frame> */}
+2. Click **+ Create Campaign**.
 
 ---
 
-## Step 2 — Fill in Campaign Settings
+## Step 2 - Fill in Campaign Settings
 
-You'll land on the **Campaign Settings** tab.
+On the **Campaign Settings** tab, fill in:
 
-{/* <Frame>
-  <img src="/images/documentation/campaign-settings-form.png" alt="Campaign Settings Form" />
-</Frame> */}
+| Field | What to Choose |
+|---|---|
+| **Campaign Name** | A clear name such as `March Admissions Follow-up` |
+| **Assistant** | The assistant that should make the calls |
+| **Numbers** | One or more caller numbers |
+| **Campaign Start Date/Time** | When calling should begin |
+| **Campaign End Date/Time** | When calling must stop |
+| **Timezone** | The timezone for the schedule |
+| **Email Notifications** | People who should receive updates |
 
-Fill in the following fields:
-
-| Field | Required | Description |
-|---|---|---|
-| **Campaign Name** | Yes | A clear, descriptive name (e.g. `Aakash ANTHE Follow-up – March 2026`) |
-| **Assistant** | Yes | The assistant that will make the calls |
-| **Numbers** | Yes | One or more numbers to use as caller ID. Multiple numbers distribute load |
-| **Campaign Start Date/Time** | Yes | When the campaign should begin dialling |
-| **Campaign End Date/Time** | Yes | Hard stop time. Uncalled contacts after this time will not be dialled |
-| **Timezone** | Yes | Timezone for your start/end times (e.g. `(UTC+5:30) IST`) |
-| **Email Notifications** | No | Workspace members who should receive email updates |
+<Tip>
+  Use a campaign name that includes the audience, month, and purpose. This makes history and analytics easier to find later.
+</Tip>
 
 ---
 
-## Step 3 — Click Next
+## Step 3 - Upload the Calling List
 
-Click **Next** to move to the **Calling List** tab.
+Click **Next** to open the **Calling List** tab.
 
----
+Upload a CSV file with one row per contact. Include:
 
-## Step 4 — Upload Your Calling List
+- A phone number column.
+- One column for each custom variable used in the assistant prompt.
+- Clear column names with no extra spaces.
 
-On the **Calling List** tab:
-
-1. Upload a CSV file containing your contacts.
-2. The CSV must have a column for the contact's phone number.
-3. Include additional columns for any **Custom Variables** used in your assistant's prompt (e.g. `callee_name`, `mrp`, `loan_amount`).
-
-**Example CSV format:**
+Example:
 
 ```csv
-phone_number,callee_name,mrp
-+919994008915,Sarath,50000
-+919731553396,Vikram,35000
-+917404156687,Sahil,75000
+phone_number,callee_name,course_name
++919994008915,Sarath,JEE Advanced
++919731553396,Vikram,NEET
++917404156687,Sahil,Class 10 Foundation
 ```
 
----
-
-## Step 5 — Launch the Campaign
-
-Review your settings, click **Save CSV** and **Make Call** to activate it.
-
-- If the start time is in the future, the campaign will be in **Scheduled** state.
-- If the start time is now or in the past, it will immediately begin dialling in **Ongoing** state.
+If the assistant prompt uses `@{{callee_name}}`, the CSV must include a `callee_name` column.
 
 ---
 
-## Managing a Running Campaign
+## Step 4 - Save and Start
 
-From the Campaigns list page, use the **Actions** column to:
+1. Review the campaign settings.
+2. Click **Save CSV**.
+3. Click **Make Call** to activate the campaign.
 
-- View call **History** for this campaign
-- **Terminate** a running campaign
-- View call **Analytics** for this campaign
+What happens next depends on the schedule:
+
+| Schedule | Campaign State |
+|---|---|
+| Start time is in the future | **Scheduled** |
+| Start time is now or already passed | **Ongoing** |
 
 ---
 
-## Setting Campaign Concurrency
+## Monitor a Campaign
 
-If multiple campaigns are running simultaneously, you can control how many concurrent calls each gets:
+From the **Campaigns** page, use the **Actions** column to:
 
-<Steps>
-  <Step title="Open Concurrency Settings">
-    Click **Manage Concurrency** on the Campaigns page.
-  </Step>
-  <Step title="Set Workspace Split">
-    On the **Workspace Concurrency** tab, set the split between API calls and campaign calls using the sliders.
-  </Step>
-  <Step title="Allocate Per Campaign">
-    On the **Campaigns Concurrency** tab, allocate slots per active campaign.
-  </Step>
-  <Step title="Save">
-    Click **Save**.
-  </Step>
-</Steps>
+- View campaign call history.
+- View campaign analytics.
+- Terminate a running campaign if needed.
 
-{/* <Frame>
-  <img src="/images/documentation/manage-concurrency.png" alt="Manage Concurrency Modal" />
-</Frame> */}
+Use **History** for call-level details and **Analytics** for performance trends.
+
+---
+
+## Set Campaign Concurrency
+
+Concurrency controls how many calls can happen at the same time.
+
+1. Click **Manage Concurrency** on the Campaigns page.
+2. Use **Workspace Concurrency** to split capacity between API calls and campaign calls.
+3. Use **Campaigns Concurrency** to allocate capacity across running campaigns.
+4. Click **Save**.
 
 <Note>
-  If concurrency is not set, call slots are distributed equally across all running campaigns.
+  If you do not set campaign concurrency, Ringg AI distributes available call slots across running campaigns.
 </Note>
+
+---
+
+## Developer Handoff
+
+If engineers are starting campaigns by API or pulling campaign results into another system, send them:
+
+| Item | Why They Need It |
+|---|---|
+| Campaign name | Lets them confirm they are working with the right campaign |
+| `agent_id` | Identifies the assistant that should make the calls |
+| Caller number or `from_number_id` | Identifies which number should dial contacts |
+| CSV column names | Must match assistant custom variables |
+| `bulk_list_id` or list ID | Identifies the uploaded calling list for start, status, history, and analytics |
+| Webhook requirement | Tells them whether to send call results to CRM, sheets, data warehouse, or support tools |
+
+For the standard API flow, developers should save the campaign with `POST /campaign/save`, then start it with `POST /campaign/start`.
+
+For large campaigns with 5,000 or more rows, use the beta large-campaign flow:
+
+1. `POST /campaign/upload-csv`
+2. `GET /campaign/upload-status/{bulk_list_id}`
+3. `POST /campaign/make-call-async`
+4. `POST /campaign/check-balance/{bulk_list_id}`
+
+Ask developers to store the returned `bulk_list_id` because it is needed to check upload status, start calls, filter history, and reconcile results.

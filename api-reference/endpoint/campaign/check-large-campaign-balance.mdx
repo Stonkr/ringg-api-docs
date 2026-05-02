@@ -1,0 +1,49 @@
+---
+title: "Check large campaign balance (Beta)"
+description: "Confirm workspace balance before starting beta large-campaign calls."
+openapi: post /campaign/check-balance/{bulk_list_id}
+---
+
+<Warning>
+This endpoint is beta. Use it only after upload processing is complete for a beta large campaign.
+</Warning>
+
+`POST /campaign/check-balance/{bulk_list_id}` checks whether the workspace has enough balance to start calls for the validated rows in a large campaign.
+
+## Endpoint
+
+```text
+POST /campaign/check-balance/{bulk_list_id}
+```
+
+## Path parameters
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `bulk_list_id` | Yes | Large campaign list ID returned by `POST /campaign/upload-csv` |
+
+## Request
+
+```bash
+curl --request POST "https://prod-api.ringg.ai/ca/api/v0/campaign/check-balance/your-bulk-list-id" \
+  --header "X-API-KEY: $RINGG_API_KEY"
+```
+
+## Response guidance
+
+A successful response confirms whether the current balance can cover the validated campaign rows.
+
+```json
+{
+  "bulk_list_id": "123e4567-e89b-12d3-a456-426614174000",
+  "required_credits": 6200,
+  "available_credits": 8500,
+  "sufficient_balance": true
+}
+```
+
+If `sufficient_balance` is `false`, add balance, reduce the campaign size, or contact Ringg support before starting calls.
+
+## Next step
+
+When balance is sufficient, call [Make large campaign calls async](/api-reference/endpoint/campaign/make-large-campaign-calls-async).
