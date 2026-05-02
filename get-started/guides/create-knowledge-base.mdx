@@ -15,6 +15,8 @@ Prepare clean source files:
 
 | Requirement | Guidance |
 |---|---|
+| Source type | Upload files for document knowledge, use CSV for deterministic row-based data, or add FAQs/URLs when available in your workspace |
+| Supported file types | PDF, DOCX, TXT, CSV, JSON, and other text-readable files. Export spreadsheets to CSV when you need structured deterministic retrieval. |
 | File quality | Use text-based files when possible. Avoid scanned PDFs unless they have searchable text. |
 | File count | Up to 4 files per knowledge base |
 | File size | Up to 512 MB per file |
@@ -43,7 +45,7 @@ Use this for structured information such as pricing tables, policy rules, eligib
 
 1. Click **Deterministic KB**.
 2. Enter a clear **KB Name**.
-3. Upload the files.
+3. Upload a CSV or other structured text file.
 4. Click **Edit Schema**.
 5. Add the fields the assistant should retrieve, such as `product_name`, `price`, `policy_code`, or `eligibility_status`.
 6. Choose the data type for each field.
@@ -59,7 +61,7 @@ Use this for less structured documents such as FAQs, help articles, policy docum
 
 1. Click **Non Deterministic KB**.
 2. Enter a clear **KB Name**.
-3. Upload the files.
+3. Upload source files such as PDFs, DOCX files, TXT files, CSVs, JSON files, or clean text-readable documents.
 4. Click **Train Knowledge Base**.
 
 The assistant will search the uploaded content during calls and use the most relevant information it finds.
