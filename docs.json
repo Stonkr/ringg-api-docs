@@ -205,6 +205,18 @@
       "destination": "/api-reference/tutorials/setting-up-bulk-calls"
     },
     {
+      "source": "/api-reference/tutorials/managing-contacts",
+      "destination": "/api-reference/tutorials/setting-up-bulk-calls"
+    },
+    {
+      "source": "/api-reference/endpoint/contact/get-contact-list",
+      "destination": "/api-reference/endpoint/campaign/upload-campaign-contact-list"
+    },
+    {
+      "source": "/api-reference/endpoint/contact/delete-contact-list",
+      "destination": "/api-reference/tutorials/setting-up-bulk-calls"
+    },
+    {
       "source": "/get-started/tutorials/embedding-web-call-assistant",
       "destination": "/get-started/guides/embedding-widget"
     },

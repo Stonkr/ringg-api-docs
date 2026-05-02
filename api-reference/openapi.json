@@ -2666,69 +2666,6 @@
         }
       }
     },
-    "/calling/contact/{list_id}": {
-      "delete": {
-        "tags": [
-          "calling"
-        ],
-        "summary": "Delete Contact List",
-        "x-mint": {
-          "metadata": {
-            "og:title": "Delete Contact List | Ringg AI"
-          }
-        },
-        "description": "Deletes a contact list and all associated contacts by list ID.",
-        "operationId": "deleteContactList",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
-            }
-          },
-          {
-            "name": "list_id",
-            "in": "path",
-            "description": "(Required) The unique identifier of the contact list to delete.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Contact list deleted successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Bulk list deleted successfully!"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Invalid or missing API key."
-          },
-          "404": {
-            "description": "Not Found - Contact list not found."
-          },
-          "500": {
-            "description": "Internal Server Error - Something went wrong on our end."
-          }
-        }
-      }
-    },
     "/campaign/all": {
       "get": {
         "tags": [

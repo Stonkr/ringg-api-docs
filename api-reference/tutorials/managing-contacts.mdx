@@ -1,80 +1,12 @@
 ---
 title: "Managing Contacts"
-description: "Create reusable contact lists, add contacts, and decide when to use campaign uploads instead."
-"og:title": "How to Manage Contact Lists for Bulk Calls | Ringg AI"
+description: "Workflow contact-list APIs are not public yet."
 ---
 
-Ringg has two contact workflows:
+Contact-list APIs are part of Ringg AI Workflows and are not public yet.
 
-- Use **campaign upload** when you want to upload a CSV and immediately run outbound campaign calls.
-- Use **contact lists** when your product needs reusable lists that can collect contacts over time or connect to workflows.
+For live bulk outbound calling, use the campaign flow:
 
-## Option 1: Campaign upload
-
-For standard bulk calling, use [Upload Campaign Contact List](/api-reference/endpoint/campaign/upload-campaign-contact-list). It creates the campaign list and returns the `list_id` used by [Start Campaign](/api-reference/endpoint/campaign/start-campaign).
-
-## Option 2: Reusable contact lists
-
-Reusable contact lists live under `/contacts`.
-
-### Create a list
-
-```bash
-curl --request POST "https://prod-api.ringg.ai/ca/api/v0/contacts/lists" \
-  --header "X-API-KEY: $RINGG_API_KEY" \
-  --header "Content-Type: application/json" \
-  --data '{
-    "name": "Renewal leads",
-    "description": "Customers due for renewal",
-    "variables_schema": [
-      {"key": "callee_name", "type": "string"},
-      {"key": "mobile_number", "type": "string"},
-      {"key": "policy_id", "type": "string"}
-    ]
-  }'
-```
-
-### Add one contact
-
-```bash
-curl --request POST "https://prod-api.ringg.ai/ca/api/v0/contacts/lists/add-contacts/$LIST_ID" \
-  --header "X-API-KEY: $RINGG_API_KEY" \
-  --form 'contact={"custom_args_values":{"callee_name":"John","mobile_number":"+919876543210","policy_id":"POL-123"}}'
-```
-
-### Add contacts from CSV
-
-```bash
-curl --request POST "https://prod-api.ringg.ai/ca/api/v0/contacts/lists/add-contacts/$LIST_ID" \
-  --header "X-API-KEY: $RINGG_API_KEY" \
-  --form 'csv_file=@contacts.csv' \
-  --form 'column_mapping={"variable_mapping":{"callee_name":"Name","mobile_number":"Mobile Number","policy_id":"Policy ID"}}'
-```
-
-### List contact lists
-
-```bash
-curl --request GET "https://prod-api.ringg.ai/ca/api/v0/contacts/lists" \
-  --header "X-API-KEY: $RINGG_API_KEY"
-```
-
-### List contacts inside a list
-
-```bash
-curl --request GET "https://prod-api.ringg.ai/ca/api/v0/contacts/lists/$LIST_ID/contacts?limit=20&offset=0" \
-  --header "X-API-KEY: $RINGG_API_KEY"
-```
-
-## Delete a list
-
-```bash
-curl --request DELETE "https://prod-api.ringg.ai/ca/api/v0/calling/contact/$LIST_ID" \
-  --header "X-API-KEY: $RINGG_API_KEY"
-```
-
-## Data requirements
-
-- Every callable contact should include `callee_name` and `mobile_number`.
-- Phone numbers should include country code, for example `+919876543210`.
-- CSV column mappings map Ringg variable names to CSV header names.
-- Keep variable names aligned with assistant prompt placeholders such as `@{{policy_id}}`.
+- [Set up bulk calls](/api-reference/tutorials/setting-up-bulk-calls)
+- [Upload a campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list)
+- [Start a campaign](/api-reference/endpoint/campaign/start-campaign)
