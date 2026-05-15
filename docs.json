@@ -59,6 +59,7 @@
               "get-started/guides/embedding-widget",
               "get-started/guides/embedding-widget-configuration",
               "get-started/guides/embedding-widget-events",
+              "get-started/guides/embedding-widget-agent-actions",
               "get-started/guides/embedding-widget-chat-widgets",
               "get-started/guides/embedding-widget-production-qa-security"
             ]

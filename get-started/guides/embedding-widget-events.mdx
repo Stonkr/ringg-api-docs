@@ -1,11 +1,15 @@
 ---
-title: "Embedding Widget Events"
-sidebarTitle: "Widget Events"
+title: "Widget Lifecycle Events"
+sidebarTitle: "Lifecycle Events"
 icon: "radio"
-description: "Subscribe to Ringg AI widget browser events for UI state, conversations, and feedback."
+description: "Listen for browser events the Ringg AI widget emits about its own state — open/close, conversation start/end, and feedback."
 ---
 
-The Ringg AI widget dispatches browser `CustomEvent` events on `window`. Use these events to sync your page UI, track analytics, or run post-conversation workflows. Widget events are supported from v1.0.17+.
+<Note>
+**Looking for events your agent triggers during a call** (focus an input, open a modal, scroll somewhere)? See [Agent Actions](/get-started/guides/embedding-widget-agent-actions). This page covers events the widget itself emits about its own state.
+</Note>
+
+The Ringg AI widget dispatches browser `CustomEvent` events on `window` as its state changes. Use these to sync your page UI, track analytics, or run post-conversation workflows. Lifecycle events are supported from v1.0.17+.
 
 ## Event reference
 
