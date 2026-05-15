@@ -193,6 +193,7 @@
           "telephony/plivo-integration",
           "telephony/exotel-integration",
           "telephony/twilio-integration",
+          "telephony/ameyo-integration",
           "telephony/number-management"
         ]
       }
