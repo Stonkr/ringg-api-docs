@@ -2,48 +2,61 @@
 title: "Agent Actions"
 sidebarTitle: "Agent Actions"
 icon: "mouse-pointer-click"
-description: "React to custom browser events your Ringg agent triggers during a conversation."
+description: "Custom browser events the Ringg agent can dispatch on the host page during a conversation."
 ---
 
 <Note>
 **Looking for widget state events** (open/close, conversation start/end, feedback)? See [Widget Lifecycle Events](/get-started/guides/embedding-widget-events). This page covers events your agent fires on the page during a call.
 </Note>
 
-Your Ringg agent can trigger custom browser events on your page during a conversation — focus an input, open a modal, scroll to a section, anything your UI can do. You configure each action in the Ringg dashboard, then listen for it by name on `window`.
+Your Ringg agent can dispatch custom browser events on your page during a conversation — focus an input, open a modal, scroll to a section, anything your UI can do. You configure each action in the dashboard, then listen for it by **Event ID** on `window`.
+
+<Info>
+**Where to set this up.** In the Ringg dashboard, open your agent and go to **Embed → Interactive Components → Execute DOM Action** (`execute_dom_action`). Each entry under **Actions** is one event the agent can dispatch.
+</Info>
 
 ## How it works
 
-1. You define an action in the dashboard with an event name (for example `ringg:focus_search`) and any payload fields it should send.
-2. Your agent decides during a call when to fire the action.
-3. Your page listens for the event by name and runs whatever handler you wire up.
+Each action you add in the dashboard has three fields:
+
+| Field | What it is |
+|---|---|
+| **Event ID** | The event name your page listens for on `window` via `addEventListener`. |
+| **Description** | Helps the agent decide when to fire the action. |
+| **Default Payload** *(optional)* | A JSON object delivered as `event.detail` when the action fires. |
+
+At runtime:
+
+1. The agent decides during a call when to fire one of its configured actions.
+2. The widget dispatches a `CustomEvent` on `window` using the action's **Event ID** as the event name.
+3. Your page's listener for that Event ID runs.
 
 Actions only fire during an active conversation. If the user is not on a call, no events are dispatched.
 
 ## Listening for an action
 
+Use the Event ID exactly as configured in the dashboard:
+
 ```javascript
-window.addEventListener("ringg:focus_search", (event) => {
+window.addEventListener("focus_search", (event) => {
   document.querySelector("#search-input").focus();
 });
 ```
 
-Whenever the agent fires `ringg:focus_search` during a call, your handler runs.
+Whenever the agent fires the `focus_search` action during a call, your handler runs.
 
-## The `event.detail` payload
+## Reading the payload
 
-`event.detail` is an object the agent sends with the event. It always includes:
-
-| Field | Description |
-|---|---|
-| `action_id` | The id of the action the agent fired. Useful if one listener handles several actions. |
-| ...your fields | Any payload fields you configured for that action, for example `discount_pct` or `product_id`. |
+The Default Payload you configured arrives as `event.detail`. Destructure the fields you need:
 
 ```javascript
-window.addEventListener("shop:show_promo_modal", (event) => {
-  const { action_id, discount_pct } = event.detail;
-  openPromoModal({ discount: discount_pct });
+window.addEventListener("show_promo_modal", (event) => {
+  const { discount_pct, product_id } = event.detail;
+  openPromoModal({ discount: discount_pct, productId: product_id });
 });
 ```
+
+If the action does not have a Default Payload configured, `event.detail` is `null`.
 
 ## React example
 
@@ -55,8 +68,8 @@ function SearchBar() {
 
   useEffect(() => {
     const listener = () => inputRef.current?.focus();
-    window.addEventListener("ringg:focus_search", listener);
-    return () => window.removeEventListener("ringg:focus_search", listener);
+    window.addEventListener("focus_search", listener);
+    return () => window.removeEventListener("focus_search", listener);
   }, []);
 
   return <input ref={inputRef} placeholder="Search…" />;
@@ -67,17 +80,17 @@ function SearchBar() {
 
 ```javascript
 // Open a promo modal when the agent suggests a discount
-window.addEventListener("shop:show_promo_modal", (event) => {
+window.addEventListener("show_promo_modal", (event) => {
   showPromoModal({ discount: event.detail.discount_pct });
 });
 
 // Scroll to the pricing section
-window.addEventListener("ringg:scroll_to_pricing", () => {
+window.addEventListener("scroll_to_pricing", () => {
   document.querySelector("#pricing")?.scrollIntoView({ behavior: "smooth" });
 });
 
 // Pre-fill a form field
-window.addEventListener("ringg:prefill_email", (event) => {
+window.addEventListener("prefill_email", (event) => {
   document.querySelector("input[name=email]").value = event.detail.email;
 });
 ```
@@ -92,7 +105,7 @@ loadAgent({
   // ...
   eventLogs: {
     enabled: true,   // off by default
-    showIds: false,  // set true to also show the action id
+    showIds: false,  // set true to also show the Event ID
   },
 });
 ```
@@ -102,16 +115,16 @@ This is purely a visual aid. Actions fire the same way whether you enable it or 
 ## Naming and conventions
 
 <Tip>
-Use a namespace prefix like `ringg:` or your own (`shop:`, `app:`) so your action names do not collide with other events on the page.
+Pick distinctive Event IDs (for example `ringg_focus_search`, `shop_show_promo`) so your action names do not collide with other custom events on the page.
 </Tip>
 
-- **Multiple listeners work.** You can attach more than one handler to the same event name from different components, and all of them fire.
-- **One listener, many actions.** Use `action_id` inside a single handler if you want one place to route different actions.
+- **Multiple listeners work.** You can attach more than one handler to the same Event ID from different components, and all of them fire.
+- **One listener, many actions.** Inside a single handler, use `event.type` to route on the Event ID if you want one place to handle several actions.
 - **Listeners only run during a call.** Nothing fires when the user is idle.
 
 ## QA notes
 
-<Check>Configure one action in the dashboard, attach a listener, and confirm it fires when the agent triggers it during a test call.</Check>
-<Check>Verify `event.detail` contains `action_id` plus any payload fields you configured.</Check>
+<Check>Add an Event ID in the dashboard, attach a matching `addEventListener` on your page, and confirm it fires during a test call.</Check>
+<Check>If you configured a Default Payload, verify `event.detail` contains those fields with the expected values.</Check>
 <Check>Enable `eventLogs.enabled` during integration to visually confirm each action fires.</Check>
 <Check>In single-page apps, remove listeners on unmount so navigation does not duplicate handlers.</Check>
