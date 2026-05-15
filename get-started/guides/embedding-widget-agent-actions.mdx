@@ -9,7 +9,7 @@ description: "Custom browser events the Ringg agent can dispatch on the host pag
 **Looking for widget state events** (open/close, conversation start/end, feedback)? See [Widget Lifecycle Events](/get-started/guides/embedding-widget-events). This page covers events your agent fires on the page during a call.
 </Note>
 
-Your Ringg agent can dispatch custom browser events on your page during a conversation — focus an input, open a modal, scroll to a section, anything your UI can do. You configure each action in the dashboard, then listen for it by **Event ID** on `window`.
+Your Ringg agent can dispatch custom browser events on your page during a conversation. Focus an input, open a modal, scroll to a section, anything your UI can do. You configure each action in the dashboard, then listen for it by **Event ID** on `window`.
 
 <Info>
 **Where to set this up.** In the Ringg dashboard, open your agent and go to **Embed → Interactive Components → Execute DOM Action** (`execute_dom_action`). Each entry under **Actions** is one event the agent can dispatch.
