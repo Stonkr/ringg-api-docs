@@ -43,9 +43,7 @@
   "paths": {
     "/workspace": {
       "get": {
-        "tags": [
-          "workspace"
-        ],
+        "tags": ["workspace"],
         "summary": "Get Workspace Info",
         "x-mint": {
           "metadata": {
@@ -165,9 +163,7 @@
     },
     "/workspace/users": {
       "get": {
-        "tags": [
-          "workspace"
-        ],
+        "tags": ["workspace"],
         "summary": "List Workspace Users",
         "x-mint": {
           "metadata": {
@@ -260,9 +256,7 @@
     },
     "/workspace/numbers": {
       "get": {
-        "tags": [
-          "workspace"
-        ],
+        "tags": ["workspace"],
         "summary": "Get Workspace Numbers",
         "x-mint": {
           "metadata": {
@@ -368,11 +362,226 @@
         }
       }
     },
+    "/payment/number/checkout": {
+      "post": {
+        "tags": ["payment"],
+        "summary": "Buy Number",
+        "x-mint": {
+          "metadata": {
+            "title": "Buy Number | Ringg AI",
+            "og:title": "Buy Number | Ringg AI"
+          }
+        },
+        "description": "Purchases a phone number and adds it to the current workspace.",
+        "operationId": "buyNumber",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "number": {
+                    "type": "string",
+                    "description": "Specific phone number to buy. If present, Ringg attempts to buy this number.",
+                    "example": "+918035735900"
+                  },
+                  "prefix": {
+                    "type": "string",
+                    "description": "Optional number prefix. If number is omitted, Ringg searches for the first available number with this prefix.",
+                    "example": "80"
+                  },
+                  "country_code": {
+                    "type": "string",
+                    "enum": ["CA", "IN", "US"],
+                    "default": "IN",
+                    "description": "Country where the number should be purchased.",
+                    "example": "IN"
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Optional region code or region name supported for the selected country/provider.",
+                    "example": "KA"
+                  },
+                  "telephony_account_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Optional workspace telephony account ID. When supplied, Ringg buys through that account's credentials.",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                  },
+                  "provider": {
+                    "type": "string",
+                    "enum": [
+                      "plivo",
+                      "exotel",
+                      "twilio",
+                      "asterisk",
+                      "custom",
+                      "convox",
+                      "vobiz",
+                      "mcube",
+                      "tatatele",
+                      "ozonetel",
+                      "whatsapp",
+                      "knowlarity"
+                    ],
+                    "description": "Optional provider to use when telephony_account_id is omitted. Exotel purchases are currently disabled.",
+                    "example": "plivo"
+                  },
+                  "app_id": {
+                    "type": "string",
+                    "description": "Optional provider application ID to attach after purchase.",
+                    "example": "app-123"
+                  }
+                },
+                "example": {
+                  "country_code": "IN",
+                  "region": "KA",
+                  "prefix": "80",
+                  "provider": "plivo"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Number bought successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Number bought successfully!"
+                    },
+                    "id": {
+                      "type": "string",
+                      "description": "Number ID to use as from_number_id in calling APIs.",
+                      "example": "5d7f9a2b-1c3e-4f6a-8b9c-0d1e2f3a4b5c"
+                    },
+                    "number": {
+                      "type": "string",
+                      "example": "+918035735900"
+                    },
+                    "region": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "KA"
+                    },
+                    "country": {
+                      "type": "string",
+                      "example": "IN"
+                    },
+                    "provider": {
+                      "type": "string",
+                      "example": "plivo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid provider, region, or no matching number available."
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key."
+          },
+          "402": {
+            "description": "Payment Required - Workspace does not have enough credits or billing limit."
+          },
+          "404": {
+            "description": "Not Found - Workspace or telephony account credentials were not found."
+          },
+          "500": {
+            "description": "Internal Server Error - Number purchase or billing failed."
+          }
+        }
+      }
+    },
+    "/workspace/number/{number_id}": {
+      "delete": {
+        "tags": ["workspace"],
+        "summary": "Unrent Number",
+        "x-mint": {
+          "metadata": {
+            "title": "Unrent Number | Ringg AI",
+            "og:title": "Unrent Number | Ringg AI"
+          }
+        },
+        "description": "Removes a number from the current workspace and archives the workspace-number association.",
+        "operationId": "unrentNumber",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
+            }
+          },
+          {
+            "name": "number_id",
+            "in": "path",
+            "description": "Workspace number ID returned by GET /workspace/numbers or POST /payment/number/checkout.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "5d7f9a2b-1c3e-4f6a-8b9c-0d1e2f3a4b5c"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Number deallocated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Number deallocated successfully!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key."
+          },
+          "403": {
+            "description": "Forbidden - Protected test numbers cannot be deallocated."
+          },
+          "404": {
+            "description": "Not Found - Number does not exist in the workspace or has already been deallocated."
+          },
+          "500": {
+            "description": "Internal Server Error - Provider deallocation or archive operation failed."
+          }
+        }
+      }
+    },
     "/workspace/all": {
       "get": {
-        "tags": [
-          "workspace"
-        ],
+        "tags": ["workspace"],
         "summary": "Get All User Workspaces",
         "x-mint": {
           "metadata": {
@@ -450,9 +659,7 @@
     },
     "/workspace/api-key": {
       "patch": {
-        "tags": [
-          "workspace"
-        ],
+        "tags": ["workspace"],
         "summary": "Regenerate API Key",
         "x-mint": {
           "metadata": {
@@ -501,9 +708,7 @@
     },
     "/agent/all": {
       "get": {
-        "tags": [
-          "agent"
-        ],
+        "tags": ["agent"],
         "summary": "Get Assistants",
         "x-mint": {
           "metadata": {
@@ -660,9 +865,7 @@
     },
     "/agent/voices": {
       "get": {
-        "tags": [
-          "agent"
-        ],
+        "tags": ["agent"],
         "summary": "Get Assistant Voices",
         "x-mint": {
           "metadata": {
@@ -717,10 +920,7 @@
                             "items": {
                               "type": "string"
                             },
-                            "example": [
-                              "en-US",
-                              "en-GB"
-                            ]
+                            "example": ["en-US", "en-GB"]
                           },
                           "voice_previews": {
                             "type": "object",
@@ -788,9 +988,7 @@
     },
     "/agent/v1": {
       "patch": {
-        "tags": [
-          "agent"
-        ],
+        "tags": ["agent"],
         "summary": "Edit Assistant",
         "x-mint": {
           "metadata": {
@@ -817,10 +1015,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "operation",
-                  "agent_id"
-                ],
+                "required": ["operation", "agent_id"],
                 "properties": {
                   "operation": {
                     "type": "string",
@@ -947,10 +1142,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "example": [
-                      "https://www.ringg.ai",
-                      "https://example.com"
-                    ]
+                    "example": ["https://www.ringg.ai", "https://example.com"]
                   },
                   "voice_speed": {
                     "type": "number",
@@ -1038,9 +1230,7 @@
     },
     "/agent/{agent_id}": {
       "get": {
-        "tags": [
-          "agent"
-        ],
+        "tags": ["agent"],
         "summary": "Get Assistant By ID",
         "x-mint": {
           "metadata": {
@@ -1244,9 +1434,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "agent"
-        ],
+        "tags": ["agent"],
         "summary": "Delete Assistant",
         "x-mint": {
           "metadata": {
@@ -1308,9 +1496,7 @@
     },
     "/calling/outbound/individual": {
       "post": {
-        "tags": [
-          "calling"
-        ],
+        "tags": ["calling"],
         "summary": "Initiate Individual Call",
         "x-mint": {
           "metadata": {
@@ -1337,11 +1523,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "name",
-                  "mobile_number",
-                  "agent_id"
-                ],
+                "required": ["name", "mobile_number", "agent_id"],
                 "properties": {
                   "name": {
                     "type": "string",
@@ -1604,14 +1786,10 @@
                 },
                 "oneOf": [
                   {
-                    "required": [
-                      "from_number_id"
-                    ]
+                    "required": ["from_number_id"]
                   },
                   {
-                    "required": [
-                      "from_number"
-                    ]
+                    "required": ["from_number"]
                   }
                 ],
                 "example": {
@@ -1776,9 +1954,7 @@
     },
     "/calling/history": {
       "get": {
-        "tags": [
-          "calling"
-        ],
+        "tags": ["calling"],
         "summary": "Get Call History",
         "x-mint": {
           "metadata": {
@@ -1942,7 +2118,6 @@
                               "DND_SKIPPED",
                               "VOICEMAIL_DETECTED",
                               "VOICEMAIL_DETECTED_VIA_LLM",
-                              "PIPECAT_TIMEOUT",
                               "PRE_CALL_API_FAILED",
                               "RECONCILED_TO_ERROR_FROM_REGISTERED",
                               "RECONCILED_TO_ERROR_FROM_RETRY",
@@ -2036,9 +2211,7 @@
                           "call_type": "outbound",
                           "inbound_from": null,
                           "credits_processed": true,
-                          "from_numbers": [
-                            "+912269976804"
-                          ],
+                          "from_numbers": ["+912269976804"],
                           "voicemail_detected": false
                         }
                       ],
@@ -2132,9 +2305,7 @@
     },
     "/calling/history/download": {
       "post": {
-        "tags": [
-          "calling"
-        ],
+        "tags": ["calling"],
         "summary": "Download Call History",
         "x-mint": {
           "metadata": {
@@ -2195,9 +2366,7 @@
               "items": {
                 "type": "string"
               },
-              "example": [
-                "830f767a-397e-4b39-82ff-235cd344e2f9"
-              ]
+              "example": ["830f767a-397e-4b39-82ff-235cd344e2f9"]
             }
           },
           {
@@ -2238,11 +2407,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": [
-                "inbound",
-                "outbound",
-                "webcall"
-              ],
+              "enum": ["inbound", "outbound", "webcall"],
               "example": "outbound"
             }
           },
@@ -2434,9 +2599,7 @@
     },
     "/calling/call-details": {
       "get": {
-        "tags": [
-          "calling"
-        ],
+        "tags": ["calling"],
         "summary": "Get Call Details",
         "x-mint": {
           "metadata": {
@@ -2501,11 +2664,7 @@
                         "call_direction": {
                           "type": "string",
                           "description": "The direction of the call",
-                          "enum": [
-                            "inbound",
-                            "outbound",
-                            "webcall"
-                          ],
+                          "enum": ["inbound", "outbound", "webcall"],
                           "example": "outbound"
                         },
                         "call_status": {
@@ -2544,7 +2703,6 @@
                             "DND_SKIPPED",
                             "VOICEMAIL_DETECTED",
                             "VOICEMAIL_DETECTED_VIA_LLM",
-                            "PIPECAT_TIMEOUT",
                             "PRE_CALL_API_FAILED",
                             "RECONCILED_TO_ERROR_FROM_REGISTERED",
                             "RECONCILED_TO_ERROR_FROM_RETRY",
@@ -2753,9 +2911,7 @@
     },
     "/campaign/all": {
       "get": {
-        "tags": [
-          "campaign"
-        ],
+        "tags": ["campaign"],
         "summary": "Get All Campaigns",
         "x-mint": {
           "metadata": {
@@ -2948,9 +3104,7 @@
     },
     "/campaign/start": {
       "post": {
-        "tags": [
-          "campaign"
-        ],
+        "tags": ["campaign"],
         "summary": "Start Campaign",
         "x-mint": {
           "metadata": {
@@ -2977,11 +3131,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "agent_id",
-                  "list_id",
-                  "from_numbers"
-                ],
+                "required": ["agent_id", "list_id", "from_numbers"],
                 "properties": {
                   "agent_id": {
                     "type": "string",
@@ -2999,18 +3149,13 @@
                     "items": {
                       "type": "string"
                     },
-                    "example": [
-                      "+1234567890",
-                      "+0987654321"
-                    ]
+                    "example": ["+1234567890", "+0987654321"]
                   }
                 },
                 "example": {
                   "agent_id": "830f767a-397e-4b39-82ff-235cd344e2f9",
                   "list_id": "123e4567-e89b-12d3-a456-426614174000",
-                  "from_numbers": [
-                    "+1234567890"
-                  ]
+                  "from_numbers": ["+1234567890"]
                 }
               }
             }
@@ -3096,9 +3241,7 @@
     },
     "/campaign/save": {
       "post": {
-        "tags": [
-          "campaign"
-        ],
+        "tags": ["campaign"],
         "summary": "Upload Campaign Contact List",
         "x-mint": {
           "metadata": {
@@ -3304,9 +3447,7 @@
     },
     "/analytics/platform-analytics": {
       "get": {
-        "tags": [
-          "analytics"
-        ],
+        "tags": ["analytics"],
         "summary": "Get Platform Analytics",
         "x-mint": {
           "metadata": {
@@ -3415,9 +3556,7 @@
     },
     "/analytics/drill-down-analytics": {
       "get": {
-        "tags": [
-          "analytics"
-        ],
+        "tags": ["analytics"],
         "summary": "Get Drill-Down Analytics",
         "x-mint": {
           "metadata": {
@@ -3525,9 +3664,7 @@
     },
     "/analytics/number-analytics": {
       "get": {
-        "tags": [
-          "analytics"
-        ],
+        "tags": ["analytics"],
         "summary": "Get Number Analytics",
         "x-mint": {
           "metadata": {
@@ -3628,9 +3765,7 @@
     },
     "/analytics/duration-distribution": {
       "get": {
-        "tags": [
-          "analytics"
-        ],
+        "tags": ["analytics"],
         "summary": "Get Duration Distribution",
         "x-mint": {
           "metadata": {
@@ -3731,9 +3866,7 @@
     },
     "/analytics/classification-analytics": {
       "get": {
-        "tags": [
-          "analytics"
-        ],
+        "tags": ["analytics"],
         "summary": "Get Classification Analytics",
         "x-mint": {
           "metadata": {
@@ -3834,9 +3967,7 @@
     },
     "/campaign/terminate": {
       "patch": {
-        "tags": [
-          "termination"
-        ],
+        "tags": ["termination"],
         "summary": "Terminate Calls",
         "x-mint": {
           "metadata": {
@@ -3891,10 +4022,7 @@
                       "type": "string"
                     },
                     "description": "Array of mobile numbers to terminate calls for (max 100)",
-                    "example": [
-                      "+918882876897",
-                      "+918882876898"
-                    ]
+                    "example": ["+918882876897", "+918882876898"]
                   }
                 }
               }
@@ -3929,9 +4057,7 @@
     },
     "/external/kb": {
       "post": {
-        "tags": [
-          "knowledgebase"
-        ],
+        "tags": ["knowledgebase"],
         "summary": "Create Knowledge Base",
         "x-mint": {
           "metadata": {
@@ -3959,9 +4085,7 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "kb_name"
-                ],
+                "required": ["kb_name"],
                 "properties": {
                   "kb_name": {
                     "type": "string",
@@ -4032,9 +4156,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "knowledgebase"
-        ],
+        "tags": ["knowledgebase"],
         "summary": "Edit Knowledge Base",
         "x-mint": {
           "metadata": {
@@ -4062,9 +4184,7 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "kb_id"
-                ],
+                "required": ["kb_id"],
                 "properties": {
                   "kb_id": {
                     "type": "string",
@@ -4180,9 +4300,7 @@
     },
     "/external/kb/{kb_id}": {
       "get": {
-        "tags": [
-          "knowledgebase"
-        ],
+        "tags": ["knowledgebase"],
         "summary": "Get Knowledge Base by ID",
         "x-mint": {
           "metadata": {
@@ -4328,9 +4446,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "knowledgebase"
-        ],
+        "tags": ["knowledgebase"],
         "summary": "Delete Knowledge Base",
         "x-mint": {
           "metadata": {
@@ -4397,9 +4513,7 @@
     },
     "/external/kb/all": {
       "get": {
-        "tags": [
-          "knowledgebase"
-        ],
+        "tags": ["knowledgebase"],
         "summary": "Get All Knowledge Bases",
         "x-mint": {
           "metadata": {
@@ -4465,9 +4579,7 @@
     },
     "/public/agent": {
       "post": {
-        "tags": [
-          "agent"
-        ],
+        "tags": ["agent"],
         "summary": "Create Agent",
         "x-mint": {
           "metadata": {
@@ -4587,11 +4699,7 @@
                   },
                   "agent_type": {
                     "type": "string",
-                    "enum": [
-                      "inbound",
-                      "outbound",
-                      "outbound_inbound"
-                    ],
+                    "enum": ["inbound", "outbound", "outbound_inbound"],
                     "default": "outbound",
                     "description": "(Required) Type of agent. Defaults to outbound.",
                     "example": "outbound"
@@ -4692,9 +4800,7 @@
     },
     "/public/agent/{agent_id}": {
       "patch": {
-        "tags": [
-          "agent"
-        ],
+        "tags": ["agent"],
         "summary": "Update Agent",
         "x-mint": {
           "metadata": {
@@ -4816,11 +4922,7 @@
                   },
                   "agent_type": {
                     "type": "string",
-                    "enum": [
-                      "inbound",
-                      "outbound",
-                      "outbound_inbound"
-                    ],
+                    "enum": ["inbound", "outbound", "outbound_inbound"],
                     "description": "(Optional) Type of agent",
                     "example": "outbound"
                   },
@@ -4923,9 +5025,7 @@
     },
     "/campaign/upload-csv": {
       "post": {
-        "tags": [
-          "campaign"
-        ],
+        "tags": ["campaign"],
         "summary": "Upload Campaign CSV (Beta)",
         "x-mint": {
           "metadata": {
@@ -5072,9 +5172,7 @@
     },
     "/campaign/upload-status/{bulk_list_id}": {
       "get": {
-        "tags": [
-          "campaign"
-        ],
+        "tags": ["campaign"],
         "summary": "Get Campaign Upload Status (Beta)",
         "x-mint": {
           "metadata": {
@@ -5153,9 +5251,7 @@
     },
     "/campaign/make-call-async": {
       "post": {
-        "tags": [
-          "campaign"
-        ],
+        "tags": ["campaign"],
         "summary": "Start Large Campaign Calls (Beta)",
         "x-mint": {
           "metadata": {
@@ -5223,9 +5319,7 @@
                       "type": "string"
                     },
                     "description": "Workspace number IDs to use for outbound calls.",
-                    "example": [
-                      "from-number-id"
-                    ]
+                    "example": ["from-number-id"]
                   },
                   "call_config": {
                     "type": "object",
@@ -5352,9 +5446,7 @@
     },
     "/campaign/check-balance/{bulk_list_id}": {
       "post": {
-        "tags": [
-          "campaign"
-        ],
+        "tags": ["campaign"],
         "summary": "Check Campaign Balance (Beta)",
         "x-mint": {
           "metadata": {
