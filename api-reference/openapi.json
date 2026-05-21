@@ -2130,7 +2130,8 @@
                           },
                           "audio_recording": {
                             "type": "string",
-                            "format": "uri"
+                            "format": "uri",
+                            "description": "URL to the call recording. Valid for 24 hours after the call; download the recording within that window to retain it."
                           },
                           "created_at": {
                             "type": "string",
@@ -2739,7 +2740,7 @@
                         },
                         "recording_url": {
                           "type": "string",
-                          "description": "URL to the call recording",
+                          "description": "URL to the call recording. Valid for 24 hours after the call; download the recording within that window to retain it.",
                           "example": "https://example.com/recordings/call-123.mp3"
                         },
                         "transcription_url": {

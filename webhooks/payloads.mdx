@@ -91,6 +91,10 @@ Triggered when a call attempt finishes (completed, failed, or retry).
 
 Triggered when call recording is processed and ready for download.
 
+<Note>
+The `recording_url` is valid for 24 hours after the call. Download and store the recording within that window if you need to retain it.
+</Note>
+
 ```json
 {
   "call_id": "4b30f5dc-7f86-4e4c-a3aa-15c01138559b",
@@ -425,7 +429,7 @@ app.listen(3000);
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `recording_url` | string | URL of the call recording |
+| `recording_url` | string | URL of the call recording (valid for 24 hours after the call) |
 | `recording_duration` | number | Duration of the recording in seconds |
 
 ### Analysis Fields
@@ -457,7 +461,7 @@ This event combines all data from the call lifecycle into a single payload. It i
 | `called_on` | string | ISO 8601 timestamp when the call was initiated (UTC) |
 | `created_at` | string | ISO 8601 timestamp when the call record was created (UTC) |
 | `transcript` | array | Full conversation transcript with `bot`/`user` content, `message_id`, and `timestamp` |
-| `recording_url` | string | URL of the call recording |
+| `recording_url` | string | URL of the call recording (valid for 24 hours after the call) |
 | `platform_analysis` | object | Ringg AI's built-in analysis (same structure as `platform_analysis_completed.analysis_data`) |
 | `platform_analysis_status` | string | Status: `success`, `failed`, `not_enabled`, `cancelled` |
 | `client_analysis` | object | Your custom analysis results (same structure as `client_analysis_completed.analysis_data`) |
