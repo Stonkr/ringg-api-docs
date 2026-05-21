@@ -1,0 +1,116 @@
+---
+title: "Embedding Widget Production QA and Security"
+sidebarTitle: "Production QA"
+icon: "shield-check"
+description: "Security and launch checklist for deploying the Ringg AI web widget."
+---
+
+Use this checklist before moving a Ringg AI widget from staging to production. The main risks are public browser credentials, domain allowlisting, CSP, CDN version drift, and browser-specific call behavior.
+
+## Security controls
+
+<Check>Use the dashboard-generated widget key for the web-call assistant, not a broad backend integration key.</Check>
+<Check>Add every allowed staging and production host to the assistant's Whitelist Domains list.</Check>
+<Check>Keep `variables` free of secrets, internal tokens, and sensitive data that should not be visible in browser dev tools.</Check>
+<Check>Pin a tested CDN version in production instead of loading `latest`.</Check>
+<Check>Review analytics and event listeners so user identifiers are handled according to your privacy policy.</Check>
+
+<Warning>
+Anything in the embed snippet can be viewed by a site visitor. Treat `xApiKey`, `variables`, and custom widget metadata as browser-visible configuration.
+</Warning>
+
+## Domain whitelist
+
+Add each domain where the widget is allowed to run in the assistant WebCall settings.
+
+| Environment | Example domain |
+|---|---|
+| Local development | `localhost` if your dashboard setup allows it. |
+| Staging | `staging.example.com` |
+| Production | `www.example.com` |
+
+<Note>
+Whitelist staging separately from production so you can test CDN version pins, CSP changes, and assistant changes before launch.
+</Note>
+
+## CSP setup
+
+If your site uses Content Security Policy, allow the Ringg widget CDN for scripts and styles.
+
+```text
+script-src 'self' https://cdn.jsdelivr.net;
+style-src 'self' https://cdn.jsdelivr.net;
+```
+
+If your policy pins exact asset paths, match the CDN version used by the loader.
+
+```text
+script-src 'self' https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@1.0.19/dist/dv-agent.es.js;
+style-src 'self' https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@1.0.19/dist/style.css;
+```
+
+<Tip>
+Keep the loader version, CSP entries, and release notes for your deployment in sync. A mismatch can make the widget work in staging and fail in production.
+</Tip>
+
+## CDN version pinning
+
+During development:
+
+```javascript
+loadAgentsCdn("latest", function () {
+  loadAgent({
+    agentId: "your-agent-id",
+    xApiKey: "your-api-key",
+  });
+});
+```
+
+For production, replace `latest` with the tested version.
+
+```javascript
+loadAgentsCdn("1.0.19", function () {
+  loadAgent({
+    agentId: "your-agent-id",
+    xApiKey: "your-api-key",
+  });
+});
+```
+
+## Browser QA checklist
+
+<Check>The widget appears in the expected position at desktop, tablet, and mobile widths.</Check>
+<Check>Voice mode requests microphone permission and handles both allow and deny paths.</Check>
+<Check>A test call can start, receive audio, and end cleanly.</Check>
+<Check>Chat mode sends and receives messages if `defaultTab` is `"text"`.</Check>
+<Check>Calendar widgets hide past slots and return the selected date, time, and timezone.</Check>
+<Check>Form widgets validate required fields and submit the expected field keys.</Check>
+<Check>Widget events fire once per action and do not duplicate after client-side navigation.</Check>
+<Check>Console and network panels have no blocked CDN, CSP, or mixed-content errors.</Check>
+
+## Launch checks
+
+<Steps>
+  <Step title="Verify dashboard settings">
+    Confirm the assistant is configured for Webcall, the correct `agentId` is used, and all production domains are whitelisted.
+  </Step>
+  <Step title="Verify the embed snippet">
+    Confirm the deployed page uses the production key, the pinned CDN version, and the expected `defaultTab`, `variables`, and styling options.
+  </Step>
+  <Step title="Verify security policy">
+    Confirm CSP allows the pinned CDN script and stylesheet. If your site has stricter policies, test the deployed production headers directly.
+  </Step>
+  <Step title="Run an end-to-end conversation">
+    Start and end one voice call or chat session, submit feedback if enabled, and confirm any configured analytics or widget event handlers receive the expected payload.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+| Symptom | Check |
+|---|---|
+| Trigger button does not appear | Confirm the CDN script loaded, CSP is not blocking assets, and `loadAgent` runs after the CDN callback. |
+| Widget appears on staging but not production | Confirm the production domain is in Whitelist Domains and CSP uses the same pinned CDN version. |
+| Voice call cannot start | Confirm microphone permission, browser support, and that the assistant is configured for Webcall. |
+| Chat opens in the wrong mode | Confirm `defaultTab` and `hideTabSelector` in the deployed `loadAgent` config. |
+| Analytics fire twice | Remove duplicate event listeners during single-page app navigation. |

@@ -1,83 +1,101 @@
 ---
 title: "Campaigns"
 sidebarTitle: "Campaigns"
-description: "Learn about campaigns — scheduled batches of outbound calls made by your AI assistants."
+description: "Understand outbound calling campaigns in Ringg AI."
 icon: "notebook-tabs"
 ---
 
-A **Campaign** is a scheduled batch of outbound calls made by a selected assistant to a list of contacts. Campaigns let you automate high-volume outreach without manual dialling.
+A **Campaign** is a scheduled group of outbound calls. Ringg AI uses one assistant, one or more caller numbers, and a contact list to call many people without manual dialing.
 
 ---
 
-## Campaign Overview
+## What a Campaign Needs
 
-The Campaigns page shows all your campaigns in a table with the following columns:
-
-| Column | Description |
+| Item | Why It Matters |
 |---|---|
-| **Campaign** | Campaign name (with a copy icon) |
-| **Status** | Current state: `Completed`, `Ongoing`, `Scheduled`, `Paused`, or `Failed` |
-| **Total Calls** | Number of calls made in this campaign |
-| **Campaign Time** | Scheduled start → end date and time |
-| **Actions** | View history or manage the campaign |
-
-{/* <Frame>
-  <img src="/images/documentation/campaigns-list.png" alt="Campaigns List" />
-</Frame> */}
+| Assistant | Controls what the call says and how it behaves |
+| Caller number | Shows as the number calling the contact |
+| Calling list | Contains phone numbers and optional custom variables |
+| Schedule | Sets when calls start and stop |
+| Timezone | Makes the schedule clear for your audience |
+| Credits | Pays for call time |
 
 ---
 
 ## Campaign Settings
 
-When creating a campaign, you configure two tabs:
+When creating a campaign, you fill in two main sections.
 
-### Tab 1 — Campaign Settings
+### Campaign Settings
 
-| Field | Description |
+| Field | Meaning |
 |---|---|
-| **Campaign Name** | A label to identify this campaign |
-| **Assistant** | The AI voice agent that will make the calls |
-| **Numbers** | One or more telephony numbers to dial from |
-| **Campaign Start Date/Time** | When the campaign starts making calls |
-| **Campaign End Date/Time** | When the campaign stops, even if there are remaining contacts |
-| **Timezone** | The timezone for scheduling (e.g. UTC+5:30 IST) |
-| **Email Notifications** | Workspace members who receive campaign status updates |
+| **Campaign Name** | Business-friendly label for the campaign |
+| **Assistant** | Voice agent that will make the calls |
+| **Numbers** | Caller IDs used for dialing |
+| **Campaign Start Date/Time** | When Ringg AI can start calling |
+| **Campaign End Date/Time** | When Ringg AI must stop calling |
+| **Timezone** | Timezone for the schedule |
+| **Email Notifications** | People who receive campaign updates |
 
-### Tab 2 — Calling List
+### Calling List
 
-Upload the list of contacts the campaign will call. Typically a CSV with columns for phone number and any custom variables used in your assistant's prompt (e.g. `callee_name`, `mrp`).
+The calling list is usually a CSV file. It should include:
+
+- A phone number column.
+- Any custom variables used in the assistant prompt.
+- Clean headers with no extra spaces.
+
+Example: if the assistant says `@{{callee_name}}`, the CSV needs a `callee_name` column.
+
+---
+
+## Campaign Status
+
+| Status | Meaning |
+|---|---|
+| `Scheduled` | The campaign is waiting for its start time |
+| `Ongoing` | Calls are currently being made |
+| `Paused` | Calling has been paused |
+| `Completed` | The campaign finished or reached its end time |
+| `Failed` | The campaign hit an error that needs attention |
 
 ---
 
 ## Campaign Concurrency
 
-**Concurrency** controls how many simultaneous calls a campaign can make.
+Concurrency controls how many calls can happen at the same time.
 
-Click **Manage Concurrency** on the Campaigns page to configure:
+Use **Manage Concurrency** when:
 
-### Workspace Concurrency
-
-Sets the split between API-initiated calls and campaign calls:
-
-- **API Concurrency** — Percentage of workspace capacity reserved for API calls (default: 100%)
-- **Campaign Concurrency** — Percentage allocated to campaigns (default: 0%)
+- Multiple campaigns are running at once.
+- API-triggered calls and dashboard campaigns share the same workspace capacity.
+- You want to control how call slots are split across campaigns.
 
 <Note>
-  If Campaign Concurrency is 0%, campaign concurrency is distributed equally across all running campaigns.
+  If campaign concurrency is not set manually, Ringg AI distributes available campaign call slots across running campaigns.
 </Note>
-
-### Campaigns Concurrency
-
-When multiple campaigns run simultaneously, this tab lets you manually allocate concurrent call slots per campaign.
 
 ---
 
-## Campaign Status Reference
+## Developer Handoff
 
-| Status | Meaning |
+Developers need campaign IDs to start, monitor, and reconcile calls outside the dashboard.
+
+| Item | Why Developers Need It |
 |---|---|
-| `Scheduled` | Campaign is queued and hasn't started yet |
-| `Ongoing` | Campaign is actively making calls |
-| `Paused` | Campaign has been manually paused |
-| `Completed` | Campaign has finished (reached end time or called all contacts) |
-| `Failed` | Campaign encountered a fatal error |
+| `agent_id` | Assistant that should handle the calls |
+| Caller number or `from_number_id` | Caller ID for the campaign |
+| CSV column names | Must match assistant custom variables |
+| `bulk_list_id` or list ID | Identifies the uploaded contact list |
+| Campaign ID | Identifies the saved campaign |
+| Webhook events | Sends results to another system automatically |
+
+For the standard API flow, developers should use `POST /campaign/save` and then `POST /campaign/start`.
+
+For 5,000 or more rows, developers should use the beta large-campaign flow:
+
+1. `POST /campaign/upload-csv`
+2. `GET /campaign/upload-status/{bulk_list_id}`
+3. `POST /campaign/make-call-async`
+4. `POST /campaign/check-balance/{bulk_list_id}`

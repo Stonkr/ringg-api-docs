@@ -1,152 +1,219 @@
 ---
 title: "Setting Up Bulk Calls"
-description: "This tutorial will guide you through the process of setting up and initiating bulk calls to multiple recipients"
+description: "Upload a campaign CSV, map variables, start outbound calls, and monitor campaign results."
 "og:title": "How to Set Up Bulk Calls in Ringg AI | Step by Step"
 ---
 
+Bulk calls are campaign-driven in Ringg. For most campaigns, create the campaign with `POST /campaign/save`, then start it with `POST /campaign/start`.
+
+<Info>
+For CSVs with 5,000 or more rows, use the beta large-campaign flow after it is enabled for your workspace. That path uploads and validates the CSV asynchronously before starting calls.
+</Info>
 
 ## Prerequisites
 
-Before you begin, make sure you have:
+- A workspace API key
+- An outbound assistant ID
+- One or more workspace number IDs
+- A CSV file with a `Mobile Number` column and any assistant variables
 
-* An active Ringg AI account
+## Choose the campaign flow
 
-* Your API key (X-API-KEY)
+| Use case | Flow | Endpoints |
+|----------|------|-----------|
+| Most campaign CSVs | Standard campaign flow | `POST /campaign/save` then `POST /campaign/start` |
+| 5,000+ row CSVs | Beta large-campaign flow | `POST /campaign/upload-csv`, `GET /campaign/upload-status/{bulk_list_id}`, `POST /campaign/check-balance/{bulk_list_id}`, `POST /campaign/make-call-async` |
 
-* An assistant configured for outbound calls
+## Step 1: Prepare the CSV
 
-* At least one phone number assigned to your workspace
-
-* A CSV file with contact information
-
-## Execution
-
-**_Step 1: Prepare Your Contact List_**
-
-Create a CSV file with the following structure:
+Use the exact template from the Ringg dashboard when possible. At minimum, include the recipient number and every variable your assistant prompt uses.
 
 ```text
-name,mobile_number,custom_variable_1,custom_variable_2
-John Doe,+1234567890,value1,value2
-Jane Smith,+0987654321,value3,value4
+Mobile Number,Name,Policy ID,Due Date
++919876543210,John Doe,POL-123,20/10/2026
++919876543211,Jane Smith,POL-124,21/10/2026
 ```
 
-Make sure to include all custom variables required by your assistant.
+## Standard flow
 
-**_Step 2: Upload the Contact List_**
+### Step 2: Upload the campaign contact list
 
-Upload your contact list to Ringg AI:
+`POST /campaign/save` accepts `multipart/form-data`. Do not set `Content-Type` manually in browser or Node `FormData` clients; let the client set the multipart boundary.
 
 ```javascript
 const formData = new FormData();
-formData.append('variables_map', JSON.stringify({
-  "name": "name",
-  "mobile_number": "mobile_number",
-  "custom_variable_1": "custom_variable_1",
-  "custom_variable_2": "custom_variable_2"
+formData.append("variables_map", JSON.stringify({
+  mobile_number: "Mobile Number",
+  callee_name: "Name",
+  policy_id: "Policy ID",
+  due_date: "Due Date"
 }));
-formData.append('agent_id', 'your-assistant-id');
-formData.append('call_config', JSON.stringify({
-  "max_concurrent_calls": 5,
-  "retry_count": 1
+formData.append("agent_id", process.env.RINGG_AGENT_ID);
+formData.append("country_code", "+91");
+formData.append("campaign_name", "Renewal reminders");
+formData.append("campaign_start_time", "18/10/2026, 09:00");
+formData.append("campaign_end_time", "18/10/2026, 18:00");
+formData.append("call_config", JSON.stringify({
+  call_time: {
+    call_start_time: "09:00",
+    call_end_time: "18:00",
+    timezone: "Asia/Kolkata"
+  },
+  call_retry_config: {
+    retry_count: 1,
+    retry_busy: 30,
+    retry_not_picked: 30,
+    retry_failed: 30
+  }
 }));
-formData.append('country_code', '+1');
-formData.append('file', yourCsvFile);
+formData.append("file", csvFile);
 
-const options = {
-  method: 'POST',
-  headers: {'X-API-KEY': 'your-api-key-here'},
+const uploadResponse = await fetch("https://prod-api.ringg.ai/ca/api/v0/campaign/save", {
+  method: "POST",
+  headers: {
+    "X-API-KEY": process.env.RINGG_API_KEY
+  },
   body: formData
-};
+});
 
-fetch('https://prod-api.ringg.ai/ca/api/v0/calling/contact/list', options)
-  .then(response => response.json())
-  .then(response => {
-     // Store the list_id for initiating bulk calls
-    const listId = response.list_id;
-    console.log(listId);
-  })
-  .catch(err => console.error(err));
+const uploadedCampaign = await uploadResponse.json();
+console.log(uploadedCampaign.list_id);
 ```
 
-**_Step 3: Get Available Phone Numbers_**
+Save the returned `list_id`; it is required to start the campaign.
 
-Retrieve the list of phone numbers in your workspace:
+### Step 3: Choose caller numbers
 
-```javascript
-const options = {method: 'GET', headers: {'X-API-KEY': 'your-api-key-here'}};
-
-fetch('https://prod-api.ringg.ai/ca/api/v0/workspace/numbers', options)
-  .then(response => response.json())
-  .then(response => {
-     // Select phone numbers to use as caller IDs
-    const phoneNumberIds = response.workspace_numbers.map(number => number.id);
-    console.log(phoneNumberIds);
-  })
-  .catch(err => console.error(err));
+```bash
+curl --request GET "https://prod-api.ringg.ai/ca/api/v0/workspace/numbers" \
+  --header "X-API-KEY: $RINGG_API_KEY"
 ```
 
-**_Step 4: Initiate Bulk Calls_**
+Pick one or more number IDs to use as `from_numbers`.
 
-Start the bulk calling campaign using the list ID and phone number IDs:
+### Step 4: Start the campaign
 
-```javascript
-const options = {
-  method: 'POST',
-  headers: {
-    'X-API-KEY': 'your-api-key-here',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    "agent_id": "your-assistant-id",
+```bash
+curl --request POST "https://prod-api.ringg.ai/ca/api/v0/campaign/start" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "agent_id": "your-agent-id",
     "list_id": "your-list-id",
-    "from_numbers": [
-      "phone-number-id-1",
-      "phone-number-id-2"
-    ]
-  })
-};
-
-fetch('https://prod-api.ringg.ai/ca/api/v0/calling/outbound/bulk', options)
-  .then(response => response.json())
-  .then(response => console.log(response))
-  .catch(err => console.error(err));
+    "from_numbers": ["your-from-number-id"],
+    "callback_url": "https://api.example.com/ringg/campaign-callback"
+  }'
 ```
 
-**_Step 5: Monitor Call Progress_**
+### Step 5: Monitor campaign calls
 
-You can check the status of your bulk calls using the call history endpoint:
+Use campaign and history endpoints together:
 
-```javascript
-const options = {
-  method: 'GET',
-  headers: {'X-API-KEY': 'your-api-key-here'}
-};
-
-fetch('https://prod-api.ringg.ai/ca/api/v0/calling/history?bulk_list_id=your-list-id', options)
-  .then(response => response.json())
-  .then(response => console.log(response))
-  .catch(err => console.error(err));
+```bash
+curl --request GET "https://prod-api.ringg.ai/ca/api/v0/campaign/all?call_count=true" \
+  --header "X-API-KEY: $RINGG_API_KEY"
 ```
 
-**_Step 6: Terminate Bulk Calls (If Needed)_**
-
-If you need to stop the bulk calling campaign:
-
-```javascript
-const options = {
-  method: 'PATCH',
-  headers: {
-    'X-API-KEY': 'your-api-key-here',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    "agent_id": "your-assistant-id"
-  })
-};
-
-fetch('https://prod-api.ringg.ai/ca/api/v0/calling/terminate', options)
-  .then(response => response.json())
-  .then(response => console.log(response))
-  .catch(err => console.error(err));
+```bash
+curl --request GET "https://prod-api.ringg.ai/ca/api/v0/calling/history?bulk_list_id=your-list-id" \
+  --header "X-API-KEY: $RINGG_API_KEY"
 ```
+
+### Step 6: Stop calls if needed
+
+Use termination endpoints for emergency stops or selective campaign cleanup.
+
+```bash
+curl --request PATCH "https://prod-api.ringg.ai/ca/api/v0/campaign/terminate" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "campaign_id": "your-list-id"
+  }'
+```
+
+## Beta large-campaign flow
+
+Use this path for CSVs with 5,000 or more rows. It separates upload, validation, balance checking, and call scheduling so long CSV imports do not block one request.
+
+<Warning>
+This flow is beta. Use the standard `POST /campaign/save` plus `POST /campaign/start` flow unless large-campaign beta access is enabled for your workspace.
+</Warning>
+
+### Beta step 1: Upload the CSV
+
+`POST /campaign/upload-csv` accepts the large CSV and campaign metadata. Use the same CSV headers, variable mapping, assistant ID, campaign window, country code, and call configuration you would send to `POST /campaign/save`.
+
+```bash
+curl --request POST "https://prod-api.ringg.ai/ca/api/v0/campaign/upload-csv" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --form 'agent_id="your-agent-id"' \
+  --form 'campaign_name="Renewal reminders - large batch"' \
+  --form 'country_code="+91"' \
+  --form 'variables_map="{\"mobile_number\":\"Mobile Number\",\"callee_name\":\"Name\"}"' \
+  --form 'campaign_start_time="18/10/2026, 09:00"' \
+  --form 'campaign_end_time="18/10/2026, 18:00"' \
+  --form 'call_config="{\"call_time\":{\"call_start_time\":\"09:00\",\"call_end_time\":\"18:00\",\"timezone\":\"Asia/Kolkata\"}}"' \
+  --form "file=@contacts-5000-plus.csv"
+```
+
+Save the returned `bulk_list_id`. Use it for every following beta step.
+
+### Beta step 2: Poll upload status
+
+```bash
+curl --request GET "https://prod-api.ringg.ai/ca/api/v0/campaign/upload-status/your-bulk-list-id" \
+  --header "X-API-KEY: $RINGG_API_KEY"
+```
+
+Wait until processing is complete before checking balance or starting calls. If the status reports invalid rows, fix the CSV or remove invalid rows according to your campaign policy.
+
+### Beta step 3: Check balance
+
+```bash
+curl --request POST "https://prod-api.ringg.ai/ca/api/v0/campaign/check-balance/your-bulk-list-id" \
+  --header "X-API-KEY: $RINGG_API_KEY"
+```
+
+Only continue when the response confirms the workspace has enough balance for the validated rows.
+
+### Beta step 4: Start calls asynchronously
+
+```bash
+curl --request POST "https://prod-api.ringg.ai/ca/api/v0/campaign/make-call-async" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "agent_id": "your-agent-id",
+    "bulk_list_id": "your-bulk-list-id",
+    "from_numbers": ["your-from-number-id"],
+    "callback_url": "https://api.example.com/ringg/campaign-callback"
+  }'
+```
+
+After scheduling, monitor the campaign with `GET /campaign/all` and call history filtered by the same `bulk_list_id`.
+
+<CardGroup cols={2}>
+  <Card title="Upload large campaign CSV" icon="upload" href="/api-reference/endpoint/campaign/upload-large-campaign-csv">
+    Start the beta 5k+ row import.
+  </Card>
+  <Card title="Check upload status" icon="activity" href="/api-reference/endpoint/campaign/get-large-campaign-upload-status">
+    Poll CSV processing before starting calls.
+  </Card>
+  <Card title="Check campaign balance" icon="wallet" href="/api-reference/endpoint/campaign/check-large-campaign-balance">
+    Confirm available balance for the validated contacts.
+  </Card>
+  <Card title="Start async campaign calls" icon="phone-call" href="/api-reference/endpoint/campaign/make-large-campaign-calls-async">
+    Queue the large campaign for outbound calling.
+  </Card>
+</CardGroup>
+
+## Production checklist
+
+- Start with a small CSV before uploading a large campaign.
+- Set campaign windows in the audience's timezone.
+- Validate CSV headers before upload.
+- Store `list_id` and selected `from_numbers`.
+- Store `bulk_list_id` for beta large campaigns.
+- Subscribe to webhooks for post-call results.
+- Use `remove_invalid_rows=true` when you prefer skipping invalid contacts instead of failing the whole upload.

@@ -1,3 +1,17 @@
 ---
 openapi: get /workspace/numbers
 ---
+
+List phone numbers available in the workspace. Outbound calls and campaigns use these numbers as caller IDs. Inbound assistants use assigned numbers as the numbers users dial.
+
+## When to use
+
+- Populate a caller-number selector before starting calls.
+- Find the `from_number_id` for `POST /calling/outbound/individual`.
+- Confirm imported BYOT numbers are available after telephony setup.
+
+## Integration notes
+
+- Store the selected `from_number_id` alongside your assistant or campaign configuration.
+- Numbers must be provisioned, imported, or assigned in the Ringg workspace before they can be used.
+- For campaigns, pass selected numbers in `from_numbers`.

@@ -1,0 +1,58 @@
+---
+title: "Make large campaign calls async (Beta)"
+description: "Start outbound calls for a beta large campaign after upload processing and balance checks."
+openapi: post /campaign/make-call-async
+---
+
+<Warning>
+This endpoint is beta. Use it only after [Get large campaign upload status](/api-reference/endpoint/campaign/get-large-campaign-upload-status) shows processing is complete and [Check large campaign balance](/api-reference/endpoint/campaign/check-large-campaign-balance) confirms sufficient balance.
+</Warning>
+
+`POST /campaign/make-call-async` queues outbound calls for a beta large campaign. Use it instead of `POST /campaign/start` for 5,000+ row campaigns created with `POST /campaign/upload-csv`.
+
+## Endpoint
+
+```text
+POST /campaign/make-call-async
+```
+
+## Request body
+
+Send JSON.
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `agent_id` | Yes | Assistant that will handle the campaign calls |
+| `bulk_list_id` | Yes | Large campaign list ID returned by `POST /campaign/upload-csv` |
+| `from_numbers` | Yes | Workspace caller numbers or number IDs to use for outbound calls |
+| `callback_url` | No | URL that should receive post-call events, if configured |
+
+```bash
+curl --request POST "https://prod-api.ringg.ai/ca/api/v0/campaign/make-call-async" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "agent_id": "your-agent-id",
+    "bulk_list_id": "your-bulk-list-id",
+    "from_numbers": ["your-from-number-id"],
+    "callback_url": "https://api.example.com/ringg/campaign-callback"
+  }'
+```
+
+## Response guidance
+
+A successful response means the large campaign was accepted for async scheduling.
+
+```json
+{
+  "bulk_list_id": "123e4567-e89b-12d3-a456-426614174000",
+  "status": "scheduled",
+  "message": "Large campaign calls queued"
+}
+```
+
+Avoid submitting the same `bulk_list_id` more than once unless a previous attempt clearly failed.
+
+## Next step
+
+Monitor progress with [Get all campaigns](/api-reference/endpoint/campaign/get-all-campaigns) and inspect call rows with [Get call history](/api-reference/endpoint/history/get-call-history) filtered by the same `bulk_list_id`.

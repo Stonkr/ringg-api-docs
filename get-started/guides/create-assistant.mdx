@@ -1,128 +1,138 @@
 ---
 title: "Create an Assistant"
 sidebarTitle: "Create an Assistant"
-description: "Step-by-step guide to creating a new AI voice assistant in Ringg AI."
+description: "Create a Ringg AI voice assistant from the dashboard."
 icon: "plus"
 ---
 
-This guide walks you through creating a new AI voice assistant in Ringg AI from scratch.
+An assistant is the voice agent that speaks to your customers. Create one first, then connect it to a number, campaign, web widget, or API integration.
 
 ---
 
-## Step 1 — Open the Create Assistant Modal
+## Before You Start
 
-1. Go to **Assistants** in the left sidebar.
-2. Click **+ Create Assistant** in the top-right corner.
+Decide these items before creating the assistant:
 
-{/* <Frame>
-  <img src="/images/documentation/assistants-page.png" alt="Assistants Page with Create Button" />
-</Frame> */}
-
-The **Create Assistant** modal will open.
-
----
-
-## Step 2 — Choose a Call Type
-
-At the top of the modal, select the call direction for your assistant:
-
-| Tab | Description |
+| Decision | What to Prepare |
 |---|---|
-| **Outbound** | Assistant dials the contact (campaigns, follow-ups) |
-| **Inbound** | Assistant picks up calls made to your number |
-| **Webcall** | Assistant handles calls from a web widget on your site |
-
-{/* <Frame>
-  <img src="/images/documentation/create-assistant-modal.png" alt="Create Assistant Modal - Call Type Tabs" />
-</Frame> */}
+| Call direction | Outbound, inbound, or webcall |
+| Use case | Reminder, lead qualification, collections, support, onboarding, or another clear goal |
+| Language | Primary language and optional backup language |
+| Voice | The voice style you want customers to hear |
+| Handoff owner | The person who will configure API calls, webhooks, or website embeds if needed |
 
 ---
 
-## Step 3 — Select a Template or Start from Scratch
+## Step 1 - Open Assistants
 
-<Tabs>
-  <Tab title="Use an Industry Template">
-    In the left panel, choose from:
-    - Logistics
-    - Healthcare
-    - Financial
-    - Education
-    - HR & Recruitment
-    - eCommerce
+1. Log in to the Ringg AI dashboard.
+2. Click **Assistants** in the left sidebar.
+3. Click **+ Create Assistant**.
 
-    Templates pre-fill your assistant's prompt with industry-appropriate language and structure.
-  </Tab>
-  <Tab title="Start from Scratch">
-    Click **Blank Template** (top of the left panel), then choose your orchestration type from the right panel:
-
-    | Option | Description |
-    |---|---|
-    | **Single Prompt** | One prompt drives the entire conversation — ideal for simple flows |
-    | **Multi Prompt** | Multiple connected prompt nodes — ideal for branching conversations |
-  </Tab>
-</Tabs>
+The create assistant window opens.
 
 ---
 
-## Step 4 — Fill in Agent Basics
+## Step 2 - Choose the Call Type
 
-After selecting your template and orchestration type, you'll be taken to the assistant setup form.
+Choose how people will reach the assistant.
 
-Fill in:
-
-1. **Agent Name** *(required)* — A descriptive name for your assistant (e.g. "Loan Collection Agent – Hindi")
-2. **Primary Language** *(required)* — The main language the assistant will speak (e.g. English (IN), Hindi)
-3. **Secondary Language** *(optional)* — A fallback language if the caller switches (e.g. English if primary is Hindi)
-
-{/* <Frame>
-  <img src="/images/documentation/agent-basics-form.png" alt="Agent Basics Form" />
-</Frame> */}
+| Call Type | Use It When |
+|---|---|
+| **Outbound** | Ringg AI should call customers, leads, students, borrowers, or applicants |
+| **Inbound** | Customers should call one of your Ringg AI numbers |
+| **Webcall** | Visitors should start a voice call from your website |
 
 <Tip>
-  Name your assistants descriptively so they're easy to find later — include the use case and language (e.g. "Aakash – Outbound – Hindi/English").
+  Choose **Outbound** for campaigns. Choose **Webcall** only if your website team will add the Ringg AI widget.
 </Tip>
 
 ---
 
-## Step 5 — Choose a Voice
+## Step 3 - Choose a Template
 
-In the **Set up voice** section, pick the voice character your assistant will use:
+Pick the fastest starting point:
 
-1. Toggle between **Most Used** and **Neutral** to filter voices by category.
-2. Click a voice card (e.g. Tanya, Naina, Raj, Rahul, Anya) to select it.
-3. Click **See more** to browse all available voices.
+| Option | Best For |
+|---|---|
+| **Industry template** | You want a ready-made starting script for logistics, healthcare, finance, education, HR, or ecommerce |
+| **Blank template** | You want to write the conversation from scratch |
 
-{/* <Frame>
-  <img src="/images/documentation/voice-selection.png" alt="Voice Selection" />
-</Frame> */}
+If you choose **Blank template**, select the conversation style:
+
+| Style | Best For |
+|---|---|
+| **Single Prompt** | Simple calls that follow one script |
+| **Multi Prompt** | Branching calls where the next step depends on the customer's answer |
+
+---
+
+## Step 4 - Fill in the Basics
+
+Enter the required setup fields.
+
+| Field | What to Enter |
+|---|---|
+| **Agent Name** | A clear name such as `Loan Collection - Hindi` or `Admissions Follow-up - English` |
+| **Primary Language** | The main language the assistant should speak |
+| **Secondary Language** | Optional backup language if callers switch languages |
+
+<Tip>
+  Use names your team can recognize later. Include the use case, call direction, and language when possible.
+</Tip>
+
+---
+
+## Step 5 - Choose a Voice
+
+1. In **Set up voice**, browse the available voices.
+2. Use **Most Used** or **Neutral** to filter the list.
+3. Click a voice card to select it.
+4. Click **See more** if you want more options.
 
 <Note>
-  Each voice has a distinct tone and personality. Test a few with your target audience before finalising.
+  Run test calls with two or three voices before launch. The best voice depends on the audience and use case.
 </Note>
 
 ---
 
-## Step 6 — Click Next
+## Step 6 - Continue to Configuration
 
-Click **Next** to proceed. If any required fields are missing, the form will highlight them in red with a validation message.
+Click **Next**.
+
+If a required field is missing, Ringg AI highlights it. Fill in the missing value and click **Next** again.
 
 ---
 
-## What's Next?
+## Developer Handoff
 
-After creating your assistant, you'll be taken to the assistant configuration page where you can:
+If engineers will trigger calls, embed a widget, or receive call results, give them:
+
+| Item | Why They Need It |
+|---|---|
+| Assistant name | Helps them confirm they are using the right assistant |
+| `agent_id` | Required for API calls, campaigns, and webhook subscriptions |
+| Call type | Tells them whether to build outbound calls, inbound routing, or a webcall embed |
+| Custom variables you plan to use | Helps them send the right customer fields, such as `callee_name` or `loan_amount` |
+| Webhook requirement | Tell them whether your team needs transcripts, recordings, analysis results, or status updates in another system |
+
+If you do not see the `agent_id` in the dashboard, ask the developer to retrieve it from the assistant API using the assistant name.
+
+---
+
+## Next Steps
 
 <CardGroup cols={2}>
-  <Card title="Write Your Prompt" icon="pen" href="/get-started/guides/configure-assistant#1-prompt">
-    Set up first message, objective, and response guidelines
+  <Card title="Configure the Assistant" icon="sliders-horizontal" href="/get-started/guides/configure-assistant">
+    Write the prompt, attach documents, and set call behavior.
   </Card>
-  <Card title="Attach a Knowledge Base" icon="folder-git-2" href="/get-started/guides/configure-assistant#4-knowledge-base">
-    Connect reference documents for live call lookups
+  <Card title="Create a Knowledge Base" icon="folder-git-2" href="/get-started/guides/create-knowledge-base">
+    Add documents the assistant can use during calls.
   </Card>
-  <Card title="Configure Call Settings" icon="settings" href="/get-started/guides/configure-assistant#5-call-settings">
-    Set duration, voicemail detection, noise filtering, and more
+  <Card title="Manage Numbers" icon="hash" href="/get-started/guides/manage-numbers">
+    Choose the numbers your assistant or campaigns will use.
   </Card>
-  <Card title="Run a Test Call" icon="phone-call" href="/get-started/guides/configure-assistant#running-a-test-call">
-    Verify your assistant works before going live
+  <Card title="Create a Campaign" icon="notebook-tabs" href="/get-started/guides/create-campaign">
+    Call many contacts with this assistant.
   </Card>
 </CardGroup>

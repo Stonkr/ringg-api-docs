@@ -1,5 +1,6 @@
 ---
 title: Terminate Calls by Campaign Numbers
+description: "Stop calls to specific numbers within one campaign."
 api: "PATCH /campaign/terminate"
 ---
 
@@ -31,9 +32,9 @@ Stop calls to specific phone numbers within a particular campaign. This gives yo
 ## Important Details
 
 ### Number Format
-- ✅ Include country code: `+918882876897`
-- ✅ Use international format: `+1234567890`
-- ❌ Don't use local format: `8882876897`
+- Correct: `+918882876897` with country code
+- Correct: `+14155550100` in international format
+- Wrong: `8882876897` without country code
 
 ### Limitations
 - **Maximum**: 100 numbers per request

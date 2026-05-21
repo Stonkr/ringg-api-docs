@@ -7,7 +7,7 @@
     "light": "#9AADEC",
     "dark": "#9AADEC"
   },
-  "favicon": "https://assets.ringg.ai/images/logo/favicon.ico",
+  "favicon": "/favicon.png",
   "styling": {
     "eyebrows": "breadcrumbs"
   },
@@ -41,7 +41,7 @@
             ]
           },
           {
-            "group": "How-to Guides",
+            "group": "Dashboard Guides",
             "pages": [
               "get-started/guides/create-assistant",
               "get-started/guides/configure-assistant",
@@ -50,8 +50,18 @@
               "get-started/guides/manage-numbers",
               "get-started/guides/view-call-history",
               "get-started/guides/analytics",
-              "get-started/guides/workspace-settings",
-              "get-started/guides/embedding-widget"
+              "get-started/guides/workspace-settings"
+            ]
+          },
+          {
+            "group": "Web Widget",
+            "pages": [
+              "get-started/guides/embedding-widget",
+              "get-started/guides/embedding-widget-configuration",
+              "get-started/guides/embedding-widget-events",
+              "get-started/guides/embedding-widget-agent-actions",
+              "get-started/guides/embedding-widget-chat-widgets",
+              "get-started/guides/embedding-widget-production-qa-security"
             ]
           },
           {
@@ -62,24 +72,6 @@
               "get-started/best-practices/security-guidelines"
             ]
           }
-        ]
-      },
-      {
-        "group": "Telephony Integration",
-        "pages": [
-          "telephony/byot-overview",
-          "telephony/plivo-integration",
-          "telephony/exotel-integration",
-          "telephony/twilio-integration",
-          "telephony/number-management"
-        ]
-      },
-      {
-        "group": "Webhooks Setup",
-        "pages": [
-          "webhooks/initial-setup",
-          "webhooks/payloads",
-          "webhooks/error-handling"
         ]
       },
       {
@@ -100,8 +92,7 @@
             "pages": [
               "api-reference/tutorials/voice-calling",
               "api-reference/tutorials/making-your-first-call",
-              "api-reference/tutorials/setting-up-bulk-calls",
-              "api-reference/tutorials/managing-contacts"
+              "api-reference/tutorials/setting-up-bulk-calls"
             ]
           },
           {
@@ -124,9 +115,21 @@
             ]
           },
           {
+            "group": "Knowledge Base",
+            "pages": [
+              "api-reference/endpoint/kb/create-knowledge-base",
+              "api-reference/endpoint/kb/edit-knowledge-base",
+              "api-reference/endpoint/kb/get-all-knowledge-bases",
+              "api-reference/endpoint/kb/get-knowledge-base-by-id",
+              "api-reference/endpoint/kb/delete-knowledge-base"
+            ]
+          },
+          {
             "group": "Numbers",
             "pages": [
-              "api-reference/endpoint/numbers/get-workspace-numbers"
+              "api-reference/endpoint/numbers/get-workspace-numbers",
+              "api-reference/endpoint/numbers/buy-number",
+              "api-reference/endpoint/numbers/unrent-number"
             ]
           },
           {
@@ -140,7 +143,11 @@
             "pages": [
               "api-reference/endpoint/campaign/upload-campaign-contact-list",
               "api-reference/endpoint/campaign/start-campaign",
-              "api-reference/endpoint/campaign/get-all-campaigns"
+              "api-reference/endpoint/campaign/get-all-campaigns",
+              "api-reference/endpoint/campaign/upload-large-campaign-csv",
+              "api-reference/endpoint/campaign/get-large-campaign-upload-status",
+              "api-reference/endpoint/campaign/check-large-campaign-balance",
+              "api-reference/endpoint/campaign/make-large-campaign-calls-async"
             ]
           },
           {
@@ -155,7 +162,7 @@
             "group": "Termination",
             "pages": [
               "api-reference/terminate/agent",
-              "api-reference/terminate/call-ids", 
+              "api-reference/terminate/call-ids",
               "api-reference/terminate/campaign",
               "api-reference/terminate/campaign-numbers",
               "api-reference/terminate/numbers"
@@ -171,6 +178,26 @@
               "api-reference/endpoint/analytics/get-classification-analytics"
             ]
           }
+        ]
+      },
+      {
+        "group": "Webhooks Setup",
+        "pages": [
+          "webhooks/initial-setup",
+          "webhooks/payloads",
+          "webhooks/error-handling"
+        ]
+      },
+      {
+        "group": "Telephony Integration",
+        "pages": [
+          "telephony/byot-overview",
+          "telephony/new-provider-requirements",
+          "telephony/plivo-integration",
+          "telephony/exotel-integration",
+          "telephony/twilio-integration",
+          "telephony/ameyo-integration",
+          "telephony/number-management"
         ]
       }
     ]
@@ -205,8 +232,16 @@
       "destination": "/api-reference/tutorials/setting-up-bulk-calls"
     },
     {
-      "source": "/get-started/tutorials/managing-contacts",
-      "destination": "/api-reference/tutorials/managing-contacts"
+      "source": "/api-reference/tutorials/managing-contacts",
+      "destination": "/api-reference/tutorials/setting-up-bulk-calls"
+    },
+    {
+      "source": "/api-reference/endpoint/contact/get-contact-list",
+      "destination": "/api-reference/endpoint/campaign/upload-campaign-contact-list"
+    },
+    {
+      "source": "/api-reference/endpoint/contact/delete-contact-list",
+      "destination": "/api-reference/tutorials/setting-up-bulk-calls"
     },
     {
       "source": "/get-started/tutorials/embedding-web-call-assistant",

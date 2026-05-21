@@ -1,3 +1,16 @@
 ---
 openapi: get /analytics/platform-analytics
 ---
+
+Return high-level platform analytics for calls in the workspace. Use this endpoint for overview dashboards and executive summaries.
+
+## Common filters
+
+- `start_date` and `end_date` for the reporting period.
+- `agent_id` for one assistant.
+- `bulk_list_id` for one campaign.
+- `voicemail` when voicemail-heavy traffic should be included or separated.
+
+## Developer guidance
+
+Use this endpoint for top-level numbers, then use drill-down analytics or call history when a user clicks into a specific campaign, number, or status bucket.

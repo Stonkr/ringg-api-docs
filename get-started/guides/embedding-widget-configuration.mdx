@@ -1,0 +1,264 @@
+---
+title: "Embedding Widget Configuration"
+sidebarTitle: "Widget Configuration"
+icon: "sliders-horizontal"
+description: "Reference for Ringg AI web widget load options, positioning, styling, variables, and feedback screens."
+---
+
+This page covers the frontend configuration object passed to `loadAgent`. Configure assistant behavior, tools, and widget metadata in the Ringg AI dashboard; use this object for page-level runtime settings.
+
+## CDN loader
+
+The widget script exposes `loadAgent` after the CDN bundle finishes loading.
+
+```html
+<script>
+  function loadAgentsCdn(version, done) {
+    const stylesheet = document.createElement("link");
+    stylesheet.rel = "stylesheet";
+    stylesheet.type = "text/css";
+    stylesheet.href = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/style.css`;
+
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.onload = done;
+    script.src = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/dv-agent.es.js`;
+
+    document.head.appendChild(stylesheet);
+    document.head.appendChild(script);
+  }
+</script>
+```
+
+<Tip>
+Use `latest` while exploring in development. For production, pin the tested CDN version and update CSP entries to match your pinned policy.
+</Tip>
+
+## Base configuration
+
+```javascript
+loadAgentsCdn("latest", function () {
+  loadAgent({
+    agentId: "your-agent-id",
+    xApiKey: "your-api-key",
+    variables: {
+      callee_name: "John",
+      account_id: "ACC-42",
+    },
+    defaultTab: "audio",
+    hideTabSelector: false,
+    title: "Talk to our assistant",
+    description: "Ask a question or start a voice call.",
+    buttons: {
+      modalTrigger: {
+        styles: {
+          backgroundColor: "#4F46E5",
+          color: "white",
+          borderRadius: "50%",
+        },
+      },
+      call: {
+        textBeforeCall: "Start Call",
+        textDuringCall: "End Call",
+      },
+    },
+    widgetPosition: {
+      triggerPlacement: "fixed",
+      triggerAlignment: "bottom-right",
+      hideTriggerOnExpand: true,
+      widgetAlignment: "bottom-right",
+    },
+  });
+});
+```
+
+## Core options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `agentId` | `string` | Required | Assistant ID to load in the widget. |
+| `xApiKey` | `string` | Required | Widget API key from the dashboard embed code. |
+| `variables` | `object` | `{}` | Runtime variables available to the assistant. |
+| `defaultTab` | `"audio" \| "text"` | `"audio"` | Tab shown when the widget loads. Use `"text"` for chat mode. Supported from v1.0.8+. |
+| `hideTabSelector` | `boolean` | `false` | Hides the audio/text tab switcher for a single-mode experience. Supported from v1.0.8+. |
+| `bypassStartScreen` | `boolean` | `false` | Skips the start screen and begins a call or chat immediately on trigger click. Uses `defaultTab`. |
+| `title` | `string` | Unset | Heading shown in the widget start screen. |
+| `description` | `string` | Unset | Supporting copy shown in the widget start screen. |
+| `logoUrl` | `string` | Unset | Logo image URL shown in the widget. |
+| `buttons` | `object` | `{}` | Trigger and call button customization. |
+| `widgetPosition` | `object` | Fixed bottom-right | Placement rules for the trigger and expanded widget. |
+| `feedbackScreen` | `object` | Unset | Text for the post-conversation feedback screen. |
+
+## Variables
+
+Use `variables` for page-specific context that the assistant prompt expects.
+
+```javascript
+loadAgent({
+  agentId: "your-agent-id",
+  xApiKey: "your-api-key",
+  variables: {
+    callee_name: "John",
+    account_id: "ACC-42",
+    plan_name: "Enterprise",
+  },
+});
+```
+
+<Warning>
+Variables are sent from the browser. Do not put secrets, internal tokens, or sensitive data in the widget configuration.
+</Warning>
+
+## Mode controls
+
+<Tabs>
+  <Tab title="Voice first">
+    ```javascript
+    loadAgent({
+      agentId: "your-agent-id",
+      xApiKey: "your-api-key",
+      defaultTab: "audio",
+      hideTabSelector: false,
+    });
+    ```
+  </Tab>
+  <Tab title="Chat first">
+    ```javascript
+    loadAgent({
+      agentId: "your-chat-agent-id",
+      xApiKey: "your-api-key",
+      defaultTab: "text",
+      hideTabSelector: false,
+    });
+    ```
+  </Tab>
+  <Tab title="Single mode">
+    ```javascript
+    loadAgent({
+      agentId: "your-chat-agent-id",
+      xApiKey: "your-api-key",
+      defaultTab: "text",
+      hideTabSelector: true,
+    });
+    ```
+  </Tab>
+</Tabs>
+
+For chat setup, see [Chat and Widgets](/get-started/guides/embedding-widget-chat-widgets).
+
+## Widget positioning
+
+Positioning controls are supported from v1.0.19+.
+
+<Tabs>
+  <Tab title="Fixed mode">
+    Fixed mode is the default. The trigger floats over the page and is anchored to the browser viewport.
+
+    ```javascript
+    loadAgent({
+      agentId: "your-agent-id",
+      xApiKey: "your-api-key",
+      widgetPosition: {
+        triggerPlacement: "fixed",
+        triggerAlignment: "bottom-right",
+        hideTriggerOnExpand: true,
+        widgetAlignment: "bottom-right",
+      },
+    });
+    ```
+  </Tab>
+  <Tab title="Absolute mode">
+    Absolute mode embeds the widget inside a page container. The container must exist before `loadAgent` runs and should have an explicit height.
+
+    ```html
+    <div id="ringg_ai_container" style="position: relative; width: 100%; height: 500px;"></div>
+    ```
+
+    ```javascript
+    loadAgent({
+      agentId: "your-agent-id",
+      xApiKey: "your-api-key",
+      widgetPosition: {
+        triggerPlacement: "absolute",
+        triggerAlignment: "center",
+      },
+    });
+    ```
+  </Tab>
+</Tabs>
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `triggerPlacement` | `string` | `"fixed"` | Use `"fixed"` for viewport placement or `"absolute"` for the `ringg_ai_container` container. |
+| `triggerAlignment` | `string` | `"bottom-right"` | Trigger button position. |
+| `hideTriggerOnExpand` | `boolean` | `true` | Hides the trigger button when the widget is open. |
+| `widgetAlignment` | `string` | `"bottom-right"` | Expanded widget position. |
+
+## Trigger button customization
+
+Trigger button customization is supported from v1.0.19+.
+
+```javascript
+loadAgent({
+  agentId: "your-agent-id",
+  xApiKey: "your-api-key",
+  buttons: {
+    modalTrigger: {
+      styles: {
+        backgroundColor: "#4F46E5",
+        color: "white",
+        width: 64,
+        height: 64,
+        borderRadius: "50%",
+      },
+      icon: {
+        url: "https://example.com/my-icon.svg",
+        size: 24,
+      },
+    },
+  },
+});
+```
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `buttons.modalTrigger.styles` | `CSSProperties` | Unset | Button CSS styles, such as `width`, `height`, `backgroundColor`, `color`, and `borderRadius`. |
+| `buttons.modalTrigger.icon.url` | `string` | Ringg phone icon | Custom trigger icon URL. |
+| `buttons.modalTrigger.icon.size` | `number` | `20` | Icon size in pixels. |
+
+## Call button labels
+
+```javascript
+loadAgent({
+  agentId: "your-agent-id",
+  xApiKey: "your-api-key",
+  buttons: {
+    call: {
+      textBeforeCall: "Start Call",
+      textDuringCall: "End Call",
+    },
+  },
+});
+```
+
+## Feedback screen
+
+Use `feedbackScreen` to customize the post-conversation feedback copy.
+
+```javascript
+loadAgent({
+  agentId: "your-agent-id",
+  xApiKey: "your-api-key",
+  feedbackScreen: {
+    title: "How was your chat?",
+    description: "Your feedback helps us improve!",
+    submitBtnCTA: "Submit",
+  },
+});
+```
+
+| Option | Type | Description |
+|---|---|---|
+| `feedbackScreen.title` | `string` | Title shown on the feedback screen. |
+| `feedbackScreen.description` | `string` | Supporting feedback copy. |
+| `feedbackScreen.submitBtnCTA` | `string` | Text for the submit button. |

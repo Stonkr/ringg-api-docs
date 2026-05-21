@@ -1,3 +1,15 @@
 ---
 openapi: get /workspace/all
 ---
+
+Return every workspace the authenticated user or API key can access. Most single-workspace integrations do not need this endpoint, but it is useful for admin panels that let operators switch context.
+
+## When to use
+
+- Workspace switchers in internal tools.
+- Account audits where one user belongs to multiple workspaces.
+- Setup flows that need to confirm which workspace owns an API key.
+
+## Integration notes
+
+Use the selected workspace's own API key for production call, campaign, and analytics operations.

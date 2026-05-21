@@ -1,3 +1,21 @@
 ---
 openapi: post /public/agent
 ---
+
+Create a new assistant programmatically. This endpoint is best for productized setup flows where your application creates Ringg assistants from templates or customer-provided configuration.
+
+## When to use
+
+- Onboard customers into a pre-defined assistant template.
+- Create one assistant per team, location, or campaign type.
+- Provision assistants from your own admin backend.
+
+## Integration notes
+
+- For most teams, creating the assistant in the dashboard first is simpler.
+- Store the returned `agent_id`; it is required for calls and campaigns.
+- Keep prompts concise and make every variable explicit in `custom_args_values` or campaign CSV mappings.
+
+## After creation
+
+Use [get assistants](/api-reference/endpoint/assistant/get-assistants) to confirm the assistant is visible, then test with one [individual call](/api-reference/endpoint/calling/initiate-individual-call) before using campaigns.

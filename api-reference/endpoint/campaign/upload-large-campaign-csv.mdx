@@ -1,0 +1,71 @@
+---
+title: "Upload large campaign CSV (Beta)"
+description: "Upload a 5,000+ row campaign CSV for asynchronous processing."
+openapi: post /campaign/upload-csv
+---
+
+<Warning>
+This endpoint is beta. Use it only when large-campaign access is enabled for your workspace. For most campaigns, use [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list) and then [Start campaign](/api-reference/endpoint/campaign/start-campaign).
+</Warning>
+
+`POST /campaign/upload-csv` starts the beta large-campaign flow. It accepts a large CSV and campaign configuration, then returns a `bulk_list_id` that you use for status polling, balance checking, and async call scheduling.
+
+## Endpoint
+
+```text
+POST /campaign/upload-csv
+```
+
+## When to use
+
+Use this endpoint for CSVs with 5,000 or more rows. It lets Ringg process and validate the upload asynchronously instead of making the initial upload request wait for the full import.
+
+## Request guidance
+
+Send `multipart/form-data`. Use the same CSV template and campaign fields as the standard `POST /campaign/save` flow.
+
+| Field | Required | Notes |
+|-------|----------|-------|
+| `file` | Yes | CSV file with `Mobile Number` and assistant variable columns |
+| `agent_id` | Yes | Assistant that will handle the campaign calls |
+| `campaign_name` | Yes | Human-readable campaign name |
+| `country_code` | Yes | Dialing prefix, such as `+91` or `+1` |
+| `variables_map` | Yes | JSON string mapping assistant variables to CSV columns |
+| `campaign_start_time` | Yes | Campaign start time in `DD/MM/YYYY, HH:MM` format |
+| `campaign_end_time` | Yes | Campaign end time in `DD/MM/YYYY, HH:MM` format |
+| `call_config` | Yes | JSON string for call window, retry, and call limit settings |
+| `remove_invalid_rows` | No | Set to `true` to skip invalid rows when supported |
+| `transliterate_callee_name` | No | Set to `true` when callee names should be transliterated |
+
+```bash
+curl --request POST "https://prod-api.ringg.ai/ca/api/v0/campaign/upload-csv" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --form 'agent_id="your-agent-id"' \
+  --form 'campaign_name="Renewal reminders - large batch"' \
+  --form 'country_code="+91"' \
+  --form 'variables_map="{\"mobile_number\":\"Mobile Number\",\"callee_name\":\"Name\"}"' \
+  --form 'campaign_start_time="18/10/2026, 09:00"' \
+  --form 'campaign_end_time="18/10/2026, 18:00"' \
+  --form 'call_config="{\"call_time\":{\"call_start_time\":\"09:00\",\"call_end_time\":\"18:00\",\"timezone\":\"Asia/Kolkata\"}}"' \
+  --form "file=@contacts-5000-plus.csv"
+```
+
+<Info>
+Do not set `Content-Type` manually in browser or Node `FormData` clients. Let the client include the multipart boundary.
+</Info>
+
+## Response guidance
+
+Persist the returned `bulk_list_id`. It identifies the uploaded list for every later beta endpoint.
+
+```json
+{
+  "bulk_list_id": "123e4567-e89b-12d3-a456-426614174000",
+  "status": "uploaded",
+  "message": "CSV upload accepted for processing"
+}
+```
+
+## Next step
+
+Poll [Get large campaign upload status](/api-reference/endpoint/campaign/get-large-campaign-upload-status) until the upload is processed. Do not check balance or start calls until processing is complete.

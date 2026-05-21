@@ -1,3 +1,17 @@
 ---
 openapi: get /agent/all
 ---
+
+List assistants in the workspace. Most integrations call this during setup so an operator can choose which assistant should handle calls.
+
+## When to use
+
+- Populate an assistant picker in your internal admin UI.
+- Find the `agent_id` required by outbound call and campaign APIs.
+- Filter for assistants configured for the channel you are integrating, such as outbound calls or web calls.
+
+## Integration notes
+
+- Store the selected `agent_id` in your database rather than looking it up before every call.
+- If an assistant is edited in the dashboard, its ID remains the stable integration handle.
+- Use `GET /agent/{agent_id}` when you need details for one assistant.

@@ -1,167 +1,168 @@
 ---
 title: "Workspace Settings"
 sidebarTitle: "Workspace Settings"
-description: "Manage workspace members, API keys, and integrations."
+description: "Manage workspace members, API keys, telephony, and app integrations."
 icon: "building"
 ---
 
-This guide covers the three workspace-level settings: **Workspace Members**, **API Key**, and **Integrations**.
+Workspace settings control team access, API access, and integrations that affect the whole Ringg AI workspace.
 
 ---
 
 ## Workspace Members
 
-### Accessing Workspace Members
+Use **Workspace Members** to invite teammates and control what they can change.
 
-Click **Workspace Members** in the left sidebar (under "More").
+### View Members
 
-{/* <Frame>
-  <img src="/images/documentation/workspace-members.png" alt="Workspace Members Page" />
-</Frame> */}
+1. Click **Workspace Members** in the left sidebar under **More**.
+2. Review the member list.
 
-The table shows all current members with:
-- **Name** and **Owner** badge (for the account owner)
-- **Email** address
-- **Permissions** level
-- **Status** (Success = active invitation)
+The table shows each member's name, email, permission level, owner status, and invitation status.
 
-### Inviting a New Member
+### Invite a Member
 
-<Steps>
-  <Step title="Click Invite Member">
-    Click **Invite Member** (top-right).
-  </Step>
-  <Step title="Enter Email">
-    Enter the member's email address.
-  </Step>
-  <Step title="Set Permissions">
-    Set their permission level.
-  </Step>
-  <Step title="Send Invitation">
-    Send the invitation. They'll receive an email to join the workspace.
-  </Step>
-</Steps>
+1. Click **Invite Member**.
+2. Enter the teammate's email address.
+3. Choose the permission level.
+4. Send the invitation.
 
 ### Permission Levels
 
-| Permission | Description |
+| Permission | Use It For |
 |---|---|
-| **View & Edit** | Can view and modify all assets (assistants, campaigns, etc.) |
-| **View Only** | Can view assets but cannot create or modify |
+| **View & Edit** | Teammates who create or update assistants, campaigns, numbers, or settings |
+| **View Only** | Teammates who only need to review history, analytics, or configuration |
 
-Click the permission dropdown next to any member to change their access level.
+### Remove a Member
 
-### Removing a Member
-
-Click **Remove User** next to any non-owner member to revoke their access immediately.
+1. Find the member in the table.
+2. Click **Remove User**.
+3. Confirm the removal.
 
 <Note>
-  You cannot remove yourself as the workspace Owner. Transfer ownership before leaving a workspace.
+  You cannot remove the workspace owner from the workspace. Transfer ownership first if ownership needs to change.
 </Note>
 
 ---
 
 ## API Key
 
-### Accessing Your API Key
+Use **API Key** when engineers need to connect Ringg AI to your product, CRM, website, or data systems.
 
-Click **API Key** in the left sidebar.
+### Copy the API Key
 
-{/* <Frame>
-  <img src="/images/documentation/api-key-page.png" alt="API Key Page" />
-</Frame> */}
+1. Click **API Key** in the left sidebar.
+2. Click the eye icon only if you need to reveal the key.
+3. Click the copy icon to copy it.
+4. Send it to the developer through your company's approved secret-sharing process.
 
-Your workspace **X-API-KEY** is displayed (masked by default).
-
-### Using the API Key
-
-The API key is required to authenticate all programmatic calls to the Ringg AI API. Include it as a header:
+The API key is sent as the `X-API-KEY` header in Ringg AI API requests.
 
 ```http
-X-API-KEY: your-api-key-here
+X-API-KEY: $RINGG_API_KEY
 ```
 
-Click the **copy icon** to copy the key to your clipboard.
-Click the **eye icon** to reveal the full key on screen.
-
-### Regenerating the API Key
-
-Click **Regenerate** to create a new API key.
-
 <Warning>
-  Regenerating invalidates the old key immediately. Any existing integrations using the old key will stop working. Update all systems before regenerating.
+  Treat the API key as a secret. Do not paste it into public tickets, docs, chat channels, frontend code, screenshots, or emails.
 </Warning>
 
-### API Documentation
+### Regenerate the API Key
 
-Click the **Docs** link to access the full Ringg AI API reference.
+Click **Regenerate** only when you intentionally want to rotate the key.
+
+Regenerating immediately invalidates the old key. Coordinate with developers before rotating so existing integrations do not break.
+
+### Open API Docs
+
+Click **Docs** to open the Ringg AI API reference.
 
 ---
 
 ## Integrations
 
-Click **Integrations** in the left sidebar. There are two tabs:
+Click **Integrations** in the left sidebar.
 
-### Your Telephony (Bring Your Own Telephony)
+Integrations connect Ringg AI to telephony providers and workflow tools.
 
-Connect your own telephony provider to use your existing phone numbers.
+---
 
-{/* <Frame>
-  <img src="/images/documentation/integrations-telephony.png" alt="Telephony Integration" />
-</Frame> */}
+## Your Telephony
 
-<Steps>
-  <Step title="Click Add New">
-    Click **Add New**.
-  </Step>
-  <Step title="Select Provider">
-    Select your provider from the **All** dropdown (e.g. Twilio, Exotel, Plivo).
-  </Step>
-  <Step title="Enter Credentials">
-    Enter your provider's API credentials.
-  </Step>
-  <Step title="Save">
-    Save. Your numbers will sync to the **Numbers** page.
-  </Step>
-</Steps>
+Use **Your Telephony** when your company wants to use its own provider numbers.
+
+1. Open **Integrations**.
+2. Click the **Your Telephony** tab.
+3. Click **Add New**.
+4. Choose the provider, such as Twilio, Exotel, or Plivo.
+5. Enter the provider credentials.
+6. Click **Save**.
+7. Open **Numbers** and confirm the provider numbers appear.
 
 <Note>
-  If you don't connect a custom provider, Ringg AI uses its own telephony by default.
+  If you do not connect a custom telephony provider, Ringg AI uses the default Ringg AI telephony setup.
 </Note>
 
-### Zapier
+---
 
-Connect Ringg AI to thousands of other apps through Zapier workflows.
+## Zapier
 
-{/* <Frame>
-  <img src="/images/documentation/integrations-zapier.png" alt="Zapier Integration" />
-</Frame> */}
+Use **Zapier** when business users want to connect Ringg AI to other apps without a custom backend.
 
-**Popular pre-built workflows:**
+Common examples:
 
 <CardGroup cols={2}>
-  <Card title="Google Sheets → Ringg AI" icon="table">
-    Initiate Ringg AI calls when new rows are added in Google Sheets — great for dynamic calling lists
+  <Card title="Google Sheets to Ringg AI" icon="table">
+    Start a Ringg AI action when a new row appears in a sheet.
   </Card>
-  <Card title="Shopify → Ringg AI" icon="shopping-cart">
-    Initiate Ringg AI calls for new Shopify orders — automate order confirmations or delivery updates
+  <Card title="Shopify to Ringg AI" icon="shopping-cart">
+    Start customer calls for new orders or delivery updates.
   </Card>
 </CardGroup>
 
-**To connect:**
+To connect:
 
-<Steps>
-  <Step title="Sign Up or Log In">
-    Click **Sign up** to create a Zapier account, or **Log in** if you already have one.
-  </Step>
-  <Step title="Select Apps">
-    In the "Connect this app" field, **Ringg AI** is pre-selected. Search for the app you want to connect in the "with this one!" field.
-  </Step>
-  <Step title="Create Your Zap">
-    Follow Zapier's guided setup to create your Zap.
-  </Step>
-</Steps>
+1. Open **Integrations**.
+2. Go to **Zapier**.
+3. Click **Sign up** or **Log in**.
+4. Choose Ringg AI and the app you want to connect.
+5. Follow Zapier's setup steps.
 
 <Tip>
-  Your Ringg AI API key is used to authenticate the Zapier connection.
+  Zapier may ask for the Ringg AI API key. Use the same secret-handling rules as any backend integration.
 </Tip>
+
+---
+
+## Webhook Setup Handoff
+
+Webhooks send call results to another system automatically. Business users usually decide what should happen; developers usually configure the endpoint.
+
+Give developers:
+
+| Item | Why They Need It |
+|---|---|
+| Business goal | Example: send completed call results to CRM |
+| Assistant name and `agent_id` | Webhook subscriptions are configured for an assistant |
+| Events needed | Examples: call status, recording, transcript, analysis, all processing completed |
+| Destination system | CRM, support tool, data warehouse, Google Sheets, or another backend |
+| Receiver URL owner | The team that owns the webhook endpoint |
+| API key | Needed to configure the subscription through the API |
+
+Developers can follow [Webhook setup](/webhooks/initial-setup).
+
+---
+
+## Developer Handoff
+
+For workspace-level setup, send developers:
+
+| Item | Use |
+|---|---|
+| Workspace API key | Server-side API authentication |
+| Telephony provider | Confirms whether calls use Ringg AI telephony or BYOT |
+| Workspace members with edit access | Confirms who can change production settings |
+| Number list | Helps map caller IDs to campaigns and products |
+| Webhook requirements | Defines what post-call data should be delivered automatically |
+
+Ask developers to store the API key in a secret manager and to tell you before they regenerate or rotate it.

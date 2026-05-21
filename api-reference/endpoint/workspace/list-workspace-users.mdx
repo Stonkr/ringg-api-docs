@@ -1,3 +1,15 @@
 ---
 openapi: get /workspace/users
 ---
+
+List users who belong to the current workspace. This is useful for internal admin tooling, audit views, and choosing users for campaign completion notifications.
+
+## Query guidance
+
+- Use `limit` and `offset` for pagination.
+- Keep the API key server-side; do not call this endpoint from browser code.
+- Cache lightly if you show this in dashboards because workspace membership changes infrequently.
+
+## Common follow-up
+
+Campaign APIs can notify selected users when a campaign completes. Use this endpoint to identify the user IDs available in the workspace.

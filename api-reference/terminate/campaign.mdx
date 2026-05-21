@@ -1,5 +1,6 @@
 ---
 title: Terminate Calls by Campaign ID
+description: "Stop queued and retry calls for a campaign."
 api: "PATCH /campaign/terminate"
 ---
 
@@ -32,10 +33,7 @@ Stop all active calls within a specific campaign. This terminates all queued and
 - All calls in "retry" status (scheduled for retry)
 - Affects ALL contacts within this specific campaign
 
-❌ **Calls that won't be affected:**
-- Calls from other campaigns
-- Already completed calls in this campaign
-- Calls currently in progress (connected)
+Calls from other campaigns are not affected. Calls already in progress are marked as user-terminated so follow-up retries are suppressed when the live call ends. Already completed calls are not cancelled retroactively.
 
 ## How to Get Campaign ID
 

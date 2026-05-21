@@ -1,45 +1,39 @@
 ---
 title: "Manage Numbers"
 sidebarTitle: "Manage Numbers"
-description: "Buy numbers, bring your own telephony, and manage your existing phone lines."
+description: "Buy, connect, assign, and remove phone numbers in Ringg AI."
 icon: "hash"
 ---
 
-Numbers are the telephony lines your assistants use to make and receive calls. This guide covers buying numbers, bringing your own, and managing your existing ones.
+Numbers are the phone lines your assistants use to make and receive calls. You can use Ringg AI numbers or connect numbers from your own telephony provider.
 
 ---
 
-## Viewing Your Numbers
+## View Numbers
 
 1. Click **Numbers** in the left sidebar.
-2. You'll see a list of all numbers in your workspace.
-
-{/* <Frame>
-  <img src="/images/documentation/numbers-page.png" alt="Numbers Page" />
-</Frame> */}
+2. Review the numbers in your workspace.
 
 Each row shows:
-- **Phone number** (with a copy icon)
-- **Country** flag
-- **Date added**
-- **Used By** — which assistant is assigned to this number (blank if unassigned)
-- **Tags** — e.g. `Default Number`
+
+| Field | Meaning |
+|---|---|
+| **Phone number** | The full caller number |
+| **Country** | The number's country |
+| **Date added** | When the number was added |
+| **Used By** | Which assistant or campaign is using it |
+| **Tags** | Labels such as `Default Number` |
 
 ---
 
-## Buying a New Number
+## Buy a New Number
 
-<Steps>
-  <Step title="Click Buy New Number">
-    On the Numbers page, click **Buy new number** (top-right).
-  </Step>
-  <Step title="Select Number Details">
-    Follow the purchase flow to select a country, area code, and number type.
-  </Step>
-  <Step title="Confirm Purchase">
-    Confirm the purchase. The number will appear in your list immediately.
-  </Step>
-</Steps>
+1. On the **Numbers** page, click **Buy new number**.
+2. Choose the country, area, and number type if those options are available.
+3. Review the purchase details.
+4. Confirm the purchase.
+
+The number appears in your workspace after the purchase completes.
 
 <Note>
   Number availability and pricing depend on the country and telephony provider.
@@ -47,54 +41,71 @@ Each row shows:
 
 ---
 
-## Bring Your Own Telephony (BYOT)
+## Bring Your Own Telephony
 
-If you have existing numbers with a third-party provider (Twilio, Exotel, etc.), you can connect them via **Integrations**.
+Use **Bring Your Own Telephony** when your company already owns numbers with a provider such as Twilio, Exotel, or Plivo.
 
-<Steps>
-  <Step title="Go to Integrations">
-    Go to **Integrations** in the left sidebar.
-  </Step>
-  <Step title="Add New Provider">
-    On the **Your Telephony** tab, click **Add New**.
-  </Step>
-  <Step title="Select Provider">
-    Select your provider from the dropdown.
-  </Step>
-  <Step title="Enter Credentials">
-    Enter your provider credentials.
-  </Step>
-  <Step title="Save">
-    Save. Your numbers from that provider will appear in the Numbers list.
-  </Step>
-</Steps>
+1. Click **Integrations** in the left sidebar.
+2. Open the **Your Telephony** tab.
+3. Click **Add New**.
+4. Choose the provider.
+5. Enter the provider credentials.
+6. Click **Save**.
+7. Return to **Numbers** and confirm the numbers appear.
 
-The **Telephony** dropdown at the top of the Numbers page shows which provider is active (e.g. "Ringg").
+The **Telephony** dropdown at the top of the Numbers page shows the active provider.
 
 ---
 
-## Setting a Default Number
+## Set a Default Number
 
-If a number is tagged as **Default Number**, it is used automatically when no specific number is assigned to a campaign.
+A number tagged as **Default Number** is used when no specific number is selected.
 
-To tag a number as default:
-1. Click the tag icon next to the number.
-2. Add the tag `Default Number`.
+1. Find the number on the **Numbers** page.
+2. Click the tag action.
+3. Add the tag `Default Number`.
+4. Save the change.
+
+Use one default number per workspace unless your operations team has a specific routing plan.
 
 ---
 
-## Removing a Number
+## Assign Numbers to Campaigns
 
-Click **Remove** next to any number to remove it from your workspace.
+You choose caller numbers while creating a campaign.
+
+1. Open or create the campaign.
+2. In the **Numbers** field, select one or more numbers.
+3. Save the campaign.
+
+Multiple numbers can spread call volume across caller IDs.
+
+For **Inbound** assistants, the assigned number is the number customers dial.
+
+---
+
+## Remove a Number
+
+1. Confirm the number is not used by a live campaign or inbound assistant.
+2. Click **Remove** next to the number.
+3. Confirm the removal.
 
 <Warning>
-  Removing a number that is actively used in a running campaign will interrupt those calls. Always pause or complete campaigns before removing numbers.
+  Removing a number that is used by a running campaign or inbound assistant can interrupt calls. Pause campaigns or reassign assistants before removing it.
 </Warning>
 
 ---
 
-## Assigning Numbers to Campaigns
+## Developer Handoff
 
-Numbers are assigned during campaign creation in the **Numbers** field. You can assign multiple numbers to distribute call load — the system will rotate through them.
+If engineers will make API calls or configure routing, send them:
 
-For **Inbound** assistants, the assigned number is the one contacts dial into.
+| Item | Why They Need It |
+|---|---|
+| Phone number | Helps confirm the visible caller ID |
+| Number provider | Tells them whether the number is Ringg AI-owned or from your telephony provider |
+| `from_number_id` | Preferred identifier for outbound API calls when available |
+| `from_number` | Use only when the API flow expects the literal phone number |
+| Assigned assistant or campaign | Helps them confirm the number is used in the right place |
+
+For individual outbound API calls, exactly one caller-number option is required: `from_number_id` or `from_number`. Do not send both.

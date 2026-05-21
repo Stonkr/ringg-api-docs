@@ -1,3 +1,27 @@
 ---
 openapi: get /campaign/all
 ---
+
+Return campaigns in the current workspace. Use this for campaign dashboards, monitoring pages, and post-run reconciliation after either the standard flow or the beta large-campaign flow.
+
+## Query guidance
+
+- Use `limit` and `offset` for pagination.
+- Use `call_count=true` when the UI needs call totals with each campaign.
+- Pair this endpoint with call history filtered by `bulk_list_id` for detailed call-level results.
+- For beta large campaigns, poll [Upload status](/api-reference/endpoint/campaign/get-large-campaign-upload-status) until CSV processing is complete before relying on campaign-level call progress.
+
+## Typical flow
+
+1. Upload contacts with [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list).
+2. Start calls with [Start campaign](/api-reference/endpoint/campaign/start-campaign).
+3. Monitor campaign state here.
+4. Inspect calls through [Get call history](/api-reference/endpoint/history/get-call-history).
+
+## Beta 5,000+ row flow
+
+1. Upload the CSV with [Upload large campaign CSV](/api-reference/endpoint/campaign/upload-large-campaign-csv).
+2. Poll [Get large campaign upload status](/api-reference/endpoint/campaign/get-large-campaign-upload-status).
+3. Confirm balance with [Check large campaign balance](/api-reference/endpoint/campaign/check-large-campaign-balance).
+4. Start calls with [Make large campaign calls async](/api-reference/endpoint/campaign/make-large-campaign-calls-async).
+5. Monitor campaign state here and inspect call rows through call history.

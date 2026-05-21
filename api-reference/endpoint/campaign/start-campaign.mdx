@@ -2,34 +2,44 @@
 openapi: post /campaign/start
 ---
 
-## Campaign Start Process
+Start a campaign that was created with `POST /campaign/save`. This is the primary start endpoint for the standard campaign flow.
 
-This endpoint starts a previously uploaded campaign by initiating outbound calls to all contacts in the specified campaign list. 
+The endpoint schedules outbound calls for all valid contacts in the uploaded campaign list.
 
 <Warning>
 Before starting a campaign, ensure you have:
-- Uploaded a contact list using the campaign upload endpoint
+- Uploaded a contact list using [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list)
 - Configured your agent with the appropriate prompts and settings
-- Set up valid from_numbers that are provisioned for your workspace
+- Selected valid `from_numbers` that are provisioned for your workspace
 </Warning>
 
-## Request Parameters
+## Request parameters
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `agent_id` | string | ✅ | ID of the agent that will handle all campaign calls |
-| `list_id` | string | ✅ | ID of the uploaded campaign contact list |
-| `from_numbers` | array | ✅ | Phone numbers to use for outbound calls |
+| `agent_id` | string | Yes | ID of the agent that will handle all campaign calls |
+| `list_id` | string | Yes | ID of the uploaded campaign contact list |
+| `from_numbers` | array | Yes | Workspace caller numbers or number IDs to use for outbound calls |
 
+## Standard flow
 
-## Important Notes
+1. Upload contacts with [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list).
+2. Save the returned `list_id`.
+3. Start calls with this endpoint.
+4. Monitor progress with [Get all campaigns](/api-reference/endpoint/campaign/get-all-campaigns) and call history filtered by `bulk_list_id`.
+
+## Beta large-campaign start
+
+Do not use this endpoint for the beta 5,000+ row flow. After `POST /campaign/upload-csv`, wait for upload processing to complete, check balance, then start calls with [Make large campaign calls async](/api-reference/endpoint/campaign/make-large-campaign-calls-async).
+
+## Important notes
 
 - **Credits Required**: Ensure your workspace has sufficient credits for all contacts in the campaign
 - **International Calls**: For international numbers, only Twilio from_numbers are supported
 - **Campaign Status**: Once started, the campaign status changes to "scheduled" or "ongoing"
 - **Duplicate Prevention**: Cannot start a campaign that's already in "scheduled" or "ongoing" status
 
-## Error Responses
+## Error responses
 
 - **400**: Invalid agent_id, campaign not found, insufficient credits, or campaign already started
 - **401**: Invalid or missing API key

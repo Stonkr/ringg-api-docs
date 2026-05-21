@@ -43,9 +43,7 @@
   "paths": {
     "/workspace": {
       "get": {
-        "tags": [
-          "workspace"
-        ],
+        "tags": ["workspace"],
         "summary": "Get Workspace Info",
         "x-mint": {
           "metadata": {
@@ -165,9 +163,7 @@
     },
     "/workspace/users": {
       "get": {
-        "tags": [
-          "workspace"
-        ],
+        "tags": ["workspace"],
         "summary": "List Workspace Users",
         "x-mint": {
           "metadata": {
@@ -260,9 +256,7 @@
     },
     "/workspace/numbers": {
       "get": {
-        "tags": [
-          "workspace"
-        ],
+        "tags": ["workspace"],
         "summary": "Get Workspace Numbers",
         "x-mint": {
           "metadata": {
@@ -368,11 +362,226 @@
         }
       }
     },
+    "/payment/number/checkout": {
+      "post": {
+        "tags": ["payment"],
+        "summary": "Buy Number",
+        "x-mint": {
+          "metadata": {
+            "title": "Buy Number | Ringg AI",
+            "og:title": "Buy Number | Ringg AI"
+          }
+        },
+        "description": "Purchases a phone number and adds it to the current workspace.",
+        "operationId": "buyNumber",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "number": {
+                    "type": "string",
+                    "description": "Specific phone number to buy. If present, Ringg attempts to buy this number.",
+                    "example": "+918035735900"
+                  },
+                  "prefix": {
+                    "type": "string",
+                    "description": "Optional number prefix. If number is omitted, Ringg searches for the first available number with this prefix.",
+                    "example": "80"
+                  },
+                  "country_code": {
+                    "type": "string",
+                    "enum": ["CA", "IN", "US"],
+                    "default": "IN",
+                    "description": "Country where the number should be purchased.",
+                    "example": "IN"
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Optional region code or region name supported for the selected country/provider.",
+                    "example": "KA"
+                  },
+                  "telephony_account_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "Optional workspace telephony account ID. When supplied, Ringg buys through that account's credentials.",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                  },
+                  "provider": {
+                    "type": "string",
+                    "enum": [
+                      "plivo",
+                      "exotel",
+                      "twilio",
+                      "asterisk",
+                      "custom",
+                      "convox",
+                      "vobiz",
+                      "mcube",
+                      "tatatele",
+                      "ozonetel",
+                      "whatsapp",
+                      "knowlarity"
+                    ],
+                    "description": "Optional provider to use when telephony_account_id is omitted. Exotel purchases are currently disabled.",
+                    "example": "plivo"
+                  },
+                  "app_id": {
+                    "type": "string",
+                    "description": "Optional provider application ID to attach after purchase.",
+                    "example": "app-123"
+                  }
+                },
+                "example": {
+                  "country_code": "IN",
+                  "region": "KA",
+                  "prefix": "80",
+                  "provider": "plivo"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Number bought successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Number bought successfully!"
+                    },
+                    "id": {
+                      "type": "string",
+                      "description": "Number ID to use as from_number_id in calling APIs.",
+                      "example": "5d7f9a2b-1c3e-4f6a-8b9c-0d1e2f3a4b5c"
+                    },
+                    "number": {
+                      "type": "string",
+                      "example": "+918035735900"
+                    },
+                    "region": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "KA"
+                    },
+                    "country": {
+                      "type": "string",
+                      "example": "IN"
+                    },
+                    "provider": {
+                      "type": "string",
+                      "example": "plivo"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid provider, region, or no matching number available."
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key."
+          },
+          "402": {
+            "description": "Payment Required - Workspace does not have enough credits or billing limit."
+          },
+          "404": {
+            "description": "Not Found - Workspace or telephony account credentials were not found."
+          },
+          "500": {
+            "description": "Internal Server Error - Number purchase or billing failed."
+          }
+        }
+      }
+    },
+    "/workspace/number/{number_id}": {
+      "delete": {
+        "tags": ["workspace"],
+        "summary": "Unrent Number",
+        "x-mint": {
+          "metadata": {
+            "title": "Unrent Number | Ringg AI",
+            "og:title": "Unrent Number | Ringg AI"
+          }
+        },
+        "description": "Removes a number from the current workspace and archives the workspace-number association.",
+        "operationId": "unrentNumber",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
+            }
+          },
+          {
+            "name": "number_id",
+            "in": "path",
+            "description": "Workspace number ID returned by GET /workspace/numbers or POST /payment/number/checkout.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "5d7f9a2b-1c3e-4f6a-8b9c-0d1e2f3a4b5c"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Number deallocated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Number deallocated successfully!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key."
+          },
+          "403": {
+            "description": "Forbidden - Protected test numbers cannot be deallocated."
+          },
+          "404": {
+            "description": "Not Found - Number does not exist in the workspace or has already been deallocated."
+          },
+          "500": {
+            "description": "Internal Server Error - Provider deallocation or archive operation failed."
+          }
+        }
+      }
+    },
     "/workspace/all": {
       "get": {
-        "tags": [
-          "workspace"
-        ],
+        "tags": ["workspace"],
         "summary": "Get All User Workspaces",
         "x-mint": {
           "metadata": {
@@ -450,9 +659,7 @@
     },
     "/workspace/api-key": {
       "patch": {
-        "tags": [
-          "workspace"
-        ],
+        "tags": ["workspace"],
         "summary": "Regenerate API Key",
         "x-mint": {
           "metadata": {
@@ -501,9 +708,7 @@
     },
     "/agent/all": {
       "get": {
-        "tags": [
-          "agent"
-        ],
+        "tags": ["agent"],
         "summary": "Get Assistants",
         "x-mint": {
           "metadata": {
@@ -660,9 +865,7 @@
     },
     "/agent/voices": {
       "get": {
-        "tags": [
-          "agent"
-        ],
+        "tags": ["agent"],
         "summary": "Get Assistant Voices",
         "x-mint": {
           "metadata": {
@@ -717,10 +920,7 @@
                             "items": {
                               "type": "string"
                             },
-                            "example": [
-                              "en-US",
-                              "en-GB"
-                            ]
+                            "example": ["en-US", "en-GB"]
                           },
                           "voice_previews": {
                             "type": "object",
@@ -788,9 +988,7 @@
     },
     "/agent/v1": {
       "patch": {
-        "tags": [
-          "agent"
-        ],
+        "tags": ["agent"],
         "summary": "Edit Assistant",
         "x-mint": {
           "metadata": {
@@ -817,10 +1015,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "operation",
-                  "agent_id"
-                ],
+                "required": ["operation", "agent_id"],
                 "properties": {
                   "operation": {
                     "type": "string",
@@ -947,10 +1142,7 @@
                     "items": {
                       "type": "string"
                     },
-                    "example": [
-                      "https://www.ringg.ai",
-                      "https://example.com"
-                    ]
+                    "example": ["https://www.ringg.ai", "https://example.com"]
                   },
                   "voice_speed": {
                     "type": "number",
@@ -1038,9 +1230,7 @@
     },
     "/agent/{agent_id}": {
       "get": {
-        "tags": [
-          "agent"
-        ],
+        "tags": ["agent"],
         "summary": "Get Assistant By ID",
         "x-mint": {
           "metadata": {
@@ -1244,9 +1434,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "agent"
-        ],
+        "tags": ["agent"],
         "summary": "Delete Assistant",
         "x-mint": {
           "metadata": {
@@ -1308,16 +1496,14 @@
     },
     "/calling/outbound/individual": {
       "post": {
-        "tags": [
-          "calling"
-        ],
+        "tags": ["calling"],
         "summary": "Initiate Individual Call",
         "x-mint": {
           "metadata": {
             "og:title": "Initiate Individual Call | Ringg AI"
           }
         },
-        "description": "Starts a new individual outbound call to a specified recipient. The from_number field is required and should be a valid phone number with country code.",
+        "description": "Starts one outbound call to a recipient. Exactly one caller-number option is required: from_number_id or from_number.",
         "operationId": "initiateIndividualCall",
         "parameters": [
           {
@@ -1337,12 +1523,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "name",
-                  "mobile_number",
-                  "agent_id",
-                  "from_number"
-                ],
+                "required": ["name", "mobile_number", "agent_id"],
                 "properties": {
                   "name": {
                     "type": "string",
@@ -1360,8 +1541,18 @@
                     "example": "830f767a-397e-4b39-82ff-235cd344e2f9"
                   },
                   "from_number": {
-                    "type": "string",
-                    "description": "The phone number to call from (with country code)",
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    ],
+                    "description": "Caller phone number, or array of caller phone numbers, with country code. Provide either from_number or from_number_id, not both.",
                     "example": "+1987654321"
                   },
                   "custom_args_values": {
@@ -1538,7 +1729,79 @@
                         "timezone": "Asia/Kolkata"
                       }
                     }
+                  },
+                  "from_number_id": {
+                    "oneOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    ],
+                    "description": "Workspace number ID, or array of workspace number IDs, to use as caller ID. Provide either from_number_id or from_number, not both.",
+                    "example": "from-number-id"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "description": "Optional webhook URL for call events for this request.",
+                    "example": "https://api.example.com/ringg/callback"
+                  },
+                  "callback_args": {
+                    "type": "object",
+                    "description": "Optional headers and query params Ringg should include when calling callback_url.",
+                    "properties": {
+                      "headers": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      },
+                      "params": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "version_id": {
+                    "type": "string",
+                    "description": "Optional assistant version ID. Defaults to the active version.",
+                    "example": "387bd8f1-5748-4006-b7fe-6a6455e9d45d"
+                  },
+                  "call_category": {
+                    "type": "string",
+                    "description": "Optional category for internal reporting or workflow grouping.",
+                    "example": "renewal_reminder"
+                  },
+                  "parent_call_id": {
+                    "type": "string",
+                    "description": "Optional parent call ID for follow-up or chained-call flows.",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
                   }
+                },
+                "oneOf": [
+                  {
+                    "required": ["from_number_id"]
+                  },
+                  {
+                    "required": ["from_number"]
+                  }
+                ],
+                "example": {
+                  "name": "John Doe",
+                  "mobile_number": "+919876543210",
+                  "agent_id": "830f767a-397e-4b39-82ff-235cd344e2f9",
+                  "from_number_id": "from-number-id",
+                  "custom_args_values": {
+                    "callee_name": "John",
+                    "order_id": "ORD-1042"
+                  },
+                  "callback_url": "https://api.example.com/ringg/callback"
                 }
               }
             }
@@ -1691,9 +1954,7 @@
     },
     "/calling/history": {
       "get": {
-        "tags": [
-          "calling"
-        ],
+        "tags": ["calling"],
         "summary": "Get Call History",
         "x-mint": {
           "metadata": {
@@ -1857,7 +2118,6 @@
                               "DND_SKIPPED",
                               "VOICEMAIL_DETECTED",
                               "VOICEMAIL_DETECTED_VIA_LLM",
-                              "PIPECAT_TIMEOUT",
                               "PRE_CALL_API_FAILED",
                               "RECONCILED_TO_ERROR_FROM_REGISTERED",
                               "RECONCILED_TO_ERROR_FROM_RETRY",
@@ -1951,9 +2211,7 @@
                           "call_type": "outbound",
                           "inbound_from": null,
                           "credits_processed": true,
-                          "from_numbers": [
-                            "+912269976804"
-                          ],
+                          "from_numbers": ["+912269976804"],
                           "voicemail_detected": false
                         }
                       ],
@@ -2047,9 +2305,7 @@
     },
     "/calling/history/download": {
       "post": {
-        "tags": [
-          "calling"
-        ],
+        "tags": ["calling"],
         "summary": "Download Call History",
         "x-mint": {
           "metadata": {
@@ -2110,9 +2366,7 @@
               "items": {
                 "type": "string"
               },
-              "example": [
-                "830f767a-397e-4b39-82ff-235cd344e2f9"
-              ]
+              "example": ["830f767a-397e-4b39-82ff-235cd344e2f9"]
             }
           },
           {
@@ -2153,11 +2407,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "enum": [
-                "inbound",
-                "outbound",
-                "webcall"
-              ],
+              "enum": ["inbound", "outbound", "webcall"],
               "example": "outbound"
             }
           },
@@ -2349,9 +2599,7 @@
     },
     "/calling/call-details": {
       "get": {
-        "tags": [
-          "calling"
-        ],
+        "tags": ["calling"],
         "summary": "Get Call Details",
         "x-mint": {
           "metadata": {
@@ -2416,11 +2664,7 @@
                         "call_direction": {
                           "type": "string",
                           "description": "The direction of the call",
-                          "enum": [
-                            "inbound",
-                            "outbound",
-                            "webcall"
-                          ],
+                          "enum": ["inbound", "outbound", "webcall"],
                           "example": "outbound"
                         },
                         "call_status": {
@@ -2459,7 +2703,6 @@
                             "DND_SKIPPED",
                             "VOICEMAIL_DETECTED",
                             "VOICEMAIL_DETECTED_VIA_LLM",
-                            "PIPECAT_TIMEOUT",
                             "PRE_CALL_API_FAILED",
                             "RECONCILED_TO_ERROR_FROM_REGISTERED",
                             "RECONCILED_TO_ERROR_FROM_RETRY",
@@ -2666,74 +2909,9 @@
         }
       }
     },
-    "/calling/contact/{list_id}": {
-      "delete": {
-        "tags": [
-          "calling"
-        ],
-        "summary": "Delete Contact List",
-        "x-mint": {
-          "metadata": {
-            "og:title": "Delete Contact List | Ringg AI"
-          }
-        },
-        "description": "Deletes a contact list and all associated contacts by list ID.",
-        "operationId": "deleteContactList",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
-            }
-          },
-          {
-            "name": "list_id",
-            "in": "path",
-            "description": "(Required) The unique identifier of the contact list to delete.",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Contact list deleted successfully.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Bulk list deleted successfully!"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Invalid or missing API key."
-          },
-          "404": {
-            "description": "Not Found - Contact list not found."
-          },
-          "500": {
-            "description": "Internal Server Error - Something went wrong on our end."
-          }
-        }
-      }
-    },
     "/campaign/all": {
       "get": {
-        "tags": [
-          "campaign"
-        ],
+        "tags": ["campaign"],
         "summary": "Get All Campaigns",
         "x-mint": {
           "metadata": {
@@ -2926,9 +3104,7 @@
     },
     "/campaign/start": {
       "post": {
-        "tags": [
-          "campaign"
-        ],
+        "tags": ["campaign"],
         "summary": "Start Campaign",
         "x-mint": {
           "metadata": {
@@ -2955,11 +3131,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "agent_id",
-                  "list_id",
-                  "from_numbers"
-                ],
+                "required": ["agent_id", "list_id", "from_numbers"],
                 "properties": {
                   "agent_id": {
                     "type": "string",
@@ -2977,18 +3149,13 @@
                     "items": {
                       "type": "string"
                     },
-                    "example": [
-                      "+1234567890",
-                      "+0987654321"
-                    ]
+                    "example": ["+1234567890", "+0987654321"]
                   }
                 },
                 "example": {
                   "agent_id": "830f767a-397e-4b39-82ff-235cd344e2f9",
                   "list_id": "123e4567-e89b-12d3-a456-426614174000",
-                  "from_numbers": [
-                    "+1234567890"
-                  ]
+                  "from_numbers": ["+1234567890"]
                 }
               }
             }
@@ -3074,9 +3241,7 @@
     },
     "/campaign/save": {
       "post": {
-        "tags": [
-          "campaign"
-        ],
+        "tags": ["campaign"],
         "summary": "Upload Campaign Contact List",
         "x-mint": {
           "metadata": {
@@ -3282,9 +3447,7 @@
     },
     "/analytics/platform-analytics": {
       "get": {
-        "tags": [
-          "analytics"
-        ],
+        "tags": ["analytics"],
         "summary": "Get Platform Analytics",
         "x-mint": {
           "metadata": {
@@ -3393,9 +3556,7 @@
     },
     "/analytics/drill-down-analytics": {
       "get": {
-        "tags": [
-          "analytics"
-        ],
+        "tags": ["analytics"],
         "summary": "Get Drill-Down Analytics",
         "x-mint": {
           "metadata": {
@@ -3503,9 +3664,7 @@
     },
     "/analytics/number-analytics": {
       "get": {
-        "tags": [
-          "analytics"
-        ],
+        "tags": ["analytics"],
         "summary": "Get Number Analytics",
         "x-mint": {
           "metadata": {
@@ -3606,9 +3765,7 @@
     },
     "/analytics/duration-distribution": {
       "get": {
-        "tags": [
-          "analytics"
-        ],
+        "tags": ["analytics"],
         "summary": "Get Duration Distribution",
         "x-mint": {
           "metadata": {
@@ -3709,9 +3866,7 @@
     },
     "/analytics/classification-analytics": {
       "get": {
-        "tags": [
-          "analytics"
-        ],
+        "tags": ["analytics"],
         "summary": "Get Classification Analytics",
         "x-mint": {
           "metadata": {
@@ -3812,9 +3967,7 @@
     },
     "/campaign/terminate": {
       "patch": {
-        "tags": [
-          "termination"
-        ],
+        "tags": ["termination"],
         "summary": "Terminate Calls",
         "x-mint": {
           "metadata": {
@@ -3869,10 +4022,7 @@
                       "type": "string"
                     },
                     "description": "Array of mobile numbers to terminate calls for (max 100)",
-                    "example": [
-                      "+918882876897",
-                      "+918882876898"
-                    ]
+                    "example": ["+918882876897", "+918882876898"]
                   }
                 }
               }
@@ -3907,9 +4057,7 @@
     },
     "/external/kb": {
       "post": {
-        "tags": [
-          "knowledgebase"
-        ],
+        "tags": ["knowledgebase"],
         "summary": "Create Knowledge Base",
         "x-mint": {
           "metadata": {
@@ -3937,9 +4085,7 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "kb_name"
-                ],
+                "required": ["kb_name"],
                 "properties": {
                   "kb_name": {
                     "type": "string",
@@ -4010,9 +4156,7 @@
         }
       },
       "patch": {
-        "tags": [
-          "knowledgebase"
-        ],
+        "tags": ["knowledgebase"],
         "summary": "Edit Knowledge Base",
         "x-mint": {
           "metadata": {
@@ -4040,9 +4184,7 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "kb_id"
-                ],
+                "required": ["kb_id"],
                 "properties": {
                   "kb_id": {
                     "type": "string",
@@ -4158,9 +4300,7 @@
     },
     "/external/kb/{kb_id}": {
       "get": {
-        "tags": [
-          "knowledgebase"
-        ],
+        "tags": ["knowledgebase"],
         "summary": "Get Knowledge Base by ID",
         "x-mint": {
           "metadata": {
@@ -4306,9 +4446,7 @@
         }
       },
       "delete": {
-        "tags": [
-          "knowledgebase"
-        ],
+        "tags": ["knowledgebase"],
         "summary": "Delete Knowledge Base",
         "x-mint": {
           "metadata": {
@@ -4375,9 +4513,7 @@
     },
     "/external/kb/all": {
       "get": {
-        "tags": [
-          "knowledgebase"
-        ],
+        "tags": ["knowledgebase"],
         "summary": "Get All Knowledge Bases",
         "x-mint": {
           "metadata": {
@@ -4443,9 +4579,7 @@
     },
     "/public/agent": {
       "post": {
-        "tags": [
-          "agent"
-        ],
+        "tags": ["agent"],
         "summary": "Create Agent",
         "x-mint": {
           "metadata": {
@@ -4521,13 +4655,33 @@
                   },
                   "primary_language": {
                     "type": "string",
-                    "enum": ["en-US", "en-IN", "hi-IN", "ta-IN", "te-IN", "bn-IN", "mr-IN", "kn-IN", "ka-IN"],
+                    "enum": [
+                      "en-US",
+                      "en-IN",
+                      "hi-IN",
+                      "ta-IN",
+                      "te-IN",
+                      "bn-IN",
+                      "mr-IN",
+                      "kn-IN",
+                      "ka-IN"
+                    ],
                     "description": "(Required) Primary language locale for the agent",
                     "example": "en-IN"
                   },
                   "secondary_language": {
                     "type": "string",
-                    "enum": ["en-US", "en-IN", "hi-IN", "ta-IN", "te-IN", "bn-IN", "mr-IN", "kn-IN", "ka-IN"],
+                    "enum": [
+                      "en-US",
+                      "en-IN",
+                      "hi-IN",
+                      "ta-IN",
+                      "te-IN",
+                      "bn-IN",
+                      "mr-IN",
+                      "kn-IN",
+                      "ka-IN"
+                    ],
                     "description": "(Optional) Secondary language locale for the agent",
                     "example": "hi-IN"
                   },
@@ -4556,7 +4710,12 @@
                       "type": "string"
                     },
                     "description": "(Optional) Custom variables for the agent. For outbound agents, callee_name and mobile_number are always included automatically.",
-                    "example": ["callee_name", "mobile_number", "company", "lead_source"]
+                    "example": [
+                      "callee_name",
+                      "mobile_number",
+                      "company",
+                      "lead_source"
+                    ]
                   }
                 }
               }
@@ -4641,9 +4800,7 @@
     },
     "/public/agent/{agent_id}": {
       "patch": {
-        "tags": [
-          "agent"
-        ],
+        "tags": ["agent"],
         "summary": "Update Agent",
         "x-mint": {
           "metadata": {
@@ -4721,13 +4878,33 @@
                   },
                   "primary_language": {
                     "type": "string",
-                    "enum": ["en-US", "en-IN", "hi-IN", "ta-IN", "te-IN", "bn-IN", "mr-IN", "kn-IN", "ka-IN"],
+                    "enum": [
+                      "en-US",
+                      "en-IN",
+                      "hi-IN",
+                      "ta-IN",
+                      "te-IN",
+                      "bn-IN",
+                      "mr-IN",
+                      "kn-IN",
+                      "ka-IN"
+                    ],
                     "description": "(Optional) Primary language locale for the agent",
                     "example": "en-IN"
                   },
                   "secondary_language": {
                     "type": "string",
-                    "enum": ["en-US", "en-IN", "hi-IN", "ta-IN", "te-IN", "bn-IN", "mr-IN", "kn-IN", "ka-IN"],
+                    "enum": [
+                      "en-US",
+                      "en-IN",
+                      "hi-IN",
+                      "ta-IN",
+                      "te-IN",
+                      "bn-IN",
+                      "mr-IN",
+                      "kn-IN",
+                      "ka-IN"
+                    ],
                     "description": "(Optional) Secondary language locale for the agent",
                     "example": "hi-IN"
                   },
@@ -4755,7 +4932,12 @@
                       "type": "string"
                     },
                     "description": "(Optional) Custom variables for the agent. For outbound agents, callee_name and mobile_number cannot be removed.",
-                    "example": ["callee_name", "mobile_number", "company", "lead_source"]
+                    "example": [
+                      "callee_name",
+                      "mobile_number",
+                      "company",
+                      "lead_source"
+                    ]
                   }
                 }
               }
@@ -4837,6 +5019,491 @@
           },
           "404": {
             "description": "Agent not found or does not belong to your workspace."
+          }
+        }
+      }
+    },
+    "/campaign/upload-csv": {
+      "post": {
+        "tags": ["campaign"],
+        "summary": "Upload Campaign CSV (Beta)",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Upload Campaign CSV Beta | Ringg AI"
+          }
+        },
+        "description": "Beta endpoint for large campaigns of 5k+ rows. Uploads and validates a CSV asynchronously, creating a draft bulk list.",
+        "operationId": "uploadCampaignCsvBeta",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "variables_map",
+                  "agent_id",
+                  "country_code",
+                  "campaign_name",
+                  "file"
+                ],
+                "properties": {
+                  "variables_map": {
+                    "type": "string",
+                    "description": "(Required) JSON string mapping assistant variable names to CSV columns.",
+                    "example": "{\"mobile_number\":\"Mobile Number\",\"callee_name\":\"Name\"}"
+                  },
+                  "agent_id": {
+                    "type": "string",
+                    "description": "(Required) Assistant ID used to validate campaign variables.",
+                    "example": "830f767a-397e-4b39-82ff-235cd344e2f9"
+                  },
+                  "country_code": {
+                    "type": "string",
+                    "description": "(Required) Phone number country code, for example +91 or +1.",
+                    "example": "+91"
+                  },
+                  "campaign_name": {
+                    "type": "string",
+                    "description": "(Required) Name of the campaign draft.",
+                    "example": "Renewal reminders - large upload"
+                  },
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "(Required) CSV file containing campaign contacts."
+                  },
+                  "remove_invalid_rows": {
+                    "type": "boolean",
+                    "description": "When true, invalid rows are removed instead of failing the upload.",
+                    "default": false,
+                    "example": true
+                  },
+                  "transliterate_callee_name": {
+                    "type": "boolean",
+                    "description": "When true, callee names are transliterated for the assistant language.",
+                    "default": false,
+                    "example": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "CSV upload accepted for asynchronous validation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "bulk_list_id": {
+                      "type": "string",
+                      "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "verifying"
+                    },
+                    "campaign_name": {
+                      "type": "string",
+                      "example": "Renewal reminders - large upload"
+                    },
+                    "total_callees": {
+                      "type": "integer",
+                      "example": 5000
+                    },
+                    "invalidated_rows_count": {
+                      "type": "integer",
+                      "example": 12
+                    },
+                    "invalidated_rows_csv_url": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "https://storage.example.com/invalid-rows.csv"
+                    }
+                  },
+                  "example": {
+                    "bulk_list_id": "123e4567-e89b-12d3-a456-426614174000",
+                    "status": "verifying",
+                    "campaign_name": "Renewal reminders - large upload",
+                    "total_callees": 0,
+                    "invalidated_rows_count": 0,
+                    "invalidated_rows_csv_url": null
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Invalid CSV file or variable mapping."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          }
+        }
+      }
+    },
+    "/campaign/upload-status/{bulk_list_id}": {
+      "get": {
+        "tags": ["campaign"],
+        "summary": "Get Campaign Upload Status (Beta)",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Campaign Upload Status Beta | Ringg AI"
+          }
+        },
+        "description": "Beta endpoint for checking asynchronous CSV validation status before starting a large campaign.",
+        "operationId": "getCampaignUploadStatusBeta",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
+            }
+          },
+          {
+            "name": "bulk_list_id",
+            "in": "path",
+            "required": true,
+            "description": "Bulk list ID returned by /campaign/upload-csv.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Upload status returned successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "bulk_list_id": {
+                      "type": "string",
+                      "example": "123e4567-e89b-12d3-a456-426614174000"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "verifying"
+                    },
+                    "campaign_name": {
+                      "type": "string",
+                      "example": "Renewal reminders - large upload"
+                    },
+                    "total_callees": {
+                      "type": "integer",
+                      "example": 5000
+                    },
+                    "invalidated_rows_count": {
+                      "type": "integer",
+                      "example": 12
+                    },
+                    "invalidated_rows_csv_url": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "https://storage.example.com/invalid-rows.csv"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "404": {
+            "description": "Bulk list not found."
+          }
+        }
+      }
+    },
+    "/campaign/make-call-async": {
+      "post": {
+        "tags": ["campaign"],
+        "summary": "Start Large Campaign Calls (Beta)",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Start Large Campaign Calls Beta | Ringg AI"
+          }
+        },
+        "description": "Beta endpoint for starting calls from a draft bulk list created by /campaign/upload-csv.",
+        "operationId": "makeCampaignCallAsyncBeta",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "bulk_list_id",
+                  "agent_id",
+                  "country_code",
+                  "campaign_start_time",
+                  "campaign_end_time",
+                  "from_numbers",
+                  "call_config"
+                ],
+                "properties": {
+                  "bulk_list_id": {
+                    "type": "string",
+                    "description": "Draft bulk list ID returned by /campaign/upload-csv.",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                  },
+                  "agent_id": {
+                    "type": "string",
+                    "description": "Assistant ID used during upload.",
+                    "example": "830f767a-397e-4b39-82ff-235cd344e2f9"
+                  },
+                  "country_code": {
+                    "type": "string",
+                    "description": "Phone number country code.",
+                    "example": "+91"
+                  },
+                  "campaign_start_time": {
+                    "type": "string",
+                    "description": "Campaign start time in DD/MM/YYYY, HH:MM format.",
+                    "example": "18/10/2026, 09:00"
+                  },
+                  "campaign_end_time": {
+                    "type": "string",
+                    "description": "Campaign end time in DD/MM/YYYY, HH:MM format.",
+                    "example": "18/10/2026, 18:00"
+                  },
+                  "from_numbers": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Workspace number IDs to use for outbound calls.",
+                    "example": ["from-number-id"]
+                  },
+                  "call_config": {
+                    "type": "object",
+                    "properties": {
+                      "call_retry_config": {
+                        "type": "object",
+                        "properties": {
+                          "retry_count": {
+                            "type": "integer",
+                            "default": 0,
+                            "example": 1
+                          },
+                          "retry_busy": {
+                            "type": "integer",
+                            "default": 30,
+                            "example": 30
+                          },
+                          "retry_not_picked": {
+                            "type": "integer",
+                            "default": 30,
+                            "example": 30
+                          },
+                          "retry_failed": {
+                            "type": "integer",
+                            "default": 30,
+                            "example": 30
+                          }
+                        }
+                      },
+                      "call_time": {
+                        "type": "object",
+                        "properties": {
+                          "call_start_time": {
+                            "type": "string",
+                            "default": "08:00",
+                            "example": "09:00"
+                          },
+                          "call_end_time": {
+                            "type": "string",
+                            "default": "20:00",
+                            "example": "18:00"
+                          },
+                          "timezone": {
+                            "type": "string",
+                            "default": "Asia/Kolkata",
+                            "example": "Asia/Kolkata"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "concurrency_percentage": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "default": 0,
+                    "example": 25
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "example": "https://api.example.com/ringg/campaign-callback"
+                  },
+                  "email_completion_user_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Large campaign call creation accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "bulk_list_id": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "message": "Campaign calls scheduled",
+                    "bulk_list_id": "123e4567-e89b-12d3-a456-426614174000",
+                    "status": "scheduled"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Bulk list is not ready to start."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          }
+        }
+      }
+    },
+    "/campaign/check-balance/{bulk_list_id}": {
+      "post": {
+        "tags": ["campaign"],
+        "summary": "Check Campaign Balance (Beta)",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Check Campaign Balance Beta | Ringg AI"
+          }
+        },
+        "description": "Beta endpoint for re-checking workspace balance after a large campaign entered insufficient_balance status.",
+        "operationId": "checkCampaignBalanceBeta",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
+            }
+          },
+          {
+            "name": "bulk_list_id",
+            "in": "path",
+            "required": true,
+            "description": "Bulk list ID to re-check.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Balance check completed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "draft"
+                    },
+                    "bulk_list_id": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "404": {
+            "description": "Bulk list not found."
           }
         }
       }

@@ -1,0 +1,303 @@
+---
+title: "Embedding Widget Chat and Widgets"
+sidebarTitle: "Chat and Widgets"
+icon: "message-square"
+description: "Configure chat mode, chat-only embeds, calendar widgets, form widgets, and chat assistant prompts."
+---
+
+The Ringg widget supports text-based chat alongside voice calls. In chat mode, users type messages while the same assistant can still use configured tools, knowledge base queries, callback scheduling, and form widgets.
+
+## Set up a chat agent
+
+<Tip>
+Create a dedicated assistant for chat by cloning your voice assistant. Chat conversations are usually longer and benefit from prompts that allow structured answers, concise markdown, and clear widget handoffs.
+</Tip>
+
+<Steps>
+  <Step title="Clone or create an assistant">
+    Open the Ringg AI dashboard, go to assistants, and clone an existing voice assistant or create a new Webcall assistant for chat.
+  </Step>
+  <Step title="Tune the prompt for text">
+    Update the assistant prompt for chat-style responses. Include when to answer directly, when to collect details, and when to present widgets.
+  </Step>
+  <Step title="Configure chat-specific tools">
+    Add calendar widgets for callback scheduling, form widgets for data collection, or any API integrations the chat should use.
+  </Step>
+  <Step title="Use the chat assistant ID">
+    Use the cloned assistant's `agentId` in the embed code and set `defaultTab` to `"text"`.
+  </Step>
+</Steps>
+
+## Chat modes
+
+<Tabs>
+  <Tab title="Chat first">
+    ```javascript
+    loadAgent({
+      agentId: "your-chat-agent-id",
+      xApiKey: "your-api-key",
+      defaultTab: "text",
+    });
+    ```
+  </Tab>
+  <Tab title="Chat only">
+    ```javascript
+    loadAgent({
+      agentId: "your-chat-agent-id",
+      xApiKey: "your-api-key",
+      defaultTab: "text",
+      hideTabSelector: true,
+    });
+    ```
+  </Tab>
+  <Tab title="Voice and chat">
+    ```javascript
+    loadAgent({
+      agentId: "your-agent-id",
+      xApiKey: "your-api-key",
+      defaultTab: "audio",
+      hideTabSelector: false,
+    });
+    ```
+  </Tab>
+</Tabs>
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `defaultTab` | `"audio" \| "text"` | `"audio"` | Tab shown when the widget loads. Use `"text"` for chat mode. Supported from v1.0.8+. |
+| `hideTabSelector` | `boolean` | `false` | Hides the audio/text tab switcher for a single-mode experience. Supported from v1.0.8+. |
+| `bypassStartScreen` | `boolean` | `false` | Skips the start screen and begins a call or chat immediately on trigger click. Uses `defaultTab`. |
+
+## How chat mode works
+
+<CardGroup cols={2}>
+  <Card title="Text input and output" icon="keyboard">
+    Users send typed messages. Audio input and output are disabled in text mode.
+  </Card>
+  <Card title="Context compression" icon="archive">
+    Long chat conversations are compressed automatically so the conversation can continue within model context limits.
+  </Card>
+  <Card title="RAG summarization" icon="book-open">
+    Knowledge base query results are summarized in chat mode to reduce token usage and keep answers concise.
+  </Card>
+  <Card title="Same configured tools" icon="wrench">
+    API integrations, knowledge base queries, widgets, and other configured tools work in chat mode.
+  </Card>
+</CardGroup>
+
+## Chat widgets
+
+Chat widgets are interactive UI components the assistant can present during a conversation. They render inside the chat interface so users can schedule callbacks, submit forms, or book appointments without leaving the widget.
+
+<Note>
+Chat widgets work best in text mode. They can also be triggered during voice calls, but visual interaction is most natural in the chat interface.
+</Note>
+
+The widget flow is:
+
+1. The assistant decides a widget is needed and calls the `send_widgets` tool.
+2. The widget renders inside the chat.
+3. The user selects a time slot or submits form data.
+4. The response is sent back to the assistant automatically.
+5. The assistant confirms the action and can trigger an API call if `api_config` is provided.
+
+## Calendar widget
+
+Use the calendar widget for callback scheduling, demo booking, consultations, or follow-up appointments. Past slots are excluded so users see valid options.
+
+<Warning>
+The required `tool_type` value is `calender_widget_tool`. Use that exact spelling in widget metadata.
+</Warning>
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `tool_type` | `string` | Yes | Must be `"calender_widget_tool"`. |
+| `tool_id` | `string` | Yes | Unique identifier for this widget instance. |
+| `slot_duration_days` | `integer` | Yes | Number of days to show slots for, such as `7`. |
+| `slot_interval_minutes` | `integer` | Yes | Minutes between each slot, such as `30`. |
+| `start_time_24_hour_format` | `string` | Yes | Slot start time in `HH:MM` format, such as `"09:00"`. |
+| `end_time_24_hour_format` | `string` | Yes | Slot end time in `HH:MM` format, such as `"17:00"`. |
+| `timezone` | `string` | Yes | IANA timezone, such as `"Asia/Kolkata"`. |
+| `api_config` | `object` | No | Optional API call made when the user selects a slot. |
+
+```json
+{
+  "tool_type": "calender_widget_tool",
+  "tool_id": "callback_scheduler",
+  "slot_duration_days": 7,
+  "slot_interval_minutes": 30,
+  "start_time_24_hour_format": "09:00",
+  "end_time_24_hour_format": "17:00",
+  "timezone": "Asia/Kolkata",
+  "api_config": {
+    "url": "https://your-api.com/schedule-callback",
+    "method": "POST",
+    "headers": {
+      "Authorization": "Bearer your-token",
+      "Content-Type": "application/json"
+    },
+    "body": {}
+  }
+}
+```
+
+When a user schedules a callback, the selected datetime and timezone are sent back to the assistant. If `api_config` is provided, the booking data is forwarded to your API.
+
+## Form widget
+
+Use the form widget for contact details, lead qualification, support tickets, addresses, surveys, or other structured data collection.
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `tool_type` | `string` | Yes | Must be `"form_widget_tool"`. |
+| `tool_id` | `string` | Yes | Unique identifier for this widget instance. |
+| `title` | `string` | Yes | Title displayed at the top of the form. |
+| `submit_button_label` | `string` | Yes | Text on the submit button, such as `"Submit"`. |
+| `form_fields` | `array` | Yes | Array of field definitions. |
+| `api_config` | `object` | No | Optional API call made when the form is submitted. |
+
+### Form field definition
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `key` | `string` | Yes | Unique field identifier. |
+| `type` | `string` | Yes | Field type, such as `"text"`, `"email"`, `"select"`, or `"number"`. |
+| `description` | `string` | Yes | Label or placeholder text for the field. |
+| `required` | `boolean` | Yes | Whether the field is mandatory. |
+| `options` | `array` | No | Options list for select fields. |
+
+```json
+{
+  "tool_type": "form_widget_tool",
+  "tool_id": "contact_form",
+  "title": "Contact Information",
+  "submit_button_label": "Submit Details",
+  "form_fields": [
+    {
+      "key": "full_name",
+      "type": "text",
+      "description": "Full Name",
+      "required": true,
+      "options": []
+    },
+    {
+      "key": "email",
+      "type": "email",
+      "description": "Email Address",
+      "required": true,
+      "options": []
+    },
+    {
+      "key": "preferred_plan",
+      "type": "select",
+      "description": "Preferred Plan",
+      "required": false,
+      "options": ["Basic", "Pro", "Enterprise"]
+    }
+  ],
+  "api_config": {
+    "url": "https://your-api.com/contacts",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {}
+  }
+}
+```
+
+When the user submits the form, the collected data is sent back to the assistant. If `api_config` is provided, the data is also forwarded to your API endpoint.
+
+## Complete chat-only embed
+
+Use the CDN loader from the [quickstart](/get-started/guides/embedding-widget), then load the chat assistant with chat-only mode and optional branding.
+
+```javascript
+loadAgentsCdn("latest", function () {
+  loadAgent({
+    agentId: "your-chat-agent-id",
+    xApiKey: "your-api-key",
+    defaultTab: "text",
+    hideTabSelector: true,
+    title: "Support Chat",
+    description: "Hi! I can help you schedule a callback or answer your questions.",
+    logoUrl: "https://example.com/your-logo.svg",
+    buttons: {
+      modalTrigger: {
+        styles: {
+          backgroundColor: "#4F46E5",
+        },
+        icon: {
+          url: "https://example.com/chat-icon.svg",
+          size: 24,
+        },
+      },
+    },
+    feedbackScreen: {
+      title: "How was your chat?",
+      description: "Your feedback helps us improve!",
+      submitBtnCTA: "Submit",
+    },
+  });
+});
+```
+
+Calendar and form widgets are configured in the assistant metadata through the Ringg AI dashboard. No additional frontend code is needed for the widgets themselves.
+
+## Prompt examples
+
+<Tabs>
+  <Tab title="Callback scheduling">
+    ```text
+    You are a friendly support assistant for [Company Name]. You help users with
+    their questions and can schedule callbacks with our team.
+
+    Guidelines:
+    - Greet the user warmly and ask how you can help.
+    - Answer questions using the knowledge base when available.
+    - If the user wants to speak to a human agent, schedule a call, or book a demo,
+      present the calendar widget so they can pick a convenient time slot.
+    - After the user selects a time slot, confirm the booking with the date, time,
+      and timezone in a clear, human-readable format.
+    - Keep responses concise and conversational. This is a chat, not an email.
+    ```
+  </Tab>
+  <Tab title="Form collection">
+    ```text
+    You are a lead qualification assistant for [Company Name]. Your goal is to
+    understand the user's needs and collect their contact information.
+
+    Guidelines:
+    - Start by understanding what the user is looking for.
+    - Once you have enough context about their needs, present the contact form
+      widget to collect their details: name, email, phone, and preferred plan.
+    - After the form is submitted, thank the user and let them know a team member
+      will follow up shortly.
+    - Do not ask for information that the form will collect. Let the form handle it.
+    ```
+  </Tab>
+  <Tab title="Calendar and form">
+    ```text
+    You are a customer support assistant for [Company Name]. You can help users
+    with questions, collect information, and schedule callbacks.
+
+    Guidelines:
+    - Greet the user and ask how you can help.
+    - For general questions, answer directly using available knowledge.
+    - If the user needs to speak with a human agent or wants a demo, present the
+      calendar widget to schedule a callback.
+    - If the user wants to submit a request, provide feedback, or share details,
+      present the form widget to collect their information.
+    - Always confirm the action after a widget interaction, such as "Your callback
+      is booked for Tuesday at 2:00 PM" or "Thanks, we have received your details."
+    - Keep responses short and friendly.
+    ```
+  </Tab>
+</Tabs>
+
+## Prompt tips
+
+<Check>Be explicit about when to use each widget.</Check>
+<Check>Do not duplicate widget fields in the conversation.</Check>
+<Check>Ask the assistant to confirm bookings and form submissions after the widget returns data.</Check>
+<Check>Keep chat responses shorter and more structured than voice responses.</Check>
