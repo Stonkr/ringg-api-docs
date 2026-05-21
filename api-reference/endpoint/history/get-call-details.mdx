@@ -15,3 +15,4 @@ Fetch a detailed record for one call. Use this when a user opens a call detail v
 - Pass the unique call ID as the `id` query parameter.
 - Use `send_analysis=true` only when the caller needs analysis data; this keeps lightweight detail views faster.
 - Store the `call_id` returned by call initiation and webhook payloads.
+- The returned recording URL is valid for 24 hours after the call. Download and store the recording within that window if you need to retain it.
