@@ -71,57 +71,119 @@ new MutationObserver(() => {
 
 Elements are grouped by where they appear in the widget.
 
-{/* TODO: complete the rows below from the agents-cdn source of truth at apps/agents-cdn/docs/data-attributes.md. Add the remaining per-element rows for Header, Loading bar, Message input, Feedback rating and skip controls, and any End-call dialog subcomponents beyond the two listed. Do NOT port client-specific elements (policy-finder, disease-option, sub-question*) into this public page. */}
-
 ### Top level
 
 | `data-ringg` | Element |
 |---|---|
-| `widget-root` | Outer widget container that wraps every other widget element. |
+| `trigger-button` | Floating launcher button. Visible when the widget is closed. |
+| `trigger-icon` | The `<img>` rendered inside the trigger button. |
+| `widget-root` | Outer widget container that wraps every other widget element. Top of the panel tree. |
+| `widget-body` | Inner flex column inside the widget. Wraps the panel and footer. |
+| `widget-panel` | Padded main panel. Header, body, and controls render here. |
+| `minimize-button` | Top-right minimize icon. Only present during a call. |
+| `close-button` | Top-right close icon. Aria label flips to `"End call"` during a call. |
+| `voice-animation-wrapper` | Container around the voice visualizer. Audio mode only. |
+| `body-spacer` | Empty placeholder that keeps controls anchored when the body is empty. |
+| `transcript` | Scrollable message area. |
+| `transcript-list` | Inner flex list of messages. |
+| `attached-buttons` | Wrapper for inline buttons attached to an agent message. |
+| `error-message` | Inline error text. |
+| `legal-disclaimer` | Pre-call legal `<p>`. |
+| `legal-link-privacy` | Privacy policy link inside the legal disclaimer. |
+| `legal-link-terms` | T&C link inside the legal disclaimer. |
 
-### Launcher
+### Header
 
 | `data-ringg` | Element |
 |---|---|
-| `trigger-button` | Floating launcher button that opens the widget. |
+| `header` | Header container. Only present during a call (absolute-positioned band). |
+| `header-logo` | Logo circle. Both pre-call and in-call. |
+| `header-logo-image` | The `<img>` inside the logo circle. |
+| `header-text` | Text column wrapper that holds the title and description/status. |
+| `header-title` | Title `<h2>`. |
+| `header-description` | Pre-call description `<p>`. Only present pre-call. |
+| `header-status` | Status `<p>` shown during a call (`"Connecting…"`, `"Call in Progress"`). |
 
-### Call controls
+### Call controls (audio mode)
 
 | `data-ringg` | Element |
 |---|---|
-| `mute-button` | Mute toggle shown during a voice call. |
+| `call-controls` | Row container holding the call control buttons. |
+| `mute-control` | Mute column wrapping the button + label. |
+| `mute-button` | Mute toggle button. |
+| `mute-label` | `"Mute"` / `"Unmute"` text under the button. |
+| `end-call-control` | End-call column wrapping the button + label. |
+| `end-call-button` | End-call button. |
+| `end-call-label` | `"End Call"` text under the button. |
+
+### Action buttons (start screen)
+
+| `data-ringg` | Element |
+|---|---|
+| `start-call-button` | Start-call button. Rendered when `callMode === "audio"`. |
+| `start-chat-button` | Start-chat button. Rendered when `callMode === "text"`. |
+
+### Loading bar
+
+| `data-ringg` | Element |
+|---|---|
+| `loading-bar` | Loading bar container. |
+| `loading-bar-track` | Background track. |
+| `loading-bar-fill` | Animated fill. |
 
 ### Tabs
 
 | `data-ringg` | Element |
 |---|---|
-| `tab` | A tab in the audio/text selector. Carries `data-ringg-tab-id` and `data-ringg-active`. |
+| `tabs` | Outer container with top border. |
+| `tabs-list` | Row of tab buttons. |
+| `tab` | Individual tab button. Carries `data-ringg-tab-id` and `data-ringg-active`. |
+| `tab-label` | Tab label `<span>`. |
 
 ### Messages
 
 | `data-ringg` | Element |
 |---|---|
-| `transcript-list` | Scrollable list of messages. |
-| `message` | A single message row. Carries `data-ringg-role`. |
-| `message-bubble` | Bubble inside a message that holds the text. |
+| `message` | Outer message row. Carries `data-ringg-role="agent"` / `"user"`. |
+| `message-bubble` | The bubble inside a message row. |
+| `message-content` | Inner column inside the bubble. |
+| `message-body` | Markdown-rendered message body. |
+| `message-source` | "Source:" link rendered below a message. |
+| `message-attachment` | Wrapper for embedded interactive content (buttons, forms, etc). |
 
-### System log
+### System log pill
+
+The system log pill renders the inline activity feed in the transcript. It only shows up when you opt in via `loadAgent({ eventLogs: { enabled: true } })`. See [Agent Actions](/get-started/guides/embedding-widget-agent-actions) for details.
 
 | `data-ringg` | Element |
 |---|---|
-| `system-log` | A system-log notice rendered inline in the transcript. Carries `data-ringg-level`. |
+| `system-log` | Outer container. Carries `data-ringg-level="info"` / `"error"`. |
+| `system-log-pill` | Pill body. |
+| `system-log-dot` | Status dot. |
+| `system-log-label` | Label text. |
+| `system-log-meta` | Optional meta text. |
 
 ### Slash command menu
 
 | `data-ringg` | Element |
 |---|---|
-| `slash-command-item` | A row in the slash-command popover. Carries `data-ringg-active`. |
+| `slash-command-menu` | Outer container. |
+| `slash-command-header` | Header bar with the title. |
+| `slash-command-heading` | "Commands" label. |
+| `slash-command-list` | Scrollable list of command items. |
+| `slash-command-item` | Each command button. Carries `data-ringg-active`. |
+| `slash-command-icon` | Icon square inside an item. |
+| `slash-command-text` | Text column inside an item. |
+| `slash-command-name` | Command display name. |
+| `slash-command-description` | Command description text. |
 
 ### Voice animation
 
 | `data-ringg` | Element |
 |---|---|
-| `voice-animation-dot` | A single dot in the voice visualizer. Carries `data-ringg-lit`, which flips per audio frame. |
+| `voice-animation` | Visualizer root (set on the same element that receives `localTrack`/`remoteTrack`). |
+| `voice-animation-column` | One column of dots (22 columns per visualizer). |
+| `voice-animation-dot` | Individual dot. Carries `data-ringg-lit`, which flips per audio frame. |
 
 <Warning>
 `data-ringg-lit` updates at audio rate. Keep CSS transitions on it lightweight, for example `transition: opacity 50ms`. Heavy transitions or expensive observers on this attribute will fire every frame.
@@ -131,19 +193,49 @@ Elements are grouped by where they appear in the widget.
 
 | `data-ringg` | Element |
 |---|---|
-| `flow-step` | A single step in an interactive flow. Carries `data-ringg-step-active` and `data-ringg-step-completed`. |
+| `interactive-flow` | Outer container. |
+| `flow-stepper` | Stepper header (shown only when multi-step). |
+| `flow-stepper-progress` | Row of step indicators. |
+| `flow-step` | Each step + connector pair. Carries `data-ringg-step-active` and `data-ringg-step-completed`. |
+| `flow-step-indicator` | Numbered/check circle for each step. |
+| `flow-step-connector` | Line between steps. |
+| `flow-step-title` | Current step title `<p>`. |
+| `flow-content` | Step body wrapper. |
+| `flow-back-button` | Back navigation button. |
+| `flow-submitted-selection` | Submitted-state wrapper. |
+| `flow-submitted-pill` | Pill showing the selected choice. |
+
+### Message input (text mode)
+
+| `data-ringg` | Element |
+|---|---|
+| `message-input-form` | The `<form>` element. |
+| `message-input` | Outer pill container. Also wraps the slash menu when open. |
+| `message-input-row` | Row containing the input field + send button. |
+| `message-input-field` | The `<input>` element. |
+| `message-send-button` | Send arrow button. |
 
 ### Feedback screen
 
 | `data-ringg` | Element |
 |---|---|
-| `feedback-submit` | Submit button on the post-call feedback screen. |
+| `feedback-screen` | Container. |
+| `feedback-header` | Title + description block. |
+| `feedback-title` | Title `<h3>`. |
+| `feedback-description` | Description `<p>`. |
+| `feedback-stars` | Star row. |
+| `feedback-star` | Each star button. |
+| `feedback-comment` | Comment `<textarea>`. |
+| `feedback-actions` | Submit + skip wrapper. |
+| `feedback-submit` | Submit button. |
+| `feedback-skip` | Skip button. |
 
 ### Footer
 
 | `data-ringg` | Element |
 |---|---|
-| `footer` | Footer band at the bottom of the widget, typically the brand mark. |
+| `footer` | Footer bar at the bottom of the widget. |
+| `footer-brand` | "Ringg AI" brand text. |
 
 ### End-call confirm dialog
 
@@ -151,8 +243,13 @@ The end-call confirm dialog renders in a portal **outside** `[data-ringg="widget
 
 | `data-ringg` | Element |
 |---|---|
-| `end-call-dialog` | The end-call confirm dialog root. |
-| `end-call-dialog-header` | Header of the end-call confirm dialog. |
+| `end-call-dialog` | Dialog content root. |
+| `end-call-dialog-header` | Header wrapper inside the dialog. |
+| `end-call-dialog-title` | Dialog title `<h2>`. |
+| `end-call-dialog-description` | Dialog description `<p>`. |
+| `end-call-dialog-footer` | Dialog footer wrapper. |
+| `end-call-cancel` | Cancel button. |
+| `end-call-confirm` | End-call confirm button. |
 
 ## Common recipes
 
