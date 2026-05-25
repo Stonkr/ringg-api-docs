@@ -36,16 +36,12 @@ State-bearing elements expose additional `data-ringg-<state>` attributes. They u
 | Attribute | Values | Emitted on |
 |---|---|---|
 | `data-ringg-active` | `"true"` / `"false"` | `tab`, `slash-command-item` |
-| `data-ringg-selected` | `"true"` / `"false"` | `disease-option`, `sub-question-option` |
 | `data-ringg-lit` | `"true"` / `"false"` | `voice-animation-dot` |
 | `data-ringg-role` | `"agent"` / `"user"` | `message` |
 | `data-ringg-level` | `"info"` / `"error"` | `system-log` |
-| `data-ringg-step` | `"select"` / `"details"` / `"searching"` / `"submitted"` | `policy-finder` |
 | `data-ringg-step-active` | `"true"` / `"false"` | `flow-step` |
 | `data-ringg-step-completed` | `"true"` / `"false"` | `flow-step` |
 | `data-ringg-tab-id` | tab id string, for example `"audio"`, `"text"` | `tab` |
-| `data-ringg-question-type` | `"INPUT"` / `"SINGLE_SELECT"` / `"MULTI_SELECT"` | `sub-question` |
-| `data-ringg-mode` | `"single"` / `"multi"` | `sub-question-options` |
 
 Compound selector example:
 
@@ -59,15 +55,15 @@ Compound selector example:
 Observer example:
 
 ```javascript
-const finder = document.querySelector('[data-ringg="policy-finder"]');
+const audioTab = document.querySelector(
+  '[data-ringg="tab"][data-ringg-tab-id="audio"]'
+);
 
 new MutationObserver(() => {
-  analytics.track("Policy Finder Step", {
-    step: finder.getAttribute("data-ringg-step"),
-  });
-}).observe(finder, {
+  console.log("audio tab active?", audioTab.getAttribute("data-ringg-active"));
+}).observe(audioTab, {
   attributes: true,
-  attributeFilter: ["data-ringg-step"],
+  attributeFilter: ["data-ringg-active"],
 });
 ```
 
@@ -75,7 +71,7 @@ new MutationObserver(() => {
 
 Elements are grouped by where they appear in the widget.
 
-{/* TODO: complete the rows below from the agents-cdn source of truth at apps/agents-cdn/docs/data-attributes.md. The groupings here are confirmed correct; add the remaining per-element rows for Header, Loading bar, Message input, Feedback rating and skip controls, and any End-call dialog subcomponents beyond the two listed. */}
+{/* TODO: complete the rows below from the agents-cdn source of truth at apps/agents-cdn/docs/data-attributes.md. Add the remaining per-element rows for Header, Loading bar, Message input, Feedback rating and skip controls, and any End-call dialog subcomponents beyond the two listed. Do NOT port client-specific elements (policy-finder, disease-option, sub-question*) into this public page. */}
 
 ### Top level
 
@@ -136,16 +132,6 @@ Elements are grouped by where they appear in the widget.
 | `data-ringg` | Element |
 |---|---|
 | `flow-step` | A single step in an interactive flow. Carries `data-ringg-step-active` and `data-ringg-step-completed`. |
-
-### Policy finder
-
-| `data-ringg` | Element |
-|---|---|
-| `policy-finder` | Policy-finder container. Carries `data-ringg-step`. |
-| `disease-option` | A selectable disease option. Carries `data-ringg-selected`. |
-| `sub-question` | A sub-question being asked. Carries `data-ringg-question-type`. |
-| `sub-question-options` | Options container for a sub-question. Carries `data-ringg-mode`. |
-| `sub-question-option` | A single selectable answer for a sub-question. Carries `data-ringg-selected`. |
 
 ### Feedback screen
 
