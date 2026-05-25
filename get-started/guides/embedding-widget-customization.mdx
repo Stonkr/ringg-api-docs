@@ -2,46 +2,36 @@
 title: "Widget Customization"
 sidebarTitle: "Customization"
 icon: "palette"
-description: "Restyle and script the Ringg AI widget through its stable data-ringg attribute contract, without forking the bundle."
+description: "Restyle and script the Ringg AI web widget using stable data-ringg attributes."
 "og:title": "Customize the Ringg AI Web Widget | Ringg AI Guide"
 ---
 
-Every notable element rendered by the Ringg AI widget carries a stable `data-ringg="<name>"` attribute. State-bearing elements carry additional `data-ringg-<state>` attributes. This contract lets you restyle, hide, rearrange, or script widget internals from your own site without forking the bundle or targeting internal class names.
+Every notable element rendered by the widget carries a stable `data-ringg="<name>"` attribute, and state-bearing elements carry additional `data-ringg-<state>` attributes that update as the widget changes state. Use them as CSS selectors or JS query targets to restyle, hide, rearrange, or script the widget.
 
 <Note>
-Internal Tailwind classes prefixed with `ringg_ai-*` are **not** part of the public contract. They can change at any time. Always target `data-ringg` attributes instead.
+Do not target the internal `ringg_ai-*` class names. They are minified output and change between releases. Style and script the widget through `data-ringg` attributes only.
 </Note>
 
-## What the contract is
+## Quick example
 
-Three things to know up front:
+```css
+[data-ringg="trigger-button"] {
+  background: #4F46E5;
+  border-radius: 50%;
+}
 
-1. **It is a stable public API.** `data-ringg` values are versioned like CSS classes shipped to consumers. Renames and removals are breaking changes and will be called out in release notes.
-2. **It is framework-agnostic.** It works with vanilla CSS, any preprocessor, and any JS framework. They are just attribute selectors. You do not need to import anything Ringg-specific.
-3. **It is safe to attribute-select on.** State attributes update reactively when component state changes, so selectors like `[data-ringg="tab"][data-ringg-active="true"]` and `MutationObserver` watching these attributes both work as expected.
+[data-ringg="message"][data-ringg-role="agent"] [data-ringg="message-bubble"] {
+  font-style: italic;
+}
+```
 
-## Stability and lifecycle
+```javascript
+document.querySelector('[data-ringg="mute-button"]')?.click();
+```
 
-| Change | Breaking? |
-|---|---|
-| Adding a new `data-ringg` value | No |
-| Adding a new state attribute (`data-ringg-<state>`) | No |
-| Renaming or removing a `data-ringg` value | Yes, called out in release notes |
-| Changing the set of values a state attribute can take | Yes, called out in release notes |
-| Changing internal `ringg_ai-*` Tailwind classes | Not part of the contract; do not target |
+## State attributes
 
-## Naming conventions
-
-- Values are kebab-case: `mute-button`, `transcript-list`, `message-bubble`.
-- Values describe the element semantically, not visually. So `mute-button`, not `grey-circle-top-right`.
-- State attributes use `data-ringg-<state>` with either:
-  - a string enum, for example `data-ringg-role="agent" | "user"`, `data-ringg-level="info" | "error"`, `data-ringg-step="select" | "details" | "searching" | "submitted"`, or
-  - a stringified boolean, the literal strings `"true"` or `"false"`, for example `data-ringg-active`, `data-ringg-selected`, `data-ringg-lit`.
-- Icons do not get their own `data-ringg`. Target icons through their parent button: `[data-ringg="mute-button"] svg`.
-
-## State attributes reference
-
-The complete set of state attributes the widget currently emits:
+State-bearing elements expose additional `data-ringg-<state>` attributes. They update live, so you can drive CSS off them with attribute selectors or watch them with `MutationObserver`.
 
 | Attribute | Values | Emitted on |
 |---|---|---|
@@ -53,209 +43,20 @@ The complete set of state attributes the widget currently emits:
 | `data-ringg-step` | `"select"` / `"details"` / `"searching"` / `"submitted"` | `policy-finder` |
 | `data-ringg-step-active` | `"true"` / `"false"` | `flow-step` |
 | `data-ringg-step-completed` | `"true"` / `"false"` | `flow-step` |
-| `data-ringg-tab-id` | string tab id, for example `"audio"`, `"text"` | `tab` |
+| `data-ringg-tab-id` | tab id string, for example `"audio"`, `"text"` | `tab` |
 | `data-ringg-question-type` | `"INPUT"` / `"SINGLE_SELECT"` / `"MULTI_SELECT"` | `sub-question` |
 | `data-ringg-mode` | `"single"` / `"multi"` | `sub-question-options` |
 
-## Component inventory
-
-Components are grouped by area. Use these `data-ringg` values to target individual elements.
-
-{/* TODO: port the full per-component rows from the internal source of truth at apps/agents-cdn/docs/data-attributes.md. The groupings below are correct; fill in the inventory rows under each group. */}
-
-### Top level layout
-
-| `data-ringg` value | Element |
-|---|---|
-| `widget-root` | The outer widget container. All other widget elements live inside this root. |
-
-### Header
-
-{/* TODO: header rows */}
-
-### Call controls
-
-| `data-ringg` value | Element |
-|---|---|
-| `mute-button` | Mute toggle during a voice call. |
-
-{/* TODO: remaining call-control rows */}
-
-### Action button (launcher)
-
-| `data-ringg` value | Element |
-|---|---|
-| `trigger-button` | The floating launcher button that opens the widget. |
-
-### Loading bar
-
-{/* TODO: loading-bar rows */}
-
-### Tabs
-
-| `data-ringg` value | Element |
-|---|---|
-| `tab` | A tab in the tab selector. Carries `data-ringg-tab-id` and `data-ringg-active`. |
-
-### Message item
-
-| `data-ringg` value | Element |
-|---|---|
-| `message` | A single message row. Carries `data-ringg-role="agent" \| "user"`. |
-| `message-bubble` | The bubble inside a message that holds the text. |
-| `transcript-list` | The scrollable list of messages. |
-
-### System log pill
-
-| `data-ringg` value | Element |
-|---|---|
-| `system-log` | A system-log notice rendered inline in the transcript. Carries `data-ringg-level="info" \| "error"`. |
-
-### Feedback screen
-
-| `data-ringg` value | Element |
-|---|---|
-| `feedback-submit` | The submit button on the post-call feedback screen. |
-
-{/* TODO: remaining feedback rows (rating control, skip button, etc.) */}
-
-### Message input
-
-{/* TODO: message-input rows */}
-
-### Slash command menu
-
-| `data-ringg` value | Element |
-|---|---|
-| `slash-command-item` | A row in the slash-command popover. Carries `data-ringg-active`. |
-
-### Voice animation
-
-| `data-ringg` value | Element |
-|---|---|
-| `voice-animation-dot` | A single dot in the voice visualizer. Carries `data-ringg-lit`, which flips per audio frame. |
-
-<Warning>
-`data-ringg-lit` updates at audio rate. If you attach CSS transitions to `[data-ringg-lit]`, keep them lightweight, for example `transition: opacity 50ms`. Heavy transitions on this attribute will fire every frame.
-</Warning>
-
-### Interactive flow
-
-| `data-ringg` value | Element |
-|---|---|
-| `flow-step` | A single step in an interactive flow. Carries `data-ringg-step-active` and `data-ringg-step-completed`. |
-
-### Policy finder
-
-| `data-ringg` value | Element |
-|---|---|
-| `policy-finder` | The policy-finder container. Carries `data-ringg-step="select" \| "details" \| "searching" \| "submitted"`. |
-| `disease-option` | A selectable disease option. Carries `data-ringg-selected`. |
-| `sub-question` | A sub-question being asked. Carries `data-ringg-question-type="INPUT" \| "SINGLE_SELECT" \| "MULTI_SELECT"`. |
-| `sub-question-options` | The options container for a sub-question. Carries `data-ringg-mode="single" \| "multi"`. |
-| `sub-question-option` | A single selectable answer for a sub-question. Carries `data-ringg-selected`. |
-
-### Footer
-
-| `data-ringg` value | Element |
-|---|---|
-| `footer` | The footer band at the bottom of the widget, typically the brand mark. |
-
-### End-call confirm dialog
-
-The end-call confirm dialog (`end-call-dialog`, `end-call-dialog-header`, and related subcomponents) renders in a portal **outside the widget root**. Scope selectors at the document level, not inside `[data-ringg="widget-root"]`.
-
-{/* TODO: end-call-dialog subcomponent rows */}
-
-## Recipes
-
-### Re-skin the launcher
-
-```css
-[data-ringg="trigger-button"] {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
-  box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
-}
-```
-
-### Italicize agent messages
-
-```css
-[data-ringg="message"][data-ringg-role="agent"] [data-ringg="message-bubble"] {
-  font-style: italic;
-}
-```
-
-### Glow on lit visualizer dots
-
-```css
-[data-ringg="voice-animation-dot"][data-ringg-lit="true"] {
-  box-shadow: 0 0 8px currentColor;
-}
-```
-
-### Highlight the active tab in brand color
+Compound selector example:
 
 ```css
 [data-ringg="tab"][data-ringg-active="true"] {
-  color: var(--my-brand-primary);
-  border-bottom-color: var(--my-brand-primary);
+  color: var(--brand-primary);
+  border-bottom-color: var(--brand-primary);
 }
 ```
 
-### Hide the footer brand
-
-```css
-[data-ringg="footer"] {
-  display: none;
-}
-```
-
-### Programmatically click the mute button
-
-```javascript
-document.querySelector('[data-ringg="mute-button"]')?.click();
-```
-
-### Observe tab changes
-
-```javascript
-const audioTab = document.querySelector(
-  '[data-ringg="tab"][data-ringg-tab-id="audio"]'
-);
-
-new MutationObserver(() => {
-  console.log("audio tab active?", audioTab.getAttribute("data-ringg-active"));
-}).observe(audioTab, {
-  attributes: true,
-  attributeFilter: ["data-ringg-active"],
-});
-```
-
-### Wait for the widget to mount before booting analytics
-
-```javascript
-const waitForWidget = () =>
-  new Promise((resolve) => {
-    const found = document.querySelector('[data-ringg="widget-root"]');
-    if (found) return resolve(found);
-
-    const observer = new MutationObserver(() => {
-      const el = document.querySelector('[data-ringg="widget-root"]');
-      if (el) {
-        observer.disconnect();
-        resolve(el);
-      }
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-  });
-
-waitForWidget().then((root) => {
-  analytics.track("Ringg Widget Mounted");
-});
-```
-
-### Track the policy-finder funnel
+Observer example:
 
 ```javascript
 const finder = document.querySelector('[data-ringg="policy-finder"]');
@@ -270,6 +71,169 @@ new MutationObserver(() => {
 });
 ```
 
+## Element reference
+
+Elements are grouped by where they appear in the widget.
+
+{/* TODO: complete the rows below from the agents-cdn source of truth at apps/agents-cdn/docs/data-attributes.md. The groupings here are confirmed correct; add the remaining per-element rows for Header, Loading bar, Message input, Feedback rating and skip controls, and any End-call dialog subcomponents beyond the two listed. */}
+
+### Top level
+
+| `data-ringg` | Element |
+|---|---|
+| `widget-root` | Outer widget container that wraps every other widget element. |
+
+### Launcher
+
+| `data-ringg` | Element |
+|---|---|
+| `trigger-button` | Floating launcher button that opens the widget. |
+
+### Call controls
+
+| `data-ringg` | Element |
+|---|---|
+| `mute-button` | Mute toggle shown during a voice call. |
+
+### Tabs
+
+| `data-ringg` | Element |
+|---|---|
+| `tab` | A tab in the audio/text selector. Carries `data-ringg-tab-id` and `data-ringg-active`. |
+
+### Messages
+
+| `data-ringg` | Element |
+|---|---|
+| `transcript-list` | Scrollable list of messages. |
+| `message` | A single message row. Carries `data-ringg-role`. |
+| `message-bubble` | Bubble inside a message that holds the text. |
+
+### System log
+
+| `data-ringg` | Element |
+|---|---|
+| `system-log` | A system-log notice rendered inline in the transcript. Carries `data-ringg-level`. |
+
+### Slash command menu
+
+| `data-ringg` | Element |
+|---|---|
+| `slash-command-item` | A row in the slash-command popover. Carries `data-ringg-active`. |
+
+### Voice animation
+
+| `data-ringg` | Element |
+|---|---|
+| `voice-animation-dot` | A single dot in the voice visualizer. Carries `data-ringg-lit`, which flips per audio frame. |
+
+<Warning>
+`data-ringg-lit` updates at audio rate. Keep CSS transitions on it lightweight, for example `transition: opacity 50ms`. Heavy transitions or expensive observers on this attribute will fire every frame.
+</Warning>
+
+### Interactive flow
+
+| `data-ringg` | Element |
+|---|---|
+| `flow-step` | A single step in an interactive flow. Carries `data-ringg-step-active` and `data-ringg-step-completed`. |
+
+### Policy finder
+
+| `data-ringg` | Element |
+|---|---|
+| `policy-finder` | Policy-finder container. Carries `data-ringg-step`. |
+| `disease-option` | A selectable disease option. Carries `data-ringg-selected`. |
+| `sub-question` | A sub-question being asked. Carries `data-ringg-question-type`. |
+| `sub-question-options` | Options container for a sub-question. Carries `data-ringg-mode`. |
+| `sub-question-option` | A single selectable answer for a sub-question. Carries `data-ringg-selected`. |
+
+### Feedback screen
+
+| `data-ringg` | Element |
+|---|---|
+| `feedback-submit` | Submit button on the post-call feedback screen. |
+
+### Footer
+
+| `data-ringg` | Element |
+|---|---|
+| `footer` | Footer band at the bottom of the widget, typically the brand mark. |
+
+### End-call confirm dialog
+
+The end-call confirm dialog renders in a portal **outside** `[data-ringg="widget-root"]`. Scope its selectors at the document level.
+
+| `data-ringg` | Element |
+|---|---|
+| `end-call-dialog` | The end-call confirm dialog root. |
+| `end-call-dialog-header` | Header of the end-call confirm dialog. |
+
+## Common recipes
+
+### Restyle the launcher
+
+```css
+[data-ringg="trigger-button"] {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+}
+```
+
+### Highlight the active tab
+
+```css
+[data-ringg="tab"][data-ringg-active="true"] {
+  color: var(--brand-primary);
+  border-bottom-color: var(--brand-primary);
+}
+```
+
+### Glow on lit visualizer dots
+
+```css
+[data-ringg="voice-animation-dot"][data-ringg-lit="true"] {
+  box-shadow: 0 0 8px currentColor;
+}
+```
+
+### Italicize agent messages
+
+```css
+[data-ringg="message"][data-ringg-role="agent"] [data-ringg="message-bubble"] {
+  font-style: italic;
+}
+```
+
+### Hide the footer brand
+
+```css
+[data-ringg="footer"] {
+  display: none;
+}
+```
+
+### Wait for the widget to mount
+
+```javascript
+function onWidgetReady(cb) {
+  const found = document.querySelector('[data-ringg="widget-root"]');
+  if (found) return cb(found);
+
+  const observer = new MutationObserver(() => {
+    const el = document.querySelector('[data-ringg="widget-root"]');
+    if (el) {
+      observer.disconnect();
+      cb(el);
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+}
+
+onWidgetReady((root) => {
+  analytics.track("Ringg Widget Mounted");
+});
+```
+
 ### Capture feedback submissions
 
 ```javascript
@@ -281,21 +245,12 @@ document.addEventListener("click", (event) => {
 ```
 
 <Tip>
-For richer lifecycle hooks (open/close, conversation start/end, feedback payload) prefer the dispatched browser events covered in [Lifecycle Events](/get-started/guides/embedding-widget-events). Use the DOM hooks above for UI affordances the widget does not surface as events.
+For lifecycle hooks like open/close, conversation start/end, and the feedback payload itself, listen to the events documented in [Widget Lifecycle Events](/get-started/guides/embedding-widget-events). Use `data-ringg` attributes for UI affordances the widget does not surface as events.
 </Tip>
 
-## Gotchas
+## QA notes
 
-- **Icons inherit from their parent.** Icons do not carry their own `data-ringg`. Style them through the parent: `[data-ringg="mute-button"] svg { color: red; }`.
-- **Portal-rendered elements.** The end-call confirm dialog renders outside `[data-ringg="widget-root"]`. Selectors for it must be document-scoped.
-- **Tailwind purge on host sites.** If your site uses Tailwind with content scanning, the `ringg_ai-*` classes inside the widget bundle will not match your purge rules either way. You should not target them, only `data-ringg` attributes.
-- **`!important` for overrides.** The widget ships its own styles. If a CSS rule does not seem to apply, escalate specificity with attribute compounding before reaching for `!important`.
-- **Per-frame state changes.** `data-ringg-lit` flips at audio rate. Avoid heavy transitions or expensive observers on it.
-
-## Changelog
-
-| Date | Change |
-|---|---|
-| - | No breaking changes recorded yet. |
-
-Future renames, removals, or value-set changes will be logged here.
+<Check>All your selectors target `[data-ringg="..."]` attributes, not internal `ringg_ai-*` class names.</Check>
+<Check>Compound selectors with state attributes (for example `[data-ringg="tab"][data-ringg-active="true"]`) update live as the widget changes state.</Check>
+<Check>Selectors for the end-call confirm dialog are document-scoped, not nested under `[data-ringg="widget-root"]`.</Check>
+<Check>CSS transitions on `[data-ringg-lit]` are lightweight, so per-frame state changes do not cause jank.</Check>
