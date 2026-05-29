@@ -9,29 +9,62 @@ This page covers the frontend configuration object passed to `loadAgent`. Config
 
 ## CDN loader
 
-The widget script exposes `loadAgent` after the CDN bundle finishes loading.
+The widget script exposes `loadAgent` after the CDN bundle finishes loading. Two builds are published: pick the one that matches how your host page loads JavaScript.
 
-```html
-<script>
-  function loadAgentsCdn(version, done) {
-    const stylesheet = document.createElement("link");
-    stylesheet.rel = "stylesheet";
-    stylesheet.type = "text/css";
-    stylesheet.href = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/style.css`;
+| Bundle | When to use |
+|---|---|
+| `dv-agent.es.js` | Module-aware setups: Vite, webpack, Next, or anything loaded inside `<script type="module">`. |
+| `dv-agent.umd.js` | jQuery pages, legacy CMS themes, and any host page that loads scripts with a plain `<script>` tag. |
 
-    const script = document.createElement("script");
-    script.type = "text/javascript";
-    script.onload = done;
-    script.src = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/dv-agent.es.js`;
+<Warning>
+The ES bundle is only safe inside module-aware setups. Loading `dv-agent.es.js` as a plain `<script>` leaks internals onto `window` and can clobber globals like jQuery's `$`, which breaks the host page. Use `dv-agent.umd.js` on any non-module page.
+</Warning>
 
-    document.head.appendChild(stylesheet);
-    document.head.appendChild(script);
-  }
-</script>
-```
+<Tabs>
+  <Tab title="ES build (module-aware)">
+    ```html
+    <script type="module">
+      function loadAgentsCdn(version, done) {
+        const stylesheet = document.createElement("link");
+        stylesheet.rel = "stylesheet";
+        stylesheet.type = "text/css";
+        stylesheet.href = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/style.css`;
+
+        const script = document.createElement("script");
+        script.type = "module";
+        script.onload = done;
+        script.src = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/dv-agent.es.js`;
+
+        document.head.appendChild(stylesheet);
+        document.head.appendChild(script);
+      }
+    </script>
+    ```
+  </Tab>
+  <Tab title="UMD build (jQuery or legacy)">
+    ```html
+    <script>
+      function loadAgentsCdn(version, done) {
+        const stylesheet = document.createElement("link");
+        stylesheet.rel = "stylesheet";
+        stylesheet.type = "text/css";
+        stylesheet.href = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/style.css`;
+
+        const script = document.createElement("script");
+        script.type = "text/javascript";
+        script.onload = done;
+        script.src = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/dv-agent.umd.js`;
+
+        document.head.appendChild(stylesheet);
+        document.head.appendChild(script);
+      }
+    </script>
+    ```
+  </Tab>
+</Tabs>
 
 <Tip>
-Use `latest` while exploring in development. For production, pin the tested CDN version and update CSP entries to match your pinned policy.
+Use `latest` while exploring in development. For production, pin the tested CDN version and update CSP entries to match the bundle (`dv-agent.es.js` or `dv-agent.umd.js`) you ship.
 </Tip>
 
 ## Base configuration
