@@ -42,15 +42,25 @@ script-src 'self' https://cdn.jsdelivr.net;
 style-src 'self' https://cdn.jsdelivr.net;
 ```
 
-If your policy pins exact asset paths, match the CDN version used by the loader.
+If your policy pins exact asset paths, match the CDN version and the bundle filename used by the loader. The widget ships an ES build for module-aware setups and a UMD build for jQuery and legacy pages, so the pinned path differs between integrations.
 
-```text
-script-src 'self' https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@1.0.19/dist/dv-agent.es.js;
-style-src 'self' https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@1.0.19/dist/style.css;
-```
+<Tabs>
+  <Tab title="ES build">
+    ```text
+    script-src 'self' https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@1.0.19/dist/dv-agent.es.js;
+    style-src 'self' https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@1.0.19/dist/style.css;
+    ```
+  </Tab>
+  <Tab title="UMD build">
+    ```text
+    script-src 'self' https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@1.0.19/dist/dv-agent.umd.js;
+    style-src 'self' https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@1.0.19/dist/style.css;
+    ```
+  </Tab>
+</Tabs>
 
 <Tip>
-Keep the loader version, CSP entries, and release notes for your deployment in sync. A mismatch can make the widget work in staging and fail in production.
+Keep the loader version, the bundle filename, CSP entries, and release notes for your deployment in sync. A mismatch can make the widget work in staging and fail in production.
 </Tip>
 
 ## CDN version pinning
@@ -111,6 +121,7 @@ loadAgentsCdn("1.0.19", function () {
 |---|---|
 | Trigger button does not appear | Confirm the CDN script loaded, CSP is not blocking assets, and `loadAgent` runs after the CDN callback. |
 | Widget appears on staging but not production | Confirm the production domain is in Whitelist Domains and CSP uses the same pinned CDN version. |
+| jQuery `$` is undefined or host page globals are clobbered after the widget loads | The page is loading `dv-agent.es.js` as a plain `<script>`. Swap the loader to `dv-agent.umd.js` and update the pinned CSP path to match. |
 | Voice call cannot start | Confirm microphone permission, browser support, and that the assistant is configured for Webcall. |
 | Chat opens in the wrong mode | Confirm `defaultTab` and `hideTabSelector` in the deployed `loadAgent` config. |
 | Analytics fire twice | Remove duplicate event listeners during single-page app navigation. |

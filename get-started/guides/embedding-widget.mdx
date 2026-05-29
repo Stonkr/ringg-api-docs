@@ -51,35 +51,76 @@ The widget snippet runs in the browser and includes `xApiKey`. Use only the embe
   </Step>
 
   <Step title="Add the widget snippet">
-    Paste this near the end of the page, preferably before the closing `</body>` tag.
+    Paste this near the end of the page, preferably before the closing `</body>` tag. Pick the bundle that matches your host page.
 
-    ```html
-    <script>
-      function loadAgentsCdn(version, done) {
-        const stylesheet = document.createElement("link");
-        stylesheet.rel = "stylesheet";
-        stylesheet.type = "text/css";
-        stylesheet.href = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/style.css`;
+    <Tabs>
+      <Tab title="Modern bundler or module-aware page">
+        Use `dv-agent.es.js` when the page is built with Vite, webpack, Next, or any other module-aware setup, or when the snippet runs inside `<script type="module">`.
 
-        const script = document.createElement("script");
-        script.type = "text/javascript";
-        script.onload = done;
-        script.src = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/dv-agent.es.js`;
+        ```html
+        <script type="module">
+          function loadAgentsCdn(version, done) {
+            const stylesheet = document.createElement("link");
+            stylesheet.rel = "stylesheet";
+            stylesheet.type = "text/css";
+            stylesheet.href = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/style.css`;
 
-        document.head.appendChild(stylesheet);
-        document.head.appendChild(script);
-      }
+            const script = document.createElement("script");
+            script.type = "module";
+            script.onload = done;
+            script.src = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/dv-agent.es.js`;
 
-      loadAgentsCdn("latest", function () {
-        loadAgent({
-          agentId: "your-agent-id",
-          xApiKey: "your-api-key",
-          variables: {},
-          buttons: {},
-        });
-      });
-    </script>
-    ```
+            document.head.appendChild(stylesheet);
+            document.head.appendChild(script);
+          }
+
+          loadAgentsCdn("latest", function () {
+            loadAgent({
+              agentId: "your-agent-id",
+              xApiKey: "your-api-key",
+              variables: {},
+              buttons: {},
+            });
+          });
+        </script>
+        ```
+      </Tab>
+      <Tab title="jQuery or legacy page">
+        Use `dv-agent.umd.js` when the host page uses jQuery, an older CMS theme, or any plain `<script>` setup without a module bundler.
+
+        ```html
+        <script>
+          function loadAgentsCdn(version, done) {
+            const stylesheet = document.createElement("link");
+            stylesheet.rel = "stylesheet";
+            stylesheet.type = "text/css";
+            stylesheet.href = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/style.css`;
+
+            const script = document.createElement("script");
+            script.type = "text/javascript";
+            script.onload = done;
+            script.src = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/dv-agent.umd.js`;
+
+            document.head.appendChild(stylesheet);
+            document.head.appendChild(script);
+          }
+
+          loadAgentsCdn("latest", function () {
+            loadAgent({
+              agentId: "your-agent-id",
+              xApiKey: "your-api-key",
+              variables: {},
+              buttons: {},
+            });
+          });
+        </script>
+        ```
+      </Tab>
+    </Tabs>
+
+    <Note>
+    The ES bundle is only safe inside module-aware setups. Loading `dv-agent.es.js` as a plain `<script>` leaks internals onto `window` and can clobber host page globals like jQuery's `$`. Reach for the UMD build on any non-module page.
+    </Note>
 
     For production, pin a tested CDN version instead of `latest` after validating the widget in staging.
   </Step>
