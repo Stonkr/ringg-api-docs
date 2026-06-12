@@ -136,7 +136,8 @@
           {
             "group": "Calling",
             "pages": [
-              "api-reference/endpoint/calling/initiate-individual-call"
+              "api-reference/endpoint/calling/initiate-individual-call",
+              "api-reference/endpoint/calling/initiate-individual-call-v2"
             ]
           },
           {
@@ -144,6 +145,7 @@
             "pages": [
               "api-reference/endpoint/campaign/upload-campaign-contact-list",
               "api-reference/endpoint/campaign/start-campaign",
+              "api-reference/endpoint/campaign/start-campaign-v2",
               "api-reference/endpoint/campaign/get-all-campaigns",
               "api-reference/endpoint/campaign/upload-large-campaign-csv",
               "api-reference/endpoint/campaign/get-large-campaign-upload-status",

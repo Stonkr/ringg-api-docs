@@ -1,0 +1,35 @@
+---
+openapi: post /campaign/v2/start
+---
+
+Start a campaign using a managed number pool. Numbers are resolved automatically from the pool — handling rotation, spam skipping, and auto-purchase — so you don't need to specify individual `from_numbers`.
+
+<Warning>
+Before starting a campaign, ensure you have:
+- Uploaded a contact list using [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list)
+- Configured your agent with the appropriate prompts and settings
+- Created a number pool and added numbers to it
+</Warning>
+
+## Request parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `agent_id` | string | Yes | ID of the agent that will handle all campaign calls |
+| `list_id` | string | Yes | ID of the uploaded campaign contact list |
+| `number_pool_id` | string | Yes | ID of the managed number pool to use for outbound calls |
+| `callback_url` | string | No | URL to receive a webhook when the campaign completes |
+| `email_completion_user_ids` | array | No | User IDs to notify by email on campaign completion |
+
+## Standard flow
+
+1. Upload contacts with [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list).
+2. Save the returned `list_id`.
+3. Start calls with this endpoint using a `number_pool_id`.
+4. Monitor progress with [Get all campaigns](/api-reference/endpoint/campaign/get-all-campaigns).
+
+## Error responses
+
+- **400**: Invalid agent_id, list_id, or number_pool_id; campaign already started
+- **401**: Invalid or missing API key
+- **500**: Unexpected server error

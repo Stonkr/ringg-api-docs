@@ -344,6 +344,55 @@
                           "is_inbound_enabled": {
                             "type": "boolean",
                             "example": true
+                          },
+                          "is_test_number": {
+                            "type": "boolean",
+                            "example": false
+                          },
+                          "tags": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "example": []
+                          },
+                          "is_spam": {
+                            "type": "boolean",
+                            "example": false
+                          },
+                          "spam_message": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": null
+                          },
+                          "provider": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "twilio"
+                          },
+                          "display_name": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "Sales Line"
+                          },
+                          "owner": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "demo@ringg.ai"
+                          },
+                          "is_custom_number": {
+                            "type": "boolean",
+                            "example": false
+                          },
+                          "telephony_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "0b84b167-2dcb-4bbd-abab-1837000bea17"
+                          },
+                          "number_pool_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "example": "0b84b167-2dcb-4bbd-abab-1837000bea17"
                           }
                         }
                       }
@@ -1503,7 +1552,7 @@
             "og:title": "Initiate Individual Call | Ringg AI"
           }
         },
-        "description": "Starts one outbound call to a recipient. Exactly one caller-number option is required: from_number_id or from_number.",
+        "description": "Starts one outbound call to a recipient. **Exactly one caller-number option is required: from_number_id or from_number.**",
         "operationId": "initiateIndividualCall",
         "parameters": [
           {
@@ -1552,7 +1601,7 @@
                         }
                       }
                     ],
-                    "description": "Caller phone number, or array of caller phone numbers, with country code. Provide either from_number or from_number_id, not both.",
+                    "description": "Caller phone number, or array of caller phone numbers, with country code. **Provide either from_number or from_number_id, not both.**",
                     "example": "+1987654321"
                   },
                   "custom_args_values": {
@@ -1742,7 +1791,7 @@
                         }
                       }
                     ],
-                    "description": "Workspace number ID, or array of workspace number IDs, to use as caller ID. Provide either from_number_id or from_number, not both.",
+                    "description": "Workspace number ID, or array of workspace number IDs, to use as caller ID. **Provide either from_number_id or from_number, not both.**",
                     "example": "from-number-id"
                   },
                   "callback_url": {
@@ -1942,6 +1991,273 @@
                           "type": "string",
                           "example": "An unexpected error occurred on the server."
                         }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/calling/v2/outbound/individual": {
+      "post": {
+        "tags": ["calling"],
+        "summary": "Initiate Individual Call (Number Pool)",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Initiate Individual Call (Number Pool) | Ringg AI"
+          }
+        },
+        "description": "Starts one outbound call to a recipient using a managed number pool or an explicit caller number.",
+        "operationId": "initiateIndividualCallV2",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "mobile_number", "agent_id"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The name of the person to call.",
+                    "example": "John Doe"
+                  },
+                  "mobile_number": {
+                    "type": "string",
+                    "description": "The phone number to call (must include country code).",
+                    "example": "+1234567890"
+                  },
+                  "agent_id": {
+                    "type": "string",
+                    "description": "UUID of the agent that will handle the call.",
+                    "example": "830f767a-397e-4b39-82ff-235cd344e2f9"
+                  },
+                  "number_pool_id": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Managed number pool ID for automatic caller-number resolution (rotation, spam skipping, auto-purchase). **Provide exactly one of number_pool_id, from_number_id, or from_number.**",
+                    "example": "pool-uuid-here"
+                  },
+                  "from_number_id": {
+                    "oneOf": [
+                      { "type": "string" },
+                      { "type": "array", "items": { "type": "string" } }
+                    ],
+                    "description": "Workspace number ID, or array of workspace number IDs, to use as caller ID. **Provide either from_number_id or from_number, not both.**",
+                    "example": "from-number-id"
+                  },
+                  "from_number": {
+                    "oneOf": [
+                      { "type": "string" },
+                      { "type": "array", "items": { "type": "string" } }
+                    ],
+                    "description": "Caller phone number, or array of caller phone numbers, with country code. **Provide either from_number or from_number_id, not both.**",
+                    "example": "+1987654321"
+                  },
+                  "custom_args_values": {
+                    "type": "object",
+                    "description": "Custom variables replaced in the agent's prompt using @{{variable_name}} syntax.",
+                    "example": {
+                      "company_name": "XYZ Corp",
+                      "appointment_date": "2025-01-20",
+                      "product_name": "Premium Service"
+                    }
+                  },
+                  "smart_formatter": {
+                    "type": "object",
+                    "description": "(Optional) Smart formatting for callee name — supports first name extraction and transliteration.",
+                    "properties": {
+                      "extract_first_name": {
+                        "type": "boolean",
+                        "description": "Extract the first actual name from the full name, skipping common prefixes (Mr, Mrs, Dr, etc.).",
+                        "default": false,
+                        "example": true
+                      },
+                      "transliteration": {
+                        "type": "boolean",
+                        "description": "Transliterate the extracted name using a local dictionary. Automatically applies extract_first_name.",
+                        "default": false,
+                        "example": true
+                      },
+                      "transliteration_language": {
+                        "type": "object",
+                        "properties": {
+                          "source": { "type": "string", "default": "en", "example": "en" },
+                          "target": { "type": "string", "default": "hi", "example": "hi" }
+                        }
+                      }
+                    },
+                    "example": {
+                      "extract_first_name": true,
+                      "transliteration": true,
+                      "transliteration_language": { "source": "en", "target": "hi" }
+                    }
+                  },
+                  "call_config": {
+                    "type": "object",
+                    "description": "(Optional) Override default call configuration.",
+                    "properties": {
+                      "idle_timeout_warning": { "type": "integer", "default": 5, "example": 10 },
+                      "idle_timeout_end": { "type": "integer", "default": 10, "example": 15 },
+                      "max_call_length": { "type": "integer", "default": 240, "example": 300 },
+                      "call_retry_config": {
+                        "type": "object",
+                        "properties": {
+                          "retry_count": { "type": "integer", "example": 3 },
+                          "retry_busy": { "type": "integer", "default": 30, "example": 30 },
+                          "retry_not_picked": { "type": "integer", "default": 30, "example": 30 },
+                          "retry_failed": { "type": "integer", "default": 30, "example": 30 }
+                        }
+                      },
+                      "call_time": {
+                        "type": "object",
+                        "properties": {
+                          "call_start_time": { "type": "string", "default": "00:00", "example": "00:00" },
+                          "call_end_time": { "type": "string", "default": "23:00", "example": "23:00" },
+                          "timezone": { "type": "string", "default": "Asia/Kolkata", "example": "Asia/Kolkata" }
+                        }
+                      }
+                    }
+                  },
+                  "voice_id": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Optional AgentVoice ID for this call. Overrides the agent version's default voice.",
+                    "example": "voice-uuid-here"
+                  },
+                  "version_id": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Optional agent version ID. Defaults to the active version.",
+                    "example": "387bd8f1-5748-4006-b7fe-6a6455e9d45d"
+                  },
+                  "call_category": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Optional category for internal reporting or workflow grouping.",
+                    "example": "renewal_reminder"
+                  },
+                  "parent_call_id": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Optional parent call ID for follow-up or chained-call flows.",
+                    "example": "550e8400-e29b-41d4-a716-446655440000"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Optional webhook URL for call events.",
+                    "example": "https://api.example.com/ringg/callback"
+                  },
+                  "callback_args": {
+                    "type": "object",
+                    "description": "Optional headers and query params Ringg should include when calling callback_url.",
+                    "properties": {
+                      "headers": { "type": "object", "additionalProperties": { "type": "string" } },
+                      "params": { "type": "object", "additionalProperties": { "type": "string" } }
+                    }
+                  }
+                },
+                "description": "At least one of number_pool_id, from_number_id, or from_number is required. **from_number_id and from_number cannot both be set.**"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response: Details about the initiated call.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "success" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "call_id": { "type": "string", "example": "31106b7c-9d02-4723-8b07-5bb8d90240cb" },
+                        "call_direction": { "type": "string", "example": "outbound" },
+                        "call_status": {
+                          "type": "string",
+                          "enum": ["registered", "ongoing", "retry", "error", "completed", "failed", "cancelled", "forwarded"],
+                          "example": "ongoing"
+                        },
+                        "initiated_at": { "type": "string", "format": "date-time", "example": "2025-11-24T07:33:49.629642" },
+                        "agent_id": { "type": "string", "example": "a31f36c4-c8ea-4c4b-9ad6-743dabacafbd" },
+                        "custom_args_values": { "type": "object", "example": { "callee_name": "john", "order_id": "ORD-1042" } }
+                      }
+                    },
+                    "message": { "type": "string", "example": "Call initiated successfully" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid parameters or request format.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": { "type": "string", "example": "invalid_parameter" },
+                        "message": { "type": "string", "example": "Provide at least one of: number_pool_id, from_number_id, from_number" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": { "type": "string", "example": "401 Unauthorized" },
+                        "message": { "type": "string", "example": "Invalid credentials" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": { "type": "string", "example": "500 Internal Server Error" },
+                        "message": { "type": "string", "example": "An unexpected error occurred on the server." }
                       }
                     }
                   }
@@ -3232,6 +3548,143 @@
                       "type": "string",
                       "example": "An unexpected error occurred."
                     }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/campaign/v2/start": {
+      "post": {
+        "tags": ["campaign"],
+        "summary": "Start Campaign (Number Pool)",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Start Campaign (Number Pool) | Ringg AI"
+          }
+        },
+        "description": "Initiates a new campaign using a managed number pool for outbound calls. Numbers are resolved automatically from the pool (rotation, spam skipping, auto-purchase).",
+        "operationId": "startCampaignV2",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["agent_id", "list_id", "number_pool_id"],
+                "properties": {
+                  "agent_id": {
+                    "type": "string",
+                    "description": "(Required) ID of the agent that will handle the calls.",
+                    "example": "830f767a-397e-4b39-82ff-235cd344e2f9"
+                  },
+                  "list_id": {
+                    "type": "string",
+                    "description": "(Required) ID of the uploaded campaign contact list.",
+                    "example": "123e4567-e89b-12d3-a456-426614174000"
+                  },
+                  "number_pool_id": {
+                    "type": "string",
+                    "description": "(Required) ID of the managed number pool to use for outbound calls.",
+                    "example": "pool-uuid-here"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "URL to receive campaign completion webhook.",
+                    "example": "https://api.example.com/ringg/campaign-callback"
+                  },
+                  "email_completion_user_ids": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "nullable": true,
+                    "description": "User IDs to notify by email when the campaign completes."
+                  }
+                },
+                "example": {
+                  "agent_id": "830f767a-397e-4b39-82ff-235cd344e2f9",
+                  "list_id": "123e4567-e89b-12d3-a456-426614174000",
+                  "number_pool_id": "pool-uuid-here"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Campaign started successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "description": "Success message indicating campaign registration.",
+                      "example": "campaign registered successfully!"
+                    },
+                    "has_ongoing_calls": {
+                      "type": "boolean",
+                      "description": "Whether the workspace has other ongoing calls.",
+                      "example": false
+                    }
+                  },
+                  "example": {
+                    "status": "campaign registered successfully!",
+                    "has_ongoing_calls": false
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Invalid input.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": { "type": "string", "example": "Number pool not found." }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": { "type": "string", "example": "Invalid credentials" }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": { "type": "string", "example": "An unexpected error occurred." }
                   }
                 }
               }
@@ -5285,7 +5738,6 @@
                   "country_code",
                   "campaign_start_time",
                   "campaign_end_time",
-                  "from_numbers",
                   "call_config"
                 ],
                 "properties": {
@@ -5316,11 +5768,16 @@
                   },
                   "from_numbers": {
                     "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "description": "Workspace number IDs to use for outbound calls.",
-                    "example": ["from-number-id"]
+                    "items": { "type": "string" },
+                    "description": "Explicit list of FromNumber UUIDs / phone numbers. **Provide exactly one of from_numbers or number_pool_id.**",
+                    "example": ["from-number-id"],
+                    "nullable": true
+                  },
+                  "number_pool_id": {
+                    "type": "string",
+                    "description": "Managed number pool ID (rotation, spam skipping, auto-purchase). **Provide exactly one of from_numbers or number_pool_id.**",
+                    "example": "pool-uuid-here",
+                    "nullable": true
                   },
                   "call_config": {
                     "type": "object",
@@ -5328,45 +5785,23 @@
                       "call_retry_config": {
                         "type": "object",
                         "properties": {
-                          "retry_count": {
-                            "type": "integer",
-                            "default": 0,
-                            "example": 1
-                          },
-                          "retry_busy": {
-                            "type": "integer",
-                            "default": 30,
-                            "example": 30
-                          },
-                          "retry_not_picked": {
-                            "type": "integer",
-                            "default": 30,
-                            "example": 30
-                          },
-                          "retry_failed": {
-                            "type": "integer",
-                            "default": 30,
-                            "example": 30
-                          }
+                          "retry_count": { "type": "integer", "default": 0, "example": 1 },
+                          "retry_busy": { "type": "integer", "default": 30, "example": 30 },
+                          "retry_not_picked": { "type": "integer", "default": 30, "example": 30 },
+                          "retry_failed": { "type": "integer", "default": 30, "example": 30 }
                         }
                       },
                       "call_time": {
                         "type": "object",
                         "properties": {
-                          "call_start_time": {
+                          "call_start_time": { "type": "string", "default": "08:00", "example": "09:00" },
+                          "call_end_time": { "type": "string", "default": "20:00", "example": "18:00" },
+                          "timezone": { "type": "string", "default": "Asia/Kolkata", "example": "Asia/Kolkata" },
+                          "scheduled_at": {
                             "type": "string",
-                            "default": "08:00",
-                            "example": "09:00"
-                          },
-                          "call_end_time": {
-                            "type": "string",
-                            "default": "20:00",
-                            "example": "18:00"
-                          },
-                          "timezone": {
-                            "type": "string",
-                            "default": "Asia/Kolkata",
-                            "example": "Asia/Kolkata"
+                            "nullable": true,
+                            "description": "ISO 8601 datetime for scheduled call (e.g. '2026-10-18T09:00:00'). Uses the timezone above.",
+                            "example": null
                           }
                         }
                       }
@@ -5386,16 +5821,16 @@
                   },
                   "email_completion_user_ids": {
                     "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
+                    "items": { "type": "string" },
                     "nullable": true
                   }
-                }
+                },
+                "description": "**Exactly one of from_numbers or number_pool_id must be provided.** Sending both or neither results in a 422."
               }
             }
+            }
           }
-        },
+        ,
         "responses": {
           "200": {
             "description": "Large campaign call creation accepted.",

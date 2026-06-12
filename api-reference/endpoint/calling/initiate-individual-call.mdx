@@ -2,6 +2,10 @@
 openapi: post /calling/outbound/individual
 ---
 
+<Warning>
+**Deprecated.** This endpoint requires you to pass and manage caller numbers yourself via `from_number_id` or `from_number`. New integrations should use [Initiate Individual Call (Pool)](/api-reference/endpoint/calling/initiate-individual-call-v2), which can resolve numbers automatically from a managed pool (rotation, spam skipping, and auto-purchase).
+</Warning>
+
 Start one outbound call with a configured assistant. Use this endpoint for transactional calls, test calls before campaigns, and product workflows where one user action should trigger one phone call.
 
 ## Required inputs
@@ -11,10 +15,10 @@ Start one outbound call with a configured assistant. Use this endpoint for trans
 | `name` | Recipient name. Ringg also uses this as `callee_name` if you do not provide one in `custom_args_values`. |
 | `mobile_number` | Recipient phone number in E.164 format, for example `+919876543210`. |
 | `agent_id` | Assistant that will handle the conversation. Get it from `GET /agent/all`. |
-| `from_number_id` or `from_number` | Caller ID to use. Exactly one is required. Use `from_number_id` when possible because it is stable across number formatting changes. |
+| `from_number_id` or `from_number` | Caller ID to use. **Exactly one is required.** Use `from_number_id` when possible because it is stable across number formatting changes. |
 
 <Warning>
-Provide either `from_number_id` or `from_number`, not both. Phone numbers passed as `from_number` must include country code.
+**Provide either `from_number_id` or `from_number`, not both.** Phone numbers passed as `from_number` must include country code.
 </Warning>
 
 ## Minimal request

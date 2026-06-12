@@ -2,7 +2,11 @@
 openapi: post /campaign/start
 ---
 
-Start a campaign that was created with `POST /campaign/save`. This is the primary start endpoint for the standard campaign flow.
+<Warning>
+**Deprecated.** This endpoint requires you to pass and manage `from_numbers` yourself. New integrations should use [Start Campaign (Pool)](/api-reference/endpoint/campaign/start-campaign-v2), which resolves numbers automatically from a managed pool (rotation, spam skipping, and auto-purchase).
+</Warning>
+
+Start a campaign that was created with `POST /campaign/save`. This is the legacy start endpoint for the standard campaign flow.
 
 The endpoint schedules outbound calls for all valid contacts in the uploaded campaign list.
 
