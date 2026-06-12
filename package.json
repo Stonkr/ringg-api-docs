@@ -4,5 +4,8 @@
 	},
 	"scripts": {
 		"dev": "mint dev"
+	},
+	"devDependencies": {
+		"agentation": "^3.0.2"
 	}
 }

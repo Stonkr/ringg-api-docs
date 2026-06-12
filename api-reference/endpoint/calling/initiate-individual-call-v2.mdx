@@ -1,0 +1,86 @@
+---
+openapi: post /calling/v2/outbound/individual
+---
+
+Start one outbound call with a configured assistant, using a managed number pool for caller-number resolution. The pool handles rotation, spam skipping, and auto-purchase automatically — so you don't have to manage `from_number` lists yourself.
+
+## Required inputs
+
+| Field | Purpose |
+|---|---|
+| `name` | Recipient name. Ringg also uses this as `callee_name` if you do not provide one in `custom_args_values`. |
+| `mobile_number` | Recipient phone number in E.164 format, for example `+919876543210`. |
+| `agent_id` | Assistant that will handle the conversation. Get it from `GET /agent/all`. |
+
+## Caller number source
+
+Provide **exactly one** of the following:
+
+| Field | When to use |
+|---|---|
+| `number_pool_id` | Recommended. Resolve the caller number automatically from a managed pool. |
+| `from_number_id` | Use a specific workspace number ID as caller ID. |
+| `from_number` | Use an explicit caller phone number (with country code). |
+
+<Warning>
+**`from_number_id` and `from_number` cannot both be set.** At least one number source is required.
+</Warning>
+
+## Minimal request
+
+```json
+{
+  "name": "John Doe",
+  "mobile_number": "+919876543210",
+  "agent_id": "your-agent-id",
+  "number_pool_id": "your-number-pool-id",
+  "custom_args_values": {
+    "callee_name": "John",
+    "order_id": "ORD-1042"
+  }
+}
+```
+
+## Custom variables
+
+Use `custom_args_values` to pass dynamic data to your assistant.
+
+- Reference variables in prompts with `@{{variable_name}}`.
+- Keep keys stable across your code, prompts, CSV mappings, and analytics.
+- Common keys include `callee_name`, `mobile_number`, `company_name`, `appointment_date`, and your product-specific IDs.
+
+## Smart formatter
+
+`smart_formatter` can normalize callee names before the call.
+
+```json
+{
+  "smart_formatter": {
+    "extract_first_name": true,
+    "transliteration": true,
+    "transliteration_language": {
+      "source": "en",
+      "target": "hi"
+    }
+  }
+}
+```
+
+For example, `Mr Rajesh Kumar` can become `Rajesh` or a transliterated value in `callee_name`. The original name is preserved as `original_callee_name` in `custom_args_values`.
+
+## Result handling
+
+Store the returned call ID. Use it to:
+
+- Match webhook events to your internal record.
+- Fetch details with [Get call details](/api-reference/endpoint/history/get-call-details).
+- Reconcile rows from [Get call history](/api-reference/endpoint/history/get-call-history).
+
+## Common failure checks
+
+| Symptom | Check |
+|---|---|
+| `401 Unauthorized` | Missing or invalid `X-API-KEY`. |
+| Validation error | Missing required field, no number source provided, or both `from_number_id` and `from_number` set. |
+| Call remains queued | Calling window, scheduled time, workspace credits, pool availability, or provider health. |
+| Assistant says wrong data | Prompt placeholders do not match `custom_args_values` keys. |
