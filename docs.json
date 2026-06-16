@@ -1,11 +1,11 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "maple",
+  "theme": "aspen",
   "name": "Ringg AI",
   "colors": {
-    "primary": "#9AADEC",
-    "light": "#9AADEC",
-    "dark": "#9AADEC"
+    "primary": "#F97316",
+    "light": "#FED7AA",
+    "dark": "#111827"
   },
   "favicon": "/favicon.png",
   "styling": {
@@ -18,187 +18,259 @@
     "library": "lucide"
   },
   "navigation": {
-    "groups": [
+    "tabs": [
       {
-        "group": "Get Started",
-        "tag": "NEW",
-        "pages": [
+        "tab": "Get Started",
+        "groups": [
           {
-            "group": "Overview",
+            "group": "Get Started",
+            "expanded": false,
             "pages": [
-              "get-started/overview/ringg-ai",
-              "get-started/overview/platform",
-              "get-started/overview/dashboard"
-            ]
-          },
-          {
-            "group": "Key Concepts",
-            "pages": [
-              "get-started/key-concepts/assistants",
-              "get-started/key-concepts/campaigns",
-              "get-started/key-concepts/knowledge-base",
-              "get-started/key-concepts/numbers"
-            ]
-          },
-          {
-            "group": "Dashboard Guides",
-            "pages": [
-              "get-started/guides/create-assistant",
-              "get-started/guides/configure-assistant",
-              "get-started/guides/create-campaign",
-              "get-started/guides/create-knowledge-base",
-              "get-started/guides/manage-numbers",
-              "get-started/guides/view-call-history",
-              "get-started/guides/analytics",
-              "get-started/guides/workspace-settings"
-            ]
-          },
-          {
-            "group": "Web Widget",
-            "pages": [
-              "get-started/guides/embedding-widget",
-              "get-started/guides/embedding-widget-configuration",
-              "get-started/guides/embedding-widget-events",
-              "get-started/guides/embedding-widget-agent-actions",
-              "get-started/guides/embedding-widget-chat-widgets",
-              "get-started/guides/embedding-widget-customization",
-              "get-started/guides/embedding-widget-production-qa-security"
-            ]
-          },
-          {
-            "group": "Best Practices",
-            "pages": [
-              "get-started/best-practices/voice-call-optimization",
-              "get-started/best-practices/web-call-integration",
-              "get-started/best-practices/security-guidelines"
+              {
+                "group": "Home Page",
+                "expanded": false,
+                "pages": [
+                  "get-started/overview/ringg-ai",
+                  "get-started/overview/dashboard"
+                ]
+              },
+              {
+                "group": "Build your first agent",
+                "expanded": false,
+                "pages": [
+                  "get-started/guides/create-assistant",
+                  "get-started/guides/configure-assistant",
+                  "get-started/guides/create-campaign",
+                  "get-started/guides/create-knowledge-base",
+                  "get-started/guides/making-your-first-call",
+                  "get-started/guides/setting-up-bulk-calls"
+                ]
+              },
+              {
+                "group": "Platform Basics",
+                "expanded": false,
+                "pages": [
+                  "get-started/overview/platform",
+                  "get-started/key-concepts/assistants",
+                  "get-started/key-concepts/knowledge-base",
+                  "get-started/key-concepts/campaigns",
+                  "get-started/key-concepts/numbers",
+                  "get-started/guides/manage-numbers",
+                  "get-started/guides/view-call-history",
+                  "get-started/guides/analytics",
+                  "get-started/guides/workspace-settings",
+                  "get-started/overview/platform-overview",
+                  "get-started/overview/dashboard-overview",
+                  "get-started/guides/view-history"
+                ]
+              }
             ]
           }
         ]
       },
       {
-        "group": "API Reference",
-        "pages": [
+        "tab": "Build",
+        "groups": [
           {
-            "group": "Quick Start",
-            "icon": "rocket",
+            "group": "How-To Guides",
+            "expanded": false,
+            "pages": [
+              {
+                "group": "Build Agents",
+                "expanded": false,
+                "pages": [
+                  "build/index",
+                  "build/create-agent",
+                  "build/create-assistant",
+                  "build/configure-assistant",
+                  "build/create-campaign",
+                  "build/create-knowledge-base"
+                ]
+              },
+              {
+                "group": "Embedding agents",
+                "expanded": false,
+                "pages": [
+                  "get-started/guides/embedding-widget",
+                  "get-started/guides/embedding-widget-configuration",
+                  "get-started/guides/embedding-widget-events",
+                  "get-started/guides/embedding-widget-agent-actions",
+                  "get-started/guides/embedding-widget-chat-widgets",
+                  "get-started/guides/embedding-widget-customization",
+                  "get-started/guides/embedding-widget-production-qa-security"
+                ]
+              },
+              {
+                "group": "Agents & Workflows",
+                "expanded": false,
+                "pages": [
+                  "build/multi-agent",
+                  "build/workflows"
+                ]
+              },
+              {
+                "group": "Best Practices",
+                "expanded": false,
+                "pages": [
+                  "get-started/best-practices/voice-call-optimization",
+                  "get-started/best-practices/web-call-integration",
+                  "get-started/best-practices/security-guidelines"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API References",
+        "groups": [
+          {
+            "group": "API Reference",
+            "expanded": false,
             "pages": [
               "api-reference/quick-start/guide",
               "api-reference/quick-start/authentication",
-              "api-reference/quick-start/api-overview"
-            ]
-          },
-          {
-            "group": "Tutorials",
-            "icon": "graduation-cap",
-            "pages": [
+              "api-reference/quick-start/api-overview",
               "api-reference/tutorials/voice-calling",
               "api-reference/tutorials/making-your-first-call",
-              "api-reference/tutorials/setting-up-bulk-calls"
+              "api-reference/tutorials/setting-up-bulk-calls",
+              {
+                "group": "Workspace",
+                "pages": [
+                  "api-reference/endpoint/workspace/get-workspace-info",
+                  "api-reference/endpoint/workspace/list-workspace-users",
+                  "api-reference/endpoint/workspace/get-all-user-workspaces",
+                  "api-reference/endpoint/workspace/regenerate-api-key"
+                ],
+                "expanded": false
+              },
+              {
+                "group": "Assistant",
+                "pages": [
+                  "api-reference/endpoint/assistant/get-assistant-voices",
+                  "api-reference/endpoint/assistant/get-assistants",
+                  "api-reference/endpoint/assistant/get-assistant-by-id",
+                  "api-reference/endpoint/assistant/edit-assistant",
+                  "api-reference/endpoint/assistant/create-agent"
+                ],
+                "expanded": false
+              },
+              {
+                "group": "Knowledge Base",
+                "pages": [
+                  "api-reference/endpoint/kb/create-knowledge-base",
+                  "api-reference/endpoint/kb/edit-knowledge-base",
+                  "api-reference/endpoint/kb/get-all-knowledge-bases",
+                  "api-reference/endpoint/kb/get-knowledge-base-by-id",
+                  "api-reference/endpoint/kb/delete-knowledge-base"
+                ],
+                "expanded": false
+              },
+              {
+                "group": "Numbers",
+                "pages": [
+                  "api-reference/endpoint/numbers/get-workspace-numbers"
+                ]
+              },
+              {
+                "group": "Calling",
+                "pages": [
+                  "api-reference/endpoint/calling/initiate-individual-call"
+                ]
+              },
+              {
+                "group": "Campaign",
+                "pages": [
+                  "api-reference/endpoint/campaign/upload-campaign-contact-list",
+                  "api-reference/endpoint/campaign/start-campaign",
+                  "api-reference/endpoint/campaign/get-all-campaigns",
+                  "api-reference/endpoint/campaign/upload-large-campaign-csv",
+                  "api-reference/endpoint/campaign/get-large-campaign-upload-status",
+                  "api-reference/endpoint/campaign/check-large-campaign-balance",
+                  "api-reference/endpoint/campaign/make-large-campaign-calls-async",
+                  "api-reference/endpoint/contact/get-contact-list",
+                  "api-reference/endpoint/contact/delete-contact-list",
+                  "api-reference/tutorials/managing-contacts"
+                ],
+                "expanded": false
+              },
+              {
+                "group": "History",
+                "pages": [
+                  "api-reference/endpoint/history/get-call-history",
+                  "api-reference/endpoint/history/download-call-history",
+                  "api-reference/endpoint/history/get-call-details"
+                ],
+                "expanded": false
+              },
+              {
+                "group": "Termination",
+                "pages": [
+                  "api-reference/terminate/agent",
+                  "api-reference/terminate/call-ids",
+                  "api-reference/terminate/campaign",
+                  "api-reference/terminate/campaign-numbers",
+                  "api-reference/terminate/numbers"
+                ],
+                "expanded": false
+              },
+              {
+                "group": "Analytics",
+                "pages": [
+                  "api-reference/endpoint/analytics/get-platform-analytics",
+                  "api-reference/endpoint/analytics/get-drill-down-analytics",
+                  "api-reference/endpoint/analytics/get-number-analytics",
+                  "api-reference/endpoint/analytics/get-duration-distribution",
+                  "api-reference/endpoint/analytics/get-classification-analytics"
+                ],
+                "expanded": false
+              }
             ]
           },
           {
-            "group": "Workspace",
+            "group": "Webhooks",
             "pages": [
-              "api-reference/endpoint/workspace/get-workspace-info",
-              "api-reference/endpoint/workspace/list-workspace-users",
-              "api-reference/endpoint/workspace/get-all-user-workspaces",
-              "api-reference/endpoint/workspace/regenerate-api-key"
-            ]
-          },
+              "webhooks/initial-setup",
+              "webhooks/payloads",
+              "webhooks/error-handling"
+            ],
+            "expanded": false
+          }
+        ]
+      },
+      {
+        "tab": "Integrations",
+        "groups": [
           {
-            "group": "Assistant",
+            "group": "Integrations",
+            "expanded": false,
             "pages": [
-              "api-reference/endpoint/assistant/get-assistant-voices",
-              "api-reference/endpoint/assistant/get-assistants",
-              "api-reference/endpoint/assistant/get-assistant-by-id",
-              "api-reference/endpoint/assistant/edit-assistant",
-              "api-reference/endpoint/assistant/create-agent"
-            ]
-          },
-          {
-            "group": "Knowledge Base",
-            "pages": [
-              "api-reference/endpoint/kb/create-knowledge-base",
-              "api-reference/endpoint/kb/edit-knowledge-base",
-              "api-reference/endpoint/kb/get-all-knowledge-bases",
-              "api-reference/endpoint/kb/get-knowledge-base-by-id",
-              "api-reference/endpoint/kb/delete-knowledge-base"
-            ]
-          },
-          {
-            "group": "Numbers",
-            "pages": [
-              "api-reference/endpoint/numbers/get-workspace-numbers",
-              "api-reference/endpoint/numbers/buy-number",
-              "api-reference/endpoint/numbers/unrent-number"
-            ]
-          },
-          {
-            "group": "Calling",
-            "pages": [
-              "api-reference/endpoint/calling/initiate-individual-call"
-            ]
-          },
-          {
-            "group": "Campaign",
-            "pages": [
-              "api-reference/endpoint/campaign/upload-campaign-contact-list",
-              "api-reference/endpoint/campaign/start-campaign",
-              "api-reference/endpoint/campaign/get-all-campaigns",
-              "api-reference/endpoint/campaign/upload-large-campaign-csv",
-              "api-reference/endpoint/campaign/get-large-campaign-upload-status",
-              "api-reference/endpoint/campaign/check-large-campaign-balance",
-              "api-reference/endpoint/campaign/make-large-campaign-calls-async"
-            ]
-          },
-          {
-            "group": "History",
-            "pages": [
-              "api-reference/endpoint/history/get-call-history",
-              "api-reference/endpoint/history/download-call-history",
-              "api-reference/endpoint/history/get-call-details"
-            ]
-          },
-          {
-            "group": "Termination",
-            "pages": [
-              "api-reference/terminate/agent",
-              "api-reference/terminate/call-ids",
-              "api-reference/terminate/campaign",
-              "api-reference/terminate/campaign-numbers",
-              "api-reference/terminate/numbers"
-            ]
-          },
-          {
-            "group": "Analytics",
-            "pages": [
-              "api-reference/endpoint/analytics/get-platform-analytics",
-              "api-reference/endpoint/analytics/get-drill-down-analytics",
-              "api-reference/endpoint/analytics/get-number-analytics",
-              "api-reference/endpoint/analytics/get-duration-distribution",
-              "api-reference/endpoint/analytics/get-classification-analytics"
+              {
+                "group": "Telephony",
+                "expanded": false,
+                "pages": [
+                  "telephony/byot-overview",
+                  "telephony/new-provider-requirements",
+                  "telephony/plivo-integration",
+                  "telephony/exotel-integration",
+                  "telephony/twilio-integration",
+                  "telephony/ameyo-integration",
+                  "telephony/number-management"
+                ]
+              }
             ]
           }
         ]
       },
       {
-        "group": "Webhooks Setup",
-        "pages": [
-          "webhooks/initial-setup",
-          "webhooks/payloads",
-          "webhooks/error-handling"
-        ]
-      },
-      {
-        "group": "Telephony Integration",
-        "pages": [
-          "telephony/byot-overview",
-          "telephony/new-provider-requirements",
-          "telephony/plivo-integration",
-          "telephony/exotel-integration",
-          "telephony/twilio-integration",
-          "telephony/ameyo-integration",
-          "telephony/number-management"
+        "tab": "Release Notes",
+        "groups": [
+          {
+            "group": "Release Notes",
+            "pages": [
+              "get-started/overview/ringg-overview"
+            ]
+          }
         ]
       }
     ]
