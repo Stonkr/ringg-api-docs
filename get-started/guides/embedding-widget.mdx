@@ -184,23 +184,4 @@ For launch readiness, use the [production QA and security checklist](/get-starte
 
 ## Rotating the webcall key
 
-The webcall public key is browser-visible by design but scoped to a single assistant and its whitelisted domains. Rotate it whenever a key leaks beyond those domains, when a contractor with dashboard access offboards, or as part of a periodic credential refresh.
-
-<Steps>
-  <Step title="Open the assistant in the dashboard">
-    Sign in to the Ringg AI dashboard and open the assistant you want to rotate the key for.
-  </Step>
-  <Step title="Go to Widget Configuration">
-    In the middle settings panel, scroll to **Widget Configuration**. You'll see the generated embed snippet for the assistant.
-  </Step>
-  <Step title="Click Rotate key">
-    Above the generated snippet, click **Rotate key** and confirm the warning. The previous key is revoked immediately and the snippet updates with the new one. Copy the new snippet from the dashboard.
-  </Step>
-  <Step title="Redeploy every embed">
-    Replace the old key in every embed (production site, staging, marketing pages, partner integrations) with the new snippet and redeploy. Embeds using the old key will fail to start calls until they ship the new snippet.
-  </Step>
-</Steps>
-
-<Warning>
-Rotation is immediate. There is no overlap window between the old and new keys, so plan a deploy of every consumer right after rotating.
-</Warning>
+You can rotate the webcall public key any time from the assistant's **Widget Configuration** in the dashboard — click **Rotate key** above the generated snippet, then copy the updated snippet and redeploy.
