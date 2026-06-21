@@ -33,12 +33,12 @@ Use this quickstart to add a Ringg AI web-call widget to a page. Start with the 
 
 <Check>An active Ringg AI account.</Check>
 <Check>An assistant configured for Webcall in the Ringg AI dashboard.</Check>
-<Check>The assistant `agentId` and the widget `X-API-KEY` from the generated embed code.</Check>
+<Check>The assistant `agentId` and the webcall public key from the generated embed code (used as `authorization: "Bearer <key>"`).</Check>
 <Check>Access to add JavaScript to your website HTML or tag manager.</Check>
 <Check>Each staging and production domain added to the assistant's Whitelist Domains list.</Check>
 
 <Warning>
-The widget snippet runs in the browser and includes `xApiKey`. Use only the embed code generated for a web-call assistant, whitelist the exact domains where it can run, and do not expose a broad backend integration key in public pages.
+The widget snippet runs in the browser and includes the webcall public key in an `authorization: "Bearer <key>"` header. The key is scoped to a single assistant and its whitelisted domains — use only the embed code generated for a web-call assistant, whitelist the exact domains where it can run, and never expose a broad backend integration key in public pages. Rotate the key from the dashboard if it is ever compromised.
 </Warning>
 
 ## Quickstart
@@ -77,7 +77,7 @@ The widget snippet runs in the browser and includes `xApiKey`. Use only the embe
           loadAgentsCdn("latest", function () {
             loadAgent({
               agentId: "your-agent-id",
-              xApiKey: "your-api-key",
+              authorization: "Bearer your-webcall-public-key",
               variables: {},
               buttons: {},
             });
@@ -108,7 +108,7 @@ The widget snippet runs in the browser and includes `xApiKey`. Use only the embe
           loadAgentsCdn("latest", function () {
             loadAgent({
               agentId: "your-agent-id",
-              xApiKey: "your-api-key",
+              authorization: "Bearer your-webcall-public-key",
               variables: {},
               buttons: {},
             });
@@ -131,7 +131,7 @@ The widget snippet runs in the browser and includes `xApiKey`. Use only the embe
     ```javascript
     loadAgent({
       agentId: "your-agent-id",
-      xApiKey: "your-api-key",
+      authorization: "Bearer your-webcall-public-key",
       variables: {
         callee_name: "John",
         account_id: "ACC-42",
@@ -161,7 +161,7 @@ The widget snippet runs in the browser and includes `xApiKey`. Use only the embe
 | Option | Use it for |
 |---|---|
 | `agentId` | The Ringg assistant to load in the widget. |
-| `xApiKey` | The widget API key from the dashboard embed code. |
+| `authorization` | `Bearer <webcall-public-key>`. The webcall public key is generated for the assistant in the dashboard and can be rotated from there. |
 | `variables` | Runtime values passed into the assistant prompt, such as names or account IDs. |
 | `defaultTab` | `"audio"` for voice first or `"text"` for chat first. |
 | `hideTabSelector` | Set `true` for voice-only or chat-only experiences. |
@@ -181,3 +181,26 @@ See the [configuration reference](/get-started/guides/embedding-widget-configura
 <Check>Events or analytics listeners fire only once per user action.</Check>
 
 For launch readiness, use the [production QA and security checklist](/get-started/guides/embedding-widget-production-qa-security).
+
+## Rotating the webcall key
+
+The webcall public key is browser-visible by design but scoped to a single assistant and its whitelisted domains. Rotate it whenever a key leaks beyond those domains, when a contractor with dashboard access offboards, or as part of a periodic credential refresh.
+
+<Steps>
+  <Step title="Open the assistant in the dashboard">
+    Sign in to the Ringg AI dashboard and open the assistant you want to rotate the key for.
+  </Step>
+  <Step title="Go to Widget Configuration">
+    In the middle settings panel, scroll to **Widget Configuration**. You'll see the generated embed snippet for the assistant.
+  </Step>
+  <Step title="Click Rotate key">
+    Above the generated snippet, click **Rotate key** and confirm the warning. The previous key is revoked immediately and the snippet updates with the new one. Copy the new snippet from the dashboard.
+  </Step>
+  <Step title="Redeploy every embed">
+    Replace the old key in every embed (production site, staging, marketing pages, partner integrations) with the new snippet and redeploy. Embeds using the old key will fail to start calls until they ship the new snippet.
+  </Step>
+</Steps>
+
+<Warning>
+Rotation is immediate. There is no overlap window between the old and new keys, so plan a deploy of every consumer right after rotating.
+</Warning>

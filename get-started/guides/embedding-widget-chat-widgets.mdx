@@ -35,7 +35,7 @@ Create a dedicated assistant for chat by cloning your voice assistant. Chat conv
     ```javascript
     loadAgent({
       agentId: "your-chat-agent-id",
-      xApiKey: "your-api-key",
+      authorization: "Bearer your-webcall-public-key",
       defaultTab: "text",
     });
     ```
@@ -44,7 +44,7 @@ Create a dedicated assistant for chat by cloning your voice assistant. Chat conv
     ```javascript
     loadAgent({
       agentId: "your-chat-agent-id",
-      xApiKey: "your-api-key",
+      authorization: "Bearer your-webcall-public-key",
       defaultTab: "text",
       hideTabSelector: true,
     });
@@ -54,7 +54,7 @@ Create a dedicated assistant for chat by cloning your voice assistant. Chat conv
     ```javascript
     loadAgent({
       agentId: "your-agent-id",
-      xApiKey: "your-api-key",
+      authorization: "Bearer your-webcall-public-key",
       defaultTab: "audio",
       hideTabSelector: false,
     });
@@ -216,7 +216,7 @@ Use the CDN loader from the [quickstart](/get-started/guides/embedding-widget), 
 loadAgentsCdn("latest", function () {
   loadAgent({
     agentId: "your-chat-agent-id",
-    xApiKey: "your-api-key",
+    authorization: "Bearer your-webcall-public-key",
     defaultTab: "text",
     hideTabSelector: true,
     title: "Support Chat",

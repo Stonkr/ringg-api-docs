@@ -16,7 +16,7 @@ Use this checklist before moving a Ringg AI widget from staging to production. T
 <Check>Review analytics and event listeners so user identifiers are handled according to your privacy policy.</Check>
 
 <Warning>
-Anything in the embed snippet can be viewed by a site visitor. Treat `xApiKey`, `variables`, and custom widget metadata as browser-visible configuration.
+Anything in the embed snippet can be viewed by a site visitor. Treat the `authorization` Bearer key, `variables`, and custom widget metadata as browser-visible configuration. The webcall public key is scoped to the assistant and its whitelisted domains — rotate it from the dashboard if it ever leaks beyond those.
 </Warning>
 
 ## Domain whitelist
@@ -71,7 +71,7 @@ During development:
 loadAgentsCdn("latest", function () {
   loadAgent({
     agentId: "your-agent-id",
-    xApiKey: "your-api-key",
+    authorization: "Bearer your-webcall-public-key",
   });
 });
 ```
@@ -82,7 +82,7 @@ For production, replace `latest` with the tested version.
 loadAgentsCdn("1.0.19", function () {
   loadAgent({
     agentId: "your-agent-id",
-    xApiKey: "your-api-key",
+    authorization: "Bearer your-webcall-public-key",
   });
 });
 ```
