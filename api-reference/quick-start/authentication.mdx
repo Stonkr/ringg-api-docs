@@ -66,7 +66,7 @@ const workspace = await response.json();
 
 - Store the key in a secret manager or environment variable.
 - Use one backend service as the integration boundary when possible.
-- Rotate the key when a team member with access leaves.
+- Rotate the key if you suspect it's been exposed.
 - Avoid logging request headers.
 - Alert on unexpected usage volume or repeated `401` responses.
 - Use HTTPS for every API call.

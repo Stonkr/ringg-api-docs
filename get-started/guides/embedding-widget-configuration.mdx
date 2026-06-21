@@ -73,7 +73,7 @@ Use `latest` while exploring in development. For production, pin the tested CDN 
 loadAgentsCdn("latest", function () {
   loadAgent({
     agentId: "your-agent-id",
-    xApiKey: "your-api-key",
+    authorization: "Bearer your-webcall-public-key",
     variables: {
       callee_name: "John",
       account_id: "ACC-42",
@@ -110,7 +110,7 @@ loadAgentsCdn("latest", function () {
 | Option | Type | Default | Description |
 |---|---|---|---|
 | `agentId` | `string` | Required | Assistant ID to load in the widget. |
-| `xApiKey` | `string` | Required | Widget API key from the dashboard embed code. |
+| `authorization` | `string` | Required | `Bearer <webcall-public-key>`. The webcall public key is generated for the assistant in the dashboard embed code and can be rotated from there. |
 | `variables` | `object` | `{}` | Runtime variables available to the assistant. |
 | `defaultTab` | `"audio" \| "text"` | `"audio"` | Tab shown when the widget loads. Use `"text"` for chat mode. Supported from v1.0.8+. |
 | `hideTabSelector` | `boolean` | `false` | Hides the audio/text tab switcher for a single-mode experience. Supported from v1.0.8+. |
@@ -129,7 +129,7 @@ Use `variables` for page-specific context that the assistant prompt expects.
 ```javascript
 loadAgent({
   agentId: "your-agent-id",
-  xApiKey: "your-api-key",
+  authorization: "Bearer your-webcall-public-key",
   variables: {
     callee_name: "John",
     account_id: "ACC-42",
@@ -149,7 +149,7 @@ Variables are sent from the browser. Do not put secrets, internal tokens, or sen
     ```javascript
     loadAgent({
       agentId: "your-agent-id",
-      xApiKey: "your-api-key",
+      authorization: "Bearer your-webcall-public-key",
       defaultTab: "audio",
       hideTabSelector: false,
     });
@@ -159,7 +159,7 @@ Variables are sent from the browser. Do not put secrets, internal tokens, or sen
     ```javascript
     loadAgent({
       agentId: "your-chat-agent-id",
-      xApiKey: "your-api-key",
+      authorization: "Bearer your-webcall-public-key",
       defaultTab: "text",
       hideTabSelector: false,
     });
@@ -169,7 +169,7 @@ Variables are sent from the browser. Do not put secrets, internal tokens, or sen
     ```javascript
     loadAgent({
       agentId: "your-chat-agent-id",
-      xApiKey: "your-api-key",
+      authorization: "Bearer your-webcall-public-key",
       defaultTab: "text",
       hideTabSelector: true,
     });
@@ -190,7 +190,7 @@ Positioning controls are supported from v1.0.19+.
     ```javascript
     loadAgent({
       agentId: "your-agent-id",
-      xApiKey: "your-api-key",
+      authorization: "Bearer your-webcall-public-key",
       widgetPosition: {
         triggerPlacement: "fixed",
         triggerAlignment: "bottom-right",
@@ -210,7 +210,7 @@ Positioning controls are supported from v1.0.19+.
     ```javascript
     loadAgent({
       agentId: "your-agent-id",
-      xApiKey: "your-api-key",
+      authorization: "Bearer your-webcall-public-key",
       widgetPosition: {
         triggerPlacement: "absolute",
         triggerAlignment: "center",
@@ -234,7 +234,7 @@ Trigger button customization is supported from v1.0.19+.
 ```javascript
 loadAgent({
   agentId: "your-agent-id",
-  xApiKey: "your-api-key",
+  authorization: "Bearer your-webcall-public-key",
   buttons: {
     modalTrigger: {
       styles: {
@@ -264,7 +264,7 @@ loadAgent({
 ```javascript
 loadAgent({
   agentId: "your-agent-id",
-  xApiKey: "your-api-key",
+  authorization: "Bearer your-webcall-public-key",
   buttons: {
     call: {
       textBeforeCall: "Start Call",
@@ -281,7 +281,7 @@ Use `feedbackScreen` to customize the post-conversation feedback copy.
 ```javascript
 loadAgent({
   agentId: "your-agent-id",
-  xApiKey: "your-api-key",
+  authorization: "Bearer your-webcall-public-key",
   feedbackScreen: {
     title: "How was your chat?",
     description: "Your feedback helps us improve!",
