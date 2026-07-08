@@ -113,14 +113,33 @@ loadAgentsCdn("latest", function () {
 | `authorization` | `string` | Required | `Bearer <webcall-public-key>`. The webcall public key is generated for the assistant in the dashboard embed code and can be rotated from there. |
 | `variables` | `object` | `{}` | Runtime variables available to the assistant. |
 | `defaultTab` | `"audio" \| "text"` | `"audio"` | Tab shown when the widget loads. Use `"text"` for chat mode. Supported from v1.0.8+. |
-| `hideTabSelector` | `boolean` | `false` | Hides the audio/text tab switcher for a single-mode experience. Supported from v1.0.8+. |
+| `hideTabSelector` | `boolean` | `false` | Pins the widget to `defaultTab` (single-mode start screen). Supported from v1.0.8+. |
 | `bypassStartScreen` | `boolean` | `false` | Skips the start screen and begins a call or chat immediately on trigger click. Uses `defaultTab`. |
 | `title` | `string` | Unset | Heading shown in the widget start screen. |
 | `description` | `string` | Unset | Supporting copy shown in the widget start screen. |
-| `logoUrl` | `string` | Unset | Logo image URL shown in the widget. |
+| `logoUrl` | `string` | Unset | Logo image URL shown in the header and, when set, the launcher. |
+| `typingWords` | `string[]` | `["Thinking", "Reasoning", "Working on it", "Almost there"]` | Words cycled in the pending-reply indicator (shimmered, "Thinking…" style). |
+| `theme` | `object` | Unset | Widget color theme (see below). |
 | `buttons` | `object` | `{}` | Trigger and call button customization. |
 | `widgetPosition` | `object` | Fixed bottom-right | Placement rules for the trigger and expanded widget. |
-| `feedbackScreen` | `object` | Unset | Text for the post-conversation feedback screen. |
+| `feedbackScreen` | `object` | Unset | Text and star colors for the post-conversation feedback screen. |
+
+### Theme
+
+Pass `theme` to color the widget. Colors accept a solid value or a CSS gradient string.
+
+| Field | Description |
+|---|---|
+| `theme.primaryColor` | Accent for buttons, selected states, the launcher, and the shimmer. |
+| `theme.primaryTextColor` | Text on the primary color. |
+| `theme.backgroundColor` | Widget background. |
+| `theme.surfaceColor` | Cards, inputs, and the user message bubble. |
+| `theme.agentBubbleColor` | When set, agent messages render inside a bubble with this background (accepts a gradient). Unset = agent messages are bubble-less plain text. |
+| `theme.textColor` / `theme.mutedTextColor` | Body and secondary text. |
+| `theme.borderColor` | Borders and dividers. |
+| `theme.errorColor` / `theme.successColor` | Validation, danger, and success states. |
+| `theme.borderRadius` | Corner radius for the panel, cards, and inputs. |
+| `theme.buttonStyle` | `"pill"` / `"rounded"` / `"square"` — button corner style. |
 
 ## Variables
 

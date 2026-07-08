@@ -35,35 +35,38 @@ State-bearing elements expose additional `data-ringg-<state>` attributes. They u
 
 | Attribute | Values | Emitted on |
 |---|---|---|
-| `data-ringg-active` | `"true"` / `"false"` | `tab`, `slash-command-item` |
-| `data-ringg-lit` | `"true"` / `"false"` | `voice-animation-dot` |
 | `data-ringg-role` | `"agent"` / `"user"` | `message` |
+| `data-ringg-muted` | `"true"` / `"false"` | `mute-button` |
+| `data-ringg-connecting` | `"true"` / `"false"` | `header-status-dot` |
+| `data-ringg-align` | `"center"` / `"end"` | `quick-replies` (centered in voice, right-aligned in chat) |
+| `data-ringg-style` | `"primary"` / `"secondary"` / `"outline"` / `"destructive"` | `quick-reply-button`, `option-row` |
+| `data-ringg-variant` | `"transcript"` | `feedback-screen` (present when the ended transcript stays readable) |
+| `data-ringg-active` | `"true"` / `"false"` | `slash-command-item` |
+| `data-ringg-lit` | `"true"` / `"false"` | `voice-animation-dot` |
 | `data-ringg-level` | `"info"` / `"error"` | `system-log` |
 | `data-ringg-step-active` | `"true"` / `"false"` | `flow-step` |
 | `data-ringg-step-completed` | `"true"` / `"false"` | `flow-step` |
-| `data-ringg-tab-id` | tab id string, for example `"audio"`, `"text"` | `tab` |
+| `data-block-id` | authored id string | any Block Kit node with an author id |
+| `data-action-id` | action id string | `block-button` |
 
 Compound selector example:
 
 ```css
-[data-ringg="tab"][data-ringg-active="true"] {
-  color: var(--brand-primary);
-  border-bottom-color: var(--brand-primary);
+[data-ringg="mute-button"][data-ringg-muted="true"] {
+  background: var(--brand-danger);
 }
 ```
 
 Observer example:
 
 ```javascript
-const audioTab = document.querySelector(
-  '[data-ringg="tab"][data-ringg-tab-id="audio"]'
-);
+const muteButton = document.querySelector('[data-ringg="mute-button"]');
 
 new MutationObserver(() => {
-  console.log("audio tab active?", audioTab.getAttribute("data-ringg-active"));
-}).observe(audioTab, {
+  console.log("muted?", muteButton.getAttribute("data-ringg-muted"));
+}).observe(muteButton, {
   attributes: true,
-  attributeFilter: ["data-ringg-active"],
+  attributeFilter: ["data-ringg-muted"],
 });
 ```
 
@@ -86,7 +89,10 @@ Elements are grouped by where they appear in the widget.
 | `body-spacer` | Empty placeholder that keeps controls anchored when the body is empty. |
 | `transcript` | Scrollable message area. |
 | `transcript-list` | Inner flex list of messages. |
-| `attached-buttons` | Wrapper for inline buttons attached to an agent message. |
+| `controls-bar` | Transparent bar anchoring the message input over the transcript (chat mode). The transcript scrolls underneath it. |
+| `attached-buttons` | Full-width wrapper for quick replies rendered directly below an agent message. |
+| `connecting-status` | Wrapper for the pre-call connecting state ("Connecting…" label + loading bar). |
+| `connecting-label` | The `"Connecting…"` `<p>` above the loading bar. |
 | `error-message` | Inline error text. |
 | `legal-disclaimer` | Pre-call legal `<p>`. |
 | `legal-link-privacy` | Privacy policy link inside the legal disclaimer. |
@@ -96,32 +102,35 @@ Elements are grouped by where they appear in the widget.
 
 | `data-ringg` | Element |
 |---|---|
-| `header` | Header container. Only present during a call (absolute-positioned band). |
-| `header-logo` | Logo circle. Both pre-call and in-call. |
-| `header-logo-image` | The `<img>` inside the logo circle. |
-| `header-text` | Text column wrapper that holds the title and description/status. |
+| `header` | In-call header band. **Only present during a call** — integrators use this to detect an active call (e.g. `:has([data-ringg="header"])`). Absolute-positioned frosted overlay. |
+| `intro` | Pre-call container. Centered logo/title/description block on the start screen (the pre-call counterpart to `header`). |
+| `header-logo` | Logo chip. Both pre-call (rounded square) and in-call. |
+| `header-logo-image` | The `<img>` inside the logo chip. |
+| `header-text` | Text wrapper that holds the title and description. |
 | `header-title` | Title `<h2>`. |
-| `header-description` | Pre-call description `<p>`. Only present pre-call. |
-| `header-status` | Status `<p>` shown during a call (`"Connecting…"`, `"Call in Progress"`). |
+| `header-description` | Description `<p>`. Shown pre-call and in-call. Truncated in-call (full text on hover via `title`). |
+| `header-status-dot` | Presence dot. In-call only. Carries `data-ringg-connecting` — muted + pulsing while connecting, success-colored once live. |
+| `header-status` | Screen-reader-only status `<p>`. In-call only; visible status is the dot. The pre-call connecting status moved to `connecting-label`. |
 
 ### Call controls (audio mode)
+
+Compact centered mute/end pair, no text labels — icons carry the meaning.
 
 | `data-ringg` | Element |
 |---|---|
 | `call-controls` | Row container holding the call control buttons. |
-| `mute-control` | Mute column wrapping the button + label. |
-| `mute-button` | Mute toggle button. |
-| `mute-label` | `"Mute"` / `"Unmute"` text under the button. |
-| `end-call-control` | End-call column wrapping the button + label. |
-| `end-call-button` | End-call button. |
-| `end-call-label` | `"End Call"` text under the button. |
+| `mute-button` | Mute toggle button (aria-label `"Mute"` / `"Unmute"`). Carries `data-ringg-muted`. |
+| `end-call-button` | End-call button (aria-label `"End call"`). |
 
 ### Action buttons (start screen)
 
+The start screen shows both buttons side by side (Chat left, Call right), each starting its mode directly. With `hideTabSelector: true` only the `defaultTab` mode's button renders, full-width.
+
 | `data-ringg` | Element |
 |---|---|
-| `start-call-button` | Start-call button. Rendered when `callMode === "audio"`. |
-| `start-chat-button` | Start-chat button. Rendered when `callMode === "text"`. |
+| `start-actions` | Row wrapping the Chat + Call pair. Only when both buttons are shown. |
+| `start-call-button` | Starts a voice call. |
+| `start-chat-button` | Starts a chat. |
 
 ### Loading bar
 
@@ -131,25 +140,37 @@ Elements are grouped by where they appear in the widget.
 | `loading-bar-track` | Background track. |
 | `loading-bar-fill` | Animated fill. |
 
-### Tabs
+### Quick replies and options
+
+Quick-reply chips (`free` presentation) and boxed option lists rendered below an agent message.
 
 | `data-ringg` | Element |
 |---|---|
-| `tabs` | Outer container with top border. |
-| `tabs-list` | Row of tab buttons. |
-| `tab` | Individual tab button. Carries `data-ringg-tab-id` and `data-ringg-active`. |
-| `tab-label` | Tab label `<span>`. |
+| `quick-replies` | Chip row container. Carries `data-ringg-align` (`"center"` in voice, `"end"` in chat). |
+| `quick-reply-button` | Each pill chip. Carries `data-ringg-style`. |
+| `buttons-step-title` | Optional title `<p>` above the chips. |
+| `options-list` | Boxed single-choice list container (rows divided by hairlines). |
+| `option-row` | Each option row. Carries `data-ringg-style`. |
+| `option-radio` | Radio affordance inside an option row. |
+
+### Typing indicator
+
+Shown while an agent reply is pending. Cycles through words (default: Thinking / Reasoning / Working on it / Almost there; override with the `typingWords` config) each rendered with a left→right text shimmer.
+
+| `data-ringg` | Element |
+|---|---|
+| `typing-indicator` | Outer row. |
+| `typing-indicator-word` | The shimmering current word `<span>`. |
 
 ### Messages
 
 | `data-ringg` | Element |
 |---|---|
 | `message` | Outer message row. Carries `data-ringg-role="agent"` / `"user"`. |
-| `message-bubble` | The bubble inside a message row. |
+| `message-bubble` | The bubble inside a message row. Agent messages are bubble-less unless the theme sets `agentBubbleColor`. |
 | `message-content` | Inner column inside the bubble. |
 | `message-body` | Markdown-rendered message body. |
 | `message-source` | "Source:" link rendered below a message. |
-| `message-attachment` | Wrapper for embedded interactive content (buttons, forms, etc). |
 
 ### System log pill
 
@@ -210,12 +231,27 @@ The system log pill renders the inline activity feed in the transcript. It only 
 | `data-ringg` | Element |
 |---|---|
 | `message-input-form` | The `<form>` element. |
-| `message-input` | Outer pill container. Also wraps the slash menu when open. |
+| `message-input` | Outer pill container — carries the frosted-glass treatment; transparent gutters. Also wraps the slash menu when open (going solid). |
 | `message-input-row` | Row containing the input field + send button. |
 | `message-input-field` | The `<input>` element. |
 | `message-send-button` | Send arrow button. |
 
 ### Feedback screen
+
+When the ended conversation has text messages, the transcript stays readable and the rating renders as a footer below it (`data-ringg-variant="transcript"`); tapping a star submits immediately. The legacy centered card (comment box + submit/skip) renders when there is no transcript.
+
+**Transcript variant**
+
+| `data-ringg` | Element |
+|---|---|
+| `feedback-screen` | Container. Carries `data-ringg-variant="transcript"`. |
+| `feedback-footer` | Divider + prompt + stars block below the read-only conversation. |
+| `conversation-ended` | "Conversation ended" hairline divider row. |
+| `feedback-prompt` | "Please rate your experience" `<p>`. |
+| `feedback-stars` | Star row. |
+| `feedback-star` | Each star button. Carries `data-ringg-filled`. |
+
+**Legacy centered card**
 
 | `data-ringg` | Element |
 |---|---|
@@ -229,6 +265,18 @@ The system log pill renders the inline activity feed in the transcript. It only 
 | `feedback-actions` | Submit + skip wrapper. |
 | `feedback-submit` | Submit button. |
 | `feedback-skip` | Skip button. |
+
+### Block Kit
+
+Composable widget trees the agent streams on the `ringg.blocks` topic (see [Chat and Widgets](/get-started/guides/embedding-widget-chat-widgets)). Rendered full-width in the transcript.
+
+| `data-ringg` | Element |
+|---|---|
+| `blocks-widget` | Transcript wrapper around one Block Kit instance. |
+| `blocks` | Root of the rendered tree. |
+| `block-<type>` | Every rendered node, named by its catalog type (e.g. `block-card`, `block-carousel`, `block-table`, `block-steps`, `block-input_rating`). Carries `data-block-id` when the author set one. |
+| `block-button` | Action button. Carries `data-block-id` and `data-action-id`. |
+| `blocks-unsupported` | Fallback `<p>` when the payload needs a newer widget version. |
 
 ### Footer
 
@@ -262,12 +310,12 @@ The end-call confirm dialog renders in a portal **outside** `[data-ringg="widget
 }
 ```
 
-### Highlight the active tab
+### Style the muted state
 
 ```css
-[data-ringg="tab"][data-ringg-active="true"] {
-  color: var(--brand-primary);
-  border-bottom-color: var(--brand-primary);
+[data-ringg="mute-button"][data-ringg-muted="true"] {
+  background: var(--brand-danger);
+  color: #fff;
 }
 ```
 
@@ -334,6 +382,6 @@ For lifecycle hooks like open/close, conversation start/end, and the feedback pa
 ## QA notes
 
 <Check>All your selectors target `[data-ringg="..."]` attributes, not internal `ringg_ai-*` class names.</Check>
-<Check>Compound selectors with state attributes (for example `[data-ringg="tab"][data-ringg-active="true"]`) update live as the widget changes state.</Check>
+<Check>Compound selectors with state attributes (for example `[data-ringg="mute-button"][data-ringg-muted="true"]`) update live as the widget changes state.</Check>
 <Check>Selectors for the end-call confirm dialog are document-scoped, not nested under `[data-ringg="widget-root"]`.</Check>
 <Check>CSS transitions on `[data-ringg-lit]` are lightweight, so per-frame state changes do not cause jank.</Check>
