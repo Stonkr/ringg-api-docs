@@ -1,28 +1,36 @@
 ---
 title: "Exotel Integration"
-description: "Configure Exotel as your telephony provider for Ringg API - Inbound and Outbound call setup"
+description: "Configure Exotel as your Ringg telephony provider for inbound and outbound calls"
 ---
+
+## Overview
+
+Use this guide to connect an Exotel account to Ringg for BYOT voice calling. Exotel requires separate applet setup for outbound and inbound calls:
+
+- **Outbound calls** use a **Ringg Outbound** Voicebot applet. This applet ID is added to the Ringg Exotel provider configuration.
+- **Inbound calls** use a **Ringg Inbound** Voicebot applet. Each inbound number must be attached to this applet in Exotel before you import or assign the number in Ringg.
 
 ## Prerequisites
 
-Before starting the integration, ensure you have:
+Before you start, make sure you have:
 
-- Exotel account with API access
-- Account SID and API Key/Token from Exotel dashboard
-- At least one Exotel phone number (ExoPhone)
-- Account on Ringg
+- An active Exotel account with API access
+- Exotel account SID, API key, API token, and subdomain
+- At least one Exotel phone number, also called an ExoPhone
+- A Ringg workspace with admin access
+- A Ringg assistant ready to receive calls
 
-## Step 1: Exotel Account Setup
+## Step 1: Prepare Exotel
 
-### Create an Exotel Account
+### Create or verify your Exotel account
 
-1. Sign up at [Exotel Dashboard](https://my.exotel.com)
-2. Complete KYC verification (required for Indian accounts)
-3. Add credits to your account
+1. Sign in to the [Exotel Dashboard](https://my.exotel.com).
+2. Complete KYC verification if it is required for your account.
+3. Add enough credits for number rental and calling.
 
-### Obtain API Credentials
+### Get API credentials
 
-Navigate to Settings → API Settings in your Exotel dashboard:
+In the Exotel dashboard, go to **Settings** → **API Settings** and copy these values:
 
 <CodeGroup>
 ```bash Credentials
@@ -30,111 +38,219 @@ ACCOUNT_SID=example1234
 API_KEY=a1b2*********ci9j0
 API_TOKEN=z9y************t3s2r1q0
 SUB_DOMAIN=api.exotel.com
-APP_ID=345*******4234
 ```
 </CodeGroup>
 
+You will enter these values in Ringg when you add Exotel as a telephony provider.
 
-## Step 2: ExoPhone Configuration
+## Outbound setup
 
-### Provision an ExoPhone
+Use this section when you want Ringg to place outbound calls or campaigns through Exotel.
 
-1. Go to **ExoPhones** in your Exotel dashboard
-2. Click **Buy Number** or **Rent Number**
-3. Select your preferred region (Delhi, Mumbai, Bangalore, etc.)
-4. Complete the purchase
+### Step 2: Create the Ringg Outbound applet
 
-
-# Outbound
-
-## Step 3: Connect Exotel to Ringg
-
-### Add Exotel as Your Telephony Provider
+Create a custom Exotel Voicebot applet for outbound calls.
 
 <Steps>
-  <Step title="Navigate to Integrations">
-    Go to your Ringg dashboard and click **Integrations** → **Telephony Integration**
+  <Step title="Open App Bazaar">
+    In the Exotel console, open **App Bazaar** and create a custom app.
+
+    ![Exotel App Bazaar](/images/exotel_dashboard.png)
   </Step>
-  <Step title="Select Exotel Provider">
-    Click **"Add Telephony Provider"** and select **Exolte**
-    ![BYOT Provider Selection](/images/byot_provider_selection.png)
+  <Step title="Name the app">
+    Name the applet `Ringg Outbound`.
+
+    ![Name Exotel app](/images/exotel_new_app_name.png)
   </Step>
-  <Step title="Create Applet">
-  go to your exotel console 
+  <Step title="Add Voicebot">
+    Drag the **Voicebot** component into the applet flow.
 
-click on aapp bazar opions 
-
-create a custom app 
-![Exotel Dashboard](/images/exotel_dashboard.png)
-
-
-give the name to the app 
-![Exotel Dashboard](/images/exotel_new_app_name.png)
-
-
-drag and drop voicebot to the applet 
-
-![Exotel Dashboard](/images/exotel_applet.png)
-
-add this url to it 
-wss://use1-api.ringg.ai/pc/v1/exotel/ws
-
-![Exotel Dashboard](/images/exotel_voicebot.png)
+    ![Exotel applet builder](/images/exotel_applet.png)
   </Step>
-  <Step title="Enter Credentials">
-    Fill in your Exotel credentials:
-      ![Provider Credentials Form](/images/provider_creds.png)
-    - **ACCOUNT_SID**: Your Exotel Auth ID
-    - **API_KEY**: Your Exotel Auth Token
-    - **API_TOKEN**: Your Exotel Auth ID
-    - **SUB_DOMAIN**: Your Exotel Auth Token
-    - **APP_ID** : Your Applet app id 
-  
+  <Step title="Set the outbound WebSocket URL">
+    Configure the Voicebot component with the Ringg outbound WebSocket URL:
+
+    ```text
+    wss://use1-api.ringg.ai/pc/v1/exotel/ws
+    ```
+
+    ![Exotel Voicebot URL](/images/exotel_voicebot.png)
   </Step>
-  <Step title="Test Connection & Save">
-    Click **"Test Connection"** to verify your credentials are working and save them
+  <Step title="Save and copy the app ID">
+    Save the applet and copy its app ID. You will enter this value as `APP_ID` in Ringg.
   </Step>
 </Steps>
 
+<Note>
+The outbound applet ID is different from the API key and API token. Keep it with the other Exotel credentials so you can complete the provider setup in Ringg.
+</Note>
 
-![Provider Successfully Added](/images/provider_added.png)
-
-## Step 4: Use Exotel Numbers
-
-## Number Management
-
-For comprehensive number management features, including:
-- Buy Number
-- Import numbers from telephony
-- Attach number to agent
-
-See our detailed [Number Management Guide](/telephony/number-management).
-
-## Step 5: Configure Inbound Calls
-
-### Attach Numbers to AI Assistants
+### Step 3: Connect Exotel to Ringg for outbound
 
 <Steps>
-  <Step title="Go to Numbers Management">
-    Navigate to **Numbers** → **Manage Numbers** in your dashboard
+  <Step title="Open Telephony Integration">
+    In the Ringg dashboard, go to **Integrations** → **Telephony Integration**.
   </Step>
-  <Step title="Select Your Exotel Number">
-    Click on the Exotel number you want to configure
+  <Step title="Select Exotel">
+    Click **Add Telephony Provider** and select **Exotel**.
+
+    ![BYOT Provider Selection](/images/numbers_page.png)
   </Step>
-  <Step title="Assign AI Assistant">
-    Choose which AI assistant should handle inbound calls to this number
+  <Step title="Enter Exotel credentials">
+    Fill in the Exotel provider form.
+
+    ![Provider Credentials Form](/images/exotel_setup.png)
+
+    | Field | Value |
+    |---|---|
+    | `ACCOUNT_SID` | Your Exotel account SID |
+    | `API_KEY` | Your Exotel API key |
+    | `API_TOKEN` | Your Exotel API token |
+    | `SUB_DOMAIN` | Your Exotel API subdomain, for example `api.exotel.com` |
+    | `APP_ID` | The `Ringg Outbound` applet ID from Exotel |
   </Step>
-  <Step title="Configure Call Settings">
-    Set up:
-    - Call recording preferences
-    - Transcription options
-    - Webhook notifications
+  <Step title="Test and save">
+    Click **Test Connection**. After the connection succeeds, save the provider.
   </Step>
-  <Step title="Save Configuration">
-    Click **"Save"** to apply your settings
+</Steps>
+
+After the provider is saved, Exotel appears in your Ringg workspace and can be used for outbound calls.
+
+### Step 4: Use Exotel numbers for outbound calls
+
+After Exotel is connected, manage outbound caller numbers from the Ringg dashboard:
+
+- Buy numbers from the provider, if supported for your workspace
+- Import existing Exotel numbers
+- Use Exotel numbers as caller IDs for outbound calling
+
+See [Number Management](/telephony/number-management) for the full number workflow.
+
+For API-driven individual outbound calls, provide exactly one caller-number option: `from_number_id` or `from_number`.
+
+## Inbound setup
+
+Use this section when you want inbound calls to an Exotel number to reach a Ringg assistant.
+
+### Step 5: Prepare the number for inbound import
+
+To import and use an inbound Exotel number in Ringg, complete these three steps in order:
+
+<Steps>
+  <Step title="Create the Ringg Inbound applet">
+    In the Exotel console, create a custom Voicebot applet and name it `Ringg Inbound`.
+  </Step>
+  <Step title="Attach the inbound HTTP URL">
+    Add the Ringg inbound HTTP URL to the Voicebot component.
+
+    ```text
+    https://use1-api.ringg.ai/pc/v1/exotel/inbound
+    ```
+  </Step>
+  <Step title="Attach the number and import it in Ringg">
+    Attach the Exotel number to the `Ringg Inbound` applet in Exotel. Then import that number in the Ringg dashboard.
+  </Step>
+</Steps>
+
+<Warning>
+Every time you attach an Exotel number to an assistant in Ringg, attach that same number to the `Ringg Inbound` applet in Exotel. If the number is not attached to the inbound applet, inbound calls may not reach Ringg.
+</Warning>
+
+### Step 6: Assign the imported number to an assistant
+
+After the number is attached to the inbound applet and imported in Ringg, assign it to the assistant that should answer calls.
+
+<Steps>
+  <Step title="Open Number Management">
+    In the Ringg dashboard, go to **Numbers** → **Manage Numbers**.
+  </Step>
+  <Step title="Select the Exotel number">
+    Choose the imported Exotel number you want to configure.
+  </Step>
+  <Step title="Assign an assistant">
+    Select the Ringg assistant that should answer inbound calls to this number.
+  </Step>
+  <Step title="Review call settings">
+    Confirm recording, transcription, and webhook settings for the assistant or workspace.
+  </Step>
+  <Step title="Save the assignment">
+    Save the number configuration.
   </Step>
 </Steps>
 
 ![Attach Inbound Number](/images/attach_inbound_number.png)
 
+## Test the integration
 
+### Test outbound calls
+
+1. Start a small test call or campaign from Ringg.
+2. Use an Exotel number that is imported and available in Ringg.
+3. Confirm the recipient receives the call.
+4. Verify call status and call logs in Ringg.
+
+### Test inbound calls
+
+1. Confirm the number is attached to the `Ringg Inbound` applet in Exotel.
+2. Confirm the number is imported in Ringg and assigned to the correct assistant.
+3. Call the Exotel number from a real phone.
+4. Confirm the assigned Ringg assistant answers the call.
+5. Check Ringg call history for the call record, transcript, recording, and analysis.
+6. Check Exotel logs if the call does not reach Ringg.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Connection test fails">
+    - Confirm `ACCOUNT_SID`, `API_KEY`, `API_TOKEN`, and `SUB_DOMAIN` were copied from Exotel without extra spaces.
+    - Confirm the `APP_ID` belongs to the `Ringg Outbound` applet.
+    - Confirm the Exotel account has API access and is not suspended.
+    - Confirm the account has enough credits for calling.
+    - Recreate the API token in Exotel if you suspect it was rotated or copied incorrectly.
+  </Accordion>
+
+  <Accordion title="Outbound calls fail">
+    - Confirm the `Ringg Outbound` Voicebot applet is saved and uses `wss://use1-api.ringg.ai/pc/v1/exotel/ws`.
+    - Confirm the `APP_ID` in Ringg matches the `Ringg Outbound` applet ID.
+    - Confirm the caller number is active, voice-enabled, and available in Ringg.
+    - Check Ringg call history and Exotel logs for the failed call.
+  </Accordion>
+
+  <Accordion title="Inbound calls do not reach Ringg">
+    - Confirm the Exotel number is attached to the `Ringg Inbound` applet in Exotel.
+    - Confirm the `Ringg Inbound` applet uses the inbound HTTP URL provided by Ringg.
+    - Confirm the number is imported into Ringg and assigned to the correct assistant.
+    - Confirm the Exotel number is active and voice-enabled.
+  </Accordion>
+
+  <Accordion title="Assistant does not answer">
+    - Confirm the assistant is active and assigned to the Exotel number.
+    - Check Ringg call history for failed call records or error states.
+    - Review the assistant's configuration, knowledge base status, and webhook settings.
+    - Test with another Exotel number if only one number is failing.
+  </Accordion>
+
+  <Accordion title="Poor audio quality or dropped calls">
+    - Test from a stable phone network and retry with a second device.
+    - Check Exotel service status and call logs for regional issues.
+    - Confirm each Voicebot applet contains only the required call flow for Ringg.
+    - Contact Ringg support with the Ringg call ID and Exotel call SID.
+  </Accordion>
+</AccordionGroup>
+
+## Support
+
+<CardGroup cols={2}>
+  <Card title="Exotel Documentation" icon="book" href="https://developer.exotel.com/">
+    Review Exotel API and Voicebot documentation
+  </Card>
+  <Card title="Exotel Support" icon="headset" href="https://support.exotel.com/">
+    Contact Exotel for account, number, and provider-side issues
+  </Card>
+  <Card title="Ringg Community" icon="users" href="https://discord.com/invite/nWXREVz2vy">
+    Join our Discord community for tips and support
+  </Card>
+  <Card title="Contact Support" icon="envelope" href="mailto:admin@ringg.ai">
+    Reach out to Ringg for integration assistance
+  </Card>
+</CardGroup>
