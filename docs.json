@@ -202,6 +202,12 @@
           "telephony/ameyo-integration",
           "telephony/number-management"
         ]
+      },
+      {
+        "group": "External Integrations",
+        "pages": [
+          "external-integrations/truefoundry-integration"
+        ]
       }
     ]
   },

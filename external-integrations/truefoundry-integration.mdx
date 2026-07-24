@@ -1,0 +1,105 @@
+---
+title: "TrueFoundry Integration"
+description: "Add and configure Ringg.AI Parrot Speech-to-Text (STT) in TrueFoundry's AI Gateway using Custom Endpoints."
+---
+
+## Overview
+
+Add [Ringg.AI](https://www.ringg.ai/) Parrot STT to the TrueFoundry AI Gateway using **Custom Endpoints**. Parrot is Ringg's speech-to-text model built for real-time voice agents, with strong support for Hindi, English, and code-mixed speech. Learn more on the [Parrot STT model page](https://www.ringg.ai/models/speech-to-text/v1) and in the [Parrot STT announcement](https://www.ringg.ai/blog/parrot-speech-to-text-api).
+
+[TrueFoundry AI Gateway](https://www.truefoundry.com/ai-gateway) is the proxy layer that sits between your applications and the LLM providers and MCP Servers. It is an enterprise-grade platform that enables users to access 1000+ LLMs using a unified interface while taking care of observability and governance.
+
+## Adding models
+
+<Steps>
+  <Step title="Create a Custom Endpoint provider account">
+    In the TrueFoundry dashboard, go to **AI Gateway** → **Models** → **Custom Endpoints** and click **Add Custom Endpoint**.
+
+    In **Configure Account**, set:
+
+    * **Name**: any unique name (this becomes `{providerAccountName}` in the URL)
+    * **Endpoint Type**: `None` (or any value you use for tracking)
+    * **Header Auth**: keep **disabled**
+  </Step>
+
+  <Step title="Add a Ringg.AI STT endpoint">
+    Click **Add Endpoint** (or **Add Endpoint** from the list view) and configure the integration:
+
+    * **Display Name**: any name (this becomes `{endpointName}` in the URL)
+    * **Base URL**: `https://prod-api.ringg.ai/stt/v1/transcriptions`
+
+    Enable **Custom Headers** and add:
+
+    * `x-api-key`: `<ringg-api-key>`
+
+    Keep **Header Auth** disabled.
+
+    <Frame caption="Endpoint settings — Base URL and upstream API key header">
+      <img src="https://mintcdn.com/truefoundry/JzCFcqgKHPlAsyLc/images/ringgAI.png?fit=max&auto=format&n=JzCFcqgKHPlAsyLc&q=85&s=9b01ea07c1f0f6a7b208a1ab4ae37589" alt="Custom Endpoint form for Ringg.AI STT with Base URL and x-api-key custom header" width="965" height="712" data-path="images/ringgAI.png" />
+    </Frame>
+
+    <Note>
+      This **x-api-key** header is sent **from the AI Gateway to Ringg.AI**. Your client should only send the **TrueFoundry API key** to the AI Gateway.
+    </Note>
+  </Step>
+
+  <Step title="Set access control and save">
+    On the **Access Control** step, add the users/teams who can view/use this provider account, then **Save**.
+  </Step>
+</Steps>
+
+## Inference
+
+Once saved, call your endpoint through the AI Gateway's **proxy-api** path. URL shape and path rules are documented under [Custom Endpoints](https://docs.truefoundry.com/docs/ai-gateway/custom-endpoints#endpoint-structure).
+
+## Supported APIs
+
+| API                               | Endpoint                                          | Tracing | Cost Tracking                                               |
+| --------------------------------- | ------------------------------------------------- | ------- | ----------------------------------------------------------- |
+| [Speech-to-Text](#speech-to-text) | `/proxy-api/{providerAccountName}/{endpointName}` | **✅**   | <Icon icon="circle-xmark" iconType="regular" color="red" /> |
+
+<AccordionGroup>
+  <Accordion title="Speech-to-Text">
+    **Before you start:** Replace `{GATEWAY_BASE_URL}` with your gateway base URL ([how to find it](https://docs.truefoundry.com/docs/ai-gateway/quick-start#gateway-base-url)) and set `TFY_API_KEY` to your TrueFoundry API key.
+
+    Send a multipart form request with the audio file and optional transcription parameters (for example `language` and `enable_cap_punc`).
+
+    ```python
+    import json
+    import os
+
+    import requests
+
+    GATEWAY_BASE_URL = "{GATEWAY_BASE_URL}"
+    TFY_API_KEY = os.environ.get("TFY_API_KEY", "your-tfy-api-key")
+
+    # providerAccountName = Custom Endpoint account name
+    # endpointName = integration display name
+    URL = f"{GATEWAY_BASE_URL}/proxy-api/{providerAccountName}/{endpointName}"
+
+    with open("audio.mp3", "rb") as f:
+        response = requests.post(
+            URL,
+            headers={"Authorization": f"Bearer {TFY_API_KEY}"},
+            files={"file": f},
+            data={
+                "language": "hi",
+                "enable_cap_punc": "false",
+            },
+            timeout=120,
+        )
+
+    response.raise_for_status()
+    result = response.json()
+
+    with open("response.json", "w", encoding="utf-8") as out:
+        json.dump(result, out, ensure_ascii=False, indent=2)
+
+    print("Saved response to response.json")
+    ```
+
+    <Info>
+      **Support scope:** Not all APIs are supported through this integration. Only **HTTPS** and **non-streaming** requests are supported. Support will expand over time, including additional endpoints on customer request. Send a request to [support@truefoundry.com](mailto:support@truefoundry.com).
+    </Info>
+  </Accordion>
+</AccordionGroup>
