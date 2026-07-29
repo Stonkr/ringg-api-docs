@@ -24,6 +24,7 @@ Triggered immediately when a call is initiated.
     "order_value": "70000",
     "company_name": "Acme Corp"
   },
+  "status": "ongoing",
   "sub_status": "ACCEPTED",
   "agent_name": "Payment Reminder Agent",
   "version_id": "a1b2c3d4-5e6f-7890-abcd-ef1234567890",
@@ -406,6 +407,7 @@ app.listen(3000);
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `status` | string | Current call status while the call is live (e.g., `ongoing`) |
 | `sub_status` | string | Current call sub-status (e.g., `ACCEPTED`) |
 | `version_slug` | string | Slug of the agent version used |
 | `version_description` | string | Description of the agent version (nullable) |
