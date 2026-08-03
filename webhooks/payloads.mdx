@@ -325,6 +325,55 @@ Triggered once all post-call processing is finished — recording uploaded, tran
 }
 ```
 
+## Status & Sub-Status Reference
+
+Every call webhook (`call_started`, `call_completed`, `all_processing_completed`) carries a `status` and a `sub_status`. The tables below list the values you can actually receive on webhooks — progress and terminal events only. Other internal states (e.g. `IN_DB`, `QUEUED`, `RETRY_SCHEDULED`, `DND_SKIPPED`) never reach subscribers.
+
+### `status`
+
+| Value | Meaning |
+|-------|---------|
+| `ongoing` | Call connected / in progress. |
+| `completed` | User picked up, conversation happened. |
+| `failed` | Retries exhausted, call didn't succeed. |
+| `error` | Terminal error. |
+| `cancelled` | User terminated before connecting. |
+| `forwarded` | Call transferred before connecting. |
+
+### `sub_status`
+
+The `sub_status` you receive depends on the `status`.
+
+**On `completed` calls** — delivered uppercase, as-is:
+
+| Value | Meaning |
+|-------|---------|
+| `ACCEPTED` | Call connected normally. |
+| `MAX_CALL_DURATION` | Hit the max call-duration cap. |
+| `VOICEMAIL_DETECTED` | Voicemail detected (telephony AMD). |
+| `VOICEMAIL_DETECTED_VIA_LLM` | Voicemail detected via transcript. |
+| `PHONOS_TIMEOUT` | Bot runtime timed out. |
+
+**On `ongoing` calls:** `ACCEPTED`.
+
+**On `cancelled` calls:** `USER_TERMINATED`.
+
+**On `failed` / `error` calls** — `sub_status` is the telephony carrier's hangup reason, passed through and lowercased (not one of the enum values above). The standard values are:
+
+| Value | Meaning |
+|-------|---------|
+| `busy` | Callee's line was busy. |
+| `no-answer` | Callee didn't pick up (also seen as `no_answer`). |
+| `rejected` | Call was actively rejected by the callee or carrier. |
+| `congestion` | Network congestion — the call couldn't be routed. |
+| `cancelled` | Call was cancelled before it connected. |
+| `timeout` | The dial attempt timed out. |
+| `failed` | Fallback when the carrier didn't return a specific reason. |
+
+<Note>
+This set is **provider-specific and open-ended** — the exact strings depend on the telephony provider, so treat `sub_status` on `failed` / `error` calls as a free-form lowercased string, not a fixed enum.
+</Note>
+
 ## Implementation Examples
 
 ### Node.js/Express
