@@ -1794,29 +1794,6 @@
                     "description": "Workspace number ID, or array of workspace number IDs, to use as caller ID. **Provide either from_number_id or from_number, not both.**",
                     "example": "from-number-id"
                   },
-                  "callback_url": {
-                    "type": "string",
-                    "description": "Optional webhook URL for call events for this request.",
-                    "example": "https://api.example.com/ringg/callback"
-                  },
-                  "callback_args": {
-                    "type": "object",
-                    "description": "Optional headers and query params Ringg should include when calling callback_url.",
-                    "properties": {
-                      "headers": {
-                        "type": "object",
-                        "additionalProperties": {
-                          "type": "string"
-                        }
-                      },
-                      "params": {
-                        "type": "object",
-                        "additionalProperties": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  },
                   "version_id": {
                     "type": "string",
                     "description": "Optional assistant version ID. Defaults to the active version.",
@@ -1849,8 +1826,7 @@
                   "custom_args_values": {
                     "callee_name": "John",
                     "order_id": "ORD-1042"
-                  },
-                  "callback_url": "https://api.example.com/ringg/callback"
+                  }
                 }
               }
             }
@@ -2157,20 +2133,6 @@
                     "nullable": true,
                     "description": "Optional parent call ID for follow-up or chained-call flows.",
                     "example": "550e8400-e29b-41d4-a716-446655440000"
-                  },
-                  "callback_url": {
-                    "type": "string",
-                    "nullable": true,
-                    "description": "Optional webhook URL for call events.",
-                    "example": "https://api.example.com/ringg/callback"
-                  },
-                  "callback_args": {
-                    "type": "object",
-                    "description": "Optional headers and query params Ringg should include when calling callback_url.",
-                    "properties": {
-                      "headers": { "type": "object", "additionalProperties": { "type": "string" } },
-                      "params": { "type": "object", "additionalProperties": { "type": "string" } }
-                    }
                   }
                 },
                 "description": "At least one of number_pool_id, from_number_id, or from_number is required. **from_number_id and from_number cannot both be set.**"
@@ -3601,12 +3563,6 @@
                     "type": "string",
                     "description": "(Required) ID of the managed number pool to use for outbound calls.",
                     "example": "pool-uuid-here"
-                  },
-                  "callback_url": {
-                    "type": "string",
-                    "nullable": true,
-                    "description": "URL to receive campaign completion webhook.",
-                    "example": "https://api.example.com/ringg/campaign-callback"
                   },
                   "email_completion_user_ids": {
                     "type": "array",
@@ -5813,11 +5769,6 @@
                     "maximum": 100,
                     "default": 0,
                     "example": 25
-                  },
-                  "callback_url": {
-                    "type": "string",
-                    "nullable": true,
-                    "example": "https://api.example.com/ringg/campaign-callback"
                   },
                   "email_completion_user_ids": {
                     "type": "array",
