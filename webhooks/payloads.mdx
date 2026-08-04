@@ -10,33 +10,58 @@ These are the JSON payloads your webhook endpoint will receive for different eve
 
 ### Call Started Event
 
-Triggered immediately when a call is initiated.
+Triggered when a call is registered and queued for dialing — **before** it connects. At this
+point the call has not been placed yet, so `call_sid`, `called_on`, and all latency/cost fields
+are still `null`, and the status is `registered` / `QUEUED` (not `ongoing` / `ACCEPTED`).
+
+<Note>
+The overwhelming majority of `call_started` events carry `status: "registered"`, `sub_status: "QUEUED"`.
+An `ongoing` / `ACCEPTED` variant is emitted only for the subset of calls that connect quickly enough
+to publish a second `call_started`. Design your handler around `registered` / `QUEUED`.
+</Note>
 
 ```json
 {
   "event_type": "call_started",
+  "event_id": "0296e496-e534-4482-957b-d4c02fbf8023",
+  "version": "1.0",
+  "timestamp": "2026-08-04T12:25:26.942668Z",
   "call_id": "4b30f5dc-7f86-4e4c-a3aa-15c01138559b",
-  "call_sid": "f46cb9f4-f6ca-4d7d-abc9-02c226b95ec0",
+  "call_sid": null,
   "agent_id": "cbaf9944-3e34-43b6-b3e8-6a905de16639",
   "workspace_id": "442a9db3-0fd4-47dc-b8cd-cc7eedfa272f",
+  "status": "registered",
+  "sub_status": "QUEUED",
+  "call_type": "outbound",
+  "calling_source": "plivo",
   "custom_args_values": {
     "callee_name": "John",
     "order_value": "70000",
     "company_name": "Acme Corp"
   },
-  "status": "ongoing",
-  "sub_status": "ACCEPTED",
+  "to_number": "+919875436897",
+  "from_number": "+918035736726",
+  "bulk_list_id": null,
+  "called_on": null,
+  "created_at": null,
   "agent_name": "Payment Reminder Agent",
   "version_id": "a1b2c3d4-5e6f-7890-abcd-ef1234567890",
   "version_slug": "v1",
   "version_description": "Initial version",
+  "call_cost": null,
+  "overall_latency_seconds": null,
+  "first_utterance_seconds": null,
   "tool_call_logs": []
 }
 ```
 
 ### Call Completed Event
 
-Triggered when a call attempt finishes (completed, failed, or retry).
+Triggered when a call attempt finishes — this fires for **every** terminal outcome, not just
+successful conversations: `completed`, `failed`, `error`, `cancelled`, `forwarded`, and interim
+`retry`. On non-`completed` outcomes the `transcript` is usually empty, `call_duration` /
+latency / cost are `null`, and `sub_status` carries the reason (see the
+**Status & Sub-Status Reference** section below).
 
 ```json
 {
@@ -51,16 +76,20 @@ Triggered when a call attempt finishes (completed, failed, or retry).
     "company_name": "Acme Corp"
   },
   "to_number": "+919875436897",
-  "from_number": "+919875436897",
+  "from_number": "+918035736726",
   "bulk_list_id": null,
   "call_id": "4b30f5dc-7f86-4e4c-a3aa-15c01138559b",
   "call_sid": "f46cb9f4-f6ca-4d7d-abc9-02c226b95ec0",
   "agent_id": "cbaf9944-3e34-43b6-b3e8-6a905de16639",
   "workspace_id": "442a9db3-0fd4-47dc-b8cd-cc7eedfa272f",
   "status": "completed",
+  "sub_status": "ACCEPTED",
   "called_on": "2025-12-14T19:37:13.310707Z",
+  "created_at": "2025-12-14T19:37:13.315211Z",
   "agent_name": "Payment Reminder Agent",
   "version_id": "a1b2c3d4-5e6f-7890-abcd-ef1234567890",
+  "version_slug": "v1",
+  "version_description": "Initial version",
   "call_cost": 0.15,
   "overall_latency_seconds": 0.892345,
   "first_utterance_seconds": 0.456789,
@@ -82,11 +111,28 @@ Triggered when a call attempt finishes (completed, failed, or retry).
     }
   ],
   "retry_count": 0,
+  "attempts": [
+    {
+      "status": "Busy Line",
+      "called_on_time": "2025-12-14T19:33:10.006699Z"
+    },
+    {
+      "status": "ACCEPTED",
+      "called_on_time": "2025-12-14T19:37:13.310707Z"
+    }
+  ],
   "recording_url": null,
   "tool_call_logs": []
 }
 
 ```
+
+<Note>
+`attempts` is the per-dial history for this call (one entry per telephony attempt, oldest first).
+Each entry's `status` is the raw, original-cased outcome of that attempt (e.g. `"Busy Line"`,
+`"ACCEPTED"`) — the top-level `sub_status` is the lowercased form of the **final** attempt's reason.
+`calling_source` (the telephony provider, e.g. `"plivo"`) is also included on a growing share of calls.
+</Note>
 
 ### Recording Completed Event
 
@@ -103,6 +149,7 @@ The `recording_url` is valid for 24 hours after the call. Download and store the
   "recording_url": "https://aps1.media.plivo.com/v1/Account/MZYZHIMM/Recording/0f27f498-2f98-403e-8239-10e24b67b604.mp3",
   "recording_duration": 16.28,
   "call_sid": "f46cb9f4-f6ca-4d7d-abc9-02c226b95ec0",
+  "sub_status": "ACCEPTED",
   "custom_args_values": {
     "callee_name": "John",
     "order_value": "70000",
@@ -119,9 +166,22 @@ The `recording_url` is valid for 24 hours after the call. Download and store the
 
 ```
 
+<Note>
+Unlike the other events, `recording_completed` does **not** include `status`, `agent_id`,
+`workspace_id`, `version_slug`, or `version_description`. It does carry `sub_status`.
+</Note>
+
 ### Platform Analysis Event
 
 Triggered when Ringg AI's built-in analysis completes.
+
+<Note>
+Analysis events are emitted for the call regardless of outcome, so the top-level `status` /
+`sub_status` reflect the **call** result (e.g. `failed` / `busy line`, or `error` /
+`not_able_to_call`), not the analysis. For calls that never connected there is no conversation to
+analyse, so `analysis_data` is empty or minimal. Use `analysis_data.status` (`analyzed`) to tell
+whether analysis actually ran.
+</Note>
 
 ```json
 {
@@ -155,9 +215,14 @@ Triggered when Ringg AI's built-in analysis completes.
   "agent_id": "cbaf9944-3e34-43b6-b3e8-6a905de16639",
   "workspace_id": "442a9db3-0fd4-47dc-b8cd-cc7eedfa272f",
   "status": "completed",
+  "sub_status": "ACCEPTED",
+  "entity_type": "call",
   "called_on": "2025-12-14T19:37:13.310707Z",
+  "created_at": "2025-12-14T19:37:13.315211Z",
   "agent_name": "Payment Reminder Agent",
   "version_id": "a1b2c3d4-5e6f-7890-abcd-ef1234567890",
+  "version_slug": "v1",
+  "version_description": "Initial version",
   "call_cost": 0.15,
   "overall_latency_seconds": 0.892345,
   "first_utterance_seconds": 0.456789,
@@ -217,9 +282,14 @@ Triggered when your custom analysis completes based on your configured prompts.
   "agent_id": "cbaf9944-3e34-43b6-b3e8-6a905de16639",
   "workspace_id": "442a9db3-0fd4-47dc-b8cd-cc7eedfa272f",
   "status": "completed",
+  "sub_status": "ACCEPTED",
+  "entity_type": "call",
   "called_on": "2025-12-14T19:37:13.310707Z",
+  "created_at": "2025-12-14T19:37:13.315211Z",
   "agent_name": "Payment Reminder Agent",
   "version_id": "a1b2c3d4-5e6f-7890-abcd-ef1234567890",
+  "version_slug": "v1",
+  "version_description": "Initial version",
   "call_cost": 0.15,
   "overall_latency_seconds": 0.892345,
   "first_utterance_seconds": 0.456789,
@@ -327,51 +397,80 @@ Triggered once all post-call processing is finished — recording uploaded, tran
 
 ## Status & Sub-Status Reference
 
-Every call webhook (`call_started`, `call_completed`, `all_processing_completed`) carries a `status` and a `sub_status`. The tables below list the values you can actually receive on webhooks — progress and terminal events only. Other internal states (e.g. `IN_DB`, `QUEUED`, `RETRY_SCHEDULED`, `DND_SKIPPED`) never reach subscribers.
+Every call event carries a `status` and a `sub_status` (except `recording_completed`, which carries
+only `sub_status`). `status` is the call's lifecycle state; `sub_status` refines it. The tables below
+reflect the values **actually observed on delivered webhooks** across a recent production window.
 
 ### `status`
 
 | Value | Meaning |
 |-------|---------|
+| `registered` | Call registered and queued for dialing — not placed yet. The dominant state on `call_started`. |
 | `ongoing` | Call connected / in progress. |
+| `retry` | The attempt didn't connect and the call is scheduled to be retried. |
 | `completed` | User picked up, conversation happened. |
 | `failed` | Retries exhausted, call didn't succeed. |
-| `error` | Terminal error. |
-| `cancelled` | User terminated before connecting. |
-| `forwarded` | Call transferred before connecting. |
+| `error` | Terminal error — frequently the call could never be placed. |
+| `cancelled` | Call ended before connecting (user-terminated or rate-limited). |
+| `forwarded` | Call transferred/forwarded before connecting (rare). |
 
 ### `sub_status`
 
 The `sub_status` you receive depends on the `status`.
 
-**On `completed` calls** — delivered uppercase, as-is:
+**On `registered` / `retry` (i.e. `call_started`):** `QUEUED`.
+
+**On `ongoing`:** `ACCEPTED`.
+
+**On `completed`** — delivered uppercase, as-is:
 
 | Value | Meaning |
 |-------|---------|
 | `ACCEPTED` | Call connected normally. |
-| `MAX_CALL_DURATION` | Hit the max call-duration cap. |
 | `VOICEMAIL_DETECTED` | Voicemail detected (telephony AMD). |
-| `VOICEMAIL_DETECTED_VIA_LLM` | Voicemail detected via transcript. |
-| `PHONOS_TIMEOUT` | Bot runtime timed out. |
+| `VOICEMAIL_DETECTED_VIA_LLM` | Voicemail detected from the transcript. |
+| `MAX_CALL_DURATION` | Hit the max call-duration cap. |
+| `PHONOS_TIMEOUT` | Bot runtime timed out (internal `PIPECAT_TIMEOUT`, presented externally as Phonos). |
 
-**On `ongoing` calls:** `ACCEPTED`.
-
-**On `cancelled` calls:** `USER_TERMINATED`.
-
-**On `failed` / `error` calls** — `sub_status` is the telephony carrier's hangup reason, passed through and lowercased (not one of the enum values above). The standard values are:
+**On `cancelled`:**
 
 | Value | Meaning |
 |-------|---------|
-| `busy` | Callee's line was busy. |
-| `no-answer` | Callee didn't pick up (also seen as `no_answer`). |
-| `rejected` | Call was actively rejected by the callee or carrier. |
-| `congestion` | Network congestion — the call couldn't be routed. |
-| `cancelled` | Call was cancelled before it connected. |
-| `timeout` | The dial attempt timed out. |
-| `failed` | Fallback when the carrier didn't return a specific reason. |
+| `USER_TERMINATED` | The user/caller ended the call before it connected. |
+| `RATE_LIMITED` | Blocked by rate limiting before connecting. |
+
+**On `failed` / `error`** — `sub_status` is the telephony carrier's **hangup-cause name, lowercased**
+(a few Ringg-internal reasons, also lowercased, appear here too). It is **not** the short enum you
+might expect (`busy`, `no-answer`, …) — carriers such as Plivo return human-readable phrases. Values
+observed in production:
+
+| Value | Meaning |
+|-------|---------|
+| `busy line` | Callee's line was busy. |
+| `rejected` | Actively rejected by the callee or carrier. |
+| `no answer` | Callee didn't pick up (also seen as `no_answer`). |
+| `ring timeout reached` | Rang without an answer until timeout. |
+| `request timeout` | The dial request timed out. |
+| `declined` | Call declined by the callee / carrier. |
+| `forbidden` | Carrier refused the call (blocked route/number). |
+| `unallocated_number` | Destination number is unallocated / invalid. |
+| `invalid destination address` | Destination address rejected by the carrier. |
+| `network congestion from carrier` | Carrier network congestion. |
+| `internal error from carrier` | Carrier-side internal error. |
+| `routing error` | Carrier could not route the call. |
+| `network error` | Generic network failure. |
+| `busy everywhere` | All endpoints busy. |
+| `loop detected` | Carrier detected a routing loop. |
+| `not_able_to_call` | Ringg could not place the call at all (typical of `error` status). |
+| `retry_limit_reached` | All retries exhausted (internal `RETRY_LIMIT_REACHED`). |
+| `user_did_not_join` | The user never joined (e.g. web calls). |
+| `failed` | Fallback when the carrier returned no specific reason. |
 
 <Note>
-This set is **provider-specific and open-ended** — the exact strings depend on the telephony provider, so treat `sub_status` on `failed` / `error` calls as a free-form lowercased string, not a fixed enum.
+The `failed` / `error` list is **provider-specific and open-ended** — the exact strings depend on the
+telephony provider (Plivo, Twilio, Exotel, Vobiz, …), so treat this `sub_status` as a free-form
+lowercased string, not a fixed enum. The original-cased reason for each dial attempt is also available
+under `call_completed`'s `attempts[].status`.
 </Note>
 
 ## Implementation Examples
@@ -440,11 +539,16 @@ app.listen(3000);
 | Field | Type | Description |
 |-------|------|-------------|
 | `event_type` | string | Type of event: `call_started`, `call_completed`, `recording_completed`, `platform_analysis_completed`, `client_analysis_completed`, `all_processing_completed` |
+| `event_id` | string | Unique UUID for this event instance (present on `call_started` and other lifecycle events). |
+| `timestamp` | string | ISO 8601 time the event was generated (UTC). |
+| `version` | string | Event schema version, e.g. `"1.0"`. |
 | `call_id` | string | Unique identifier for the call |
-| `call_sid` | string | Telephony provider's call identifier (e.g., Twilio Call SID, Plivo Call UUID) |
+| `call_sid` | string | Telephony provider's call identifier (e.g., Twilio Call SID, Plivo Call UUID). `null` until the call is actually placed (so `null` on `call_started`). |
 | `agent_id` | string | ID of the AI agent that handled the call |
 | `workspace_id` | string | ID of your workspace |
+| `calling_source` | string | Telephony provider that placed/received the call (`plivo`, `twilio`, `exotel`, `vobiz`, …). Present on a growing share of events; may be absent on older/other paths. |
 | `custom_args_values` | object | Custom data you provided when initiating the call |
+| `bulk_list_id` | string | ID of the bulk/campaign list this call belongs to (`null` for single calls). |
 | `agent_name` | string | Display name of the AI agent that handled the call |
 | `version_id` | string | UUID of the agent version used for this call |
 | `call_cost` | number | Cost of the call in credits (null if not yet calculated) |
@@ -454,10 +558,17 @@ app.listen(3000);
 
 ### Call Started Fields
 
+Fired when the call is registered and queued, before it is placed. Because the call hasn't
+connected yet, `call_sid`, `called_on`, `created_at`, `call_cost`, and the latency fields are
+typically `null` at this point.
+
 | Field | Type | Description |
 |-------|------|-------------|
-| `status` | string | Current call status while the call is live (e.g., `ongoing`) |
-| `sub_status` | string | Current call sub-status (e.g., `ACCEPTED`) |
+| `status` | string | Lifecycle status at registration — normally `registered` (occasionally `ongoing`/`retry`). |
+| `sub_status` | string | Sub-status at registration — normally `QUEUED` (`ACCEPTED` on the `ongoing` variant). |
+| `call_type` | string | Direction: `inbound`, `outbound`, or `webcall`. |
+| `to_number` | string | Phone number being called. |
+| `from_number` | string | Caller ID the call is placed from. |
 | `version_slug` | string | Slug of the agent version used |
 | `version_description` | string | Description of the agent version (nullable) |
 
@@ -465,15 +576,21 @@ app.listen(3000);
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `call_duration` | number | Duration of the call in seconds (call_completed only) |
+| `call_duration` | number | Duration of the call in seconds (`null` if the call never connected). |
 | `call_type` | string | Direction: `inbound`, `outbound`, or `webcall` |
-| `status` | string | Final call status: `completed`, `failed`, `retry` (call_completed only) |
+| `status` | string | Final call status: `completed`, `failed`, `error`, `cancelled`, `forwarded`, or interim `retry`. |
+| `sub_status` | string | Reason refining the status (e.g. `ACCEPTED`, `busy line`, `not_able_to_call`). See the Status & Sub-Status Reference section. |
 | `to_number` | string | Phone number that received the call |
 | `from_number` | string | Phone number that made the call |
 | `call_sid` | string | Provider call ID (e.g., from Twilio/Plivo) |
-| `transcript` | array | Array of conversation turns with `role` and `content` fields |
+| `called_on` | string | ISO 8601 timestamp when this attempt was dialed (UTC). |
+| `created_at` | string | ISO 8601 timestamp when the call record was created (UTC). |
+| `transcript` | array | Array of conversation turns (`bot`/`user` content). Empty for calls that never connected. |
 | `custom_args_values` | object | Custom data you provided when initiating the call |
-| `retry_count` | number | Number of retry attempts (0 for first attempt) (call_completed only) |
+| `retry_count` | number | Number of retry attempts (0 for first attempt). |
+| `attempts` | array | Per-dial history, oldest first. Each entry is `{ status, called_on_time }`, where `status` is the **original-cased** outcome of that attempt (e.g. `"Busy Line"`, `"ACCEPTED"`). |
+| `version_slug` | string | Slug of the agent version used. |
+| `version_description` | string | Description of the agent version (nullable). |
 
 
 ### Recording Fields
@@ -482,11 +599,19 @@ app.listen(3000);
 |-------|------|-------------|
 | `recording_url` | string | URL of the call recording (valid for 24 hours after the call) |
 | `recording_duration` | number | Duration of the recording in seconds |
+| `sub_status` | string | Call sub-status (e.g. `ACCEPTED`). `recording_completed` carries `sub_status` but **not** `status`. |
 
 ### Analysis Fields
 
+The analysis events (`platform_analysis_completed`, `client_analysis_completed`) fire for the call
+regardless of outcome, so their top-level `status` / `sub_status` describe the **call** result, not the
+analysis. Whether analysis actually ran is inside `analysis_data.status`.
+
 | Field | Type | Description |
 |-------|------|-------------|
+| `entity_type` | string | The analysed entity — `call` for voice calls (or `chat`). |
+| `status` | string | The **call's** final status (e.g. `completed`, `failed`, `error`), not the analysis status. |
+| `sub_status` | string | The call's sub-status (e.g. `ACCEPTED`, `not_able_to_call`). |
 | `analysis_data` | object | Analysis results - structure varies by analysis type |
 | `summary` | string | Concise summary of conversation purpose and outcome (platform analysis) |
 | `classification` | string | Call category label (e.g., 'qualified_lead') (platform analysis) |
