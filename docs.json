@@ -101,8 +101,7 @@
             "pages": [
               "api-reference/endpoint/workspace/get-workspace-info",
               "api-reference/endpoint/workspace/list-workspace-users",
-              "api-reference/endpoint/workspace/get-all-user-workspaces",
-              "api-reference/endpoint/workspace/regenerate-api-key"
+              "api-reference/endpoint/workspace/get-all-user-workspaces"
             ]
           },
           {

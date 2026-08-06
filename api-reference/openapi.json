@@ -706,55 +706,6 @@
         }
       }
     },
-    "/workspace/api-key": {
-      "patch": {
-        "tags": ["workspace"],
-        "summary": "Regenerate API Key",
-        "x-mint": {
-          "metadata": {
-            "og:title": "Regenerate API Key | Ringg AI"
-          }
-        },
-        "description": "Regenerates a new API key for the current workspace.",
-        "operationId": "regenerateApiKey",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your current Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response: New API key generated.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "new_api_key": {
-                      "type": "string",
-                      "example": "e89b12d3-a456-426c-8001-f05de02b54b4"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized - Invalid or missing API key."
-          },
-          "500": {
-            "description": "Internal Server Error - Something went wrong on our end."
-          }
-        }
-      }
-    },
     "/agent/all": {
       "get": {
         "tags": ["agent"],

@@ -13,8 +13,15 @@ Treat the API key as a server-side secret. Do not include it in browser JavaScri
 ## Get your API key
 
 1. Log in to the [Ringg AI dashboard](https://www.ringg.ai/dashboard/api).
-2. Open **API** from the dashboard sidebar.
-3. Copy the workspace API key, or regenerate it if you intentionally want to rotate the key.
+2. Open **Settings → API Key** from the dashboard sidebar.
+3. Click **Generate API Key** and copy it immediately.
+
+<Warning>
+  The key is shown **only once**, at the moment it is generated. It cannot be
+  retrieved afterwards — the dashboard stores only a masked form of it. If you
+  lose it, regenerate from the same screen, which immediately revokes the old
+  key and breaks any integration still using it.
+</Warning>
 
 <Frame caption="X-API-KEY">
   <img src="/images/api_key.png" alt="Ringg dashboard API key screen" />
@@ -86,7 +93,7 @@ const workspace = await response.json();
   <Card title="Quick Start Guide" icon="rocket" href="/api-reference/quick-start/guide">
     Use the key to make your first call.
   </Card>
-  <Card title="Regenerate API Key" icon="rotate-cw" href="/api-reference/endpoint/workspace/regenerate-api-key">
-    Rotate a workspace key intentionally.
+  <Card title="Workspace Info" icon="building" href="/api-reference/endpoint/workspace/get-workspace-info">
+    Read your workspace details.
   </Card>
 </CardGroup>
