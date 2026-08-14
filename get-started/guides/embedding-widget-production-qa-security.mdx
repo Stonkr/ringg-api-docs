@@ -16,7 +16,7 @@ Use this checklist before moving a Ringg AI widget from staging to production. T
 <Check>Review analytics and event listeners so user identifiers are handled according to your privacy policy.</Check>
 
 <Warning>
-Anything in the embed snippet can be viewed by a site visitor. Treat the `authorization` Bearer key, `variables`, and custom widget metadata as browser-visible configuration. The webcall public key is scoped to the assistant and its whitelisted domains — rotate it from the dashboard if it ever leaks beyond those.
+Anything in the embed snippet can be viewed by a site visitor. Treat the `authorization` Bearer key, `variables`, and custom widget metadata as browser-visible configuration. The webcall public key is scoped to the assistant and its whitelisted domains, so rotate it from the dashboard if it ever leaks beyond those.
 </Warning>
 
 ## Domain whitelist
@@ -93,8 +93,9 @@ loadAgentsCdn("1.0.19", function () {
 <Check>Voice mode requests microphone permission and handles both allow and deny paths.</Check>
 <Check>A test call can start, receive audio, and end cleanly.</Check>
 <Check>Chat mode sends and receives messages if `defaultTab` is `"text"`.</Check>
-<Check>Calendar widgets hide past slots and return the selected date, time, and timezone.</Check>
-<Check>Form widgets validate required fields and submit the expected field keys.</Check>
+<Check>Components render with real data. A component using **Fetch data before showing** resolves its API response before it appears, and no `${{…}}` binding is visible to the user.</Check>
+<Check>Required inputs block submission, and a **Send to agent** tap sends the expected input names and locks the component.</Check>
+<Check>Buttons set to **Open a link** or **Page event** do what your page expects, and their listeners survive client-side navigation.</Check>
 <Check>Widget events fire once per action and do not duplicate after client-side navigation.</Check>
 <Check>Console and network panels have no blocked CDN, CSP, or mixed-content errors.</Check>
 

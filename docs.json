@@ -59,8 +59,16 @@
               "get-started/guides/embedding-widget",
               "get-started/guides/embedding-widget-configuration",
               "get-started/guides/embedding-widget-events",
-              "get-started/guides/embedding-widget-agent-actions",
-              "get-started/guides/embedding-widget-chat-widgets",
+              {
+                "group": "Chat",
+                "icon": "messages-square",
+                "pages": [
+                  "get-started/guides/embedding-widget-chat-widgets",
+                  "get-started/guides/embedding-widget-components",
+                  "get-started/guides/embedding-widget-components-data",
+                  "get-started/guides/embedding-widget-components-use-cases"
+                ]
+              },
               "get-started/guides/embedding-widget-customization",
               "get-started/guides/embedding-widget-production-qa-security"
             ]
@@ -255,6 +263,10 @@
     {
       "source": "/get-started/tutorials/embedding-web-call-assistant",
       "destination": "/get-started/guides/embedding-widget"
+    },
+    {
+      "source": "/get-started/guides/embedding-widget-agent-actions",
+      "destination": "/get-started/guides/embedding-widget-components-data"
     },
     {
       "source": "/get-started/telephony/byot-overview",

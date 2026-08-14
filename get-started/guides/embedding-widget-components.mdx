@@ -1,0 +1,214 @@
+---
+title: "Chat Components"
+sidebarTitle: "Components"
+icon: "blocks"
+description: "Build interactive cards, forms and pickers your agent shows in conversation, then adjust every block by hand."
+"og:title": "Build Chat Components for the Ringg AI Widget | Ringg AI Guide"
+---
+
+Components are the cards, forms and pickers your assistant shows inside a conversation: a plan comparison, a lead form, a slot picker, a row of quick replies. The user acts on them without leaving the chat, and what they tap or type comes straight back to the assistant.
+
+You build them in the dashboard. Open your assistant, go to **Embed & Widgets**, and pick the **Components** tab. Describe what you want in plain words and it is built for you, then adjust anything by hand.
+
+<CardGroup cols={2}>
+  <Card title="Working with data" icon="database" href="/get-started/guides/embedding-widget-components-data">
+    Fetch from your API before a component renders, send data on tap, and fire events on your page.
+  </Card>
+  <Card title="Use cases" icon="lightbulb" href="/get-started/guides/embedding-widget-components-use-cases">
+    Seven worked recipes, from lead capture to brochure downloads and slot booking.
+  </Card>
+</CardGroup>
+
+<Warning>
+**Legacy widgets are superseded.** The four fixed-purpose widgets (Calendar Invite, Form Widget, Quick Reply and Execute DOM Action) still work for agents already using them, but new builds should use Components. Anything those widgets did is expressible as blocks, with layout, styling and API wiring you control. Their field reference stays in [Chat Mode](/get-started/guides/embedding-widget-chat-widgets).
+</Warning>
+
+## Build a component
+
+<Steps>
+  <Step title="Open the Components tab">
+    In your assistant, select **Embed & Widgets** in the left menu, then **Components**, then **New component**. Everything you build here is listed on this tab, above the older fixed-purpose **Legacy widgets**.
+
+    <Frame caption="Embed & Widgets → Components → New component.">
+      <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/01-create.png" className="w-full rounded-lg">
+        <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/01-create.mp4" type="video/mp4" />
+      </video>
+    </Frame>
+  </Step>
+
+  <Step title="Pick a starting point">
+    Six templates ship with the builder: **Start blank**, **Plan comparison**, **Lead form**, **Info card**, **Calendar slots** and **Quick actions**. They are only a head start, since every block, label, colour and action is editable afterwards. Picking one drops you straight into the builder.
+
+    <Frame caption="Choosing Start blank opens the builder on an empty canvas.">
+      <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/02-template.png" className="w-full rounded-lg">
+        <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/02-template.mp4" type="video/mp4" />
+      </video>
+    </Frame>
+  </Step>
+
+  <Step title="Describe what you need">
+    The **Chat** panel builds the component from a plain-English description. Say what you are collecting or showing, send it, and the blocks are assembled for you:
+
+    ```text
+    Create a family member detail collection form that collects full name,
+    age, city and relationship for one member at a time, with a submit button
+    ```
+
+    You can also hand it a design instead of a description. **Add an image or screenshot** accepts up to three PNG, JPEG or WebP files of about 2 MB each, and builds a component that matches what it sees.
+
+    <Frame caption="Typing the description, sending it, and the component being built (build fast-forwarded).">
+      <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/03-describe.png" className="w-full rounded-lg">
+        <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/03-describe.mp4" type="video/mp4" />
+      </video>
+    </Frame>
+  </Step>
+
+  <Step title="Save it, then use it in the agent">
+    Your description is now a working component. Check it collects what you actually asked for, set **Name**, which also derives the mention token shown beneath it, then **Save**.
+
+    Save before you touch the prompt. Saving is what registers the component with the agent, and only a saved component is offered in the prompt editor: type `@` where it should appear and it is listed under **Chat components**, inserting as a mention chip. Typing the raw token into the prompt before saving leaves it as plain, unrecognised text.
+
+    ```text
+    When the user agrees to add dependants, show @[[family_member_details_form]]
+    and collect one member at a time.
+    ```
+
+    The slug is derived from the name: lowercased, every run of characters outside `a-z0-9` collapsed to `_`, and truncated to 48 characters. Duplicate names get a numeric suffix (`lead_form_2`), and duplicating a component produces `<name>_copy`.
+
+    <Frame caption="Saving the component, then inserting its mention in the agent's prompt from the @ menu.">
+      <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/04-copy-mention.png" className="w-full rounded-lg">
+        <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/04-copy-mention.mp4" type="video/mp4" />
+      </video>
+    </Frame>
+  </Step>
+
+  <Step title="Tune any block by hand">
+    Nothing in a generated component is locked. Open the **Blocks** panel and select any node, and its inspector opens on the right. Here the **City** input's width is dropped to 50% and its label rewritten to *Current city*. Edits apply to the preview instantly.
+
+    <Frame caption="Selecting the City input, then editing its width and label.">
+      <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/05-tune-block.png" className="w-full rounded-lg">
+        <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/05-tune-block.mp4" type="video/mp4" />
+      </video>
+    </Frame>
+  </Step>
+
+  <Step title="Keep iterating in chat">
+    Go back to **Chat** at any time and ask for a change, such as *"Add one more button for adding new member"*, and it edits the component you already have. Chat and hand-editing are interchangeable, so use whichever is quicker. **Save** when you are happy.
+
+    <Frame caption="A follow-up instruction editing the existing component (rebuild fast-forwarded).">
+      <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/06-iterate.png" className="w-full rounded-lg">
+        <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/06-iterate.mp4" type="video/mp4" />
+      </video>
+    </Frame>
+  </Step>
+</Steps>
+
+<Tip>
+Use the chat for structure ("a card with an image, three facts and two buttons") and the Blocks panel for precision (exact widths, a specific Action ID, one label). Fighting the chat over a single property is slower than opening the inspector.
+</Tip>
+
+The preview toolbar switches between **Component** and **In chat** so you can see the component on its own or in a message thread, and **Interact** lets you click through it. The preview runs on sample data. Real values arrive from the conversation at call time.
+
+## Show it in a conversation
+
+The prompt decides *when* a component shows. The exact form is `@[[name]]`; whitespace inside the brackets is tolerated, but bare `[[name]]` is not a mention. Insert it from the editor's `@` menu rather than typing it out, because the menu only lists saved, enabled components, so it doubles as a check that the reference actually resolves.
+
+<Note>
+**Components you never mention are still available.** Any enabled component that does not appear in the prompt is offered to the assistant automatically, so a component is usable the moment you save it. Mention it explicitly when you want to control the exact moment it appears. Legacy widgets are the opposite, and only ever fire when mentioned.
+</Note>
+
+You cannot rename or delete a component the prompt still mentions. The save is rejected until you remove the reference from the prompt first.
+
+**Send agent text with widget** controls whether the assistant may talk over the component. Leave it off (the default) and the component is sent on its own, which reads better in chat. Turn it on when you want a sentence alongside it.
+
+## Blocks
+
+A component is a tree of typed blocks. There are 25 types.
+
+### Layout
+
+| Type | What it does |
+|---|---|
+| `box` | Generic container with padding, gap and alignment. |
+| `row` / `column` | Stack children horizontally or vertically. Shown in the builder as **Stack** with a direction toggle. |
+| `card` | Padded surface, visually separated from the message. |
+| `carousel` | Horizontally swipeable set of children. |
+| `form` | Submit scope. A **Send to agent** button inside collects only this form's inputs. |
+| `expander` | Collapsible section with a title. |
+
+### Content
+
+| Type | Required props | Notes |
+|---|---|---|
+| `header` | `text` | `level` 1 to 3. Shown as **Heading**. |
+| `text` | `text` | Set `markdown` to render inline markdown. |
+| `image` | `url` | `https` only. See [Render an image](/get-started/guides/embedding-widget-components-data#render-an-image). |
+| `divider` | none | Horizontal rule. |
+| `badge` | `text` | `tone`: `neutral`, `info`, `success`, `warning`, `danger`. |
+| `callout` | `text` | `tone`: `info`, `success`, `warning`, `error`. Optional `title`. |
+| `facts` | `items` | Label/value pairs, at least one. |
+| `table` | `columns`, `rows` | Up to 4 columns. |
+| `steps` | `items`, `current` | 2 to 6 steps, `current` is 1-based. |
+
+### Inputs
+
+Every input needs a **name**, and that name is the key the value arrives under.
+
+| Type | Value | Notes |
+|---|---|---|
+| `input_text` | string | |
+| `input_email` | string | Format-checked in the browser. |
+| `input_phone_number` | string | |
+| `input_number` | number | Supports `min` / `max`. |
+| `input_date` | string | Supports `min` / `max`. |
+| `input_time` | string | `HH:MM`, 24-hour. |
+| `input_textarea` | string | |
+| `input_checkbox` | boolean | |
+| `input_single_select` | string | Shown as **Dropdown**. `variant` `default` or `pills`. |
+| `input_multi_select` | array | Shown as **Multi-select**. |
+| `input_rating` | number | `max` 3 to 10. |
+
+### Action
+
+`button` is the only action block, and the only block that reacts to a tap. What a tap does is covered in [Working with data](/get-started/guides/embedding-widget-components-data).
+
+### Sizing
+
+One rule, applied everywhere: **`width` is a percentage of the parent (0 to 100); `height`, `font_size`, `gap` and `padding` are pixels.**
+
+A button with no width set fills its parent, so two buttons side by side need explicit widths. Put them in a **Stack** set to horizontal and give each `50`.
+
+### Conditional and repeated blocks
+
+**Show a block conditionally.** A block can be tied to an input's value with a condition using `eq`, `ne`, `in`, `gt`, `lt` or `truthy`. You can combine leaves with a single `all` or `any` group, since conditions do not nest further. The field must be a literal input name.
+
+**Repeat a block over a list.** Point a block at an array binding and it renders once per item, with each item available under an alias you choose, plus its index:
+
+```text
+source     ${{api_res.plans}}
+as         plan
+max_items  20
+```
+
+Inside the repeated block, `${{plan.name}}` and `${{plan_index}}` resolve per item. `max_items` accepts 1 to 50 and defaults to 20.
+
+<Warning>
+**Give repeated inputs unique names.** Two inputs that end up with the same name after the list expands is a fatal error, and the component will not send. Bind the name instead: `qty_${{item.id}}`.
+</Warning>
+
+## Styling
+
+Components inherit the widget theme, including `primaryColor`, `surfaceColor`, `borderRadius` and `buttonStyle` from [Widget Configuration](/get-started/guides/embedding-widget-configuration), so they match the rest of the widget without extra work.
+
+For finer control, every rendered node carries a `data-ringg="block-<type>"` attribute, and buttons additionally carry `data-block-id` and `data-action-id`. The full attribute list is in [Customization](/get-started/guides/embedding-widget-customization#components).
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Working with data" icon="database" href="/get-started/guides/embedding-widget-components-data">
+    API calls before and after render, page events, bindings and parameters.
+  </Card>
+  <Card title="Use cases" icon="lightbulb" href="/get-started/guides/embedding-widget-components-use-cases">
+    Complete recipes you can copy, each with the blocks and wiring spelled out.
+  </Card>
+</CardGroup>

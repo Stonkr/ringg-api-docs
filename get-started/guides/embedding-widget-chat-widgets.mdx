@@ -1,11 +1,11 @@
 ---
-title: "Embedding Widget Chat and Components"
-sidebarTitle: "Chat and Components"
+title: "Embedding Widget Chat"
+sidebarTitle: "Chat Mode"
 icon: "message-square"
-description: "Configure chat mode, chat-only embeds, interactive Components (Block Kit), and chat assistant prompts."
+description: "Configure chat mode, chat-only embeds, chat assistant prompts, and the legacy calendar and form widgets."
 ---
 
-The Ringg widget supports text-based chat alongside voice calls. In chat mode, users type messages while the same assistant can still use configured tools, knowledge base queries, and interactive Components.
+The Ringg widget supports text-based chat alongside voice calls. In chat mode, users type messages while the same assistant can still use configured tools, knowledge base queries, and interactive components.
 
 ## Set up a chat agent
 
@@ -18,10 +18,10 @@ Create a dedicated assistant for chat by cloning your voice assistant. Chat conv
     Open the Ringg AI dashboard, go to assistants, and clone an existing voice assistant or create a new Webcall assistant for chat.
   </Step>
   <Step title="Tune the prompt for text">
-    Update the assistant prompt for chat-style responses. Include when to answer directly, when to collect details, and when to present widgets.
+    Update the assistant prompt for chat-style responses. Include when to answer directly, when to collect details, and when to present a component.
   </Step>
   <Step title="Configure chat-specific tools">
-    Add calendar widgets for callback scheduling, form widgets for data collection, or any API integrations the chat should use.
+    Build the [Components](/get-started/guides/embedding-widget-components) the chat needs, such as a slot picker for callbacks or a form for data collection, and add any API integrations it should use.
   </Step>
   <Step title="Use the chat assistant ID">
     Use the cloned assistant's `agentId` in the embed code and set `defaultTab` to `"text"`.
@@ -81,28 +81,16 @@ Create a dedicated assistant for chat by cloning your voice assistant. Chat conv
     Knowledge base query results are summarized in chat mode to reduce token usage and keep answers concise.
   </Card>
   <Card title="Same configured tools" icon="wrench">
-    API integrations, knowledge base queries, widgets, and other configured tools work in chat mode.
+    API integrations, knowledge base queries, components, and other configured tools work in chat mode.
   </Card>
 </CardGroup>
 
-## Components
+## Interactive components
 
-Components are interactive UI the assistant presents during a conversation — cards, forms, pickers, ratings, and more — rendered inside the chat so users can act without leaving it. Components are built with **Block Kit** (see below) and are the current standard for all new builds.
-
-<Note>
-Components work best in text mode. They can also be triggered during voice calls, but visual interaction is most natural in the chat interface.
-</Note>
-
-The flow is:
-
-1. The assistant decides a component is needed and streams a Block Kit tree.
-2. The component renders inside the chat.
-3. The user taps a button, fills inputs, or picks a rating.
-4. The response is sent back to the assistant automatically.
-5. The assistant confirms the action and can trigger an API call if configured.
+Cards, forms and pickers the assistant shows mid-conversation are built as **Components**. See [Components](/get-started/guides/embedding-widget-components) for how to create them, mention them in a prompt, and wire them to your APIs. They work best in text mode, though they can also be triggered during voice calls.
 
 <Warning>
-The fixed-purpose **Calendar** and **Form** widgets below (the `send_widgets` tool with `calender_widget_tool` / `form_widget_tool`) are **legacy**. Existing agents keep working, but new builds should use **Components** (Block Kit) — a carousel of plan cards, a booking form, or a rating card are all expressible as blocks.
+**Deprecated.** The fixed-purpose **Calendar** and **Form** widgets below (the `send_widgets` tool with `calender_widget_tool` / `form_widget_tool`) are legacy, and the reference is kept here for agents already using them. Existing agents keep working, but new builds should use [Components](/get-started/guides/embedding-widget-components), since a carousel of plan cards, a booking form, or a rating card are all expressible as blocks, with layout and API wiring you control.
 </Warning>
 
 ## Calendar widget (legacy)
@@ -212,32 +200,6 @@ Use the form widget for contact details, lead qualification, support tickets, ad
 
 When the user submits the form, the collected data is sent back to the assistant. If `api_config` is provided, the data is also forwarded to your API endpoint.
 
-## Block Kit — the Components system
-
-Block Kit is the engine behind **Components**: the assistant builds a tree of typed blocks (cards, carousels, tables, inputs, buttons, ratings, and more) that render inside the chat. Unlike the fixed legacy calendar and form widgets, Block Kit lets the assistant lay out arbitrary content — plan comparisons, order trackers, feedback cards, or rich confirmations — and is the recommended path for all new builds.
-
-<Note>
-Block Kit trees are streamed on the `ringg.blocks` topic (not a fixed tool), so payloads have no practical size limit. The widget renders them and reports interactions back to the assistant automatically.
-</Note>
-
-How it works:
-
-1. The assistant resolves a fully-concrete block tree server-side (bindings filled, lists expanded) and streams it.
-2. The widget renders it full-width in the transcript.
-3. The user taps a button, fills inputs, or picks a rating.
-4. The interaction is sent back to the assistant; a tap is treated as one conversation turn, so the card locks after responding.
-
-The block **type catalog** (currently `1.4`) defines the available blocks and their props:
-
-| Group | Types |
-|---|---|
-| Layout | `box`, `row`, `column`, `card`, `carousel`, `form`, `expander` |
-| Content | `header`, `text`, `image`, `divider`, `badge`, `callout`, `facts`, `table`, `steps` |
-| Inputs | `input_text`, `input_email`, `input_phone_number`, `input_number`, `input_date`, `input_time`, `input_textarea`, `input_checkbox`, `input_single_select`, `input_multi_select`, `input_rating` |
-| Action | `button` |
-
-Most content and action blocks share a `size` (`sm` / `md` / `lg`) and `align` vocabulary; `image` uses `width` (`sm` / `md` / `full`) and `button` supports `full_width`. Blocks inherit the widget theme (colors, radius, button style), and every rendered node exposes a `data-ringg="block-<type>"` hook for CSS — see [Customization](/get-started/guides/embedding-widget-customization#block-kit).
-
 ## Complete chat-only embed
 
 Use the CDN loader from the [quickstart](/get-started/guides/embedding-widget), then load the chat assistant with chat-only mode and optional branding.
@@ -272,7 +234,7 @@ loadAgentsCdn("latest", function () {
 });
 ```
 
-Calendar and form widgets are configured in the assistant metadata through the Ringg AI dashboard. No additional frontend code is needed for the widgets themselves.
+Components and legacy widgets are both configured in the Ringg AI dashboard. No additional frontend code is needed for the interactive UI itself.
 
 ## Prompt examples
 
@@ -327,7 +289,7 @@ Calendar and form widgets are configured in the assistant metadata through the R
 
 ## Prompt tips
 
-<Check>Be explicit about when to use each widget.</Check>
-<Check>Do not duplicate widget fields in the conversation.</Check>
-<Check>Ask the assistant to confirm bookings and form submissions after the widget returns data.</Check>
+<Check>Be explicit about when to use each component, and mention it by its `@[[name]]` at that point in the prompt.</Check>
+<Check>Do not duplicate a component's fields in the conversation, and let it collect them.</Check>
+<Check>Ask the assistant to confirm bookings and form submissions after the component returns data.</Check>
 <Check>Keep chat responses shorter and more structured than voice responses.</Check>
