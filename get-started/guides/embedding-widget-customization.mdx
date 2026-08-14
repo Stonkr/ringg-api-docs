@@ -102,19 +102,19 @@ Elements are grouped by where they appear in the widget.
 
 | `data-ringg` | Element |
 |---|---|
-| `header` | In-call header band. **Only present during a call** — integrators use this to detect an active call (e.g. `:has([data-ringg="header"])`). Absolute-positioned frosted overlay. |
+| `header` | In-call header band. **Only present during a call**, which integrators use to detect an active call (e.g. `:has([data-ringg="header"])`). Absolute-positioned frosted overlay. |
 | `intro` | Pre-call container. Centered logo/title/description block on the start screen (the pre-call counterpart to `header`). |
 | `header-logo` | Logo chip. Both pre-call (rounded square) and in-call. |
 | `header-logo-image` | The `<img>` inside the logo chip. |
 | `header-text` | Text wrapper that holds the title and description. |
 | `header-title` | Title `<h2>`. |
 | `header-description` | Description `<p>`. Shown pre-call and in-call. Truncated in-call (full text on hover via `title`). |
-| `header-status-dot` | Presence dot. In-call only. Carries `data-ringg-connecting` — muted + pulsing while connecting, success-colored once live. |
+| `header-status-dot` | Presence dot. In-call only. Carries `data-ringg-connecting`: muted and pulsing while connecting, success-colored once live. |
 | `header-status` | Screen-reader-only status `<p>`. In-call only; visible status is the dot. The pre-call connecting status moved to `connecting-label`. |
 
 ### Call controls (audio mode)
 
-Compact centered mute/end pair, no text labels — icons carry the meaning.
+Compact centered mute/end pair, no text labels, since icons carry the meaning.
 
 | `data-ringg` | Element |
 |---|---|
@@ -174,7 +174,7 @@ Shown while an agent reply is pending. Cycles through words (default: Thinking /
 
 ### System log pill
 
-The system log pill renders the inline activity feed in the transcript. It only shows up when you opt in via `loadAgent({ eventLogs: { enabled: true } })`. See [Agent Actions](/get-started/guides/embedding-widget-agent-actions) for details.
+The system log pill renders the inline activity feed in the transcript. It only shows up when you opt in via `loadAgent({ eventLogs: { enabled: true } })`. See [Agent actions](/get-started/guides/embedding-widget-components-data#agent-actions) for details.
 
 | `data-ringg` | Element |
 |---|---|
@@ -231,7 +231,7 @@ The system log pill renders the inline activity feed in the transcript. It only 
 | `data-ringg` | Element |
 |---|---|
 | `message-input-form` | The `<form>` element. |
-| `message-input` | Outer pill container — carries the frosted-glass treatment; transparent gutters. Also wraps the slash menu when open (going solid). |
+| `message-input` | Outer pill container carrying the frosted-glass treatment; transparent gutters. Also wraps the slash menu when open (going solid). |
 | `message-input-row` | Row containing the input field + send button. |
 | `message-input-field` | The `<input>` element. |
 | `message-send-button` | Send arrow button. |
@@ -266,9 +266,9 @@ When the ended conversation has text messages, the transcript stays readable and
 | `feedback-submit` | Submit button. |
 | `feedback-skip` | Skip button. |
 
-### Block Kit
+### Components
 
-Composable widget trees the agent streams on the `ringg.blocks` topic (see [Chat and Widgets](/get-started/guides/embedding-widget-chat-widgets)). Rendered full-width in the transcript.
+Block trees the agent streams on the `ringg.blocks` topic: the cards, forms and pickers built under **Embed & Widgets → Components** (see [Components](/get-started/guides/embedding-widget-components)). Rendered full-width in the transcript.
 
 | `data-ringg` | Element |
 |---|---|

@@ -1,0 +1,239 @@
+---
+title: "Component Data"
+sidebarTitle: "Data"
+icon: "database"
+description: "Fetch from your API before a component renders, send data when a button is tapped, and exchange events with your own page."
+"og:title": "Wire Chat Components to Your APIs | Ringg AI Guide"
+---
+
+Components move data in four directions:
+
+| Direction | Mechanism |
+|---|---|
+| Your API fills a component *before* it renders | [Fetch data before showing](#fetch-data-before-showing) |
+| A tap calls your API | [Send data when a button is tapped](#send-data-when-a-button-is-tapped) |
+| A tap fires an event on your page | [Fire an event on your page](#fire-an-event-on-your-page) |
+| The assistant fires an event on your page, with no component involved | [Agent actions](#agent-actions) |
+
+This page assumes you have already built a component. If not, start with [Components](/get-started/guides/embedding-widget-components).
+
+## Fetch data before showing
+
+**Fetch data before showing** calls your API at the moment the assistant sends the component, and binds the JSON response so blocks can render it. Use it for anything that must be current, such as live pricing, the user's open orders, or available inventory.
+
+Configure the request in the component's **ADVANCED** section: a method (`GET`, `POST`, `PUT` or `PATCH`), a URL, and free-form rows for headers, query params and body. There is no separate auth section, so add an `Authorization` header row.
+
+The parsed response is bound to `api_res`:
+
+| Binding | Resolves to |
+|---|---|
+| `${{api_res}}` | The whole response. |
+| `${{api_res.plans}}` | The `plans` field. |
+| `${{api_res.data.0.name}}` | First array element's `name`. Numeric segments index into lists. |
+
+Inside a block prop you can interpolate a binding into a longer string, such as `₹${{plan.premium}}/mo`. When the whole value is a single binding the raw typed value is kept, so arrays and objects survive intact.
+
+<Warning>
+**Only agent variables resolve inside the request itself.** In the fetch's own URL, headers, query and body, `${{custom_args.<name>}}` is the one binding that resolves. The builder also lists your component parameters as available there, but they are not populated at send time, so the request is skipped and logged as a failure. Keep parameters out of this request.
+</Warning>
+
+`api_res` is only a valid binding anywhere in the component when this fetch is configured. Without it, saving fails with an undeclared-source error.
+
+## Send data when a button is tapped
+
+**Call an API on response** fires when the user taps a button, and sends what they tapped or typed. It takes the same request shape as the fetch above. These bindings are available in the URL, headers, query and body:
+
+| Binding | Value |
+|---|---|
+| `${{component_data.action_id}}` | The Action ID of the button that was tapped. |
+| `${{component_data.value}}` | That button's **Value** payload. Use `${{component_data.value.<field>}}` when the value is an object. |
+| `${{component_data.values.<input name>}}` | A submitted input, by its name. |
+| `${{<parameter key>}}` | Any parameter you declared on the component. |
+| `${{custom_args.<name>}}` | An agent custom variable. |
+| `${{call_data.<field>}}` | Call metadata. |
+| `${{api_res…}}` | The fetch response, when a fetch is configured. |
+
+Anything else is rejected when you save, so a typo surfaces immediately rather than failing silently at runtime.
+
+A single button can carry its own API call, which overrides the component-level one for that tap. The override is matched by Action ID, so a button inside a repeated list, whose Action ID is itself a binding, cannot be matched and falls back to the component-level request.
+
+## Send data when a form is submitted
+
+There is no separate submit action. A button set to **Send to agent** collects the named inputs of its nearest ancestor `form`, or of the whole component if there is no form, exactly like HTML. That is what the inspector means by *"Inside a Form, 'Send to agent' also submits the form's inputs."*
+
+Required fields and email formats are validated in the browser first, over the inputs that are currently visible. Anything hidden by a condition is skipped. The assistant then receives:
+
+```json
+{
+  "action_id": "submit_family_member",
+  "values": {
+    "full_name": "Asha",
+    "age": 34,
+    "city": "Pune",
+    "relationship": "Spouse"
+  }
+}
+```
+
+To forward that to your own system, reference the input names in the request body:
+
+```json
+{
+  "name": "${{component_data.values.full_name}}",
+  "age": "${{component_data.values.age}}",
+  "city": "${{component_data.values.city}}",
+  "relation": "${{component_data.values.relationship}}"
+}
+```
+
+A tap counts as one conversation turn, so the component locks once it has responded.
+
+## Fire an event on your page
+
+Set a button's **when tapped** to **Page event** and give it an Event ID. Tapping dispatches a `CustomEvent` on `window`, which your own page handles however you like: open a modal, scroll to a section, start a checkout.
+
+```javascript
+window.addEventListener("ringg:open_pricing", (event) => {
+  const { value, action_id } = event.detail;
+  document.querySelector("#pricing")?.scrollIntoView({ behavior: "smooth" });
+});
+```
+
+Event IDs are lowercased, spaces become underscores, and only `a-z`, `0-9`, `_`, `-` and `:` survive, so `ringg:open_pricing` is valid as typed.
+
+<Note>
+**A page event does not reach the assistant.** It fires on your page only. If the assistant needs to know the user acted, use a **Send to agent** button instead.
+</Note>
+
+## Open a link
+
+Set **when tapped** to **Open a link** for anything that leaves the chat: a brochure, a policy PDF, a payment page, a phone number.
+
+A brochure download is the common case. Give the button a label, a URL, and a target:
+
+```text
+Label        Download brochure
+When tapped  Open a link
+URL          https://cdn.example.com/plans/arogya-secure-brochure.pdf
+Target       _blank
+```
+
+If the brochure differs per user or per plan, have the [fetch](#fetch-data-before-showing) return the link and bind it: `${{api_res.brochure_url}}`.
+
+Two rules the builder enforces when you save:
+
+- The scheme must be `https:`, `mailto:` or `tel:`. Plain `http` is rejected.
+- The URL must be either a plain literal or one whole `${{binding}}`. A literal host with a binding spliced into it, such as `https://cdn.example.com/${{api_res.id}}.pdf`, is rejected. Return the complete URL from your API instead.
+
+Like a page event, opening a link tells the assistant nothing. Pair it with a **Send to agent** button when the assistant should acknowledge the download or follow up on it.
+
+## Render an image
+
+The `image` block takes a `url`, not `src`, plus optional `alt`, `align`, `width` and `height`. Give it a width or height, or it renders as a small thumbnail.
+
+Image URLs are held to the strictest rule of any prop: **`https` only**, and the same literal-or-single-binding rule as links. So a product shot driven by your API works:
+
+```text
+url  ${{api_res.photo}}
+alt  Arogya Secure plan illustration
+```
+
+A constructed URL does not. If your API returns an ID, have it return the full image URL alongside it.
+
+## What you can bind to
+
+| Root | Available |
+|---|---|
+| `${{<parameter key>}}` | Anywhere in the component. |
+| `${{custom_args.<name>}}` | Anywhere, including inside the fetch request. |
+| `${{api_res…}}` | Anywhere, once **Fetch data before showing** is configured. |
+| `${{<alias>}}` / `${{<alias>_index}}` | Inside a repeated block only. |
+| `${{component_data…}}` | Inside **Call an API on response** only. |
+| `${{call_data.<field>}}` | Inside **Call an API on response** only. |
+
+<Warning>
+**An input's name is not a binding.** You cannot show what the user typed in another block, so `${{full_name}}` will not resolve. Input values only exist after submit, and only reach the assistant and your API. Bindings resolve from parameters, agent variables, the fetch response and repeat items.
+</Warning>
+
+## Parameters
+
+Parameters are the blanks the assistant fills in when it shows a component, such as the plans to compare or the order to display. Add them under **Parameters**, with a key, a description and a type of `string`, `number`, `boolean`, `array` or `object`. Keys are sanitized to `a-z`, `0-9` and `_`.
+
+| Kind | Filled from |
+|---|---|
+| `dynamic` | The assistant, at call time, from the conversation and knowledge base. |
+| `variable` | The value of an agent custom variable. |
+| `static` | A fixed value stored in the component config. |
+
+Only dynamic parameters are described to the assistant, and its test value doubles as the example shape it is shown. Give each one a description that says what belongs in it, because that description is what the assistant reads.
+
+If a required dynamic parameter arrives missing or empty, the component is not sent and the assistant is told to say something instead, so a component never renders half-populated.
+
+Leave Parameters empty and the component simply uses conversation values as they come.
+
+## Agent actions
+
+A component is not the only way to reach your page. The assistant can also dispatch a browser event directly, with no card or form involved, which suits things the user never needs to see or tap: focusing an input, opening a modal, scrolling to a section.
+
+<Info>
+**Where to set this up.** Open your agent and go to **Embed & Widgets → Legacy widgets → Execute DOM Action** (`execute_dom_action`). Each entry under **Actions** is one event the agent can dispatch.
+</Info>
+
+Each action has three fields:
+
+| Field | What it is |
+|---|---|
+| **Event ID** | The event name your page listens for on `window` via `addEventListener`. |
+| **Description** | Helps the agent decide when to fire the action. |
+| **Default Payload** *(optional)* | A JSON object delivered as `event.detail` when the action fires. |
+
+At runtime the agent decides during a conversation when to fire one of its configured actions, the widget dispatches a `CustomEvent` on `window` using the Event ID as the event name, and your listener runs. Actions only fire during an active conversation.
+
+```javascript
+window.addEventListener("focus_search", () => {
+  document.querySelector("#search-input").focus();
+});
+
+// The Default Payload arrives as event.detail, or null if none is configured
+window.addEventListener("show_promo_modal", (event) => {
+  const { discount_pct, product_id } = event.detail;
+  openPromoModal({ discount: discount_pct, productId: product_id });
+});
+```
+
+In React, remove the listener on unmount so navigation does not duplicate handlers:
+
+```javascript
+useEffect(() => {
+  const listener = () => inputRef.current?.focus();
+  window.addEventListener("focus_search", listener);
+  return () => window.removeEventListener("focus_search", listener);
+}, []);
+```
+
+While you are wiring things up, turn on `eventLogs` to see a pill in the chat thread each time an action fires. It is purely a visual aid, and actions fire the same way either way:
+
+```javascript
+loadAgent({
+  agentId: "your-agent-id",
+  eventLogs: { enabled: true, showIds: false },
+});
+```
+
+<Tip>
+Pick distinctive Event IDs such as `ringg_focus_search` or `shop_show_promo` so your action names do not collide with other custom events on the page. Multiple listeners on the same Event ID all fire, and inside one handler you can route on `event.type`.
+</Tip>
+
+<Note>
+**Looking for widget state events** such as open, close, conversation start or feedback? Those are separate. See [Widget Lifecycle Events](/get-started/guides/embedding-widget-events).
+</Note>
+
+## Limits and QA notes
+
+<Check>Bindings resolve and repeated blocks expand on the server, before anything reaches the browser, so the user never sees an unresolved `${{…}}`.</Check>
+<Check>A component resolves to at most 500 nodes. A repeat over a long list is capped by `max_items`, not by the source array.</Check>
+<Check>Unresolvable optional props are dropped and empty containers are pruned, so a missing API field degrades quietly instead of rendering blank.</Check>
+<Check>Test with the fetch pointed at your real endpoint. A request that fails means the component is sent without `api_res`, and any block that depended on it disappears.</Check>
+<Check>Components render during voice calls too, but they are designed for chat. Confirm the flow still makes sense if the user is only listening.</Check>
+<Check>After renaming a component, update every `@[[…]]` mention in the prompt. The rename is blocked until you do.</Check>
+<Check>For agent actions, add an Event ID, attach a matching listener, and confirm it fires during a test conversation. If you configured a Default Payload, verify `event.detail` carries those fields.</Check>

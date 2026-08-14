@@ -1,0 +1,265 @@
+---
+title: "Chat Use Cases"
+sidebarTitle: "Use cases"
+icon: "lightbulb"
+description: "Worked recipes for chat components: lead capture, live pricing, slot booking, brochure downloads and on-page actions."
+"og:title": "Chat Component Use Cases | Ringg AI Guide"
+---
+
+Each recipe below lists what the user sees, the blocks that make it, and the wiring. They all assume you have read [Components](/get-started/guides/embedding-widget-components) and [Data](/get-started/guides/embedding-widget-components-data).
+
+The fastest way to build any of them is to paste the description into the builder's **Chat** panel, then fix up the details in the **Blocks** panel.
+
+## Capture a lead and push it to your CRM
+
+The most common component. The assistant qualifies the visitor in conversation, then shows a short form instead of asking for five things one at a time.
+
+<Frame caption="A form component: dropdown, pill choices, conditional fields and one Send to agent button.">
+  <img src="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/use-cases/lead-form.png" alt="A health declaration form with a dropdown, pill choices and a submit button" width="382" />
+</Frame>
+
+**Blocks**
+
+```text
+card
+  header      "Share your details"
+  form
+    input_text   name=full_name   label="Full name"    required
+    input_phone_number name=phone label="Phone number" required
+    input_email  name=email       label="Email"
+    button       "Submit"  when tapped: Send to agent  action_id=submit_lead
+```
+
+**Wiring.** The **Send to agent** button sits inside the `form`, so it collects that form's inputs and nothing else. Add **Call an API on response** on the component and point it at your CRM:
+
+```json
+{
+  "name":  "${{component_data.values.full_name}}",
+  "phone": "${{component_data.values.phone}}",
+  "email": "${{component_data.values.email}}",
+  "source": "ringg-chat"
+}
+```
+
+<Tip>
+Keep the form to the fields you genuinely need. Every extra required field is another reason to abandon it, and the assistant can always ask follow-ups in conversation afterwards.
+</Tip>
+
+## Compare plans on live pricing
+
+Prices, stock and eligibility change, so render them from your API rather than typing them into the component.
+
+<Frame caption="A table of plans, one expander per plan, a callout for the recommendation, and pills to choose.">
+  <img src="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/use-cases/plan-comparison.png" alt="A plan comparison with a table, expandable rows and a recommendation callout" width="382" />
+</Frame>
+
+**Blocks**
+
+```text
+carousel
+  card                        repeat over ${{api_res.plans}} as plan
+    badge     ${{plan.tag}}          visible_if plan.tag is truthy
+    header    ${{plan.name}}
+    facts     Cover    ${{plan.cover}}
+              Premium  ₹${{plan.premium}}/mo
+    button    "Select this plan"  Send to agent  value ${{plan.id}}
+```
+
+**Wiring.** Turn on **Fetch data before showing** with a `GET` to your pricing endpoint. The response binds to `api_res`, and the `repeat` renders one card per plan.
+
+Because the card repeats, give the button a **Value** of `${{plan.id}}` rather than a per-plan Action ID. A bound Action ID cannot be matched back to a button-level API override, so keep one Action ID for the whole list and read `${{component_data.value}}` to know which plan was chosen.
+
+<Warning>
+If the fetch fails, the component is still sent, just without `api_res`, and every block bound to it is pruned. Test the failure path so the user does not get an empty card.
+</Warning>
+
+## Book a slot
+
+**Blocks**
+
+```text
+card
+  header    "Pick a time that works"
+  text      "Times are shown in your local timezone."
+  input_single_select  name=slot_day   variant=pills   options ${{api_res.days}}
+  input_single_select  name=slot_time  variant=pills   options ${{api_res.slots}}
+  button    "Confirm booking"  Send to agent  action_id=confirm_slot
+```
+
+**Wiring.** Fetch available days and slots before showing, so the user can only pick something real. Bind each select's `options` to an array of `{ value, text }` objects, so have your endpoint return that shape rather than bare strings. On submit, **Call an API on response** creates the booking:
+
+```json
+{ "day": "${{component_data.values.slot_day}}", "time": "${{component_data.values.slot_time}}" }
+```
+
+The **Calendar slots** template gives you this shape already. Start from it rather than building from blank.
+
+## Offer a brochure download
+
+A link button leaves the chat without ending the conversation.
+
+<Frame caption="Two link buttons side by side at 50% width, with a full-width action beneath them.">
+  <img src="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/use-cases/document-card.png" alt="A card with buttons to view a network, check premium and send on WhatsApp" width="382" />
+</Frame>
+
+**Blocks**
+
+```text
+row
+  button  "Download brochure"  Open a link  https://cdn.example.com/brochure.pdf  target=_blank   width 50
+  button  "Talk to an advisor"  Send to agent  action_id=request_callback           width 50
+```
+
+**Wiring.** Buttons with no width fill their parent, so two side by side need explicit widths. Set both to `50` inside a horizontal **Stack**.
+
+If the brochure differs per plan, return the full URL from your fetch and bind `${{api_res.brochure_url}}`. A URL must be a plain literal or one whole binding, so build the complete link server-side rather than splicing an ID into a path.
+
+<Note>
+Opening a link tells the assistant nothing. The second button is what lets the assistant know the user is interested and follow up. Pair them whenever the download matters to the conversation.
+</Note>
+
+## Confirm an order and show its status
+
+A read-only summary the user can scan, with the next action attached to it.
+
+<Frame caption="A facts block renders label and value pairs, with a badge for the provider.">
+  <img src="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/use-cases/details-card.png" alt="A plan details card showing label and value pairs with two buttons" width="382" />
+</Frame>
+
+**Blocks**
+
+```text
+card
+  header  "Order ${{api_res.order_id}}"
+  badge   ${{api_res.status}}   tone=success
+  facts   Placed    ${{api_res.placed_on}}
+          Items     ${{api_res.item_count}}
+          Total     ₹${{api_res.total}}
+  image   ${{api_res.thumbnail}}   width 40
+  button  "Track shipment"  Open a link  ${{api_res.tracking_url}}
+```
+
+**Wiring.** One `GET` in **Fetch data before showing**, keyed on a parameter the assistant fills:
+
+| Parameter | Kind | Description given to the assistant |
+|---|---|---|
+| `order_id` | dynamic | The order number the customer is asking about. |
+
+Reference it in the fetch URL as a query row. Remember that inside the fetch request only `${{custom_args.<name>}}` resolves, so if the value comes from an agent variable rather than the conversation, use that root instead.
+
+## Disambiguate with quick replies
+
+When the assistant is not sure what the user wants, three buttons beat a paragraph.
+
+<Frame caption="Quick replies are just buttons in a Stack, each sending its own Value.">
+  <img src="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/use-cases/quick-replies.png" alt="A vertical stack of tappable quick reply pills" width="382" />
+</Frame>
+
+**Blocks**
+
+```text
+row
+  button "Yes"          Send to agent  value=yes           width 33
+  button "No"           Send to agent  value=no            width 33
+  button "Call me back" Send to agent  value=callback      width 34
+```
+
+**Wiring.** No API needed. Each tap sends its **Value** to the assistant as one conversation turn, and the component locks once answered. Start from the **Quick actions** template.
+
+## Answer a question with a structured card
+
+When the answer has caveats, a card carries them better than a paragraph. Lead with the verdict, keep the detail one tap away, and end with the next step.
+
+<Frame caption="A badge for the verdict, a callout for the detail, pills for the options, and an expander to keep the long part collapsed.">
+  <img src="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/use-cases/conditional-card.png" alt="A card with a status badge, an explanatory callout, provider pills and an expandable section" width="382" />
+</Frame>
+
+**Blocks**
+
+```text
+card
+  row
+    header  ${{condition_name}}
+    badge   ${{verdict}}   tone=danger
+  callout   ${{summary}}   title="Underwriting summary"
+  text      "Recommended insurers"
+  row       repeat over ${{api_res.insurers}} as insurer
+    badge   ${{insurer.name}}
+  expander  "Required documents"
+    text    ${{api_res.documents}}
+  row
+    button  "Provide specific details"  Send to agent  width 50
+    button  "Show plans"                Send to agent  width 50
+```
+
+**Wiring.** `condition_name` and `verdict` are dynamic parameters the assistant fills from the conversation, while the supporting detail comes from the fetch. Because the two buttons carry different Action IDs, the assistant can tell which way the user wants to go.
+
+Finish the flow with a plain confirmation once the user commits:
+
+<Frame caption="A single callout block, tone success, is often the whole component.">
+  <img src="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/use-cases/confirmation-callout.png" alt="A green confirmation callout telling the user a payment link has been sent" width="382" />
+</Frame>
+
+## Drive your own page from the chat
+
+Sometimes the right outcome is not a message but something happening on the page: open the checkout drawer, scroll to a section, prefill a field.
+
+**Blocks**
+
+```text
+button  "See pricing"  Page event  event_id=ringg:open_pricing
+```
+
+**On your page**
+
+```javascript
+window.addEventListener("ringg:open_pricing", () => {
+  document.querySelector("#pricing")?.scrollIntoView({ behavior: "smooth" });
+});
+```
+
+If the user never needs to tap anything, skip the component entirely and use an [agent action](/get-started/guides/embedding-widget-components-data#agent-actions), which lets the assistant dispatch the event itself.
+
+## Collect a list, one entry at a time
+
+Long repeating forms are miserable in chat. Collect one entry, confirm it, then offer to add another.
+
+<Frame caption="A table of what is already collected, with expanders to edit, remove or add another entry.">
+  <img src="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/use-cases/member-editor.png" alt="A member list table with edit, delete and add expanders" width="382" />
+</Frame>
+
+**Blocks**
+
+```text
+card
+  header  "Add a family member"
+  text    "Enter details for one family member at a time."
+  form
+    input_text          name=full_name    label="Full name"     required
+    input_number        name=age          label="Age"           required
+    input_text          name=city         label="Current city"  width 50
+    input_single_select name=relationship label="Relationship to you"  required
+    button "Submit family member"  Send to agent  action_id=submit_family_member
+  button  "Add another member"     Send to agent  action_id=add_another
+```
+
+**Wiring.** Let the prompt drive the loop rather than the component:
+
+```text
+When the user agrees to add dependants, show @[[family_member_details_form]]
+and collect one member at a time. After each submission, confirm the details
+back to them and ask whether they want to add another.
+```
+
+The component locks after each response, so the assistant sends a fresh one for the next member. This keeps validation simple and gives the user a natural place to stop.
+
+## Next
+
+<CardGroup cols={2}>
+  <Card title="Components" icon="blocks" href="/get-started/guides/embedding-widget-components">
+    Build and edit components, and the full block reference.
+  </Card>
+  <Card title="Data" icon="database" href="/get-started/guides/embedding-widget-components-data">
+    Bindings, API calls, parameters and page events in detail.
+  </Card>
+</CardGroup>

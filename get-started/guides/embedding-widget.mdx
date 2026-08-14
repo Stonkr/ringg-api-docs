@@ -15,11 +15,17 @@ Use this quickstart to add a Ringg AI web-call widget to a page. Start with the 
   <Card title="Lifecycle Events" icon="radio" href="/get-started/guides/embedding-widget-events">
     Browser events the widget emits about its own state: open/close, conversation start/end, feedback.
   </Card>
-  <Card title="Agent Actions" icon="mouse-pointer-click" href="/get-started/guides/embedding-widget-agent-actions">
-    Custom browser events the agent dispatches on the host page, configured under Interactive Components.
+  <Card title="Chat Mode" icon="message-square" href="/get-started/guides/embedding-widget-chat-widgets">
+    Text mode, chat-only embeds, prompt examples, and the legacy calendar and form widgets.
   </Card>
-  <Card title="Chat and Widgets" icon="message-square" href="/get-started/guides/embedding-widget-chat-widgets">
-    Text mode, chat-only embeds, calendar widgets, form widgets, and prompt examples.
+  <Card title="Components" icon="blocks" href="/get-started/guides/embedding-widget-components">
+    Build cards, forms and pickers the agent shows in chat, from a plain-English description.
+  </Card>
+  <Card title="Component Data" icon="database" href="/get-started/guides/embedding-widget-components-data">
+    API calls before and after render, page events, agent actions, bindings and parameters.
+  </Card>
+  <Card title="Chat Use Cases" icon="lightbulb" href="/get-started/guides/embedding-widget-components-use-cases">
+    Worked recipes: lead capture, live pricing, slot booking, brochure downloads.
   </Card>
   <Card title="Customization" icon="palette" href="/get-started/guides/embedding-widget-customization">
     Restyle and script the widget through stable data-ringg attributes.
@@ -38,7 +44,7 @@ Use this quickstart to add a Ringg AI web-call widget to a page. Start with the 
 <Check>Each staging and production domain added to the assistant's Whitelist Domains list.</Check>
 
 <Warning>
-The widget snippet runs in the browser and includes the webcall public key in an `authorization: "Bearer <key>"` header. The key is scoped to a single assistant and its whitelisted domains — use only the embed code generated for a web-call assistant, whitelist the exact domains where it can run, and never expose a broad backend integration key in public pages. Rotate the key from the dashboard if it is ever compromised.
+The widget snippet runs in the browser and includes the webcall public key in an `authorization: "Bearer <key>"` header. The key is scoped to a single assistant and its whitelisted domains, so use only the embed code generated for a web-call assistant, whitelist the exact domains where it can run, and never expose a broad backend integration key in public pages. Rotate the key from the dashboard if it is ever compromised.
 </Warning>
 
 ## Quickstart
@@ -184,4 +190,4 @@ For launch readiness, use the [production QA and security checklist](/get-starte
 
 ## Rotating the webcall key
 
-You can rotate the webcall public key any time from the assistant's **Widget Configuration** in the dashboard — click **Rotate key** above the generated snippet, then copy the updated snippet and redeploy.
+You can rotate the webcall public key any time from the assistant's **Widget Configuration** in the dashboard. Click **Rotate key** above the generated snippet, then copy the updated snippet and redeploy.
