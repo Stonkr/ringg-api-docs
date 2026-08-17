@@ -208,6 +208,7 @@
           "telephony/exotel-integration",
           "telephony/twilio-integration",
           "telephony/ameyo-integration",
+          "telephony/ozonetel-integration",
           "telephony/number-management"
         ]
       },
