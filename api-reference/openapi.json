@@ -5750,8 +5750,8 @@
                       "call_time": {
                         "type": "object",
                         "properties": {
-                          "call_start_time": { "type": "string", "default": "08:00", "example": "09:00" },
-                          "call_end_time": { "type": "string", "default": "20:00", "example": "18:00" },
+                          "call_start_time": { "type": "string", "default": "09:00", "example": "09:00" },
+                          "call_end_time": { "type": "string", "default": "21:00", "example": "18:00" },
                           "timezone": { "type": "string", "default": "Asia/Kolkata", "example": "Asia/Kolkata" },
                           "scheduled_at": {
                             "type": "string",
