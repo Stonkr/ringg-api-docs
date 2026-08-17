@@ -1,0 +1,157 @@
+---
+title: "Ozonetel Integration"
+description: "URLs to configure in Ozonetel for inbound, outbound, and status callbacks"
+---
+
+## Overview
+
+Ozonetel connects to Ringg over HTTP + WebSocket. Ozonetel dials the customer and calls Ringg's URLs; Ringg replies with the instructions for the call.
+
+You configure three URLs in Ozonetel:
+
+| Purpose | Where you set it |
+|---|---|
+| **Outbound** | The campaign's agent-flow URL |
+| **Inbound** | The URL node of your inbound flow |
+| **Status callback** | The campaign's Call-Summary (CDR) push URL |
+
+## Prerequisites
+
+- An active Ozonetel account with API access
+- The Ozonetel **API key**, **campaign name**, **user name**, and the **SIP extension** your campaign streams from
+- At least one DID on the Ozonetel side
+- A Ringg workspace with admin access, and an assistant ready to take calls
+
+## Step 1: Add Ozonetel as a telephony provider in Ringg
+
+<Steps>
+  <Step title="Open Telephony Integration">
+    In the Ringg dashboard, go to **Integrations** → **Telephony Integration**.
+  </Step>
+  <Step title="Select Ozonetel">
+    Click **Add Telephony Provider** and select **Ozonetel**.
+  </Step>
+  <Step title="Enter credentials">
+    All four fields are required.
+
+    | Field | Value |
+    |---|---|
+    | `api_key` | Your Ozonetel API key |
+    | `campaign_name` | The Ozonetel campaign Ringg places outbound calls through |
+    | `user_name` | The user/contact name sent with each call |
+    | `sip_number` | The SIP extension your campaign streams from, for example `36667` |
+
+    Optional: set `call_transfer_strategy` to `group` if warm transfers should be bridged to an Ozonetel skill group rather than dialed as a plain number.
+  </Step>
+  <Step title="Test and save">
+    Click **Test Connection**, then save the provider.
+  </Step>
+  <Step title="Import your numbers">
+    Ozonetel numbers are added manually. Go to **Numbers**, choose the Ozonetel account, and add each DID.
+  </Step>
+</Steps>
+
+## Step 2: Outbound URL
+
+Set the campaign's agent-flow URL to:
+
+```text
+https://use1-api.ringg.ai/pc/v1/ozonetel/start_call
+```
+
+Accepts **GET and POST**. Ozonetel hits this same URL for each lifecycle event of the call and Ringg replies with the instruction for that stage.
+
+### The `Name` parameter
+
+When Ringg places an outbound call, it passes a **`Name`** parameter carrying the Ringg call ID. Ozonetel must send that same `Name` back to this URL on every callback — that is how Ringg identifies which call is connecting.
+
+```text
+Ringg  ──  places the call with  Name=<Ringg call ID>  ──▶  Ozonetel
+Ringg  ◀──  callback with the same  Name=<Ringg call ID>  ──  Ozonetel
+```
+
+The value must come back **unchanged**. Ringg rejects any callback without it with `400`, and the call never connects.
+
+```text
+https://use1-api.ringg.ai/pc/v1/ozonetel/start_call?Name=<Ringg call ID>&event_start=NewCall&sid=...
+```
+
+### Callback parameters
+
+| Parameter | Sent on | Meaning |
+|---|---|---|
+| `Name` | all events | The Ringg call ID passed on dial-out, echoed back unchanged. **Required** — Ringg returns `400` without it. |
+| `event_start=NewCall` | call answered | Ringg replies with the stream instruction that connects the bot. |
+| `sid` | `NewCall` | Ozonetel's call SID. |
+| `PhoneNumber` or `cid` | `NewCall` | Customer number. |
+| `DID`, `did` or `called_number` | `NewCall` | The DID that was dialed. |
+| `event=Stream` | bot leg finished | Ringg replies with hangup, or with a transfer instruction if the assistant requested one. |
+| `event=Hangup` / `Disconnect` | teardown | Ringg acknowledges. |
+
+<Note>
+Ringg serves the stream instruction **once per call** (10-minute guard). A duplicate `NewCall` for the same `Name` gets an empty response instead of a second stream.
+</Note>
+
+## Step 3: Inbound URL
+
+Point the URL node of your inbound flow at:
+
+```text
+https://use1-api.ringg.ai/pc/v1/ozonetel/inbound_call
+```
+
+Accepts **GET and POST**. The Ringg team shares the exact inbound URL for your assistant — configure it as given, without editing the query string.
+
+| Parameter | Sent on | Meaning |
+|---|---|---|
+| `event_start=NewCall` | call arrives | Ringg registers the call and replies with the stream instruction. |
+| `sid` | `NewCall` | Ozonetel's call SID. **Required** — it identifies the call for its whole lifetime. |
+| `cid` (or `PhoneNumber`) | `NewCall` | Caller's number. |
+| `did`, `DID` or `called_number` | `NewCall` | The DID that was called. |
+| `event=Hangup` / `Disconnect` | teardown | Ringg marks the call completed. |
+| `event=Stream` | bot leg finished | Ringg replies with hangup so the flow tears down. |
+
+Ringg answers with a hangup instruction when `sid` is missing, the assistant cannot be resolved, or the SIP extension is not configured.
+
+## Step 4: Status callback URL
+
+Set the campaign's Call-Summary (CDR) push URL to:
+
+```text
+https://use1-api.ringg.ai/pc/v1/ozonetel/status?call_id=<RINGG_CALL_ID>
+```
+
+Accepts **GET and POST**. Ringg reads the parameters from the POST body (JSON or `x-www-form-urlencoded`) when there is one, otherwise from the query string. A `data=<json-string>` envelope is unwrapped automatically.
+
+This callback is what drives Ringg's retry and failure handling. **Without it, unanswered and busy calls are not retried.**
+
+### Identifying the call
+
+- **Outbound** — template the Ringg call ID into the URL as `call_id`, or make sure `Name` is present in the push. If neither is there, the push is ignored.
+- **Inbound** — Ringg uses Ozonetel's own call ID: `monitorUCID`, `ucid`, or `sid`.
+- Direction comes from `Type` (or `call_type` / `direction`). Only `Inbound` counts as inbound; `Manual`, `Preview`, `Progressive`, `Predictive`, `IVR` and an absent value are treated as outbound.
+
+### Call disposition
+
+Send the call disposition in `CustomerStatus`, `DialStatus`, `Status` or `AgentStatus` — Ringg reads whichever is present, most granular first.
+
+The endpoint always returns `200 {"status": "ok"}` so Ozonetel does not retry the push.
+
+## URL reference
+
+| Purpose | Method | URL |
+|---|---|---|
+| Outbound | GET/POST | `https://use1-api.ringg.ai/pc/v1/ozonetel/start_call` |
+| Inbound | GET/POST | `https://use1-api.ringg.ai/pc/v1/ozonetel/inbound_call` |
+| Status callback | GET/POST | `https://use1-api.ringg.ai/pc/v1/ozonetel/status?call_id=<CALL_ID>` |
+
+## Troubleshooting
+
+| Symptom | Likely cause |
+|---|---|
+| Outbound returns `400 Missing call identifier` | The campaign is not echoing `Name` back on the callback. |
+| Outbound returns `400 Runtime config not found` | The callback arrived long after dial-out, or `Name` carries a different value than the call ID Ringg sent. |
+| Inbound answers and immediately hangs up | `sip_number` missing on the Ringg telephony account, missing `sid`, or the inbound URL was edited instead of used as given. |
+| Call connects but there is no audio | Outbound WebSocket traffic to `use1-api.ringg.ai` is blocked from your network. |
+| Unanswered calls are never retried | The status callback is not configured, or it does not carry `call_id`/`Name` for outbound. |
+| Second `NewCall` gets an empty response | Expected. Ringg serves the stream instruction once per call for 10 minutes. |
