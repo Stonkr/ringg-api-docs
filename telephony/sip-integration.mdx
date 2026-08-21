@@ -36,7 +36,6 @@ The integration works in two directions, and most customers enable both:
 | Setting | Value | Media |
 | --- | --- | --- |
 | SIP domain (FQDN) | `sip.ringg.ai` | |
-| SIP ingress IP | `35.227.95.16` | |
 | UDP | `5060` | Plain RTP |
 | TCP | `5060` | Plain RTP |
 | TLS | `5061` | SRTP |
@@ -46,7 +45,7 @@ sip:sip.ringg.ai:5060          UDP or TCP
 sips:sip.ringg.ai:5061         TLS
 ```
 
-`sip.ringg.ai` resolves to `35.227.95.16`. Use the FQDN as the destination in your trunk configuration, and use the IP for firewall and ACL rules.
+Use `sip.ringg.ai` as the destination in your trunk configuration. Ringg shares the underlying ingress and media IP addresses with you during onboarding, for your firewall and ACL rules.
 
 <Note>
 Media encryption follows the signalling transport, and is not configured separately. Connect over **TLS on 5061** and the media is negotiated as **SDES-SRTP** (`RTP/SAVP`) using the `AES_CM_128_HMAC_SHA1_80` cipher suite. Connect over UDP or TCP on 5060 and the media is plain RTP.
@@ -64,12 +63,12 @@ Media is bridged on the same address as signalling.
 
 | Setting | Value |
 | --- | --- |
-| RTP IP | `35.227.95.16` |
+| RTP IP | Shared during onboarding |
 | RTP ports | `10000` to `60000` UDP |
 | Encryption | SDES-SRTP on TLS trunks, plain RTP on UDP and TCP trunks |
 
 <Warning>
-The most common cause of a connected call with no audio is a firewall that permits SIP on 5060 but blocks the RTP range. Allow UDP `10000-60000` in both directions to `35.227.95.16` before testing.
+The most common cause of a connected call with no audio is a firewall that permits SIP on 5060 but blocks the RTP range. Allow UDP `10000-60000` in both directions to the Ringg media addresses before testing.
 </Warning>
 
 ### Codecs
@@ -259,7 +258,7 @@ Keep the UUI payload under roughly 150 bytes. Send identifiers such as a ticket 
 
 ## 6. Outbound: Ringg to your trunk
 
-For outbound calls, Ringg originates the INVITE toward your platform from `35.227.95.16`. Allow that address in your inbound firewall and SIP ACL.
+For outbound calls, Ringg originates the INVITE toward your platform from a fixed set of source addresses. Ringg provides these during onboarding, and you allow them in your inbound firewall and SIP ACL.
 
 ### 6.1 What Ringg needs from you
 
@@ -276,7 +275,7 @@ For outbound calls, Ringg originates the INVITE toward your platform from `35.22
 
 <AccordionGroup>
   <Accordion title="IP based (simplest)">
-    You allowlist `35.227.95.16` on your side and no credentials are exchanged. Recommended where your platform supports it.
+    You allowlist the Ringg source addresses on your side and no credentials are exchanged. Recommended where your platform supports it.
   </Accordion>
   <Accordion title="Digest, on 401 or 407 challenge">
     Your platform challenges the INVITE and Ringg answers using the username and password you supply. If your platform challenges with a realm that is not its hostname, you must tell Ringg the realm, otherwise authentication fails.
@@ -486,7 +485,7 @@ X-API-KEY: $RINGG_API_KEY
 | `403` or call rejected at Ringg | Your signalling IP is not allowlisted | Send Ringg the exact source IP or CIDR you originate from |
 | `422 Session Interval Too Small` | `Session-Expires` below 1800 s | Raise it to 1800 s or more, or omit the header |
 | TLS handshake fails or certificate is rejected | Connecting to the IP instead of the hostname | Use `sips:sip.ringg.ai:5061`. The certificate is issued for `sip.ringg.ai`, not for the IP |
-| Call connects but there is no audio | RTP range blocked | Allow UDP `10000-60000` to and from `35.227.95.16` |
+| Call connects but there is no audio | RTP range blocked | Allow UDP `10000-60000` to and from the Ringg media addresses |
 | No audio on a TLS trunk specifically | SRTP not offered, or an unsupported cipher suite | Ringg negotiates SDES-SRTP with `AES_CM_128_HMAC_SHA1_80`. Confirm your SBC offers `RTP/SAVP` with that suite, and that DTLS is not being forced |
 | Agent does not answer as expected | `X-Agent-ID` missing or invalid | Confirm the UUID is correct and the agent is published |
 | Context variables are empty | `X-Custom-Vars` malformed, or UUI not hex encoded | Check the `&` and `=` separators, and that `encoding=hex` is present |
@@ -510,10 +509,10 @@ X-API-KEY: $RINGG_API_KEY
     - Whether the agent needs to transfer calls, and the destination to transfer to
     - How you will pass context: `X-Custom-Vars`, or the `User-to-User` header if you are on Genesys Cloud
 
-    Ringg confirms the allowlist entry and returns your trunk configuration.
+    Ringg confirms the allowlist entry and returns your trunk configuration, including the SIP ingress and RTP media IP addresses to allow in your firewall.
   </Step>
   <Step title="Apply your firewall rules">
-    Point your trunk at `sip.ringg.ai`, and allow `35.227.95.16` on 5060 UDP and TCP, 5061 TLS, plus UDP `10000-60000` for RTP, in both directions.
+    Point your trunk at `sip.ringg.ai`, and allow the addresses Ringg provided on 5060 UDP and TCP, 5061 TLS, plus UDP `10000-60000` for RTP, in both directions.
   </Step>
   <Step title="Decide how agents are selected">
     Direct with `X-Agent-ID`, per user with `X-CLIENT-ID` and registered callees, or by dialled number.

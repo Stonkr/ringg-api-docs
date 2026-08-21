@@ -135,9 +135,7 @@
           {
             "group": "Numbers",
             "pages": [
-              "api-reference/endpoint/numbers/get-workspace-numbers",
-              "api-reference/endpoint/numbers/buy-number",
-              "api-reference/endpoint/numbers/unrent-number"
+              "api-reference/endpoint/numbers/get-workspace-numbers"
             ]
           },
           {
