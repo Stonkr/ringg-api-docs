@@ -30,8 +30,8 @@ Start with the path that matches your role. Each path links to the smallest usef
 ## 5-minute integration path
 
 <Steps>
-  <Step title="Get an API key" icon="key-round">
-    In the Ringg dashboard, open **API** and copy your workspace API key. Send it on every API request as `X-API-KEY`.
+  <Step title="Generate an API key" icon="key-round">
+    In the Ringg dashboard, open **Settings → API Key** and click **Generate API Key**. The key is shown **only once**, so store it in a secret manager straight away - it cannot be retrieved afterwards, and losing it means regenerating, which immediately revokes the old key and breaks any integration still using it. Send it on every API request as `X-API-KEY`.
   </Step>
   <Step title="Check workspace access" icon="shield-check">
     Call `GET /workspace` to verify the key, workspace, and available credits before starting a call flow.

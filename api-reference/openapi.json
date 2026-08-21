@@ -96,10 +96,6 @@
                         "locked_credits": {
                           "type": "integer",
                           "example": 0
-                        },
-                        "api_key": {
-                          "type": "string",
-                          "example": "7251cb4b--f52b-4b47-a230-f626ecad3e85"
                         }
                       }
                     }
