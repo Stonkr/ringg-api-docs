@@ -203,6 +203,7 @@
         "pages": [
           "telephony/byot-overview",
           "telephony/new-provider-requirements",
+          "telephony/sip-integration",
           "telephony/plivo-integration",
           "telephony/exotel-integration",
           "telephony/twilio-integration",
