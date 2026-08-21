@@ -16,20 +16,20 @@ Ameyo connects to Ringg via a SIP trunk. Ringg handles the bot leg of the call. 
 Point your SIP gateway at:
 
 ```
-35.227.95.16
+sip.ringg.ai
 Port 5060 (UDP/TCP)
 ```
 
 ### Firewall
 
-Whitelist `35.227.95.16` on your SIP gateway for the following:
+Whitelist the Ringg SIP addresses on your SIP gateway for the following:
 
 | Traffic | Port range |
 |---|---|
 | SIP signaling | 5060 (UDP/TCP) |
 | RTP media | 10000 – 60000 (UDP) |
 
-Share your source IPs with the Ringg team and we will whitelist them on our side.
+Ringg provides its SIP signalling and RTP media IP addresses during onboarding. Share your source IPs with the Ringg team and we will whitelist them on our side.
 
 ### INVITE format
 
@@ -39,9 +39,9 @@ Routing is IP-based with no digest auth. Every INVITE must include:
 - The static `X-Workspace-ID` header provided by Ringg
 
 ```sip
-INVITE sip:<extension>@35.227.95.16 SIP/2.0
+INVITE sip:<extension>@sip.ringg.ai SIP/2.0
 From: "00919990152080|d444-69139d35-vce-daf-3883" <sip:<caller>@<your_ip>>;tag=...
-To:   <sip:<extension>@35.227.95.16>
+To:   <sip:<extension>@sip.ringg.ai>
 X-Workspace-ID: <workspace_id>
 ```
 
@@ -72,7 +72,7 @@ When the bot finishes, Ringg POSTs to Ameyo's notification API with the CRT Obje
 ```mermaid
 sequenceDiagram
     participant A as Ameyo PBX
-    participant R as Ringg 35.227.95.16
+    participant R as Ringg sip.ringg.ai
     participant API as Ameyo REST API
 
     A->>R: INVITE From: "00919990152080|d444-...-vce-daf-3883"
@@ -91,12 +91,7 @@ sequenceDiagram
 
 ### Transfer API call
 
-Ringg's outbound API calls come from the following IPs. Whitelist both on your firewall.
-
-```
-35.237.106.174
-34.47.162.59
-```
+Ringg's outbound API calls come from a fixed set of source IPs. Ringg shares these during onboarding, and they must be whitelisted on your firewall.
 
 <CodeGroup>
 ```bash Transfer Request
@@ -130,7 +125,7 @@ curl --location 'https://management.ameyo.app:8887/ameyorestapi/voice/sendAgentR
 ### What Ameyo must do after receiving the transfer request
 
 1. The Ameyo REST server notifies the Ameyo PBX.
-2. The Ameyo PBX sends BYE to `35.227.95.16:5060` to tear down the bot call leg.
+2. The Ameyo PBX sends BYE to the Ringg SIP endpoint on port 5060 to tear down the bot call leg.
 3. Route the customer to a human agent.
 
 ---
@@ -141,7 +136,7 @@ curl --location 'https://management.ameyo.app:8887/ameyorestapi/voice/sendAgentR
 
 <Steps>
   <Step title="SIP Gateway IPs">
-    Share the source IP(s) of your SIP gateway so we can whitelist them on `35.227.95.16`.
+    Share the source IP(s) of your SIP gateway so we can whitelist them on the Ringg SIP ingress.
   </Step>
   <Step title="Confirm INVITE format">
     Confirm the From display name will follow the `"<number>|<crt_id>"` format as shown above.
