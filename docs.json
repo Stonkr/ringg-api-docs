@@ -135,9 +135,7 @@
           {
             "group": "Numbers",
             "pages": [
-              "api-reference/endpoint/numbers/get-workspace-numbers",
-              "api-reference/endpoint/numbers/buy-number",
-              "api-reference/endpoint/numbers/unrent-number"
+              "api-reference/endpoint/numbers/get-workspace-numbers"
             ]
           },
           {
@@ -203,6 +201,7 @@
         "pages": [
           "telephony/byot-overview",
           "telephony/new-provider-requirements",
+          "telephony/sip-integration",
           "telephony/plivo-integration",
           "telephony/exotel-integration",
           "telephony/twilio-integration",
