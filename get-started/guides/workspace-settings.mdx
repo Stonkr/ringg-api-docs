@@ -50,12 +50,21 @@ The table shows each member's name, email, permission level, owner status, and i
 
 Use **API Key** when engineers need to connect Ringg AI to your product, CRM, website, or data systems.
 
-### Copy the API Key
+### Generate the API Key
 
 1. Click **API Key** in the left sidebar.
-2. Click the eye icon only if you need to reveal the key.
-3. Click the copy icon to copy it.
+2. Click **Generate API Key** (or **Regenerate**, if a key already exists).
+3. Copy the key from the dialog and store it somewhere secure straight away.
 4. Send it to the developer through your company's approved secret-sharing process.
+
+<Warning>
+  The key is shown **only once**, at the moment it is generated. Afterwards the
+  screen shows only a masked form such as `ringg_live_••••••••2e63`, and the full
+  value cannot be retrieved. If you lose it, regenerate — which immediately
+  revokes the old key and breaks any integration still using it.
+</Warning>
+
+Only the workspace owner can generate or regenerate a key.
 
 The API key is sent as the `X-API-KEY` header in Ringg AI API requests.
 
