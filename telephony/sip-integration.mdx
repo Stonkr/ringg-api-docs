@@ -390,7 +390,7 @@ Content-Type: multipart/form-data
 | `column_mapping` | JSON string | Required | Maps Ringg field names to your CSV column names. Must include `user_id` |
 | `agent_id` | string (UUID) | Optional | Assigns one agent to every callee in the upload |
 | `transliterate_callee_name` | bool | Optional | Transliterates `callee_name` into the agent's language |
-| `transliterate_fields` | JSON array | Optional | Additional fields to transliterate |
+| `transliterate_fields` | JSON array | Optional | Additional fields to transliterate. Use the **agent variable names**, meaning the keys on the left of `column_mapping`, not your CSV column names |
 
 <CodeGroup>
 ```csv callees.csv
@@ -408,6 +408,12 @@ curl -X POST https://prod-api.ringg.ai/ca/api/v0/inbound-callees/upload \
 ```
 </CodeGroup>
 
+<Warning>
+`transliterate_fields` matches on the **agent variable name**, not the CSV column name. These are the keys on the left of `column_mapping`.
+
+With `column_mapping` set to `{"user_id": "phone", "callee_name": "name", "account_id": "acc_no"}`, transliterating the customer's name means passing `["callee_name"]`, not `["name"]`. A value that does not match a variable name is silently ignored and nothing is transliterated.
+</Warning>
+
 ### 8.2 Upload via JSON
 
 ```
@@ -421,7 +427,7 @@ Content-Type: application/json
 | `callees` | array of objects | Required | Each object needs `user_id`. Every other key becomes a custom variable |
 | `agent_id` | string (UUID) | Optional | Applies to all callees. A per callee `agent_id` overrides it |
 | `transliterate_callee_name` | bool | Optional | Transliterates `callee_name` |
-| `transliterate_fields` | array of strings | Optional | Additional fields to transliterate |
+| `transliterate_fields` | array of strings | Optional | Additional fields to transliterate. Use the **agent variable names**, the same keys you set on each callee object |
 
 ```json
 {
