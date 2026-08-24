@@ -215,6 +215,12 @@
         "pages": [
           "external-integrations/truefoundry-integration"
         ]
+      },
+      {
+        "group": "Privacy and Compliance",
+        "pages": [
+          "privacy-and-compliance/security-and-compliance"
+        ]
       }
     ]
   },
