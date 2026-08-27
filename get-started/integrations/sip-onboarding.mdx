@@ -1,0 +1,264 @@
+---
+title: "SIP Trunk Onboarding"
+description: "Everything you need to establish a SIP trunk connection with Ringg, including standard SIP and secure SIP (TLS + SRTP)"
+"og:title": "SIP Trunk Onboarding Guide | Ringg AI"
+---
+
+This guide provides all the information needed for new clients to establish a SIP trunk connection with Ringg. It covers both standard SIP (UDP/TCP) and secure SIP (TLS + SRTP).
+
+---
+
+## Ringg SIP Infrastructure Details
+
+### Server IPs
+
+| IP Address | Region | Purpose |
+| --- | --- | --- |
+| **35.211.140.39** | All regions | Primary — Point your inbound trunk here |
+| **34.23.58.26** | KSA | Primary — Point your inbound trunk here |
+| **35.207.251.56** | — | Secondary |
+
+<Note>
+For inbound use cases, point your trunk to **35.211.140.39** (all regions) or **34.23.58.26** (KSA) based on your region.
+</Note>
+
+### Ports and Protocols
+
+| Protocol | Port | Transport | Use Case |
+| --- | --- | --- | --- |
+| SIP (UDP) | 5060 | UDP | Standard SIP signaling |
+| SIP (TCP) | 5060 | TCP | Standard SIP signaling |
+| SIPS (TLS) | 5061 | TCP | Encrypted SIP signaling |
+
+### RTP Media Ports
+
+| Port Range | Protocol | Purpose |
+| --- | --- | --- |
+| 10000–20000 | UDP | RTP / SRTP media streams |
+| 50000–60000 | UDP | RTP / SRTP media streams (overflow) |
+
+### Supported Codecs
+
+| Codec | Bitrate |
+| --- | --- |
+| G.711 alaw | 64 kbps |
+| G.711 ulaw | 64 kbps |
+
+### DTMF
+
+- RFC 4733 (out-of-band)
+
+---
+
+## Security Options
+
+Ringg supports two modes of SIP connectivity:
+
+### Option A: Standard SIP (UDP/TCP)
+
+Standard unencrypted SIP signaling on port **5060**.
+
+- Transport: UDP or TCP
+- No encryption on signaling or media
+- Simpler setup, suitable for private network connections
+
+### Option B: Secure SIP (TLS + SRTP) — Recommended
+
+Encrypted SIP signaling (TLS) and encrypted media (SRTP).
+
+| Component | Details |
+| --- | --- |
+| **SIP Signaling** | TLS v1.2 on port 5061 |
+| **Media Encryption** | SRTP with SDES key exchange |
+| **Certificate** | Self-signed (10-year validity) |
+| **SIP URI Format** | `sips:extension@<server_ip>:5061` |
+
+### Certificate Details
+
+| Field | Value |
+| --- | --- |
+| Common Name (CN) | ringg-voip-server |
+| Organization | Ringg |
+| Location | North Charleston, South Carolina, US |
+| Key Type | RSA 2048-bit |
+| Signature Algorithm | SHA256WithRSAEncryption |
+
+<Note>
+Our certificate is self-signed. You may need to disable strict certificate verification or add our certificate to your trust store. We can provide the public certificate file upon request.
+</Note>
+
+---
+
+## What We Need From You
+
+Please provide the following information to complete the SIP trunk setup.
+
+### IP Whitelisting (Required)
+
+| # | Information Needed | Description |
+| --- | --- | --- |
+| 1 | **Your SIP Server IP(s)** | IP addresses that will send/receive SIP traffic. These will be whitelisted on our firewall. |
+| 2 | **Your Media Server IP(s)** | If different from SIP server IPs. Used for RTP/SRTP media streams. |
+
+### Connection Details (Required)
+
+| # | Information Needed | Description |
+| --- | --- | --- |
+| 3 | **FQDN** | Your SIP server fully qualified domain name (if applicable) |
+| 4 | **SIP Port** | Your SIP port (default: 5060 for UDP/TCP, 5061 for TLS) |
+| 5 | **Transport Protocol** | UDP, TCP, or TLS |
+| 6 | **Media Encryption** | None, or SRTP with SDES |
+| 7 | **Preferred Codec** | alaw or ulaw |
+
+### Authentication (If Applicable)
+
+| # | Information Needed | Description |
+| --- | --- | --- |
+| 8 | **Auth Required?** | Yes / No |
+| 9 | **Username** | SIP authentication username |
+| 10 | **Password** | SIP authentication password |
+| 11 | **Realm** | SIP authentication realm (if applicable) |
+
+<Note>
+For bidirectional trunks (inbound + outbound), we will share a common username and password.
+</Note>
+
+### Call Routing (Required)
+
+| # | Information Needed | Description |
+| --- | --- | --- |
+| 12 | **Direction** | Inbound only, Outbound only, or Both |
+| 13 | **DID Numbers** | Numbers assigned for inbound routing (if applicable) |
+| 14 | **Caller ID** | Caller ID number to use for outbound calls (if applicable) |
+
+### Custom SIP Headers (If Applicable)
+
+If you send or expect custom SIP headers for call routing or metadata, please specify:
+
+| # | Information Needed | Description |
+| --- | --- | --- |
+| 15 | **Custom Headers** | List of any custom SIP headers (e.g., `X-Agent-ID`, `X-Call-ID`, `X-CLIENT-ID`) |
+| 16 | **Header Format** | Expected format/values for each header |
+
+### PJSIP / SIP Configuration (If Available)
+
+If you can share your SIP configuration details, it helps us set up the trunk faster:
+
+| # | Information Needed | Description |
+| --- | --- | --- |
+| 17 | **SIP Stack** | What SIP stack do you use? (e.g., Asterisk, FreeSWITCH, Kamailio, custom) |
+| 18 | **Registration Required?** | Do you require SIP REGISTER? Yes / No |
+| 19 | **Direct Media** | Do you support direct media (re-INVITE)? Yes / No |
+| 20 | **NAT Traversal** | Are you behind NAT? Do you need rport / symmetric RTP? |
+
+---
+
+## Firewall Rules
+
+### Your Side (Outbound from you to Ringg)
+
+| Direction | Protocol | Destination IP | Port | Purpose |
+| --- | --- | --- | --- | --- |
+| Outbound | TCP | 35.211.140.39 | 5060 | SIP Signaling (TCP) |
+| Outbound | UDP | 35.211.140.39 | 5060 | SIP Signaling (UDP) |
+| Outbound | TCP | 35.211.140.39 | 5061 | SIP Signaling (TLS) |
+| Outbound | UDP | 35.211.140.39 | 10000–20000 | RTP/SRTP Media |
+| Outbound | UDP | 35.211.140.39 | 50000–60000 | RTP/SRTP Media (overflow) |
+
+### Our Side (We will whitelist your IPs)
+
+We will add your provided IPs to our firewall rules for the same ports listed above.
+
+---
+
+## Testing and Verification
+
+### TLS Connectivity Test
+
+To verify TLS connectivity from your side:
+
+```bash
+openssl s_client -connect 35.211.140.39:5061
+```
+
+### SIP OPTIONS Ping
+
+Send a SIP OPTIONS request to verify basic SIP connectivity:
+
+```bash
+# Using sipsak (if available)
+sipsak -s sip:test@35.211.140.39:5060 -v
+
+# For TLS
+sipsak -s sips:test@35.211.140.39:5061 -v
+```
+
+---
+
+## Example PJSIP Configuration (For Reference)
+
+### Standard SIP Trunk (UDP/TCP)
+
+```text
+[RINGG_TRUNK]
+type=endpoint
+transport=transport-udp          ; or transport-tcp
+context=from-ringg
+disallow=all
+allow=alaw,ulaw
+aors=RINGG_TRUNK
+direct_media=no
+rtp_symmetric=yes
+force_rport=yes
+dtmf_mode=rfc4733
+
+[RINGG_TRUNK]
+type=aor
+contact=sip:35.211.140.39:5060
+qualify_frequency=30
+
+[RINGG_TRUNK]
+type=identify
+endpoint=RINGG_TRUNK
+match=35.211.140.39
+```
+
+### Secure SIP Trunk (TLS + SRTP)
+
+```text
+[RINGG_TRUNK_TLS]
+type=endpoint
+transport=transport-tls
+context=from-ringg
+disallow=all
+allow=alaw,ulaw
+aors=RINGG_TRUNK_TLS
+direct_media=no
+rtp_symmetric=yes
+force_rport=yes
+media_encryption=sdes            ; SRTP with SDES key exchange
+dtmf_mode=rfc4733
+
+[RINGG_TRUNK_TLS]
+type=aor
+contact=sips:35.211.140.39:5061
+qualify_frequency=30
+
+[RINGG_TRUNK_TLS]
+type=identify
+endpoint=RINGG_TRUNK_TLS
+match=35.211.140.39
+```
+
+---
+
+## Next Steps
+
+Once you have gathered all the required information from the sections above and completed the setup on your side, send a single email to [admin@ringg.ai](mailto:admin@ringg.ai) with the following:
+
+1. All details from the **"What We Need From You"** section (IP addresses, connection details, authentication, call routing, custom headers, and SIP configuration)
+2. Confirmation that you have completed the firewall rules on your side
+
+After we receive your details, we will configure the SIP trunk on our end and then coordinate a test call with you.
+
+For any questions during the setup process, reach out to us at [admin@ringg.ai](mailto:admin@ringg.ai).
