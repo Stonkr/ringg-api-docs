@@ -5150,12 +5150,6 @@
                             "description": "Suppression strength, 0-100 (default: 80).",
                             "default": 80,
                             "example": 95
-                          },
-                          "method": {
-                            "type": "string",
-                            "description": "Filter implementation (default: krisp_viva_filter).",
-                            "default": "krisp_viva_filter",
-                            "example": "krisp_viva_filter"
                           }
                         },
                         "example": {
