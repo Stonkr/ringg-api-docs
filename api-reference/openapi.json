@@ -5073,6 +5073,169 @@
                       "company",
                       "lead_source"
                     ]
+                  },
+                  "call_config": {
+                    "type": "object",
+                    "description": "(Optional) Call behaviour for the agent. Every field is optional — omit the block, or any key in it, to accept the default. These are the same keys the settings are stored under, so what you send here is what the agent runs with.",
+                    "properties": {
+                      "max_call_length": {
+                        "type": "integer",
+                        "minimum": 10,
+                        "maximum": 3600,
+                        "description": "Hard cap on call duration in seconds (default: 240).",
+                        "default": 240,
+                        "example": 600
+                      },
+                      "idle_timeout_warning": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 600,
+                        "description": "Seconds of caller silence before the agent checks in (“Are you still there?”). Must be less than idle_timeout_end; use 0 to disable the check-in (default: 5).",
+                        "default": 5,
+                        "example": 8
+                      },
+                      "idle_timeout_end": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 600,
+                        "description": "Seconds of caller silence before the call is dropped. Must be greater than idle_timeout_warning (default: 10).",
+                        "default": 10,
+                        "example": 20
+                      },
+                      "noise_filter_config": {
+                        "type": "object",
+                        "description": "Background-noise cancellation applied to the caller's audio.",
+                        "properties": {
+                          "filter_noise": {
+                            "type": "boolean",
+                            "description": "Turn noise cancellation on (default: false).",
+                            "default": false,
+                            "example": true
+                          },
+                          "noise_suppression_level": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 100,
+                            "description": "Suppression strength, 0-100 (default: 80).",
+                            "default": 80,
+                            "example": 95
+                          },
+                          "method": {
+                            "type": "string",
+                            "description": "Filter implementation (default: krisp_viva_filter).",
+                            "default": "krisp_viva_filter",
+                            "example": "krisp_viva_filter"
+                          }
+                        },
+                        "example": {
+                          "filter_noise": true,
+                          "noise_suppression_level": 95
+                        }
+                      },
+                      "voicemail": {
+                        "type": "object",
+                        "description": "Voicemail / answering-machine handling.",
+                        "properties": {
+                          "detect": {
+                            "type": "boolean",
+                            "description": "Detect that the call reached a voicemail (default: true).",
+                            "default": true,
+                            "example": true
+                          },
+                          "action": {
+                            "type": "string",
+                            "enum": [
+                              "end",
+                              "summarise",
+                              "static_message"
+                            ],
+                            "description": "What the agent does once it detects a voicemail: hang up, leave a generated summary, or speak static_message (default: end).",
+                            "default": "end",
+                            "example": "end"
+                          },
+                          "retry": {
+                            "type": "boolean",
+                            "description": "Re-queue the call for a later attempt after hitting voicemail (default: true).",
+                            "default": true,
+                            "example": true
+                          },
+                          "static_message": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Spoken verbatim when action is static_message. Ignored otherwise.",
+                            "example": "Sorry we missed you, please call us back."
+                          }
+                        },
+                        "example": {
+                          "detect": true,
+                          "action": "end",
+                          "retry": true
+                        }
+                      },
+                      "background_audio_config": {
+                        "type": "object",
+                        "description": "Ambient audio mixed under the agent's speech. Omit the whole object to keep background audio off.",
+                        "properties": {
+                          "audio_id": {
+                            "type": "string",
+                            "enum": [
+                              "office_ambience"
+                            ],
+                            "description": "(Required within this object) Track to play. office_ambience is the only track available.",
+                            "example": "office_ambience"
+                          },
+                          "volume": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1,
+                            "description": "Playback level as a fraction between 0.0 and 1.0 — not a percentage (default: 0.5).",
+                            "default": 0.5,
+                            "example": 0.35
+                          },
+                          "mixing": {
+                            "type": "boolean",
+                            "description": "Mix the track under the agent's speech (default: true).",
+                            "default": true,
+                            "example": true
+                          },
+                          "loop": {
+                            "type": "boolean",
+                            "description": "Repeat the track for the whole call (default: true).",
+                            "default": true,
+                            "example": true
+                          }
+                        },
+                        "example": {
+                          "audio_id": "office_ambience",
+                          "volume": 0.35
+                        }
+                      },
+                      "mute_during_intro": {
+                        "type": "boolean",
+                        "description": "When true the caller cannot interrupt the intro message — the agent finishes speaking it before it starts listening. Set false to make the first message interruptible (default: true).",
+                        "default": true,
+                        "example": false
+                      }
+                    },
+                    "example": {
+                      "max_call_length": 600,
+                      "idle_timeout_warning": 8,
+                      "idle_timeout_end": 20,
+                      "noise_filter_config": {
+                        "filter_noise": true,
+                        "noise_suppression_level": 95
+                      },
+                      "voicemail": {
+                        "detect": true,
+                        "action": "end",
+                        "retry": true
+                      },
+                      "background_audio_config": {
+                        "audio_id": "office_ambience",
+                        "volume": 0.35
+                      },
+                      "mute_during_intro": false
+                    }
                   }
                 }
               }
@@ -5081,7 +5244,7 @@
         },
         "responses": {
           "200": {
-            "description": "Agent created successfully.",
+            "description": "Agent created successfully. Returns the agent id and the version_id of the version that was created.",
             "content": {
               "application/json": {
                 "schema": {
@@ -5103,6 +5266,11 @@
                           "type": "string",
                           "description": "The version slug of the agent",
                           "example": "v1"
+                        },
+                        "version_id": {
+                          "type": "string",
+                          "description": "ID of the version created for this agent. Pass this to the version-scoped APIs.",
+                          "example": "9c2b1f0a-77de-4a1e-9b4e-2f9d5c1a3e88"
                         },
                         "created_at": {
                           "type": "string",

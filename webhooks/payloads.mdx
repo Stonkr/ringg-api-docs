@@ -395,6 +395,53 @@ Triggered once all post-call processing is finished — recording uploaded, tran
 }
 ```
 
+## Linking Retries and Callbacks to the Original Call
+
+Some calls are placed automatically on behalf of an earlier one — a scheduled callback, a retry
+after a failed attempt, or a redial after voicemail was detected. These are **separate calls with
+their own `call_id`**, and they emit their own full set of webhooks.
+
+To let you stitch them back together, such a call carries **`parent_call_id`**: the `call_id` of
+the call it was created from.
+
+```json
+{
+  "event_type": "call_completed",
+  "call_id": "9f2c1e77-4b3a-4c19-9d84-2a5e7b61f0c3",
+  "parent_call_id": "4b30f5dc-7f86-4e4c-a3aa-15c01138559b",
+  "status": "completed",
+  "sub_status": "ACCEPTED"
+}
+```
+
+<Note>
+**The key is always present.** For a call that was dialled directly it is sent as `null`, the
+same as every other optional field — you never have to distinguish "no parent" from "an older
+payload that didn't carry the field".
+</Note>
+
+Behaviour worth knowing:
+
+- It appears on **every** event type — `call_started`, `call_completed`, `recording_completed`,
+  both analysis events, and `all_processing_completed` — so you can link a child call as soon as
+  it starts, without waiting for post-call processing.
+- It is `null`, never absent, when there is no parent — so a plain `payload["parent_call_id"]`
+  read is safe, and `parent_call_id != null` is a complete test for "this call came from another".
+- It is **never equal to the event's own `call_id`**. If you were previously deriving parentage
+  some other way, note that a call is never its own parent in this field.
+- **The chain shape depends on why the call was placed, so do not assume either one:**
+  - *Scheduled callbacks* are **flat** — every callback attempt for a call carries the same
+    `parent_call_id`, pointing at the original call. Two callbacks in a row are siblings, not
+    parent and child.
+  - *Voicemail redials* are **nested** — each attempt points at the attempt immediately before
+    it, so a chain can be several levels deep.
+
+  To find the original call reliably under both shapes, follow `parent_call_id` upward until the
+  field is absent, and bound the walk so a long redial chain cannot loop.
+- A `parent_call_id` does **not** by itself mean "callback". Retries and voicemail redials carry
+  one too. There is no separate flag on the webhook to distinguish them; use the call-history API
+  if you need the specific category.
+
 ## Status & Sub-Status Reference
 
 Every call event carries a `status` and a `sub_status` (except `recording_completed`, which carries
@@ -543,6 +590,7 @@ app.listen(3000);
 | `timestamp` | string | ISO 8601 time the event was generated (UTC). |
 | `version` | string | Event schema version, e.g. `"1.0"`. |
 | `call_id` | string | Unique identifier for the call |
+| `parent_call_id` | string \| null | ID of the call this one was created from — a scheduled callback, a retry, or a voicemail redial. `null` for a call that was dialled directly. See [Linking Retries and Callbacks to the Original Call](#linking-retries-and-callbacks-to-the-original-call). |
 | `call_sid` | string | Telephony provider's call identifier (e.g., Twilio Call SID, Plivo Call UUID). `null` until the call is actually placed (so `null` on `call_started`). |
 | `agent_id` | string | ID of the AI agent that handled the call |
 | `workspace_id` | string | ID of your workspace |

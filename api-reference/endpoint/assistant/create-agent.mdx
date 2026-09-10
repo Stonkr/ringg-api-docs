@@ -10,6 +10,56 @@ Create a new assistant programmatically. This endpoint is best for productized s
 - Create one assistant per team, location, or campaign type.
 - Provision assistants from your own admin backend.
 
+## Call settings
+
+Pass `call_config` to fix the assistant's call behaviour at creation time instead of following up in the dashboard. Every field is optional — omit the block, or any key in it, to accept the default.
+
+| Field | Purpose | Default |
+|---|---|---|
+| `max_call_length` | Hard cap on call duration, in seconds. | `240` |
+| `idle_timeout_warning` | Seconds of caller silence before the assistant checks in ("Are you still there?"). `0` disables the check-in. | `5` |
+| `idle_timeout_end` | Seconds of caller silence before the call is dropped. | `10` |
+| `noise_filter_config` | Background-noise cancellation on the caller's audio: `filter_noise` to switch it on, `noise_suppression_level` (0-100) for strength. | off, level `80` |
+| `voicemail` | Voicemail handling: `detect` to switch detection on, `action` for what happens next (`end`, `summarise`, `static_message`), `retry` to re-queue the call for a later attempt. | detect and retry on, action `end` |
+| `background_audio_config` | Ambient audio mixed under the assistant's speech: `audio_id` (`office_ambience` is the only track) and `volume` as a `0.0`-`1.0` fraction. Omit the object to keep it off. | off |
+| `mute_during_intro` | When `true`, the caller cannot interrupt the intro message. Set `false` to make the first message interruptible. | `true` |
+
+```json
+{
+  "agent_name": "Support Assistant",
+  "introduction_and_objective": "You are a support agent for Acme Corp.",
+  "response_guidelines": "Be polite, helpful, and concise.",
+  "task": "Help customers with their orders.",
+  "primary_language": "en-IN",
+  "voice_id": "your-voice-id",
+  "intro_message": "Hello, this is Sarah from Acme Corp.",
+  "call_config": {
+    "max_call_length": 600,
+    "idle_timeout_warning": 8,
+    "idle_timeout_end": 20,
+    "noise_filter_config": { "filter_noise": true, "noise_suppression_level": 95 },
+    "voicemail": { "detect": true, "action": "end", "retry": true },
+    "background_audio_config": { "audio_id": "office_ambience", "volume": 0.35 },
+    "mute_during_intro": false
+  }
+}
+```
+
+<Warning>
+`idle_timeout_warning` must be **less than** `idle_timeout_end`, otherwise the request is rejected. If the warning fires at or after the hangup, the check-in can never be spoken. Use `0` to disable the check-in and keep only the hangup.
+</Warning>
+
+<Note>
+Two easy ones to get backwards:
+
+- `background_audio_config.volume` is a fraction between `0.0` and `1.0`, not a percentage. `50` is rejected; send `0.5`.
+- `mute_during_intro` reads as the opposite of "interruptible". `true` (the default) means the caller **cannot** cut in over the intro message.
+</Note>
+
+<Note>
+`call_config` is accepted on create only. To change these settings afterwards, use the dashboard — the [edit assistant](/api-reference/endpoint/assistant/edit-assistant) endpoint does not accept them yet, and they are not returned by [get assistant](/api-reference/endpoint/assistant/get-assistant-by-id).
+</Note>
+
 ## Integration notes
 
 - For most teams, creating the assistant in the dashboard first is simpler.
