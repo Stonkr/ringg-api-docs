@@ -16,6 +16,7 @@ Pass `call_config` to fix the assistant's call behaviour at creation time instea
 
 | Field | Purpose | Default |
 |---|---|---|
+| `call_time` | Daily window the assistant may place calls in: `call_start_time` and `call_end_time` as `HH:MM` 24-hour, plus the `timezone` they are expressed in. | `09:00`-`21:00` `Asia/Kolkata` |
 | `max_call_length` | Hard cap on call duration, in seconds. | `240` |
 | `idle_timeout_warning` | Seconds of caller silence before the assistant checks in ("Are you still there?"). `0` disables the check-in. | `5` |
 | `idle_timeout_end` | Seconds of caller silence before the call is dropped. | `10` |
@@ -34,6 +35,11 @@ Pass `call_config` to fix the assistant's call behaviour at creation time instea
   "voice_id": "your-voice-id",
   "intro_message": "Hello, this is Sarah from Acme Corp.",
   "call_config": {
+    "call_time": {
+      "call_start_time": "10:00",
+      "call_end_time": "18:30",
+      "timezone": "America/New_York"
+    },
     "max_call_length": 600,
     "idle_timeout_warning": 8,
     "idle_timeout_end": 20,
@@ -44,6 +50,35 @@ Pass `call_config` to fix the assistant's call behaviour at creation time instea
   }
 }
 ```
+
+### Calling window and timezones
+
+Outside the window an outbound call is not dialled immediately, and retries are pushed to the next opening. The window is per assistant; a campaign or an individual call can override it.
+
+**Any IANA timezone is supported** — this is not India-only. `Asia/Kolkata` is merely the default when you omit it.
+
+```json
+{ "call_time": { "call_start_time": "09:00", "call_end_time": "17:30", "timezone": "America/New_York" } }
+{ "call_time": { "call_start_time": "08:00", "call_end_time": "20:00", "timezone": "Europe/London" } }
+{ "call_time": { "call_start_time": "10:00", "call_end_time": "19:00", "timezone": "Asia/Dubai" } }
+{ "call_time": { "call_start_time": "09:00", "call_end_time": "18:00", "timezone": "Australia/Sydney" } }
+{ "call_time": { "call_start_time": "00:00", "call_end_time": "23:59", "timezone": "UTC" } }
+```
+
+A window may cross midnight — `"call_start_time": "22:00"` with `"call_end_time": "06:00"` is a valid overnight window.
+
+<Warning>
+**Always use the full `Region/City` form.** Abbreviations behave in two different, equally unhelpful ways:
+
+- `IST`, `PST` and `CST` are **rejected** — they are not IANA zones.
+- `EST`, `MST`, `HST` and `GMT` are **accepted, and are a trap**. They are fixed-offset zones that never observe daylight saving, so an assistant on `EST` runs an hour behind actual New York time for the ~8 months that `America/New_York` is on EDT. Use `America/New_York`, not `EST`.
+
+Times must be zero-padded 24-hour: send `09:00`, not `9:00` or `9:00 AM`. Both the window and the timezone are validated when you create the assistant, so a bad value fails the create call rather than every call the assistant later tries to place.
+</Warning>
+
+<Note>
+`scheduled_at` is **not** accepted inside `call_time` here. It schedules one specific call, so on an assistant it would pin every call that assistant ever places to the same timestamp. Pass it per call, on the [individual call](/api-reference/endpoint/calling/initiate-individual-call) endpoint's own `call_config.call_time`.
+</Note>
 
 <Warning>
 `idle_timeout_warning` must be **less than** `idle_timeout_end`, otherwise the request is rejected. If the warning fires at or after the hangup, the check-in can never be spoken. Use `0` to disable the check-in and keep only the hangup.
