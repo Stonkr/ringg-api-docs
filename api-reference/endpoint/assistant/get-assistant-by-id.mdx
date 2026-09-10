@@ -10,6 +10,27 @@ Fetch details for one assistant. Use this after an operator selects an assistant
 - Inspect call direction, prompt configuration, variables, and assigned resources.
 - Verify the assistant is the one your integration intended to use.
 
+## Inbound and outbound prompts
+
+An assistant with an `agent_type` of `outbound_inbound` holds two separate prompt configurations, one per direction. This endpoint returns one of them per request, selected by the `type` query parameter, which defaults to `outbound`. Retrieving the full configuration therefore takes two requests.
+
+```bash
+# Outbound prompt (default)
+curl --request GET "https://prod-api.ringg.ai/ca/api/v0/agent/$AGENT_ID?type=outbound" \
+  --header "X-API-KEY: $RINGG_API_KEY"
+
+# Inbound prompt
+curl --request GET "https://prod-api.ringg.ai/ca/api/v0/agent/$AGENT_ID?type=inbound" \
+  --header "X-API-KEY: $RINGG_API_KEY"
+```
+
+`version_details` in the response is keyed by version ID, so the prompt is at `agents.version_details.<version_id>.agent_config.agent_prompt`. Passing `type=inbound` also switches `intro_message` on that object to the inbound greeting.
+
+## Integration notes
+
+- Read `agents.agent_type` to decide whether a second request is worthwhile. `type` is ignored for assistants that handle only one direction, and an assistant whose `agent_type` is `inbound` already returns its inbound prompt by default.
+- If both requests return the same prompt for a bidirectional assistant, its inbound configuration has never been customised. The API falls back to the outbound configuration rather than returning an empty prompt.
+
 ## Related endpoints
 
 - [List assistants](/api-reference/endpoint/assistant/get-assistants)

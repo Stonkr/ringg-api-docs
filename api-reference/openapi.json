@@ -1255,6 +1255,21 @@
               "type": "string",
               "example": "830f767a-397e-4b39-82ff-235cd344e2f9"
             }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Which configuration to return for assistants that handle both directions (`agent_type` of `outbound_inbound`). Defaults to `outbound`, so the inbound prompt must be requested explicitly. Ignored for assistants that handle only one direction. If the assistant has no separate inbound configuration, the outbound one is returned.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "outbound",
+                "inbound"
+              ],
+              "default": "outbound",
+              "example": "inbound"
+            }
           }
         ],
         "responses": {
