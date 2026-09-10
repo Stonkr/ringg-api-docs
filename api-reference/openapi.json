@@ -5078,6 +5078,37 @@
                     "type": "object",
                     "description": "(Optional) Call behaviour for the agent. Every field is optional — omit the block, or any key in it, to accept the default. These are the same keys the settings are stored under, so what you send here is what the agent runs with.",
                     "properties": {
+                      "call_time": {
+                        "type": "object",
+                        "description": "Daily window the agent may place calls in. Outside it an outbound call is not dialled immediately, and retries are pushed to the next opening. Applies to the agent's own calls; a campaign or an individual call can override it.",
+                        "properties": {
+                          "call_start_time": {
+                            "type": "string",
+                            "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                            "description": "Earliest local time the agent may dial, 'HH:MM' 24-hour (default: 09:00).",
+                            "default": "09:00",
+                            "example": "10:00"
+                          },
+                          "call_end_time": {
+                            "type": "string",
+                            "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                            "description": "Latest local time the agent may dial, 'HH:MM' 24-hour. The window may cross midnight (e.g. 22:00-06:00) (default: 21:00).",
+                            "default": "21:00",
+                            "example": "18:30"
+                          },
+                          "timezone": {
+                            "type": "string",
+                            "description": "IANA timezone the window is expressed in. **Any IANA zone is supported**, not just India - e.g. America/New_York, Europe/London, Asia/Dubai, Asia/Riyadh, Australia/Sydney, UTC. Always use the full Region/City form: 'IST'/'PST' are rejected outright, while 'EST'/'MST'/'GMT' are accepted but are fixed-offset zones that never observe daylight saving (an assistant on 'EST' runs an hour behind New York for most of the year) (default: Asia/Kolkata).",
+                            "default": "Asia/Kolkata",
+                            "example": "America/New_York"
+                          }
+                        },
+                        "example": {
+                          "call_start_time": "10:00",
+                          "call_end_time": "18:30",
+                          "timezone": "America/New_York"
+                        }
+                      },
                       "max_call_length": {
                         "type": "integer",
                         "minimum": 10,
@@ -5218,6 +5249,11 @@
                       }
                     },
                     "example": {
+                      "call_time": {
+                        "call_start_time": "10:00",
+                        "call_end_time": "18:30",
+                        "timezone": "America/New_York"
+                      },
                       "max_call_length": 600,
                       "idle_timeout_warning": 8,
                       "idle_timeout_end": 20,
