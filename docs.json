@@ -2,10 +2,11 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "maple",
   "name": "Ringg AI",
+  "description": "Developer docs for Ringg AI",
   "colors": {
-    "primary": "#9AADEC",
-    "light": "#9AADEC",
-    "dark": "#9AADEC"
+    "primary": "#0A0A0B",
+    "light": "#FFFFFF",
+    "dark": "#0A0A0B"
   },
   "favicon": "/favicon.svg",
   "styling": {
@@ -304,14 +305,41 @@
     {
       "source": "/get-started/webhooks/error-handling",
       "destination": "/webhooks/error-handling"
+    },
+    {
+      "source": "/get-started/overview/platform-overview",
+      "destination": "/get-started/overview/platform"
+    },
+    {
+      "source": "/get-started/overview/dashboard-overview",
+      "destination": "/get-started/overview/dashboard"
+    },
+    {
+      "source": "/get-started/overview/ringg-overview",
+      "destination": "/get-started/overview/ringg-ai"
+    },
+    {
+      "source": "/get-started/guides/view-history",
+      "destination": "/get-started/guides/view-call-history"
     }
   ],
   "seo": {
     "metatags": {
-      "og:description": "Setup AI calls for your business with Ringg AI API",
       "canonical": "https://docs.ringg.ai"
     },
-    "indexing": "all"
+    "organization": {
+      "id": "https://www.ringg.ai/#organization",
+      "legalName": "Stoic AI Private Limited",
+      "url": "https://www.ringg.ai",
+      "logo": "https://assets.ringg.ai/images/logo/logo.svg",
+      "sameAs": [
+        "https://x.com/ringg_ai",
+        "https://www.linkedin.com/company/ringg",
+        "https://www.youtube.com/@RinggAI",
+        "https://www.instagram.com/ringg_ai",
+        "https://discord.gg/YuEnb8Vsca"
+      ]
+    }
   },
   "logo": {
     "light": "/logo/light.svg",
@@ -349,8 +377,10 @@
   "footer": {
     "socials": {
       "x": "https://x.com/ringg_ai",
-      "instagram": "https://www.instagram.com/desivocaldotcom/",
-      "discord": "https://discord.com/invite/nWXREVz2vy",
+      "linkedin": "https://www.linkedin.com/company/ringg",
+      "youtube": "https://www.youtube.com/@RinggAI",
+      "instagram": "https://www.instagram.com/ringg_ai",
+      "discord": "https://discord.gg/YuEnb8Vsca",
       "github": "https://github.com/Stonkr/ringg-api-docs"
     }
   },
@@ -360,6 +390,7 @@
   "contextual": {
     "options": [
       "copy",
+      "view",
       "chatgpt",
       "claude"
     ]
