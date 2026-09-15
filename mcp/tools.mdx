@@ -1,0 +1,106 @@
+---
+title: "Tools, Resources & Prompts"
+sidebarTitle: "Tool reference"
+description: "Reference for every tool, resource and prompt exposed by the Ringg AI MCP server."
+icon: "wrench"
+---
+
+Tool names are what the assistant sees; you normally never type them. This page helps you understand what the assistant can and cannot do, and how to phrase requests.
+
+All tools act on the workspace that owns the API key used to connect. Ids (assistants, calls, numbers) always come from another tool's output — the assistant is instructed never to invent them.
+
+## Tools
+
+### `get_account_overview`
+
+**Start here.** One call returns the workspace (name, currency, available credits), every phone number with a `usable_for_live_calls` flag, the first 25 assistants, last-30-day metrics, a `ready_to_call` verdict and concrete suggestions. Read-only.
+
+### `place_call`
+
+Dials a real number with an assistant. Flagged **destructive**: clients should confirm with you first.
+
+| Input | Required | Notes |
+| --- | --- | --- |
+| `agent_id` | yes | From `list_agents` / overview |
+| `to_number` | yes | International format, e.g. `+919876543210` |
+| `callee_name` | yes | Available to the assistant as `{{callee_name}}` |
+| `from_number_id` | no | Caller ID. Omit to use the assistant's default outbound number, if one is configured |
+| `variables` | no | Values for the assistant's custom variables, e.g. `{"appointment_time": "3 pm Tuesday"}` |
+| `purpose` | no | `promotional` (default) or `transactional` (bypasses the per-callee frequency cap; still subject to DND and calling hours) |
+
+Returns the `call_id` immediately. If the caller ID is missing or is a Ringg test number, the error lists usable numbers to choose from.
+
+### `get_call`
+
+Status of a call and, once it has ended, the transcript, recording link, summary and post-call analysis.
+
+| Input | Default | Notes |
+| --- | --- | --- |
+| `call_id` | — | From `place_call` or `list_calls` |
+| `wait_for_completion` | `false` | When `true`, polls with progress updates until the call reaches a final state |
+| `timeout_seconds` | 180 | Maximum wait (up to 600) |
+| `include_transcript` | `true` | |
+| `include_analysis` | `true` | Summary and analysis are generated asynchronously; the tool says when they are still pending |
+
+Final statuses: `completed`, `failed`, `error`, `cancelled`, `forwarded`. `retry` means Ringg will redial per the assistant's retry policy.
+
+### `list_calls`
+
+Call history, newest first, with filters: `status` (one or more), `agent_id`, `to_number`, `call_type` (`inbound`, `outbound`, `webcall`, `callback`, `voicemail`), `start_date`, `end_date`, `limit` (≤ 100), `offset`. Returns compact rows without transcripts; use `get_call` for detail.
+
+### `get_call_analytics`
+
+Aggregate metrics for a window (default: last 30 days), optionally for one assistant: calls attempted, completed, connection rate, average duration, minutes connected, unique callees.
+
+### `list_agents` · `get_agent`
+
+`list_agents` returns id, name, type and published version (optional `search`). `get_agent` returns the full configuration: language, voice, custom variables the prompt expects, default caller IDs, intro line, prompt sections, tools per phase.
+
+### `create_agent`
+
+Creates a ready-to-call assistant from a plain-language brief.
+
+| Input | Required | Notes |
+| --- | --- | --- |
+| `agent_name` | yes | |
+| `call_purpose` | yes | The brief: goal, questions to ask, how to handle objections, when to end. Becomes the main prompt |
+| `additional_info` | no | FAQ, product facts, policies |
+| `language` | no | Locale such as `en-IN`, `hi-IN`; default `en-US` |
+| `voice_id` | no | From `list_voices`; a default for the language is chosen otherwise |
+| `agent_type` | no | `outbound` (default) or `inbound` (requires `inbound_number_id`) |
+| `custom_variables` | no | Extra placeholders, e.g. `["appointment_time"]`. `callee_name` and `mobile_number` always exist |
+| `intro_message` | no | Exact first sentence; recommended |
+
+### `update_agent`
+
+Changes name, prompt, additional info, language, voice, intro line or variables of an existing assistant. Only the fields passed change; the response is the refreshed configuration.
+
+### `list_voices`
+
+Voices with gender, supported languages and preview URLs; filter by `language` and `gender`.
+
+## Resources
+
+Resources are read-only documents a client can attach as context without a tool call.
+
+| URI | Content |
+| --- | --- |
+| `ringg://workspace` | Workspace summary and phone numbers |
+| `ringg://agents` | All assistants (summary rows) |
+| `ringg://agents/{agent_id}` | One assistant's full configuration |
+| `ringg://voices` | Available voices |
+| `ringg://calls/{call_id}/transcript` | Readable transcript, one line per turn |
+
+## Prompts
+
+Prompts are playbooks the client can offer in its UI.
+
+| Prompt | Arguments | What it does |
+| --- | --- | --- |
+| `launch_first_call` | `goal`, `my_number`, `language` | Checks readiness, drafts and creates an assistant, offers voices, places a test call to you, reviews the transcript and suggests prompt improvements |
+| `review_call` | `call_id` | Summarises a call, quotes the transcript, proposes concrete prompt edits |
+| `campaign_report` | `days`, `agent_id` | Pulls metrics and failures for a window and writes a short performance report |
+
+## Annotations
+
+Each tool carries MCP annotations so clients can behave appropriately: read-only tools (`get_*`, `list_*`) are safe to auto-approve; `create_agent` is non-idempotent; `update_agent` is idempotent; `place_call` is **destructive** and should always be confirmed.

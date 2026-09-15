@@ -212,6 +212,16 @@
         ]
       },
       {
+        "group": "MCP Server",
+        "tag": "NEW",
+        "pages": [
+          "mcp/overview",
+          "mcp/connect",
+          "mcp/tools",
+          "mcp/security"
+        ]
+      },
+      {
         "group": "External Integrations",
         "pages": [
           "external-integrations/truefoundry-integration"
