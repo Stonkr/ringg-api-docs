@@ -1,0 +1,126 @@
+---
+title: "Connect a Client"
+sidebarTitle: "Connect a client"
+description: "Add the Ringg AI MCP server to Claude, ChatGPT, Claude Code, Cursor or any other MCP client."
+icon: "link"
+---
+
+The server supports two ways to authenticate. Pick the one your client uses:
+
+| Method | Who uses it | What you do |
+| --- | --- | --- |
+| **OAuth sign-in** | Claude.ai, Claude Desktop, ChatGPT connectors | Add the URL; the client opens a Ringg page where you paste your API key once. The client receives its own token — never your key. |
+| **API key as bearer token** | Claude Code, Cursor, Codex CLI, custom agents, scripts | Send `Authorization: Bearer <RINGG_API_KEY>` on every request. No sign-in flow. |
+
+You need a workspace API key for either method: **Settings → API Key** in the dashboard ([details](/api-reference/quick-start/authentication)).
+
+<Tabs>
+  <Tab title="Claude.ai / Desktop">
+    <Steps>
+      <Step title="Add the connector">
+        Open **Settings → Connectors → Add custom connector**. Name it *Ringg AI* and set the URL to:
+
+        ```text
+        https://mcp.ringg.ai/mcp
+        ```
+
+        Claude detects the server's settings automatically. Leave **Authentication** on *Always required* and **OAuth client** on *No client ID — register one automatically*. Click **Add**.
+      </Step>
+      <Step title="Connect">
+        Click **Connect** on the Ringg AI row. A Ringg sign-in page opens in a new tab, naming the application (Claude) and where you will be sent back to (`claude.ai`). Paste your API key and click **Allow access** once.
+      </Step>
+      <Step title="Verify">
+        Back in Claude the connector shows a tick. Ask *"What's in my Ringg AI workspace?"* — the first tool call asks for permission; choose **Allow** (or **Always allow** for read-only tools).
+      </Step>
+    </Steps>
+
+    <Tip>
+    Prompts and resources appear under the **+** menu in the chat: for example the *launch_first_call* playbook, or `ringg://agents` to attach your assistant list as context.
+    </Tip>
+  </Tab>
+
+  <Tab title="ChatGPT">
+    <Steps>
+      <Step title="Enable developer mode">
+        Open **Settings → Connectors → Advanced** and turn on **Developer mode**.
+      </Step>
+      <Step title="Add the MCP server">
+        Choose **Create**, name it *Ringg AI*, set the URL to `https://mcp.ringg.ai/mcp` and authentication to **OAuth**. Save.
+      </Step>
+      <Step title="Sign in">
+        Click **Connect**. On the Ringg page paste your API key and click **Allow access** once. ChatGPT registers itself with the server automatically; no client ID or secret is needed.
+      </Step>
+    </Steps>
+  </Tab>
+
+  <Tab title="Claude Code">
+    One command, no sign-in flow:
+
+    ```bash
+    claude mcp add --transport http ringg https://mcp.ringg.ai/mcp \
+      --header "Authorization: Bearer $RINGG_API_KEY"
+    ```
+
+    Then in a session: *"Using Ringg, what assistants do I have?"*
+
+    <Warning>
+    The key is stored in Claude Code's local configuration. Use a key from a workspace you are happy to expose to that machine, and rotate it from the dashboard if the machine is shared or lost.
+    </Warning>
+  </Tab>
+
+  <Tab title="Cursor & JSON-configured clients">
+    Most desktop clients read a JSON file of MCP servers. For Cursor, add to `.cursor/mcp.json` (project) or `~/.cursor/mcp.json` (global):
+
+    ```json
+    {
+      "mcpServers": {
+        "ringg": {
+          "url": "https://mcp.ringg.ai/mcp",
+          "headers": {
+            "Authorization": "Bearer <RINGG_API_KEY>"
+          }
+        }
+      }
+    }
+    ```
+
+    Any client that supports **Streamable HTTP** transport with custom headers works the same way. Clients that implement MCP OAuth instead can simply be pointed at the URL; the server advertises everything they need at `/.well-known/oauth-authorization-server` and `/.well-known/oauth-protected-resource`.
+  </Tab>
+
+  <Tab title="Your own agent (Python)">
+    Using the official MCP Python SDK:
+
+    ```python
+    import asyncio, os
+    import httpx
+    from mcp import ClientSession
+    from mcp.client.streamable_http import streamable_http_client
+
+    async def main():
+        headers = {"Authorization": f"Bearer {os.environ['RINGG_API_KEY']}"}
+        async with httpx.AsyncClient(headers=headers, timeout=120) as http, \
+                   streamable_http_client("https://mcp.ringg.ai/mcp", http_client=http) as (read, write):
+            async with ClientSession(read, write) as session:
+                await session.initialize()
+                overview = await session.call_tool("get_account_overview", {})
+                print(overview.structured_content["workspace"]["name"])
+
+    asyncio.run(main())
+    ```
+
+    `get_call` can run for minutes when `wait_for_completion=true`; give your HTTP client a generous timeout.
+  </Tab>
+</Tabs>
+
+## Test it safely
+
+1. Ask for the account overview — read-only.
+2. Ask the assistant to **create** a test assistant from a short brief.
+3. Ask it to **call your own number** with that assistant and wait for the transcript. Expect a confirmation prompt before the call is placed.
+
+If the call fails immediately with a caller-ID message, choose a number that the overview marks as usable for live calls — Ringg-provided numbers work out of the box; customer SIP trunks must be provisioned for outbound first.
+
+## Disconnecting
+
+- **Claude / ChatGPT:** remove the connector in the client's settings. The token it held stops working within the hour, or immediately if you also rotate your API key.
+- **Any method:** regenerating the API key in **Settings → API Key** revokes every connector and integration using the old key at once.

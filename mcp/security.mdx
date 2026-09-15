@@ -1,0 +1,66 @@
+---
+title: "Security & FAQ"
+sidebarTitle: "Security & FAQ"
+description: "How sign-in to the Ringg AI MCP server works, what is stored, and how to revoke access."
+icon: "shield-check"
+---
+
+## How sign-in works
+
+Connectors such as Claude and ChatGPT use **OAuth 2.1** with the protections MCP requires:
+
+- **Dynamic client registration** — the client registers itself; there is no shared client secret to distribute.
+- **PKCE (S256), mandatory** — an intercepted authorization code cannot be exchanged by anyone else.
+- **Exact redirect matching** — the server only ever sends the browser back to the URL the client registered. The sign-in page shows you which application is asking and where you will be sent.
+- **Short-lived tokens** — access tokens last one hour and refresh silently; refresh tokens rotate on every use and a replayed refresh token revokes the whole session.
+
+The client never receives your API key. During sign-in the key is verified against Ringg, encrypted, and stored only on Ringg's side; the client gets an opaque token that stands in for it.
+
+Developer tools that send the API key directly as a bearer token are trusted exactly like a direct API call from that machine.
+
+## What Ringg stores
+
+| Data | Where | For how long |
+| --- | --- | --- |
+| Your API key (encrypted) | Ringg MCP server, tied to the connector's token | Until the token expires or is revoked |
+| Connector registrations | Ringg MCP server | 30 days after last use |
+| Call, assistant and workspace data | Your Ringg workspace, as always | Per your workspace's retention |
+
+The MCP server does not log API keys, tokens, or the contents of tool results.
+
+## Revoking access
+
+- **Remove the connector** in Claude or ChatGPT: its token stops working within an hour.
+- **Regenerate the API key** in the dashboard (**Settings → API Key**): every connector, script and integration using the old key stops immediately. This is the fastest way to cut off a lost laptop or an unknown integration.
+
+## Good practice
+
+- Create the connector from a workspace whose API key you are comfortable delegating; every tool acts with that key's full permissions.
+- Keep **confirm before calling** enabled in your client. `place_call` is a real, billable phone call.
+- Do not paste API keys or phone numbers into chats that will be shared or screenshotted; the server masks numbers where your workspace settings ask for it, but your own messages are outside its control.
+- Treat prompts returned in transcripts as data, not instructions: if a caller says "ignore your rules", the assistant should not — but the model you connect decides, so prefer clients with tool-call confirmations for write actions.
+
+## FAQ
+
+<AccordionGroup>
+  <Accordion title="Which clients are supported?">
+    Any MCP client using **Streamable HTTP**. Verified: Claude.ai and Claude Desktop (OAuth), ChatGPT connectors in developer mode (OAuth), Claude Code and Cursor (bearer API key), the official MCP Python and TypeScript SDKs.
+  </Accordion>
+  <Accordion title="The sign-in page says the link expired.">
+    Sign-in links are valid for ten minutes and for a single use. Start again from the client by clicking **Connect**. If you submitted the form twice by accident, the second submit simply repeats the redirect — you will still be signed in.
+  </Accordion>
+  <Accordion title="My API key is rejected on the sign-in page.">
+    Keys look like `ringg_live_…` or a UUID. Copy it directly from **Settings → API Key**; a regenerated key invalidates the previous one. After five wrong attempts the link is invalidated — restart from the client.
+  </Accordion>
+  <Accordion title="Calls fail immediately with a caller-ID error.">
+    The chosen `from_number_id` cannot originate live calls — typically a Ringg test number or a customer SIP trunk that is not yet provisioned for outbound. Ask the assistant for numbers that are usable for live calls, or check **Numbers** in the dashboard.
+  </Accordion>
+  <Accordion title="Can several people share one connector?">
+    Each person should sign in with their own workspace key so that actions are attributable and access can be revoked individually. Sharing one key means sharing one identity and one revocation switch.
+  </Accordion>
+  <Accordion title="Is there a sandbox?">
+    Not a separate one. Test safely by creating a dedicated assistant, calling your own phone, and reviewing the transcript. Ringg's default test numbers cannot place live outbound calls, so use a number the overview marks as usable.
+  </Accordion>
+</AccordionGroup>
+
+Questions or issues: [admin@ringg.ai](mailto:admin@ringg.ai).
