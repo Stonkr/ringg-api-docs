@@ -1,0 +1,302 @@
+---
+title: "React Native Widget"
+sidebarTitle: "React Native"
+icon: "smartphone"
+description: "Add the Ringg AI chat and voice widget to a React Native or Expo app with @ringg/react-native."
+"og:title": "React Native Voice and Chat Widget | Ringg AI Guide"
+---
+
+`@ringg/react-native` drops the same chat and voice widget you embed on the web into a React Native or Expo app: text chat, voice calls, interactive components (forms, calendars, quick replies, Block Kit) and the post-call feedback screen.
+
+It runs on the same headless core as the web widget, so conversation behavior — reconnection, typing timing, message ordering, optimistic sends — is identical across platforms. Only the views are native.
+
+<Warning>
+**Alpha / pre-release.** APIs may change between versions before 1.0. Pin an exact version if you need stability, and see [Known issues](#known-issues).
+</Warning>
+
+## Prerequisites
+
+<Check>An active Ringg AI account with an assistant configured for Webcall.</Check>
+<Check>The assistant `agentId` and its webcall public key from the dashboard.</Check>
+<Check>React 18+, React Native 0.73+.</Check>
+<Check>A development build. **Expo Go will not work** — LiveKit ships native code, so you need an [Expo development build](https://docs.expo.dev/develop/development-builds/introduction/) or a bare app.</Check>
+<Check>Your app's bundle id / application id added to the assistant's allowed clients (see [Caller identity](#caller-identity)).</Check>
+
+## Install
+
+```bash
+npm install @ringg/react-native
+```
+
+Then install the peer dependencies in **your** app, so there is exactly one autolinked copy of each native module:
+
+<CodeGroup>
+```bash Expo
+npx expo install @livekit/react-native @livekit/react-native-webrtc livekit-client react-native-svg
+```
+
+```bash Bare React Native
+npm install @livekit/react-native @livekit/react-native-webrtc livekit-client react-native-svg
+```
+</CodeGroup>
+
+## Platform setup
+
+Voice calls need microphone and audio permissions. Text chat works without them.
+
+<Tabs>
+  <Tab title="Expo">
+    Add the LiveKit config plugin and the permissions to `app.json`, then rebuild the development build.
+
+    ```json
+    {
+      "expo": {
+        "plugins": ["@livekit/react-native-expo-plugin"],
+        "ios": {
+          "infoPlist": {
+            "NSMicrophoneUsageDescription": "Voice calls use the microphone.",
+            "UIBackgroundModes": ["audio"]
+          }
+        },
+        "android": {
+          "permissions": [
+            "android.permission.RECORD_AUDIO",
+            "android.permission.MODIFY_AUDIO_SETTINGS",
+            "android.permission.ACCESS_NETWORK_STATE",
+            "android.permission.BLUETOOTH_CONNECT"
+          ]
+        }
+      }
+    }
+    ```
+  </Tab>
+  <Tab title="Bare React Native">
+    The same keys, by hand.
+
+    `ios/<App>/Info.plist`:
+
+    ```xml
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Voice calls use the microphone.</string>
+    <key>UIBackgroundModes</key>
+    <array><string>audio</string></array>
+    ```
+
+    `android/app/src/main/AndroidManifest.xml`:
+
+    ```xml
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    ```
+  </Tab>
+</Tabs>
+
+## Integrate
+
+<Steps>
+  <Step title="Register the WebRTC globals">
+    Once, at your app entry, **before** anything imports LiveKit.
+
+    ```javascript index.js
+    import { registerGlobals } from "@livekit/react-native";
+
+    registerGlobals();
+    ```
+  </Step>
+
+  <Step title="Build a transport and a controller">
+    The controller is the headless brain; the transport is the LiveKit connection. Create both once and dispose of them on unmount.
+
+    ```tsx RinggSupport.tsx
+    import { useEffect, useMemo } from "react";
+    import { Platform } from "react-native";
+    import {
+      RinggWidget,
+      appOrigin,
+      createLiveKitTransport,
+      createNativeMicPermission,
+      createRinggWidgetController,
+    } from "@ringg/react-native";
+
+    const PROD_URLS = {
+      backendUrl: "https://prod-api.ringg.ai/ca/api/v0",
+      livekitUrl: "wss://mercury.webrtc.ringg.ai",
+    };
+
+    const BUNDLE_ID = Platform.OS === "android" ? "com.acme.app" : "com.acme.App";
+
+    export const RinggSupport = () => {
+      const { controller, livekit } = useMemo(() => {
+        const livekit = createLiveKitTransport();
+        const controller = createRinggWidgetController(
+          {
+            agentId: "your-agent-id",
+            authorization: "Bearer your-webcall-public-key",
+            clientOrigin: appOrigin(BUNDLE_ID),
+            title: "Support",
+            description: "How can we help?",
+            defaultTab: "text", // or "audio"
+          },
+          {
+            transport: livekit.transport,
+            urlResolver: { resolve: () => PROD_URLS },
+            micPermission: createNativeMicPermission(),
+          },
+        );
+        return { controller, livekit };
+      }, []);
+
+      // Releases the microphone and the audio session — do not skip this.
+      useEffect(
+        () => () => {
+          controller.destroy();
+          livekit.dispose();
+        },
+        [controller, livekit],
+      );
+
+      return <RinggWidget controller={controller} room={livekit.room} />;
+    };
+    ```
+
+    Passing `room` is optional; it only powers the in-call audio visualizer and the mute button.
+  </Step>
+
+  <Step title="Mount it over your app">
+    `RinggWidget` renders its own floating trigger and panel over whatever is behind it, so make it the **last child** of your root view.
+
+    ```tsx
+    <View style={{ flex: 1 }}>
+      <YourApp />
+      <RinggSupport />
+    </View>
+    ```
+
+    Tap the trigger and the chat or voice panel opens. That is the whole integration.
+  </Step>
+</Steps>
+
+## Caller identity
+
+The backend allow-lists an assistant's callers by the `Origin` header. A browser sends it automatically; a native app sends nothing, so a webcall request without `clientOrigin` is rejected **before authentication is considered**.
+
+| Response | Meaning |
+|---|---|
+| `400 Origin header is required` | No `clientOrigin` was set. |
+| `403 Client '…' is not allowed` | It was set, but is not on the assistant's allowed clients list. |
+| `401 Invalid credentials` | The token is wrong for that environment. |
+
+Pass your app's identity in the config, and add the same string to the assistant's allowed clients under **Agent → Webcall → Install & domains**:
+
+```ts
+import { Platform } from "react-native";
+import { appOrigin } from "@ringg/react-native";
+
+const BUNDLE_ID = Platform.OS === "android" ? "com.acme.app" : "com.acme.App";
+
+clientOrigin: appOrigin(BUNDLE_ID); // → "android://com.acme.app"
+```
+
+<Note>
+The bundle id is a parameter because React Native cannot read it without a native module. Your app already declares it, so a constant or a read of your own app config is enough. `expo-application` reports the same value if you prefer to ask the OS, but it is native code — adding it means rebuilding the app, not just restarting the bundler.
+</Note>
+
+Ids differ per platform and per flavor (`.debug`, `.staging`), so **every build you ship needs its own entry**. The value that was sent is included in the refused-call response, ready to paste into the dashboard.
+
+## Configuration
+
+`RinggWidgetConfig` — only `agentId` is required.
+
+| Field | Type | Purpose |
+|---|---|---|
+| `agentId` | `string` | The Ringg assistant to load. **Required.** |
+| `authorization` | `string` | `Bearer <webcall-public-key>` for your account. |
+| `clientOrigin` | `string` | Caller identity sent as `Origin`. **Required for real calls.** |
+| `title` / `description` | `string` | Panel header text. |
+| `defaultTab` | `"audio" \| "text"` | Which mode the panel opens in. |
+| `hideTabSelector` | `boolean` | Pin the widget to one mode. |
+| `defaultExpanded` | `boolean` | Open the panel on mount, with no trigger. |
+| `bypassStartScreen` | `boolean` | A trigger tap starts the call directly. |
+| `bypassFeedbackScreen` | `boolean` | Skip the post-call rating screen. |
+| `variables` | `Record<string, …>` | Values for `{{placeholders}}` in assistant prompts. |
+| `theme` | `WidgetTheme` | Colors, radii, button style. Gradients supported. |
+| `logoUrl` / `logoStyles` | `string` / `PortableStyles` | Branding in the header. |
+| `buttons` | `ButtonsConfig` | Per-button copy, icons and styles. |
+| `legalDisclaimer` | `{ text, links }` | Copy under the start buttons. |
+| `feedbackScreen` | `FeedbackScreenConfig` | Rating screen copy and styling. |
+| `voiceCall` | `{ showAnimation, showTranscript }` | Voice view options. |
+| `enabledSlashCommands` | `SlashCommand[]` | Commands offered in the composer. |
+| `eventLogs` | `{ enabled, showIds }` | Inline pills for agent-triggered actions. |
+
+<Note>
+`widgetPosition` and `innerWindowProps` are web-only and ignored here — the panel sizes itself to the device.
+</Note>
+
+## Host events
+
+The controller emits the [same lifecycle events](/get-started/guides/embedding-widget-events) as the web widget. React Native has no DOM, so they arrive on an in-memory bus instead of `window`:
+
+```ts
+const unsubscribe = controller.eventBus.on(
+  "ringg:conversation_status",
+  ({ status, mode, callId }) => {
+    analytics.track(`call_${status}`, { mode, callId });
+  },
+);
+```
+
+Events: `ringg:widget_status`, `ringg:conversation_status`, `ringg:feedback_status`, `ringg:calendar_booking`, `ringg:component_acknowledgement`.
+
+## Agent-triggered app actions
+
+Assistants can fire host actions (`execute_dom_action` on the wire). On the web these become `CustomEvent`s; React Native has no ambient event bus, so you supply the handler and receive the same payload:
+
+```ts
+import { createHostActionDispatcher } from "@ringg/react-native";
+
+const ports = {
+  // ...transport, urlResolver, micPermission
+  onDomAction: createHostActionDispatcher(({ name, payload }) => {
+    if (name === "open_checkout") navigation.navigate("Checkout", payload);
+  }),
+};
+```
+
+## Notification sound
+
+React Native has no audio playback of its own and every option is a native module, so the widget ships **silent** rather than forcing a dependency on every integrator. Wire whichever player your app already has and pass it as `ports.notification`:
+
+```ts
+import { createAudioPlayer } from "expo-audio";
+import { createNotificationPlayer } from "@ringg/react-native";
+
+const notification = createNotificationPlayer(
+  "https://assets.ringg.ai/audios/misc/widget_notification.mp3",
+  (url) => createAudioPlayer(url).play(),
+);
+```
+
+## Testing hooks
+
+Every meaningful node carries a `testID` mirroring the web widget's `data-ringg` name, prefixed with `ringg-`: `ringg-trigger-button`, `ringg-widget-root`, `ringg-header-title`, `ringg-message-input`, `ringg-end-call-confirm`, and so on. These are a contract and will not be renamed without a major version.
+
+Two web names have no React Native counterpart because they mark screen-reader-only nodes: `ringg-header-status` and `ringg-connecting-label`'s `sr-only` sibling. That copy lives in `accessibilityLabel` on the surrounding node instead.
+
+## Test checklist
+
+<Check>The app is a development build, not Expo Go.</Check>
+<Check>`registerGlobals()` runs before any LiveKit import.</Check>
+<Check>The trigger appears above your app content on both platforms.</Check>
+<Check>Voice mode prompts for microphone permission and can start and end a call **on a real device**.</Check>
+<Check>Every shipped flavor's bundle id is in the assistant's allowed clients.</Check>
+<Check>`controller.destroy()` and `livekit.dispose()` run on unmount — confirm the mic indicator clears.</Check>
+
+## Known issues
+
+- **Breaking changes between releases.** APIs may shift while pre-1.0.
+- **No frosted-glass blur.** The web widget's header and composer blur what scrolls under them; React Native has no blur primitive without a native dependency, so those surfaces are near-opaque instead.
+- **No gradient-filled text.** The typing indicator's shimmer sweeps a gradient through the glyphs on web. React Native cannot fill text with a gradient without a masking dependency, so the label takes the color that sweep averages to and the motion moves into the animated ellipsis beside it.
+- **Markdown is a subset.** Assistant replies render bold, italic, inline code, links, lists, headings, code blocks, blockquotes and rules. Tables are not supported and render as plain text.
+- **Voice on emulators is unreliable.** Android emulator networking often cannot establish the media connection, and iOS simulators expose no microphone or playout device. Test voice on a real device.
