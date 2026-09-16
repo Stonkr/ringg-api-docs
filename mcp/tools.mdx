@@ -54,7 +54,7 @@ Aggregate metrics for a window (default: last 30 days), optionally for one assis
 
 ### `list_agents` · `get_agent`
 
-`list_agents` returns id, name, type and published version (optional `search`). `get_agent` returns the full configuration: language, voice, custom variables the prompt expects, default caller IDs, intro line, prompt sections, tools per phase.
+`list_agents` returns id, name, type and published version (optional `search`). `get_agent` returns the full configuration: language, voice, custom variables the prompt expects, default caller IDs, intro line, the prompt as an ordered list of sections (`title`, `content` as plain text, `chars`), and the tools attached to each phase.
 
 ### `create_agent`
 
@@ -73,11 +73,95 @@ Creates a ready-to-call assistant from a plain-language brief.
 
 ### `update_agent`
 
-Changes name, prompt, additional info, language, voice, intro line or variables of an existing assistant. Only the fields passed change; the response is the refreshed configuration.
+Changes name, language, voice, intro line or variables of an existing assistant. Only the fields passed change; everything else — including every prompt section — is left exactly as it is. `call_purpose` and `additional_info` remain as shortcuts that replace only the *Task* and *FAQ Guidelines* sections. The response is the refreshed configuration.
 
 ### `list_voices`
 
 Voices with gender, supported languages and preview URLs; filter by `language` and `gender`.
+
+## Editing the prompt
+
+An assistant's prompt is a list of titled sections (for example *Introduction and Objective*, *Response Guidelines*, *Task*, *FAQ Guidelines*, plus any you add). The dashboard and the MCP server edit the same sections, so changes made in either place are visible in the other.
+
+### `edit_prompt_section`
+
+Changes **one** section and sends every other section back unchanged, so a small fix never disturbs the rest of the prompt.
+
+| Input | Notes |
+| --- | --- |
+| `agent_id` | |
+| `section` | Section title as shown by `get_agent` (case-insensitive; a unique partial match works). For `insert`, the new title |
+| `mode` | `replace` (default) · `append` · `prepend` · `find_replace` · `insert` · `rename` · `delete` |
+| `content` | New text for `replace` / `append` / `prepend` / `insert`. Plain text: blank lines separate paragraphs, `- ` makes bullets, `1. ` numbered lists, `**bold**` |
+| `find`, `replace_with`, `replace_all` | For `find_replace`: the exact phrase to change; exactly one match is required unless `replace_all` |
+| `new_title` | For `rename` |
+| `position` | For `insert`: 0-based index, default last |
+
+Variables stay as `{{name}}`, pre-call tool outputs as `((tool.field))`, on-call tools as `@||tool||`. Jinja (`{% if %} … {% endif %}`) is validated by Ringg and rejected with a precise message. Returns the section's new text and the list of section titles.
+
+Typical requests: *"Add a rule to the Task section: never quote prices"*, *"In the FAQ, change 'open 9 to 5' to 'open 9 to 6'"*, *"Add an Objection Handling section after Task"*.
+
+### `set_agent_prompt`
+
+Replaces the whole prompt with the sections you pass (in order). Use it to restructure or author from scratch; for anything smaller prefer `edit_prompt_section`.
+
+## Tools on an assistant
+
+Assistants can run integrations in three phases:
+
+| Phase | When | Typical use | How the prompt refers to it |
+| --- | --- | --- | --- |
+| `pre_call` | Before the call is dialled | Fetch CRM data, today's date/greeting, account balance | `((tool.field))` inserts a response field |
+| `on_call` | During the conversation, when the LLM decides to call it | Order status, availability check, booking | `@||tool||` plus a sentence saying when to use it |
+| `post_call` | After the call ends | Webhooks, CRM updates, notifications | — (can read the transcript and analysis) |
+
+Each parameter of a tool (header, query, path or body) has a **type**:
+
+| Type | Value |
+| --- | --- |
+| `static` | A literal |
+| `variable` | `custom_args.<var>` · `call_data.<field>` · `platform_analysis.<field>` · `client_analysis.<key>` (the last two are post-call only) |
+| `tool_output` | `<other_tool>.<key>` — a field another tool returned |
+| `dynamic` | On-call only: the LLM supplies it at call time from what the caller says; give it a `description` and `data_type` |
+| `jq` | A jq expression over the call context (`.custom_args`, `.call_data`, `.api_responses.<tool>`, and post-call `.platform_analysis`, `.client_analysis`) |
+
+Responses are shaped before the assistant sees them: `response_jq` runs on the response body first (`.` is the body; `.custom_args` and `.api_responses.<tool>` are also visible), then `response_keys` picks the top-level keys to keep. Keep tool outputs small and clearly named — the model reads them mid-call.
+
+### `get_agent_tools`
+
+Everything about an assistant's integrations: the tools in each phase with method, URL, parameters, `response_jq`, selected keys, the JSON schema the LLM fills for on-call tools, the derived post-call trigger point, the built-in tools present, the variables parameters may reference for this assistant (`custom_args`, `call_data`, `platform_analysis`, `client_analysis`, other tools' outputs), and a syntax cheat-sheet. Read-only; start here before changing tools.
+
+### `upsert_api_tool`
+
+Creates or updates an HTTP tool.
+
+| Input | Notes |
+| --- | --- |
+| `agent_id`, `phase`, `tool_name` | Names are unique across phases; letters, digits, `_`, `-` (≤ 64). The name is the function name the LLM sees |
+| `url`, `method` | Required when creating. Use `{{key}}` in the URL for a path parameter, e.g. `https://api.example.com/orders/{{order_id}}` |
+| `description` | For on-call tools, what the LLM reads to decide when to call it |
+| `headers`, `query`, `path`, `body` | Lists of `{key, type, value, description, data_type, required, test_value}`. A list you pass replaces that list; lists you omit are kept |
+| `response_jq`, `response_keys` | Response shaping (see above) |
+| `enabled`, `failure_behavior`, `timeout_ms` | `blocked` stops the call flow on failure; default `non-blocking` |
+| `pre_call_message`, `execute_after_intro_message` | On-call: a line to say while the request runs; run automatically after the intro |
+
+Static values that look like credentials (`Authorization`, `X-Api-Key`, tokens…) are shown **masked** by `get_agent_tools`; passing the masked value back keeps the stored secret, so keys never travel through the conversation. Post-call trigger points are derived by Ringg from the sources the parameters read. The response includes the saved tool and concrete next steps (test it; add the prompt mention).
+
+### `upsert_function_tool`
+
+A tool with no HTTP call: a jq `program` over its `params` (same parameter types as above; `.` inside the program is the object of resolved params). Useful for eligibility rules, formatting, small lookup tables, or reshaping a pre-call response before the prompt uses it.
+
+### `remove_agent_tool`
+
+Deletes an API or function tool from any phase. Ringg refuses while the prompt still mentions the tool — remove the `@||tool||` / `((tool.field))` reference with `edit_prompt_section` first. Built-in tools (`end_call`, `stay_on_line`, …) are managed in the dashboard.
+
+### `test_api_tool`
+
+Runs a request once against the real endpoint and returns the raw response, the response after `response_jq`, and the exact request that was sent (credential headers masked). Test an ad-hoc request (`url`, `method`, parameters) before saving, or a saved tool (`agent_id` + `tool_name`); `test_values` provides stand-ins for `variable` / `dynamic` / `tool_output` parameters. Saved pre-call outputs from the dashboard's *Test* button are used to resolve `tool_output` references.
+
+### `test_jq`
+
+Evaluates a jq `expression` on a sample `input` object and returns the result or the error — the same jq engine and sandbox as the call runtime (no environment access, no modules). Use it to craft `response_jq`, a `jq` parameter, or a function-tool program.
 
 ## Resources
 
@@ -88,6 +172,8 @@ Resources are read-only documents a client can attach as context without a tool 
 | `ringg://workspace` | Workspace summary and phone numbers |
 | `ringg://agents` | All assistants (summary rows) |
 | `ringg://agents/{agent_id}` | One assistant's full configuration |
+| `ringg://agents/{agent_id}/prompt` | The prompt as markdown, one heading per section |
+| `ringg://agents/{agent_id}/tools` | Pre-call, on-call and post-call tools with configuration and usable variables |
 | `ringg://voices` | Available voices |
 | `ringg://calls/{call_id}/transcript` | Readable transcript, one line per turn |
 
@@ -98,9 +184,10 @@ Prompts are playbooks the client can offer in its UI.
 | Prompt | Arguments | What it does |
 | --- | --- | --- |
 | `launch_first_call` | `goal`, `my_number`, `language` | Checks readiness, drafts and creates an assistant, offers voices, places a test call to you, reviews the transcript and suggests prompt improvements |
-| `review_call` | `call_id` | Summarises a call, quotes the transcript, proposes concrete prompt edits |
+| `review_call` | `call_id` | Summarises a call, quotes the transcript, proposes edits to the specific prompt sections that caused problems |
+| `integrate_api` | `agent_id`, `goal`, `api_notes` | Chooses the phase, dry-runs the request, designs a `response_jq`, saves the tool, tests it and adds the prompt mention — confirming before each write |
 | `campaign_report` | `days`, `agent_id` | Pulls metrics and failures for a window and writes a short performance report |
 
 ## Annotations
 
-Each tool carries MCP annotations so clients can behave appropriately: read-only tools (`get_*`, `list_*`) are safe to auto-approve; `create_agent` is non-idempotent; `update_agent` is idempotent; `place_call` is **destructive** and should always be confirmed.
+Each tool carries MCP annotations so clients can behave appropriately: read-only tools (`get_*`, `list_*`, `test_jq`) are safe to auto-approve; `create_agent` is non-idempotent; `update_agent`, `edit_prompt_section`, `set_agent_prompt` and the `upsert_*` tools are idempotent writes; `test_api_tool` makes a real HTTP request to the configured endpoint; `place_call` is **destructive** and should always be confirmed.
