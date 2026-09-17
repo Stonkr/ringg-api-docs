@@ -6,9 +6,11 @@ description: "Add the Ringg AI chat and voice widget to a Flutter app with the r
 "og:title": "Flutter Voice and Chat Widget | Ringg AI Guide"
 ---
 
+import OriginRequirement from "/snippets/widget-origin-requirement.mdx";
+
 `ringg_flutter` drops the same chat and voice widget you embed on the web into a Flutter app: text chat, voice calls, interactive components (forms, calendars, quick replies, Block Kit) and the post-call feedback screen.
 
-It is a full Dart implementation on `livekit_client` — no platform bridge — mirroring the web widget's behavior and UI.
+It is a full Dart implementation on `livekit_client`, with no platform bridge, mirroring the web widget's behavior and UI.
 
 <Warning>
 **Alpha / pre-release.** APIs may change between versions before 1.0. Pin an exact version if you need stability, and see [Known issues](#known-issues).
@@ -136,75 +138,37 @@ Voice calls need microphone and audio permissions. Text chat works without them.
 
 ## Caller identity
 
-The backend allow-lists an assistant's callers by the `Origin` header. Browsers attach one automatically; native HTTP sends nothing.
+<OriginRequirement />
 
-**You do not configure this.** The package reads the running app's id and sends `<platform>://<bundleId>`:
+On Flutter this is handled for you. The package reads the running app's id and sends `<platform>://<bundleId>`:
 
 | Platform | `Origin` sent |
 |---|---|
 | Android | `android://<applicationId>` |
 | iOS | `ios://<bundleId>` |
-| macOS / Windows / Linux | `macos://…`, `windows://…`, `linux://…` |
+| macOS, Windows, Linux | `macos://…`, `windows://…`, `linux://…` |
 
-Add those values to the assistant's allowed clients under **Agent → Webcall → Install & domains**, or the call is refused with *"Client '…' is not allowed to initiate webcall"*. Ids differ per platform and per flavor (`.debug`, `.staging`), so **every build you ship needs its own entry** — the value that was sent is logged on a refused call, ready to paste.
-
-To pin one string instead — a single canonical value across flavors, say — set it in config; it wins over the derived one:
-
-```dart
-RinggWidgetConfig(
-  agentId: 'your-agent-id',
-  clientOrigin: 'android://com.yourcompany.yourapp',
-);
-```
-
-<Note>
-Supplying your own `ControllerPorts(httpClient: …)` opts out of the default header. Wrap your client to keep it: `appOriginHttpClient(inner: yourClient)`.
-</Note>
-
-<Warning>
-Hybrid WebView runtimes (`capacitor://localhost`, `ionic://localhost`, `file://`) are identical for every app on that runtime — allowing one admits all of them.
-</Warning>
+Set `clientOrigin` in config only to pin one value across build flavors. See [pinning the caller identity](/get-started/guides/widget-flutter-configuration#caller-identity).
 
 ## Configuration
 
-`RinggWidgetConfig` — only `agentId` is required.
+`RinggWidgetConfig` has 27 fields covering panel copy, theming, buttons, the feedback screen, slash commands and voice-call view. Only `agentId` is required, and every null field falls back to a shared default.
 
-| Field | Type | Purpose |
-|---|---|---|
-| `agentId` | `String` | The Ringg assistant to load. **Required.** |
-| `authorization` | `String?` | `Bearer <webcall-public-key>` for your account. |
-| `clientOrigin` | `String?` | Overrides the derived caller identity sent as `Origin`. |
-| `title` / `description` | `String?` | Panel header text. |
-| `defaultTab` | `MediaType?` | Open in `MediaType.text` or `MediaType.audio`. |
-| `hideTabSelector` | `bool?` | Hide the text/voice switch. |
-| `defaultExpanded` | `bool?` | Open the panel on load. |
-| `bypassStartScreen` | `bool?` | Jump straight into a call. |
-| `variables` | `Map<String, Object>?` | Values for `{{placeholders}}` in assistant prompts. |
-| `logoUrl` | `String?` | Branding in the header. |
-| `theme` | `WidgetTheme?` | Colors, radii, button style. |
-| `widgetPosition` | — | Placement of the floating trigger. |
-| `legalDisclaimer` | — | Copy under the start buttons. |
-| `buttons` | — | Per-button copy, icons and styles. |
+<Card title="Configuration reference" icon="sliders-horizontal" href="/get-started/guides/widget-flutter-configuration">
+  Every option, its type, and its default.
+</Card>
 
-## Host events
+## Events and control
 
-The controller emits the [same lifecycle events](/get-started/guides/embedding-widget-events) as the web widget, on an in-memory bus rather than the DOM:
+The controller emits the same five lifecycle events as the web widget, exposes methods for driving the panel from your own UI, and lets you handle actions the assistant fires.
 
-```dart
-final unsubscribe = _controller.eventBus.on(
-  'ringg:conversation_status',
-  (payload) => debugPrint('conversation: $payload'),
-);
-
-// later
-unsubscribe();
-```
-
-Events: `ringg:widget_status`, `ringg:conversation_status`, `ringg:feedback_status`, `ringg:calendar_booking`, `ringg:component_acknowledgement`.
+<Card title="Events and control reference" icon="radio" href="/get-started/guides/widget-flutter-events">
+  Lifecycle events, controller methods, state bindings, host actions and the ports table.
+</Card>
 
 ## Platform support
 
-Android · iOS · macOS · Windows · Linux. Web is not supported — use the [web widget](/get-started/guides/embedding-widget) there.
+Android, iOS, macOS, Windows and Linux. Web is not supported; use the [web widget](/get-started/guides/embedding-widget) there.
 
 ## Example app
 
@@ -216,7 +180,7 @@ A runnable example ships in the package's **Example** tab on [pub.dev](https://p
 <Check>The trigger appears above your app content.</Check>
 <Check>Voice mode prompts for microphone permission and can start and end a call **on a real device**.</Check>
 <Check>Every shipped flavor's application id is in the assistant's allowed clients.</Check>
-<Check>`_controller.destroy()` and `_transport.dispose()` run in `dispose()` — confirm the mic indicator clears.</Check>
+<Check>`_controller.destroy()` and `_transport.dispose()` run in `dispose()`. Confirm the mic indicator clears.</Check>
 
 ## Known issues
 

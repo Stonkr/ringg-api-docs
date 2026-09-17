@@ -77,8 +77,24 @@
                   "get-started/guides/embedding-widget-production-qa-security"
                 ]
               },
-              "get-started/guides/widget-react-native",
-              "get-started/guides/widget-flutter"
+              {
+                "group": "React Native",
+                "icon": "smartphone",
+                "pages": [
+                  "get-started/guides/widget-react-native",
+                  "get-started/guides/widget-react-native-configuration",
+                  "get-started/guides/widget-react-native-events"
+                ]
+              },
+              {
+                "group": "Flutter",
+                "icon": "smartphone-charging",
+                "pages": [
+                  "get-started/guides/widget-flutter",
+                  "get-started/guides/widget-flutter-configuration",
+                  "get-started/guides/widget-flutter-events"
+                ]
+              }
             ]
           },
           {

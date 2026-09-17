@@ -1,0 +1,193 @@
+---
+title: "Flutter Widget Configuration"
+sidebarTitle: "Configuration"
+icon: "sliders-horizontal"
+description: "Full reference for the RinggWidgetConfig options accepted by the Ringg AI Flutter widget."
+---
+
+import WidgetDefaults from "/snippets/widget-defaults.mdx";
+import OriginRequirement from "/snippets/widget-origin-requirement.mdx";
+
+This page is the complete reference for `RinggWidgetConfig`, the object passed as the first argument to `RinggWidgetController`. Configure assistant behavior, tools and prompts in the dashboard; use this object for app-level runtime settings.
+
+See [Flutter](/get-started/guides/widget-flutter) for installation and the integration steps.
+
+```dart
+final controller = RinggWidgetController(
+  const RinggWidgetConfig(
+    agentId: 'your-agent-id',
+    authorization: 'Bearer your-webcall-public-key',
+    title: 'Support',
+    defaultTab: MediaType.text,
+  ),
+  ControllerPorts(transport: transport.transport),
+);
+```
+
+Every field except `agentId` is optional and nullable. A null field falls back to the shared [default](#defaults).
+
+## Identity and auth
+
+| Option | Type | Notes |
+|---|---|---|
+| `agentId` | `String` | The assistant to load. **Required.** |
+| `authorization` | `String?` | `Bearer <webcall-public-key>`, generated per assistant in the dashboard and rotatable from there. |
+| `clientOrigin` | `String?` | Pins the caller identity sent as `Origin`. Derived from the running app when null, see [Caller identity](#caller-identity). |
+| `mode` | `EnvironmentMode?` | `dev`, `stage` or `prod`. Selects the endpoint set. Defaults to `prod`. |
+
+<Warning>
+`authorization` ships inside your app binary and can be extracted from it. Use only the webcall public key generated for that assistant, never a backend integration key, and keep the assistant's allowed clients list tight.
+</Warning>
+
+## Panel content and mode
+
+| Option | Type | Notes |
+|---|---|---|
+| `title` | `String?` | Heading on the start screen and header. |
+| `description` | `String?` | Supporting copy on the start screen. |
+| `defaultTab` | `MediaType?` | `MediaType.audio` or `MediaType.text`. Which mode the panel opens in. |
+| `hideTabSelector` | `bool?` | Hides the audio/text switch, pinning the widget to `defaultTab`. |
+| `defaultExpanded` | `bool?` | Mounts the panel already open, with no trigger. |
+| `bypassStartScreen` | `bool?` | A trigger tap starts the conversation in `defaultTab` immediately. |
+| `bypassFeedbackScreen` | `bool?` | Skips the post-call rating screen. |
+| `logoUrl` | `String?` | Logo shown in the header. |
+| `logoStyles` | `PortableStyles?` | Sizing and background for the logo. |
+| `typingWords` | `List<String>?` | Words cycled in the pending-reply indicator. |
+
+## Variables
+
+`variables` are forwarded to the assistant as `custom_args_values` and fill `{{placeholders}}` in its prompts. Values are sent verbatim, so the full JSON value space is accepted.
+
+```dart
+RinggWidgetConfig(
+  agentId: 'your-agent-id',
+  variables: {
+    'callee_name': 'John',
+    'account_id': 'ACC-42',
+    'is_premium': true,
+    'cart': {'items': 3, 'total': 149.5},
+  },
+)
+```
+
+`WidgetVariables` is `Map<String, Object>`. Set variables when you build the controller; to change them for a new conversation, build a new controller.
+
+## Theme
+
+`theme` takes a `WidgetTheme` with thirteen fields. Colors are CSS color **strings**, not Dart `Color` objects, so the same theme values work unchanged across web, React Native and Flutter. `primaryColor` and `agentBubbleColor` also accept CSS gradients.
+
+```dart
+theme: const WidgetTheme(
+  primaryColor: '#9AADEC',
+  backgroundColor: '#FFFFFF',
+  buttonStyle: ButtonStyle.pill,
+  borderRadius: '12px',
+),
+```
+
+| Option | Type | Applies to |
+|---|---|---|
+| `theme.primaryColor` | `String?` | Accent for buttons, selected states and the trigger. |
+| `theme.primaryTextColor` | `String?` | Text on primary-colored surfaces. |
+| `theme.backgroundColor` | `String?` | Panel background. |
+| `theme.surfaceColor` | `String?` | Cards, inputs and the user message bubble. |
+| `theme.agentBubbleColor` | `String?` | Assistant bubble background. An empty string renders assistant replies bubble-less. |
+| `theme.textColor` | `String?` | Body text. |
+| `theme.mutedTextColor` | `String?` | Secondary text. |
+| `theme.borderColor` | `String?` | Borders and dividers. |
+| `theme.errorColor` | `String?` | Validation and danger states. |
+| `theme.successColor` | `String?` | Success states. |
+| `theme.buttonStyle` | `ButtonStyle?` | `rounded`, `pill` or `square`. |
+| `theme.borderRadius` | `String?` | Global corner radius, for example `'12px'`. |
+| `theme.fontFamily` | `String?` | Font family. Must be a family declared in your `pubspec.yaml`. |
+
+## Buttons
+
+| Option | Type | Notes |
+|---|---|---|
+| `buttons.modalTrigger.styles` | `PortableStyles?` | The floating trigger. |
+| `buttons.modalTrigger.icon.url` | `String?` | Custom trigger icon. |
+| `buttons.modalTrigger.icon.size` | `Object?` | Icon size, as a number or a CSS size string. |
+| `buttons.mic.styles` | `PortableStyles?` | The in-call mute button. |
+| `buttons.call.textBeforeCall` | `String?` | Label on the start-call button. |
+| `buttons.call.textDuringCall` | `String?` | Label once the call is live. |
+| `buttons.call.styles` | `PortableStyles?` | Call button styling. |
+| `buttons.text.textBeforeCall` | `String?` | Label on the start-chat button. |
+| `buttons.text.textDuringCall` | `String?` | Label once chat is live. |
+| `buttons.text.styles` | `PortableStyles?` | Chat button styling. |
+
+`PortableStyles` is the cross-platform style subset: `height`, `width`, `backgroundColor`, `padding`, `borderRadius`. Sizes accept a number or a CSS string, so `'48px'` and `48` both work.
+
+## Voice call view
+
+| Option | Type | Notes |
+|---|---|---|
+| `voiceCall.showAnimation` | `bool?` | Shows the audio visualizer during a call. Needs `transport` passed to `RinggWidget`. |
+| `voiceCall.showTranscript` | `bool?` | Shows the live transcript during a call. |
+
+## Feedback screen
+
+| Option | Type | Notes |
+|---|---|---|
+| `feedbackScreen.title` | `String?` | Heading on the rating screen. |
+| `feedbackScreen.description` | `String?` | Supporting copy. |
+| `feedbackScreen.starsCount` | `int?` | Number of stars offered. |
+| `feedbackScreen.starsStyles.filledColor` | `String?` | Selected star color. |
+| `feedbackScreen.starsStyles.emptyColor` | `String?` | Unselected star color. |
+| `feedbackScreen.placeholder` | `String?` | Comment field placeholder. |
+| `feedbackScreen.submitBtnCTA` | `String?` | Submit button label. |
+| `feedbackScreen.submitBtnStyles` | `PortableStyles?` | Submit button styling. |
+
+Set `bypassFeedbackScreen: true` to skip the screen entirely.
+
+## Chat extras
+
+| Option | Type | Notes |
+|---|---|---|
+| `enabledSlashCommands` | `List<SlashCommand>?` | Commands offered in the composer, merged with any the assistant returns at call start. |
+| `eventLogs.enabled` | `bool?` | Shows inline pills in the thread when the assistant fires a host action. |
+| `eventLogs.showIds` | `bool?` | Appends the action id to each pill. Useful while debugging. |
+| `notificationTuneUrl` | `String?` | Sound played on an incoming reply. |
+
+## Web-only options
+
+These exist on the type because the config is shared with the web widget. They are ignored on Flutter, where the panel sizes itself to the device.
+
+| Option | Why it does not apply |
+|---|---|
+| `widgetPosition` | Trigger and panel placement is handled by the Flutter layout. |
+| `innerWindowProps` | There is no resizable window to size. |
+
+## Defaults
+
+<WidgetDefaults />
+
+## Caller identity
+
+<OriginRequirement />
+
+On Flutter this is handled for you. The package reads the running app's id through `package_info_plus` and sends `<platform>://<bundleId>`:
+
+| Platform | `Origin` sent |
+|---|---|
+| Android | `android://<applicationId>` |
+| iOS | `ios://<bundleId>` |
+| macOS, Windows, Linux | `macos://…`, `windows://…`, `linux://…` |
+
+Set `clientOrigin` only when you want to pin one value, for example a single canonical string across build flavors. It wins over the derived one.
+
+```dart
+RinggWidgetConfig(
+  agentId: 'your-agent-id',
+  clientOrigin: 'android://com.yourcompany.yourapp',
+)
+```
+
+Supplying your own `ControllerPorts(httpClient: …)` opts out of the default header. Wrap your client to keep it:
+
+```dart
+ControllerPorts(
+  transport: transport.transport,
+  httpClient: appOriginHttpClient(inner: yourClient),
+)
+```

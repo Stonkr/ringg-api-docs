@@ -1,0 +1,163 @@
+---
+title: "React Native Widget Events and Control"
+sidebarTitle: "Events and Control"
+icon: "radio"
+description: "Lifecycle events, controller methods, state hooks and agent-triggered app actions for the Ringg AI React Native widget."
+---
+
+import LifecycleEvents from "/snippets/widget-lifecycle-events.mdx";
+import ComponentTypes from "/snippets/widget-component-types.mdx";
+
+Once the widget is mounted, the controller is your handle on it: subscribe to what the conversation is doing, drive the panel from your own UI, and react to actions the assistant fires.
+
+## Getting the controller
+
+`<RinggWidget config />` builds the controller for you. `onReady` hands it back:
+
+```tsx
+const [controller, setController] = useState<RinggWidgetController | null>(null);
+
+<RinggWidget config={config} onReady={setController} />;
+```
+
+It fires once, after the widget's first render, and the widget destroys the controller when it unmounts. Everything on this page works off that value.
+
+<Note>
+If you built the controller yourself and passed it as `controller` instead of `config`, you already have it, and its lifecycle is yours: call `destroy()` when you are done.
+</Note>
+
+## Lifecycle events
+
+<LifecycleEvents />
+
+React Native has no DOM, so events arrive on the controller's in-memory bus. `on` returns an unsubscribe function.
+
+```ts
+useEffect(() => {
+  const unsubscribe = controller.eventBus.on(
+    "ringg:conversation_status",
+    ({ status, mode, callId }) => {
+      analytics.track(`call_${status}`, { mode, callId });
+    },
+  );
+
+  return unsubscribe;
+}, [controller]);
+```
+
+<Warning>
+Subscribe in an effect and return the unsubscribe function. Handlers registered during render accumulate on every re-render and fire multiple times per event.
+</Warning>
+
+## Controller methods
+
+Call these to drive the widget from your own buttons, deep links or navigation events.
+
+| Method | Effect |
+|---|---|
+| `openWidget()` | Opens the panel. |
+| `minimizeWidget()` | Closes the panel back to the trigger. |
+| `handleTriggerClick()` | What the built-in trigger does: toggles the panel, or starts the conversation directly when `bypassStartScreen` is set. |
+| `startCall(mediaType)` | Starts a conversation in `"audio"` or `"text"`. Requests microphone permission for audio. |
+| `endCall()` | Ends the conversation and releases the microphone. |
+| `sendMessage(text)` | Sends a chat message as the user. |
+| `sendSlashCommand(command)` | Runs one of the commands from `enabledSlashCommands`. |
+| `submitFeedback(rating, comment)` | Submits the post-call feedback. |
+| `skipFeedback()` | Dismisses the feedback screen. |
+| `destroy()` | Tears the controller down and releases the microphone. Call on unmount. |
+
+```tsx
+<Pressable onPress={() => controller.openWidget()}>
+  <Text>Talk to support</Text>
+</Pressable>
+```
+
+<Note>
+The controller also exposes methods for component responses, Block Kit actions and dynamic-data extensions. The bundled widget calls those on itself while rendering interactive components, so a normal integration does not need them.
+</Note>
+
+## Reading state
+
+Each store has a hook that re-renders your component when its snapshot changes. Use these to build your own UI, or to mirror the widget's state elsewhere in your app.
+
+| Hook | Snapshot |
+|---|---|
+| `useRinggSession(controller)` | `phase` (`"idle"`, `"starting"`, `"live-optimistic"`, `"connected"`), `isLoading`, `isSessionLive`, `connectionState` (`"disconnected"`, `"connecting"`, `"connected"`, `"reconnecting"`), `error`. |
+| `useRinggShell(controller)` | `viewState` (`"closed"`, `"open"`, `"feedback"`), `currentCallId`, `callMode`. |
+| `useRinggMessages(controller)` | `messages`, the chat thread. |
+| `useRinggTyping(controller)` | `isTyping`, true while a reply is pending. |
+| `useRinggComponents(controller)` | `completedFlowIds`, interactive flows the user has finished. |
+| `useRinggSlashCommands(controller)` | `commands` currently offered in the composer. |
+
+```tsx
+const { isSessionLive, connectionState } = useRinggSession(controller);
+const { messages } = useRinggMessages(controller);
+
+return <Badge live={isSessionLive} reconnecting={connectionState === "reconnecting"} />;
+```
+
+Each message carries `name`, `message`, `isSelf`, `timestamp`, an optional `sourceUrl` for retrieved sources, and `componentType` with `componentData` when the message renders a component instead of text.
+
+## Interactive components
+
+<ComponentTypes />
+
+## Agent-triggered app actions
+
+Assistants can fire host actions during a conversation, for example to open a screen or focus a field. On the web these become browser events. React Native has no ambient event bus, so you supply the handler through `ports` and receive the same payload.
+
+```tsx
+import { createHostActionDispatcher, RinggWidget } from "@ringg/react-native";
+
+const onDomAction = createHostActionDispatcher(({ name, payload }) => {
+  if (name === "open_checkout") navigation.navigate("Checkout", payload);
+});
+
+<RinggWidget config={config} ports={{ onDomAction }} />;
+```
+
+Set `eventLogs: { enabled: true }` in config to also show each fired action as an inline pill in the chat thread, which makes these easy to watch while building.
+
+## Ports reference
+
+`ports` overrides what the widget wires on its own. Every entry is optional: supply one and yours is used, leave it out and the default applies.
+
+| Port | Default | Override it to |
+|---|---|---|
+| `transport` | A LiveKit connection the widget owns | Bring your own adapter, or a room shared with the rest of your app. |
+| `urlResolver` | The Ringg endpoints, selected by `config.mode` | Point at a different backend. |
+| `micPermission` | The native permission prompt | Gate access yourself, or show your own explanation first. |
+| `notification` | Silent | Play a reply sound, see [notification sound](/get-started/guides/widget-react-native#notification-sound). |
+| `onDomAction` | Unset. Actions are acknowledged and dropped | Handle agent-triggered app actions. |
+| `eventBus` | Created for you | Share one bus with other code. |
+| `clock` | System clock | Inject time, for tests. |
+
+<Warning>
+`ports` is read once, when the widget builds the controller. Changing it later has no effect; changing `config` rebuilds the conversation from scratch.
+</Warning>
+
+### Owning the lifecycle yourself
+
+When the widget cannot own the transport, build the controller and pass that instead. `defaultUrlResolver` keeps the Ringg endpoints without you naming them:
+
+```tsx
+import { RinggWidget, createLiveKitTransport, createNativeMicPermission, createRinggWidgetController, defaultUrlResolver } from "@ringg/react-native";
+
+const livekit = createLiveKitTransport();
+const controller = createRinggWidgetController(config, {
+  transport: livekit.transport,
+  urlResolver: defaultUrlResolver,
+  micPermission: createNativeMicPermission(),
+});
+
+<RinggWidget controller={controller} room={livekit.room} />;
+// Yours to build, yours to release: controller.destroy(); livekit.dispose();
+```
+
+## QA checklist
+
+<Check>Open and close the panel once, then confirm one `ringg:widget_status` event per action.</Check>
+<Check>Start and end one conversation, then confirm `ringg:conversation_status` carries a `callId`.</Check>
+<Check>Navigate away and back, then confirm listeners are not duplicated.</Check>
+<Check>Submit and skip feedback in separate runs if the feedback screen is enabled.</Check>
+<Check>Unmount the screen during a call and confirm the microphone indicator clears.</Check>
