@@ -1,0 +1,170 @@
+---
+title: "React Native Widget Configuration"
+sidebarTitle: "Configuration"
+icon: "sliders-horizontal"
+description: "Full reference for the RinggWidgetConfig options accepted by the Ringg AI React Native widget."
+---
+
+import WidgetDefaults from "/snippets/widget-defaults.mdx";
+import OriginRequirement from "/snippets/widget-origin-requirement.mdx";
+
+This page is the complete reference for `RinggWidgetConfig`, the object you pass to `<RinggWidget config />`. Configure assistant behavior, tools and prompts in the dashboard; use this object for app-level runtime settings.
+
+See [React Native](/get-started/guides/widget-react-native) for installation and the integration steps.
+
+```tsx
+<RinggWidget
+  config={{
+    agentId: "your-agent-id",
+    authorization: "Bearer your-webcall-public-key",
+    clientOrigin: appOrigin(BUNDLE_ID),
+    title: "Support",
+    defaultTab: "text",
+  }}
+/>
+```
+
+## Identity and auth
+
+| Option | Type | Notes |
+|---|---|---|
+| `agentId` | `string` | The assistant to load. **Required.** |
+| `authorization` | `string` | `Bearer <webcall-public-key>`, generated per assistant in the dashboard and rotatable from there. |
+| `clientOrigin` | `string` | Caller identity sent as `Origin`. **Required for real calls**, see [Caller identity](#caller-identity). |
+| `mode` | `"dev" \| "stage" \| "prod"` | Which Ringg environment to call. Defaults to `prod`. |
+
+<Warning>
+`authorization` and `clientOrigin` ship inside your app binary and can be extracted from it. Use only the webcall public key generated for that assistant, never a backend integration key, and keep the assistant's allowed clients list tight.
+</Warning>
+
+## Panel content and mode
+
+| Option | Type | Notes |
+|---|---|---|
+| `title` | `string` | Heading on the start screen and header. |
+| `description` | `string` | Supporting copy on the start screen. |
+| `defaultTab` | `"audio" \| "text"` | Which mode the panel opens in. |
+| `hideTabSelector` | `boolean` | Hides the audio/text switch, pinning the widget to `defaultTab`. |
+| `defaultExpanded` | `boolean` | Mounts the panel already open, with no trigger. |
+| `bypassStartScreen` | `boolean` | A trigger tap starts the conversation in `defaultTab` immediately. |
+| `bypassFeedbackScreen` | `boolean` | Skips the post-call rating screen. |
+| `logoUrl` | `string` | Logo shown in the header. |
+| `logoStyles` | `PortableStyles` | Sizing and background for the logo. |
+| `typingWords` | `string[]` | Words cycled in the pending-reply indicator. |
+
+## Variables
+
+`variables` are forwarded to the assistant as `custom_args_values` and fill `{{placeholders}}` in its prompts. Values are sent verbatim, so strings, numbers, booleans, objects and arrays are all accepted.
+
+```tsx
+variables: {
+  callee_name: "John",
+  account_id: "ACC-42",
+  is_premium: true,
+  cart: { items: 3, total: 149.5 },
+}
+```
+
+Set variables at controller creation. To change them for a new conversation, create a new controller.
+
+## Theme
+
+`theme` accepts thirteen fields. Colors take any CSS color string; `primaryColor` and `agentBubbleColor` also accept CSS gradients.
+
+| Option | Type | Applies to |
+|---|---|---|
+| `theme.primaryColor` | `string` | Accent for buttons, selected states and the trigger. |
+| `theme.primaryTextColor` | `string` | Text on primary-colored surfaces. |
+| `theme.backgroundColor` | `string` | Panel background. |
+| `theme.surfaceColor` | `string` | Cards, inputs and the user message bubble. |
+| `theme.agentBubbleColor` | `string` | Assistant bubble background. An empty string renders assistant replies bubble-less. |
+| `theme.textColor` | `string` | Body text. |
+| `theme.mutedTextColor` | `string` | Secondary text. |
+| `theme.borderColor` | `string` | Borders and dividers. |
+| `theme.errorColor` | `string` | Validation and danger states. |
+| `theme.successColor` | `string` | Success states. |
+| `theme.buttonStyle` | `"rounded" \| "pill" \| "square"` | Button corner style. |
+| `theme.borderRadius` | `string` | Global corner radius, for example `"12px"`. |
+| `theme.fontFamily` | `string` | Font family. Must be a font your app has already loaded. |
+
+<Note>
+`fontFamily` is resolved against fonts registered in your app. React Native does not fetch web fonts, so load the family through Expo Font or your native font assets first.
+</Note>
+
+## Buttons
+
+| Option | Type | Notes |
+|---|---|---|
+| `buttons.modalTrigger.styles` | `PortableStyles` | The floating trigger. |
+| `buttons.modalTrigger.icon.url` | `string` | Custom trigger icon. |
+| `buttons.modalTrigger.icon.size` | `number` | Icon size in points. |
+| `buttons.mic.styles` | `PortableStyles` | The in-call mute button. |
+| `buttons.call.textBeforeCall` | `string` | Label on the start-call button. |
+| `buttons.call.textDuringCall` | `string` | Label once the call is live. |
+| `buttons.call.styles` | `PortableStyles` | Call button styling. |
+| `buttons.text.textBeforeCall` | `string` | Label on the start-chat button. |
+| `buttons.text.textDuringCall` | `string` | Label once chat is live. |
+| `buttons.text.styles` | `PortableStyles` | Chat button styling. |
+
+`PortableStyles` is the cross-platform style subset: `height`, `width`, `backgroundColor`, `padding`, `borderRadius`. Arbitrary CSS is not accepted, because these values are applied to native views.
+
+## Voice call view
+
+| Option | Type | Notes |
+|---|---|---|
+| `voiceCall.showAnimation` | `boolean` | Shows the audio visualizer during a call. Needs `room` passed to `<RinggWidget />`. |
+| `voiceCall.showTranscript` | `boolean` | Shows the live transcript during a call. |
+
+## Feedback screen
+
+| Option | Type | Notes |
+|---|---|---|
+| `feedbackScreen.title` | `string` | Heading on the rating screen. |
+| `feedbackScreen.description` | `string` | Supporting copy. |
+| `feedbackScreen.starsCount` | `number` | Number of stars offered. |
+| `feedbackScreen.starsStyles.filledColor` | `string` | Selected star color. |
+| `feedbackScreen.starsStyles.emptyColor` | `string` | Unselected star color. |
+| `feedbackScreen.placeholder` | `string` | Comment field placeholder. |
+| `feedbackScreen.submitBtnCTA` | `string` | Submit button label. |
+| `feedbackScreen.submitBtnStyles` | `PortableStyles` | Submit button styling. |
+
+Set `bypassFeedbackScreen: true` to skip the screen entirely.
+
+## Chat extras
+
+| Option | Type | Notes |
+|---|---|---|
+| `enabledSlashCommands` | `SlashCommand[]` | Commands offered in the composer, merged with any the assistant returns at call start. Each is `{ tool_type, command, display_name, description }`. |
+| `eventLogs.enabled` | `boolean` | Shows inline pills in the thread when the assistant fires a host action. |
+| `eventLogs.showIds` | `boolean` | Appends the action id to each pill. Useful while debugging. |
+| `notificationTuneUrl` | `string` | Sound played on an incoming reply. See [notification sound](/get-started/guides/widget-react-native#notification-sound), which needs a player wired up on React Native. |
+
+## Web-only options
+
+These exist on the type because the config is shared with the web widget. They are ignored on React Native, where the panel sizes itself to the device.
+
+| Option | Why it does not apply |
+|---|---|
+| `widgetPosition` | Trigger and panel placement is handled by the native layout. |
+| `innerWindowProps` | There is no resizable window to size. |
+
+## Defaults
+
+<WidgetDefaults />
+
+## Caller identity
+
+<OriginRequirement />
+
+On React Native, pass the identity explicitly. `appOrigin` builds the `<platform>://<bundleId>` string for you:
+
+```tsx
+import { Platform } from "react-native";
+import { appOrigin } from "@ringg/react-native";
+
+const BUNDLE_ID = Platform.OS === "android" ? "com.acme.app" : "com.acme.App";
+
+clientOrigin: appOrigin(BUNDLE_ID); // "android://com.acme.app"
+```
+
+The bundle id is a parameter because React Native cannot read it without a native module, and the package will not add one for a single string. Your app already declares it, so a constant or a read of your own app config is enough. `expo-application` reports the same value if you would rather ask the OS, but it is native code, so adding it means rebuilding the app.

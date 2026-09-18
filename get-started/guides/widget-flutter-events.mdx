@@ -1,0 +1,146 @@
+---
+title: "Flutter Widget Events and Control"
+sidebarTitle: "Events and Control"
+icon: "radio"
+description: "Lifecycle events, controller methods, state bindings and agent-triggered app actions for the Ringg AI Flutter widget."
+---
+
+import LifecycleEvents from "/snippets/widget-lifecycle-events.mdx";
+import ComponentTypes from "/snippets/widget-component-types.mdx";
+
+Once the widget is mounted, the controller is your handle on it: subscribe to what the conversation is doing, drive the panel from your own UI, and react to actions the assistant fires.
+
+## Lifecycle events
+
+<LifecycleEvents />
+
+Flutter has no DOM, so events arrive on the controller's in-memory bus. `on` returns an unsubscribe function; call it in `dispose`.
+
+```dart
+late final Unsubscribe _unsubscribe;
+
+@override
+void initState() {
+  super.initState();
+  _unsubscribe = _controller.eventBus.on(
+    'ringg:conversation_status',
+    (payload) {
+      final data = payload as Map<String, Object?>;
+      analytics.track('call_${data['status']}', {'callId': data['callId']});
+    },
+  );
+}
+
+@override
+void dispose() {
+  _unsubscribe();
+  _controller.destroy();
+  _transport.dispose();
+  super.dispose();
+}
+```
+
+Payloads arrive as maps keyed by the field names in the table above.
+
+## Controller methods
+
+Call these to drive the widget from your own buttons, routes or deep links.
+
+| Method | Effect |
+|---|---|
+| `openWidget()` | Opens the panel. |
+| `minimizeWidget()` | Closes the panel back to the trigger. |
+| `handleTriggerClick()` | What the built-in trigger does: toggles the panel, or starts the conversation directly when `bypassStartScreen` is set. |
+| `startCall(MediaType)` | Starts a conversation in `MediaType.audio` or `MediaType.text`. |
+| `endCall()` | Ends the conversation and releases the microphone. |
+| `sendMessage(String)` | Sends a chat message as the user. |
+| `sendSlashCommand(SlashCommand)` | Runs one of the commands from `enabledSlashCommands`. |
+| `submitFeedback(int rating, String comment)` | Submits the post-call feedback. |
+| `skipFeedback()` | Dismisses the feedback screen. |
+| `destroy()` | Tears the controller down and releases the microphone. Call from `dispose`. |
+
+```dart
+FilledButton(
+  onPressed: _controller.openWidget,
+  child: const Text('Talk to support'),
+)
+```
+
+<Note>
+The controller also exposes methods for component responses, Block Kit actions and local components. The bundled widget calls those on itself while rendering interactive components, so a normal integration does not need them.
+</Note>
+
+## Reading state
+
+Each store publishes immutable snapshots. `StoreBuilder` is the subscription primitive: it subscribes on mount, rebuilds on every new snapshot, and unsubscribes on dispose.
+
+```dart
+StoreBuilder(
+  store: _controller.session,
+  builder: (context, snapshot, child) => Badge(
+    live: snapshot.isSessionLive,
+    reconnecting: snapshot.connectionState == TransportConnectionState.reconnecting,
+  ),
+)
+```
+
+| Store | Snapshot |
+|---|---|
+| `controller.session` | `phase` (`idle`, `starting`, `liveOptimistic`, `connected`), `isLoading`, `isSessionLive`, `connectionState` (a `TransportConnectionState`: `disconnected`, `connecting`, `connected`, `reconnecting`), `error`. |
+| `controller.shell` | `viewState` (`closed`, `open`, `feedback`), `currentCallId`, `callMode`. |
+| `controller.messages` | The chat thread. |
+| `controller.typing` | `isTyping`, true while a reply is pending. |
+| `controller.components` | `completedFlowIds`, interactive flows the user has finished. |
+| `controller.slashCommands` | Commands currently offered in the composer. |
+
+Each message carries `name`, `message`, `isSelf`, `timestamp`, an optional `sourceUrl` for retrieved sources, and a component type with its data when the message renders a component instead of text.
+
+`RinggScope` carries the controller down the tree if you would rather read it from context than pass it explicitly.
+
+## Interactive components
+
+<ComponentTypes />
+
+## Agent-triggered app actions
+
+Assistants can fire host actions during a conversation, for example to open a route or prefill a field. On the web these become browser events. Flutter has no ambient event bus, so you supply a handler on the ports and receive the same payload.
+
+```dart
+ControllerPorts(
+  transport: _transport.transport,
+  onDomAction: (action, log) {
+    if (action.eventName == 'open_checkout') {
+      Navigator.of(context).pushNamed('/checkout', arguments: action.defaultPayload);
+    }
+  },
+)
+```
+
+Leave it unset and actions are acknowledged and dropped. Set `eventLogs: EventLogsConfig(enabled: true)` in config to also show each fired action as an inline pill in the chat thread.
+
+## Ports reference
+
+The second argument to `RinggWidgetController` wires the widget to your app's capabilities. Only `transport` is required.
+
+| Port | Default | Purpose |
+|---|---|---|
+| `transport` | Required | The LiveKit connection, from `createLiveKitTransport()`. |
+| `urlResolver` | Production endpoints | Override to point at another environment. |
+| `httpClient` | Origin-stamping client | Supply your own and wrap it with `appOriginHttpClient` to keep the caller identity header. |
+| `micPermission` | Treated as granted | Supply your own gate, for example `permission_handler`, to ask before a call starts. |
+| `notification` | Silent | Reply sound. Supply a player to enable it. |
+| `onDomAction` | Unset | Handler for agent-triggered app actions. |
+| `eventBus` | Created for you | Supply your own bus to share it with other code. |
+| `clock` | System clock | Injectable time source, for tests. |
+
+<Note>
+The default microphone port reports granted and lets the platform prompt when the audio track is created, which is why the manifest and `Info.plist` entries in [platform setup](/get-started/guides/widget-flutter#platform-setup) are what actually gate voice. Supply your own `micPermission` if you want to request access earlier, or show your own explanation first.
+</Note>
+
+## QA checklist
+
+<Check>Open and close the panel once, then confirm one `ringg:widget_status` event per action.</Check>
+<Check>Start and end one conversation, then confirm `ringg:conversation_status` carries a `callId`.</Check>
+<Check>Confirm every `eventBus.on` subscription is released in `dispose`.</Check>
+<Check>Submit and skip feedback in separate runs if the feedback screen is enabled.</Check>
+<Check>Confirm `destroy()` and `dispose()` run and the microphone indicator clears.</Check>
