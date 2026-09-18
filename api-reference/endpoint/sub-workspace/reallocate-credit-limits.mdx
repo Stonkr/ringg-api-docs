@@ -1,0 +1,61 @@
+---
+openapi: patch /workspace/sub/credit-limits
+---
+
+Set every sub-workspace's credit limit in one call, and optionally the family total. Postpaid families in **individual** billing mode only.
+
+## When to use
+
+- Splitting the family's credit limit across clients or teams.
+- Raising one client's limit at month end while keeping the total unchanged.
+
+## Request parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `allocations` | object | Yes | Map of `sub_workspace_id` to its new credit limit. Must include **every active sub-workspace exactly once**. Values are absolute, `0` or more, two decimals. |
+| `parent_credit_limit` | number | No | New family total (the primary's credit limit). Omit to keep the current total. |
+
+## Rules
+
+- A sub-workspace's limit cannot go below what it has already used this month.
+- The sum of all allocations cannot exceed the family total. Allocating less than the total is allowed; the remainder stays with the primary.
+- What remains with the primary must still cover the primary's own utilized amount.
+
+## Integration notes
+
+- Authenticate with the primary workspace's API key.
+- Read the current limits and usage from [Get Sub-workspaces](/api-reference/endpoint/sub-workspace/get-sub-workspaces) first, then send the full map.
+- Amounts in the response are **decimal strings** (`"200000.00"`), unlike the read endpoints.
+
+<Note>
+In a **common-billing** family there are no per-sub-workspace limits: every charge utilizes the primary's single credit limit. This endpoint returns `400 This family uses common billing; per-sub credit limits do not exist.` Allocate [concurrency](/api-reference/endpoint/sub-workspace/allocate-concurrency) instead.
+</Note>
+
+## Error responses
+
+- **400**: `Credit-limit reallocation applies to postpaid families only.`
+- **400**: `This family uses common billing; per-sub credit limits do not exist.`
+- **400**: `Allocations must cover every active sub-workspace exactly once. Missing: [...]; unknown: [...].`
+- **400**: `Credit limit 100.00 for sub-workspace 'Mumbai Collections' is below its utilized amount 34210.50.`
+- **400**: `The total credit limit across sub-workspaces must not exceed the parent workspace's credit limit (500000.00); allocations sum to 600000.00.`
+- **400**: `These allocations would leave the primary workspace with 1000.00, below its already-utilized 12500.00. Lower the sub-workspace limits or raise the primary credit limit.`
+- **401**: Invalid or missing API key.
+- **403**: `Sub-workspaces are not enabled for this workspace.`
+- **404**: `Workspace is not a sub-workspace family parent.` — the primary has no sub-workspaces yet.
+- **422**: Empty map, negative value, or a key that is not a UUID.
+
+## Example
+
+```bash
+curl --request PATCH "https://prod-api.ringg.ai/ca/api/v0/workspace/sub/credit-limits" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "parent_credit_limit": 500000.00,
+    "allocations": {
+      "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30": 200000.00,
+      "d21e8c55-9a0f-4c3b-86de-1f4b7a2c9e88": 150000.00
+    }
+  }'
+```

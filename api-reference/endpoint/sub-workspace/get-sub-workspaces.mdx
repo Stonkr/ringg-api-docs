@@ -1,0 +1,38 @@
+---
+openapi: get /workspace/sub
+---
+
+Return the whole family in one call: the primary's summary, one row per active sub-workspace with its allocation, member counts, and month-to-date usage, and the family totals.
+
+## When to use
+
+- A tenant dashboard in your own admin tool.
+- Checking headroom before allocating concurrency or credit.
+- Reconciling per-client usage at month end.
+
+## Reading the response
+
+- `billing` on each row is `{account_type, currency, total_available_credits}` for prepaid and `{account_type, currency, credit_limit, utilized_limit}` for postpaid. In a common-billing family the sub-workspace rows carry `null` limits because charges pool on the primary.
+- `family` always has the concurrency keys and `is_individual_entity`. Postpaid families add `credit_limit`, `utilized_total`, and `available_total`. Prepaid families add `available_pot` (the primary's unallocated money) and `family_available_total`; individual prepaid families also add `allocated_balance_total`.
+- `usage_this_period` is the value of completed calls since the 1st of the current month in the `Asia/Kolkata` timezone, in the workspace's billing currency.
+- `limit_concurrency` is a sub-workspace's ceiling: its own allocation in an individual family, the family total in a common family.
+- Amounts are JSON numbers here.
+
+## Integration notes
+
+- Authenticate with the primary workspace's API key.
+- Works on a primary with no sub-workspaces yet; `sub_workspaces` is then an empty list.
+- Archived sub-workspaces are not listed.
+
+## Error responses
+
+- **400**: `Sub-workspaces cannot have their own sub-workspaces.` — the key belongs to a sub-workspace.
+- **401**: Invalid or missing API key.
+- **403**: `Sub-workspaces are not enabled for this workspace.`
+
+## Example
+
+```bash
+curl --request GET "https://prod-api.ringg.ai/ca/api/v0/workspace/sub" \
+  --header "X-API-KEY: $RINGG_API_KEY"
+```

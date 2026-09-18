@@ -114,6 +114,18 @@
             ]
           },
           {
+            "group": "Sub-workspaces",
+            "pages": [
+              "api-reference/endpoint/sub-workspace/overview",
+              "api-reference/endpoint/sub-workspace/create-sub-workspace",
+              "api-reference/endpoint/sub-workspace/get-sub-workspaces",
+              "api-reference/endpoint/sub-workspace/list-family-members",
+              "api-reference/endpoint/sub-workspace/allocate-concurrency",
+              "api-reference/endpoint/sub-workspace/reallocate-credit-limits",
+              "api-reference/endpoint/sub-workspace/reallocate-credit-balances"
+            ]
+          },
+          {
             "group": "Assistant",
             "pages": [
               "api-reference/endpoint/assistant/get-assistant-voices",

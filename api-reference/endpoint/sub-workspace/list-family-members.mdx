@@ -1,0 +1,35 @@
+---
+openapi: get /workspace/sub/members
+---
+
+List everyone with access anywhere in the family and where that access comes from. Members of the primary inherit access to every sub-workspace; people added directly to a sub-workspace see only that sub-workspace.
+
+## When to use
+
+- Access audits across all client or team workspaces.
+- Showing who can reach a given sub-workspace in your own admin tool.
+
+## Reading the response
+
+- `scope` is `primary` for members of the primary (they have inherited access to every current and future sub-workspace) and `sub` for people added only to sub-workspaces.
+- `sub_workspace_ids` lists direct sub-workspace memberships only. Inherited access is not repeated there.
+- `permissions_by_workspace` gives the effective permissions per workspace id, inherited rows included, so you can render access without re-deriving it.
+- `invite_status` is `success` or `pending`.
+
+## Integration notes
+
+- Authenticate with the primary workspace's API key.
+- To add or remove people, use the workspace member endpoints against the relevant workspace; this endpoint is read-only.
+
+## Error responses
+
+- **400**: `Sub-workspaces cannot have their own sub-workspaces.` — the key belongs to a sub-workspace.
+- **401**: Invalid or missing API key.
+- **403**: `Sub-workspaces are not enabled for this workspace.`
+
+## Example
+
+```bash
+curl --request GET "https://prod-api.ringg.ai/ca/api/v0/workspace/sub/members" \
+  --header "X-API-KEY: $RINGG_API_KEY"
+```
