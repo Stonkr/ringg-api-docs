@@ -1,0 +1,58 @@
+---
+openapi: patch /workspace/sub/credit-balances
+---
+
+Set every sub-workspace's wallet to an absolute balance. The net difference moves from or to the primary's unallocated pot. Prepaid families in **individual** billing mode only.
+
+## When to use
+
+- Distributing a top-up made on the primary across clients or teams.
+- Pulling unused balance back from one sub-workspace to fund another.
+
+## Request parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `allocations` | object | Yes | Map of `sub_workspace_id` to its **new absolute balance**, not a delta. Must include **every active sub-workspace exactly once**. Values are `0` or more, two decimals. |
+
+## Rules
+
+- The net amount moving out of the primary's pot cannot exceed what the pot holds. Top up on the primary first, then allocate.
+- A sub-workspace with a `0` balance cannot place calls; sub-workspaces have no overdraft.
+- Every move is recorded in the workspace ledgers as a transfer, never as a charge.
+
+## Integration notes
+
+- Authenticate with the primary workspace's API key.
+- Read the current wallets and `family.available_pot` from [Get Sub-workspaces](/api-reference/endpoint/sub-workspace/get-sub-workspaces) first, then send the full map.
+- Amounts in the response are **decimal strings** (`"5000.00"`), unlike the read endpoints.
+
+<Note>
+In a **common-billing** family the wallet is shared on the primary and sub-workspaces hold nothing. This endpoint returns `400 This family uses a shared balance; per-sub wallets do not exist.` Allocate [concurrency](/api-reference/endpoint/sub-workspace/allocate-concurrency) instead.
+</Note>
+
+## Error responses
+
+- **400**: `Balance allocation applies to prepaid families only.`
+- **400**: `This family uses a shared balance; per-sub wallets do not exist.`
+- **400**: `allocations name workspaces that are not active sub-workspaces of this family: [...]`
+- **400**: `allocations must cover every active sub-workspace; missing: [...]`
+- **400**: `These allocations need 9000.00 from the primary's pot, which only holds 4000.00. Lower the allocations or add balance to the primary workspace first.`
+- **401**: Invalid or missing API key.
+- **403**: `Sub-workspaces are not enabled for this workspace.`
+- **404**: `Workspace is not a sub-workspace family parent.` — the primary has no sub-workspaces yet.
+- **422**: Empty map, negative value, or a key that is not a UUID.
+
+## Example
+
+```bash
+curl --request PATCH "https://prod-api.ringg.ai/ca/api/v0/workspace/sub/credit-balances" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "allocations": {
+      "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30": 5000.00,
+      "d21e8c55-9a0f-4c3b-86de-1f4b7a2c9e88": 3000.00
+    }
+  }'
+```

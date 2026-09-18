@@ -1,0 +1,57 @@
+---
+title: "Sub-workspaces"
+description: "Run a family of workspaces from one primary: create sub-workspaces for clients or teams, and allocate concurrency, credit limits, or balances to them over the API."
+"og:title": "Sub-workspaces API Overview | Ringg AI"
+---
+
+A sub-workspace family is one **primary** workspace with any number of **sub-workspaces** under it, typically one per client, brand, or team. Each sub-workspace is a full workspace with its own assistants, numbers, campaigns, call history, API key, and members, fully isolated from its siblings. The primary is the management console: it holds the family's money and calling capacity, shares them out, and sees every sub-workspace's data in one place. The primary itself does not place calls.
+
+<Note>
+Sub-workspaces are enabled per customer. If the endpoints below return `403 Sub-workspaces are not enabled for this workspace.`, contact Ringg support to turn the feature on for your primary workspace.
+</Note>
+
+## Billing modes
+
+The family's billing mode is set when it is created and applies to every sub-workspace.
+
+| Mode | Money | What you allocate over the API |
+|---|---|---|
+| **Individual** | Each sub-workspace has its own wallet (prepaid) or credit limit (postpaid). | Concurrency, plus [credit limits](/api-reference/endpoint/sub-workspace/reallocate-credit-limits) (postpaid) or [credit balances](/api-reference/endpoint/sub-workspace/reallocate-credit-balances) (prepaid). |
+| **Common** | One shared wallet or credit limit on the primary; every sub-workspace spends from it and one consolidated invoice covers the family. | Concurrency only. The credit-limit and credit-balance endpoints return `400` because there is nothing per sub-workspace to allocate. |
+
+Concurrency (how many calls can run at once) is bought on the primary and allocated to sub-workspaces in both modes. In an individual family each allocation is that sub-workspace's hard ceiling. In a common family idle capacity flows to whichever sub-workspace is busy, so a sub-workspace's ceiling is the family total.
+
+## Authentication
+
+Call every endpoint in this section with the **primary workspace's** API key in `X-API-KEY`. The key identifies the family; there is no workspace header to set.
+
+<Warning>
+A sub-workspace's API key cannot manage the family. Using one returns `400 Sub-workspaces cannot have their own sub-workspaces.`
+</Warning>
+
+## Endpoints
+
+- [Create Sub-workspace](/api-reference/endpoint/sub-workspace/create-sub-workspace) — `POST /workspace/sub`
+- [Get Sub-workspaces](/api-reference/endpoint/sub-workspace/get-sub-workspaces) — `GET /workspace/sub`, the whole family in one call
+- [List Family Members](/api-reference/endpoint/sub-workspace/list-family-members) — `GET /workspace/sub/members`
+- [Allocate Concurrency](/api-reference/endpoint/sub-workspace/allocate-concurrency) — `PATCH /workspace/sub/{sub_workspace_id}/concurrency`
+- [Reallocate Credit Limits](/api-reference/endpoint/sub-workspace/reallocate-credit-limits) — `PATCH /workspace/sub/credit-limits`, postpaid individual families
+- [Reallocate Credit Balances](/api-reference/endpoint/sub-workspace/reallocate-credit-balances) — `PATCH /workspace/sub/credit-balances`, prepaid individual families
+
+## Money formats
+
+The read endpoints and the concurrency endpoint return amounts as JSON numbers (`200000.0`). The two allocation endpoints return amounts as decimal strings (`"200000.00"`). Parse both before doing arithmetic.
+
+## Create an assistant inside a sub-workspace
+
+There is no separate endpoint for this. A sub-workspace is a normal workspace, so use its own API key with the existing [create assistant](/api-reference/endpoint/assistant/create-agent) endpoint and the assistant is created inside that sub-workspace, invisible from the primary and from sibling sub-workspaces. The same applies to every other endpoint in this reference: numbers, campaigns, calls, and history all scope to the workspace that owns the key.
+
+A new sub-workspace starts without an API key. To get one, switch into the sub-workspace in the [Ringg AI dashboard](https://www.ringg.ai/dashboard/api), open **Settings → API Key**, and generate it there. The key is shown once, exactly as described in [Authentication](/api-reference/quick-start/authentication). Keys cannot be created or rotated through the API.
+
+## Typical flow
+
+1. Create the sub-workspace with the primary's key.
+2. Allocate concurrency to it, and a credit limit or balance in an individual family.
+3. Generate the sub-workspace's API key in the dashboard.
+4. Create assistants, attach numbers, and run campaigns with the sub-workspace's key.
+5. Watch usage across the family with [Get Sub-workspaces](/api-reference/endpoint/sub-workspace/get-sub-workspaces).

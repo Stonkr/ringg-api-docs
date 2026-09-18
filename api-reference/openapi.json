@@ -677,6 +677,12 @@
                             "type": "string",
                             "example": "owner"
                           },
+                          "parent_workspace_id": {
+                            "type": "string",
+                            "nullable": true,
+                            "description": "Set when the workspace is a sub-workspace: the id of its primary. null for a standalone workspace and for a primary itself.",
+                            "example": null
+                          },
                           "credits": {
                             "type": "integer",
                             "example": 3025
@@ -698,6 +704,1432 @@
           },
           "500": {
             "description": "Internal Server Error - Something went wrong on our end."
+          }
+        }
+      }
+    },
+    "/workspace/sub": {
+      "post": {
+        "tags": ["workspace"],
+        "summary": "Create Sub-workspace",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Create Sub-workspace | Ringg AI"
+          }
+        },
+        "description": "Creates a new sub-workspace under the primary workspace that owns the API key. The sub-workspace is a full workspace (own assistants, numbers, campaigns, call history, members) that starts with zero balance or credit limit and zero concurrency; allocate to it afterwards. Every member of the primary is given inherited access to it. The first sub-workspace turns the primary into a family in individual billing mode.",
+        "operationId": "createSubWorkspace",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) The API key of the PRIMARY workspace. A sub-workspace's key is refused with 400.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100,
+                    "description": "(Required) Display name of the new sub-workspace, 1-100 characters. Surrounding whitespace is trimmed.",
+                    "example": "Mumbai Collections"
+                  }
+                }
+              },
+              "example": {
+                "name": "Mumbai Collections"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response: The new sub-workspace.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Sub-workspace Mumbai Collections created successfully"
+                    },
+                    "sub_workspace": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Mumbai Collections"
+                        },
+                        "parent_workspace_id": {
+                          "type": "string",
+                          "example": "2f9a1c44-7e88-4bb1-9a01-5d3c2e7f6a11"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2026-09-18T06:41:12.884312+00:00"
+                        },
+                        "concurrency": {
+                          "type": "integer",
+                          "example": 0
+                        },
+                        "limit_concurrency": {
+                          "type": "integer",
+                          "example": 0
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Sub-workspace Mumbai Collections created successfully",
+                  "sub_workspace": {
+                    "id": "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30",
+                    "name": "Mumbai Collections",
+                    "parent_workspace_id": "2f9a1c44-7e88-4bb1-9a01-5d3c2e7f6a11",
+                    "created_at": "2026-09-18T06:41:12.884312+00:00",
+                    "concurrency": 0,
+                    "limit_concurrency": 0
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - The API key belongs to a sub-workspace (no nesting), or the name is blank.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Sub-workspaces cannot have their own sub-workspaces."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "401 Unauthorized"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid credentials"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Sub-workspaces are not enabled for this workspace, or the caller is not an active member of the primary.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Sub-workspaces are not enabled for this workspace."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "500 Internal Server Error"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "An unexpected error occurred on the server."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["workspace"],
+        "summary": "Get Sub-workspaces",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Sub-workspaces | Ringg AI"
+          }
+        },
+        "description": "Returns the whole family in one call: the primary's summary, one row per active sub-workspace with its allocation, members and month-to-date usage, and the family totals. Works on a primary that has no sub-workspaces yet (empty list).",
+        "operationId": "getSubWorkspaces",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) The API key of the PRIMARY workspace. A sub-workspace's key is refused with 400.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response: The family overview.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "primary": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "2f9a1c44-7e88-4bb1-9a01-5d3c2e7f6a11"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Acme Collections HQ"
+                        },
+                        "concurrency": {
+                          "type": "integer",
+                          "example": 50
+                        },
+                        "limit_concurrency": {
+                          "type": "integer",
+                          "example": 50
+                        },
+                        "member_count": {
+                          "type": "integer",
+                          "description": "Direct members of the primary.",
+                          "example": 4
+                        },
+                        "billing": {
+                          "type": "object",
+                          "description": "Money block of one workspace. Prepaid: account_type, currency, total_available_credits. Postpaid: account_type, currency, credit_limit, utilized_limit (both null for a sub in a common-billing family, whose charges pool on the primary).",
+                          "properties": {
+                            "account_type": {
+                              "type": "string",
+                              "enum": ["prepaid", "postpaid"],
+                              "example": "postpaid"
+                            },
+                            "currency": {
+                              "type": "string",
+                              "enum": ["INR", "USD"],
+                              "example": "INR"
+                            },
+                            "total_available_credits": {
+                              "type": "number",
+                              "nullable": true,
+                              "description": "Prepaid only: the workspace's own wallet.",
+                              "example": 5000.0
+                            },
+                            "credit_limit": {
+                              "type": "number",
+                              "nullable": true,
+                              "description": "Postpaid only.",
+                              "example": 200000.0
+                            },
+                            "utilized_limit": {
+                              "type": "number",
+                              "nullable": true,
+                              "description": "Postpaid only.",
+                              "example": 34210.5
+                            }
+                          }
+                        },
+                        "usage_this_period": {
+                          "type": "number",
+                          "example": 0
+                        }
+                      }
+                    },
+                    "sub_workspaces": {
+                      "type": "array",
+                      "description": "Active sub-workspaces, oldest first.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30"
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "Mumbai Collections"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2026-09-01T06:41:12.884312+00:00"
+                          },
+                          "concurrency": {
+                            "type": "integer",
+                            "description": "Concurrent calls allocated to this sub-workspace.",
+                            "example": 20
+                          },
+                          "limit_concurrency": {
+                            "type": "integer",
+                            "description": "The sub-workspace's ceiling: its own allocation in an individual-billing family, the family total in a common-billing family.",
+                            "example": 20
+                          },
+                          "member_counts": {
+                            "type": "object",
+                            "properties": {
+                              "direct": {
+                                "type": "integer",
+                                "example": 2
+                              },
+                              "inherited": {
+                                "type": "integer",
+                                "example": 4
+                              }
+                            }
+                          },
+                          "billing": {
+                            "type": "object",
+                            "description": "Money block of one workspace. Prepaid: account_type, currency, total_available_credits. Postpaid: account_type, currency, credit_limit, utilized_limit (both null for a sub in a common-billing family, whose charges pool on the primary).",
+                            "properties": {
+                              "account_type": {
+                                "type": "string",
+                                "enum": ["prepaid", "postpaid"],
+                                "example": "postpaid"
+                              },
+                              "currency": {
+                                "type": "string",
+                                "enum": ["INR", "USD"],
+                                "example": "INR"
+                              },
+                              "total_available_credits": {
+                                "type": "number",
+                                "nullable": true,
+                                "description": "Prepaid only: the workspace's own wallet.",
+                                "example": 5000.0
+                              },
+                              "credit_limit": {
+                                "type": "number",
+                                "nullable": true,
+                                "description": "Postpaid only.",
+                                "example": 200000.0
+                              },
+                              "utilized_limit": {
+                                "type": "number",
+                                "nullable": true,
+                                "description": "Postpaid only.",
+                                "example": 34210.5
+                              }
+                            }
+                          },
+                          "usage_this_period": {
+                            "type": "number",
+                            "description": "Charges for completed calls this calendar month (Asia/Kolkata), in the workspace's billing currency.",
+                            "example": 34210.5
+                          }
+                        }
+                      }
+                    },
+                    "family": {
+                      "type": "object",
+                      "description": "Family totals. Always: the concurrency keys and is_individual_entity. Postpaid families add credit_limit, utilized_total, available_total. Prepaid individual families add available_pot, allocated_balance_total, family_available_total. Prepaid common families add available_pot and family_available_total.",
+                      "properties": {
+                        "concurrency_capacity": {
+                          "type": "integer",
+                          "description": "Concurrent calls the family owns (bought on the primary).",
+                          "example": 50
+                        },
+                        "concurrency_allocated": {
+                          "type": "integer",
+                          "description": "Sum of the sub-workspaces' allocations.",
+                          "example": 20
+                        },
+                        "concurrency_available": {
+                          "type": "integer",
+                          "example": 30
+                        },
+                        "is_individual_entity": {
+                          "type": "boolean",
+                          "description": "true = individual billing (each sub has its own wallet or limit); false = common billing (one pool on the primary).",
+                          "example": true
+                        },
+                        "credit_limit": {
+                          "type": "number",
+                          "nullable": true,
+                          "description": "Postpaid: the family total.",
+                          "example": 500000.0
+                        },
+                        "utilized_total": {
+                          "type": "number",
+                          "nullable": true,
+                          "description": "Postpaid: primary + sub-workspaces utilized.",
+                          "example": 46710.5
+                        },
+                        "available_total": {
+                          "type": "number",
+                          "nullable": true,
+                          "description": "Postpaid: credit_limit - utilized_total.",
+                          "example": 453289.5
+                        },
+                        "available_pot": {
+                          "type": "number",
+                          "nullable": true,
+                          "description": "Prepaid: the primary's unallocated balance.",
+                          "example": 12000.0
+                        },
+                        "allocated_balance_total": {
+                          "type": "number",
+                          "nullable": true,
+                          "description": "Prepaid individual: sum of the sub-workspaces' wallets.",
+                          "example": 8000.0
+                        },
+                        "family_available_total": {
+                          "type": "number",
+                          "nullable": true,
+                          "description": "Prepaid: pot + allocated wallets.",
+                          "example": 20000.0
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "primary": {
+                    "id": "2f9a1c44-7e88-4bb1-9a01-5d3c2e7f6a11",
+                    "name": "Acme Collections HQ",
+                    "concurrency": 50,
+                    "limit_concurrency": 50,
+                    "member_count": 4,
+                    "billing": {
+                      "account_type": "postpaid",
+                      "currency": "INR",
+                      "credit_limit": 500000.0,
+                      "utilized_limit": 12500.0
+                    },
+                    "usage_this_period": 0
+                  },
+                  "sub_workspaces": [
+                    {
+                      "id": "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30",
+                      "name": "Mumbai Collections",
+                      "created_at": "2026-09-01T06:41:12.884312+00:00",
+                      "concurrency": 20,
+                      "limit_concurrency": 20,
+                      "member_counts": {
+                        "direct": 2,
+                        "inherited": 4
+                      },
+                      "billing": {
+                        "account_type": "postpaid",
+                        "currency": "INR",
+                        "credit_limit": 200000.0,
+                        "utilized_limit": 34210.5
+                      },
+                      "usage_this_period": 34210.5
+                    }
+                  ],
+                  "family": {
+                    "concurrency_capacity": 50,
+                    "concurrency_allocated": 20,
+                    "concurrency_available": 30,
+                    "is_individual_entity": true,
+                    "credit_limit": 500000.0,
+                    "utilized_total": 46710.5,
+                    "available_total": 453289.5
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - The API key belongs to a sub-workspace.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Sub-workspaces cannot have their own sub-workspaces."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "401 Unauthorized"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid credentials"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Sub-workspaces are not enabled for this workspace, or the caller is not an active member of the primary.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Sub-workspaces are not enabled for this workspace."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "500 Internal Server Error"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "An unexpected error occurred on the server."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workspace/sub/members": {
+      "get": {
+        "tags": ["workspace"],
+        "summary": "List Family Members",
+        "x-mint": {
+          "metadata": {
+            "og:title": "List Family Members | Ringg AI"
+          }
+        },
+        "description": "Lists every person with access anywhere in the family and where that access comes from: members of the primary (who inherit access to every sub-workspace) and people added directly to one or more sub-workspaces.",
+        "operationId": "listFamilyMembers",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) The API key of the PRIMARY workspace. A sub-workspace's key is refused with 400.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response: The family member matrix.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "primary_workspace_id": {
+                      "type": "string",
+                      "example": "2f9a1c44-7e88-4bb1-9a01-5d3c2e7f6a11"
+                    },
+                    "members": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "user_id": {
+                            "type": "string",
+                            "example": "9a4c1b77-3e21-4f66-8a12-0c5d9e3b1a44"
+                          },
+                          "email": {
+                            "type": "string",
+                            "example": "ops.head@acme.com"
+                          },
+                          "username": {
+                            "type": "string",
+                            "example": "Ops Head"
+                          },
+                          "role": {
+                            "type": "string",
+                            "enum": ["owner", "member"],
+                            "example": "owner"
+                          },
+                          "scope": {
+                            "type": "string",
+                            "enum": ["primary", "sub"],
+                            "description": "primary = member of the primary, inherits access to every sub-workspace; sub = added directly to sub-workspaces only.",
+                            "example": "primary"
+                          },
+                          "sub_workspace_ids": {
+                            "type": "array",
+                            "description": "Sub-workspaces the person was added to directly (inherited access is not listed).",
+                            "items": {
+                              "type": "string"
+                            },
+                            "example": []
+                          },
+                          "permissions_by_workspace": {
+                            "type": "object",
+                            "description": "Effective permissions per workspace id, inherited rows included.",
+                            "additionalProperties": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "example": {
+                              "2f9a1c44-7e88-4bb1-9a01-5d3c2e7f6a11": ["agents", "numbers", "api_keys"],
+                              "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30": ["agents", "numbers", "api_keys"]
+                            }
+                          },
+                          "invite_status": {
+                            "type": "string",
+                            "nullable": true,
+                            "enum": ["success", "pending"],
+                            "example": "success"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "primary_workspace_id": "2f9a1c44-7e88-4bb1-9a01-5d3c2e7f6a11",
+                  "members": [
+                    {
+                      "user_id": "9a4c1b77-3e21-4f66-8a12-0c5d9e3b1a44",
+                      "email": "ops.head@acme.com",
+                      "username": "Ops Head",
+                      "role": "owner",
+                      "scope": "primary",
+                      "sub_workspace_ids": [],
+                      "permissions_by_workspace": {
+                        "2f9a1c44-7e88-4bb1-9a01-5d3c2e7f6a11": ["agents", "numbers", "api_keys"],
+                        "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30": ["agents", "numbers", "api_keys"]
+                      },
+                      "invite_status": "success"
+                    },
+                    {
+                      "user_id": "51e0a9d3-77b4-4a0e-b9d1-6f2a3c8e7b55",
+                      "email": "mumbai.lead@acme.com",
+                      "username": "mumbai.lead",
+                      "role": "member",
+                      "scope": "sub",
+                      "sub_workspace_ids": ["b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30"],
+                      "permissions_by_workspace": {
+                        "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30": ["agents"]
+                      },
+                      "invite_status": "pending"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - The API key belongs to a sub-workspace.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Sub-workspaces cannot have their own sub-workspaces."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "401 Unauthorized"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid credentials"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Sub-workspaces are not enabled for this workspace, or the caller is not an active member of the primary.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Sub-workspaces are not enabled for this workspace."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "500 Internal Server Error"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "An unexpected error occurred on the server."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workspace/sub/{sub_workspace_id}/concurrency": {
+      "patch": {
+        "tags": ["workspace"],
+        "summary": "Allocate Concurrency to a Sub-workspace",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Allocate Concurrency to a Sub-workspace | Ringg AI"
+          }
+        },
+        "description": "Sets how many concurrent calls one sub-workspace may run, taken from the family's capacity (bought on the primary). Allocations across all sub-workspaces cannot exceed the capacity. In an individual-billing family the allocation is also the sub-workspace's hard ceiling; in a common-billing family the ceiling is the family total, so idle capacity flows to whichever sub-workspace is busy.",
+        "operationId": "allocateSubWorkspaceConcurrency",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) The API key of the PRIMARY workspace. A sub-workspace's key is refused with 400.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
+            }
+          },
+          {
+            "name": "sub_workspace_id",
+            "in": "path",
+            "required": true,
+            "description": "(Required) ID of the sub-workspace.",
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["concurrency"],
+                "properties": {
+                  "concurrency": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "(Required) Concurrent calls to allocate to this sub-workspace. 0 stops it from calling.",
+                    "example": 20
+                  }
+                }
+              },
+              "example": {
+                "concurrency": 20
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response: The new allocation and the family totals.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Mumbai Collections now has 20 concurrent calls"
+                    },
+                    "sub_workspace_id": {
+                      "type": "string",
+                      "example": "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30"
+                    },
+                    "concurrency": {
+                      "type": "integer",
+                      "example": 20
+                    },
+                    "limit_concurrency": {
+                      "type": "integer",
+                      "description": "The persisted ceiling: equals concurrency in an individual-billing family, the family total in a common-billing family.",
+                      "example": 20
+                    },
+                    "primary": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "2f9a1c44-7e88-4bb1-9a01-5d3c2e7f6a11"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Acme Collections HQ"
+                        }
+                      }
+                    },
+                    "family": {
+                      "type": "object",
+                      "properties": {
+                        "parent_concurrency": {
+                          "type": "integer",
+                          "description": "Family capacity.",
+                          "example": 50
+                        },
+                        "allocated_total": {
+                          "type": "integer",
+                          "description": "Sum of all sub-workspace allocations after this change.",
+                          "example": 20
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Mumbai Collections now has 20 concurrent calls",
+                  "sub_workspace_id": "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30",
+                  "concurrency": 20,
+                  "limit_concurrency": 20,
+                  "primary": {
+                    "id": "2f9a1c44-7e88-4bb1-9a01-5d3c2e7f6a11",
+                    "name": "Acme Collections HQ"
+                  },
+                  "family": {
+                    "parent_concurrency": 50,
+                    "allocated_total": 20
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - The allocation does not fit the family's capacity, or the API key belongs to a sub-workspace.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Only 30 concurrent calls are available to allocate from the parent workspace (capacity 50, 20 already allocated to other sub-workspaces)."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "401 Unauthorized"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid credentials"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Sub-workspaces are not enabled for this workspace, or the caller is not an active member of the primary.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Sub-workspaces are not enabled for this workspace."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - No active sub-workspace with this id under the primary.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Sub-workspace not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "500 Internal Server Error"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "An unexpected error occurred on the server."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workspace/sub/credit-limits": {
+      "patch": {
+        "tags": ["workspace"],
+        "summary": "Reallocate Credit Limits",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Reallocate Credit Limits | Ringg AI"
+          }
+        },
+        "description": "Postpaid, individual-billing families only. Sets every active sub-workspace's credit limit in one call and optionally the family total. The map must name every active sub-workspace exactly once; a slice cannot drop below what that sub-workspace has already used this month, the slices cannot exceed the family total, and what remains for the primary must cover its own usage. Not applicable to common-billing families, where credit is pooled on the primary.",
+        "operationId": "reallocateSubWorkspaceCreditLimits",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) The API key of the PRIMARY workspace. A sub-workspace's key is refused with 400.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["allocations"],
+                "properties": {
+                  "allocations": {
+                    "type": "object",
+                    "description": "(Required) sub_workspace_id -> new credit limit. Must include every active sub-workspace exactly once. Values >= 0, two decimals.",
+                    "additionalProperties": {
+                      "type": "number"
+                    }
+                  },
+                  "parent_credit_limit": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "(Optional) New family total (the primary's credit limit). Omit to keep the current total.",
+                    "example": 500000.0
+                  }
+                }
+              },
+              "example": {
+                "parent_credit_limit": 500000.0,
+                "allocations": {
+                  "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30": 200000.0,
+                  "d21e8c55-9a0f-4c3b-86de-1f4b7a2c9e88": 150000.0
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response: The applied limits. Amounts are decimal strings.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "parent_workspace_id": {
+                      "type": "string",
+                      "example": "2f9a1c44-7e88-4bb1-9a01-5d3c2e7f6a11"
+                    },
+                    "parent_credit_limit": {
+                      "type": "string",
+                      "description": "The family total, as a decimal string.",
+                      "example": "500000.00"
+                    },
+                    "allocations": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "example": {
+                        "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30": "200000.00",
+                        "d21e8c55-9a0f-4c3b-86de-1f4b7a2c9e88": "150000.00"
+                      }
+                    },
+                    "primary": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "2f9a1c44-7e88-4bb1-9a01-5d3c2e7f6a11"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Acme Collections HQ"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "parent_workspace_id": "2f9a1c44-7e88-4bb1-9a01-5d3c2e7f6a11",
+                  "parent_credit_limit": "500000.00",
+                  "allocations": {
+                    "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30": "200000.00",
+                    "d21e8c55-9a0f-4c3b-86de-1f4b7a2c9e88": "150000.00"
+                  },
+                  "primary": {
+                    "id": "2f9a1c44-7e88-4bb1-9a01-5d3c2e7f6a11",
+                    "name": "Acme Collections HQ"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Wrong billing mode, an incomplete map, or an allocation the family cannot cover.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "This family uses common billing; per-sub credit limits do not exist."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "401 Unauthorized"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid credentials"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Sub-workspaces are not enabled for this workspace, or the caller is not an active member of the primary.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Sub-workspaces are not enabled for this workspace."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - The primary has no sub-workspaces yet.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Workspace is not a sub-workspace family parent."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "500 Internal Server Error"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "An unexpected error occurred on the server."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workspace/sub/credit-balances": {
+      "patch": {
+        "tags": ["workspace"],
+        "summary": "Reallocate Credit Balances",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Reallocate Credit Balances | Ringg AI"
+          }
+        },
+        "description": "Prepaid, individual-billing families only. Sets every active sub-workspace's wallet to an absolute balance; the net difference moves from or to the primary's unallocated pot, which must be able to cover it. Top up on the primary first, then allocate. Not applicable to common-billing families, where the wallet is shared on the primary.",
+        "operationId": "reallocateSubWorkspaceCreditBalances",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) The API key of the PRIMARY workspace. A sub-workspace's key is refused with 400.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "7251cb4b-3373-43a4-844c-b27a1d45e0c9"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["allocations"],
+                "properties": {
+                  "allocations": {
+                    "type": "object",
+                    "description": "(Required) sub_workspace_id -> the sub-workspace's NEW absolute balance (not a delta). Must include every active sub-workspace exactly once. Values >= 0, two decimals.",
+                    "additionalProperties": {
+                      "type": "number"
+                    }
+                  }
+                }
+              },
+              "example": {
+                "allocations": {
+                  "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30": 5000.0,
+                  "d21e8c55-9a0f-4c3b-86de-1f4b7a2c9e88": 3000.0
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response: The applied balances. Amounts are decimal strings.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "parent_workspace_id": {
+                      "type": "string",
+                      "example": "2f9a1c44-7e88-4bb1-9a01-5d3c2e7f6a11"
+                    },
+                    "parent_available_balance": {
+                      "type": "string",
+                      "description": "The primary's unallocated pot after the move, as a decimal string.",
+                      "example": "12000.00"
+                    },
+                    "allocations": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "example": {
+                        "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30": "5000.00",
+                        "d21e8c55-9a0f-4c3b-86de-1f4b7a2c9e88": "3000.00"
+                      }
+                    },
+                    "primary": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "2f9a1c44-7e88-4bb1-9a01-5d3c2e7f6a11"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Acme Collections HQ"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "parent_workspace_id": "2f9a1c44-7e88-4bb1-9a01-5d3c2e7f6a11",
+                  "parent_available_balance": "12000.00",
+                  "allocations": {
+                    "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30": "5000.00",
+                    "d21e8c55-9a0f-4c3b-86de-1f4b7a2c9e88": "3000.00"
+                  },
+                  "primary": {
+                    "id": "2f9a1c44-7e88-4bb1-9a01-5d3c2e7f6a11",
+                    "name": "Acme Collections HQ"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - Wrong billing mode, an incomplete map, or more than the primary's pot can cover.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "These allocations need 9000.00 from the primary's pot, which only holds 4000.00. Lower the allocations or add balance to the primary workspace first."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing API key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "401 Unauthorized"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "Invalid credentials"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Sub-workspaces are not enabled for this workspace, or the caller is not an active member of the primary.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Sub-workspaces are not enabled for this workspace."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found - The primary has no sub-workspaces yet.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "detail": {
+                      "type": "string",
+                      "example": "Workspace is not a sub-workspace family parent."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error - Something went wrong on our end.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string",
+                          "example": "500 Internal Server Error"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "An unexpected error occurred on the server."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
