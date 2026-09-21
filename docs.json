@@ -55,23 +55,47 @@
             ]
           },
           {
-            "group": "Web Widget",
+            "group": "Widgets",
             "pages": [
-              "get-started/guides/embedding-widget",
-              "get-started/guides/embedding-widget-configuration",
-              "get-started/guides/embedding-widget-events",
               {
-                "group": "Chat",
-                "icon": "messages-square",
+                "group": "Web",
+                "icon": "globe",
                 "pages": [
-                  "get-started/guides/embedding-widget-chat-widgets",
-                  "get-started/guides/embedding-widget-components",
-                  "get-started/guides/embedding-widget-components-data",
-                  "get-started/guides/embedding-widget-components-use-cases"
+                  "get-started/guides/embedding-widget",
+                  "get-started/guides/embedding-widget-configuration",
+                  "get-started/guides/embedding-widget-events",
+                  {
+                    "group": "Chat",
+                    "icon": "messages-square",
+                    "pages": [
+                      "get-started/guides/embedding-widget-chat-widgets",
+                      "get-started/guides/embedding-widget-components",
+                      "get-started/guides/embedding-widget-components-data",
+                      "get-started/guides/embedding-widget-components-use-cases"
+                    ]
+                  },
+                  "get-started/guides/embedding-widget-customization",
+                  "get-started/guides/embedding-widget-production-qa-security"
                 ]
               },
-              "get-started/guides/embedding-widget-customization",
-              "get-started/guides/embedding-widget-production-qa-security"
+              {
+                "group": "React Native",
+                "icon": "smartphone",
+                "pages": [
+                  "get-started/guides/widget-react-native",
+                  "get-started/guides/widget-react-native-configuration",
+                  "get-started/guides/widget-react-native-events"
+                ]
+              },
+              {
+                "group": "Flutter",
+                "icon": "smartphone-charging",
+                "pages": [
+                  "get-started/guides/widget-flutter",
+                  "get-started/guides/widget-flutter-configuration",
+                  "get-started/guides/widget-flutter-events"
+                ]
+              }
             ]
           },
           {

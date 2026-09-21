@@ -1,0 +1,13 @@
+The widget emits five lifecycle events. The names and payloads are identical on every platform; only the delivery mechanism differs (browser `CustomEvent` on the web, an in-memory bus on React Native and Flutter).
+
+| Event | Fires when | Payload |
+|---|---|---|
+| `ringg:widget_status` | The panel opens or closes. | `status`: `"maximised"` or `"minimised"`. `mode`: `"audio"` or `"text"`. |
+| `ringg:conversation_status` | A voice or chat conversation starts or ends. | `status`: `"started"` or `"ended"`. `mode`: `"audio"` or `"text"`. `callId`: string. |
+| `ringg:feedback_status` | The user submits or skips the post-call feedback screen. | `status`: `"submitted"` or `"skipped"`. `callId`: string. `rating`: number, only when submitted. |
+| `ringg:calendar_booking` | A calendar component is shown, a slot is confirmed, or booking fails. | `status`: `"shown"`, `"confirmed"` or `"failed"`. `componentId`: string. `slotId`: string, optional. `message`: string, optional. |
+| `ringg:component_acknowledgement` | The user responds to an interactive component (form submit, button tap, slot pick). | `componentName`: string. `componentId`: string. `status`: string. |
+
+<Note>
+`ringg:calendar_booking` and `ringg:component_acknowledgement` only fire when the assistant sends interactive components. An assistant configured for plain voice or text never emits them.
+</Note>

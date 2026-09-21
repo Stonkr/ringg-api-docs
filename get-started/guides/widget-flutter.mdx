@@ -1,0 +1,189 @@
+---
+title: "Flutter Widget"
+sidebarTitle: "Flutter"
+icon: "smartphone-charging"
+description: "Add the Ringg AI chat and voice widget to a Flutter app with the ringg_flutter package."
+"og:title": "Flutter Voice and Chat Widget | Ringg AI Guide"
+---
+
+import OriginRequirement from "/snippets/widget-origin-requirement.mdx";
+
+`ringg_flutter` drops the same chat and voice widget you embed on the web into a Flutter app: text chat, voice calls, interactive components (forms, calendars, quick replies, Block Kit) and the post-call feedback screen.
+
+It is a full Dart implementation on `livekit_client`, with no platform bridge, mirroring the web widget's behavior and UI.
+
+<Warning>
+**Alpha / pre-release.** APIs may change between versions before 1.0. Pin an exact version if you need stability, and see [Known issues](#known-issues).
+</Warning>
+
+## Prerequisites
+
+<Check>An active Ringg AI account with an assistant configured for Webcall.</Check>
+<Check>The assistant `agentId` and its webcall public key from the dashboard.</Check>
+<Check>Dart 3.6+, Flutter 3.27+.</Check>
+<Check>Your app's application id / bundle id added to the assistant's allowed clients (see [Caller identity](#caller-identity)).</Check>
+
+## Install
+
+```yaml pubspec.yaml
+dependencies:
+  ringg_flutter: ^0.1.5
+```
+
+Then run `flutter pub get`.
+
+## Platform setup
+
+Voice calls need microphone and audio permissions. Text chat works without them.
+
+<Tabs>
+  <Tab title="iOS">
+    `ios/Runner/Info.plist`:
+
+    ```xml
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Voice calls use the microphone.</string>
+    <key>UIBackgroundModes</key>
+    <array><string>audio</string></array>
+    ```
+  </Tab>
+  <Tab title="Android">
+    `android/app/src/main/AndroidManifest.xml`:
+
+    ```xml
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+    ```
+  </Tab>
+</Tabs>
+
+## Integrate
+
+<Steps>
+  <Step title="Get your credentials">
+    From the Ringg AI dashboard you need the assistant's **agent id** and its **webcall public key**, passed as `Bearer <key>`. Endpoints are built in and default to production, so there are no URLs to configure.
+  </Step>
+
+  <Step title="Wire up a controller and widget">
+    Hold the transport and controller in a `State` so you can dispose of them.
+
+    ```dart
+    import 'package:flutter/material.dart';
+    import 'package:ringg_flutter/ringg_flutter.dart';
+
+    class RinggSupport extends StatefulWidget {
+      const RinggSupport({super.key});
+
+      @override
+      State<RinggSupport> createState() => _RinggSupportState();
+    }
+
+    class _RinggSupportState extends State<RinggSupport> {
+      late final LiveKitTransport _transport;
+      late final RinggWidgetController _controller;
+
+      @override
+      void initState() {
+        super.initState();
+        _transport = createLiveKitTransport();
+        _controller = RinggWidgetController(
+          const RinggWidgetConfig(
+            agentId: 'your-agent-id',
+            authorization: 'Bearer your-webcall-public-key',
+            title: 'Support',
+            description: 'How can we help?',
+            defaultTab: MediaType.text, // or MediaType.audio
+          ),
+          ControllerPorts(transport: _transport.transport),
+        );
+      }
+
+      @override
+      void dispose() {
+        _controller.destroy();
+        _transport.dispose();
+        super.dispose();
+      }
+
+      @override
+      Widget build(BuildContext context) => RinggWidget(
+            controller: _controller,
+            transport: _transport, // enables the in-call audio visualizer
+          );
+    }
+    ```
+  </Step>
+
+  <Step title="Mount it over your app">
+    `RinggWidget` places its own floating trigger and panel, so give it the full screen on top of your content.
+
+    ```dart
+    Stack(
+      children: const [
+        YourApp(),
+        RinggSupport(),
+      ],
+    )
+    ```
+
+    Tap the trigger and the chat or voice panel opens. That is the whole integration.
+  </Step>
+</Steps>
+
+## Caller identity
+
+<OriginRequirement />
+
+On Flutter this is handled for you. The package reads the running app's id and sends `<platform>://<bundleId>`:
+
+| Platform | `Origin` sent |
+|---|---|
+| Android | `android://<applicationId>` |
+| iOS | `ios://<bundleId>` |
+| macOS, Windows, Linux | `macos://…`, `windows://…`, `linux://…` |
+
+Set `clientOrigin` in config only to pin one value across build flavors. See [pinning the caller identity](/get-started/guides/widget-flutter-configuration#caller-identity).
+
+## Configuration
+
+`RinggWidgetConfig` has 27 fields covering panel copy, theming, buttons, the feedback screen, slash commands and voice-call view. Only `agentId` is required, and every null field falls back to a shared default.
+
+<Card title="Configuration reference" icon="sliders-horizontal" href="/get-started/guides/widget-flutter-configuration">
+  Every option, its type, and its default.
+</Card>
+
+## Events and control
+
+The controller emits the same five lifecycle events as the web widget, exposes methods for driving the panel from your own UI, and lets you handle actions the assistant fires.
+
+<Card title="Events and control reference" icon="radio" href="/get-started/guides/widget-flutter-events">
+  Lifecycle events, controller methods, state bindings, host actions and the ports table.
+</Card>
+
+## Platform support
+
+Android, iOS, macOS, Windows and Linux. Web is not supported; use the [web widget](/get-started/guides/embedding-widget) there.
+
+## Example app
+
+A runnable example ships in the package's **Example** tab on [pub.dev](https://pub.dev/packages/ringg_flutter/example).
+
+## Test checklist
+
+<Check>`flutter pub get` resolves and the app builds on both platforms.</Check>
+<Check>The trigger appears above your app content.</Check>
+<Check>Voice mode prompts for microphone permission and can start and end a call **on a real device**.</Check>
+<Check>Every shipped flavor's application id is in the assistant's allowed clients.</Check>
+<Check>`_controller.destroy()` and `_transport.dispose()` run in `dispose()`. Confirm the mic indicator clears.</Check>
+
+## Known issues
+
+- **Breaking changes between releases.** APIs may shift while pre-1.0; pin an exact version if you need stability.
+- **iOS simulators (26.x) have no call audio.** The simulator exposes no microphone or playout device, so you will not hear the assistant or be able to unmute. This is an OS-simulator and upstream realtime-SDK limitation, not fixable app-side; the widget degrades to a listen-only attempt. Test voice on a real device, an Android emulator, or macOS. (Apple refs: [forums 738346](https://developer.apple.com/forums/thread/738346), [803364](https://developer.apple.com/forums/thread/803364).)
+- **Voice on Android emulators can fail to connect.** Emulator networking often cannot establish the media connection; text chat works, but voice needs a real device.

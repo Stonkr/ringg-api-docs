@@ -1,0 +1,13 @@
+The backend allow-lists an assistant's callers by the `Origin` header. Browsers attach one automatically, which is how domain whitelisting works for the web widget. Native HTTP sends nothing, so a webcall request without a caller identity is refused before authentication is even considered.
+
+| Response | Meaning |
+|---|---|
+| `400 Origin header is required` | No caller identity was sent. |
+| `403 Client '…' is not allowed to initiate webcall` | One was sent, but it is not on the assistant's allowed clients list. |
+| `401 Invalid credentials` | The identity was accepted, but the token is wrong for that environment. |
+
+Add the value to the assistant's allowed clients under **Agent → Webcall → Install & domains** in the dashboard. Application ids differ per platform and per build flavor (`.debug`, `.staging`, `.dev`), so every build you ship needs its own entry. The value that was sent appears in the refused-call response, ready to paste.
+
+<Warning>
+Hybrid WebView runtimes report a shared identity (`capacitor://localhost`, `ionic://localhost`, `file://`) that is the same for every app built on that runtime. Allowing one admits all of them.
+</Warning>
