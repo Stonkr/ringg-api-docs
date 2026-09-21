@@ -258,6 +258,13 @@
         ]
       },
       {
+        "group": "Parrot STT",
+        "tag": "BETA",
+        "pages": [
+          "parrot-stt/python-sdk"
+        ]
+      },
+      {
         "group": "External Integrations",
         "pages": [
           "external-integrations/truefoundry-integration"

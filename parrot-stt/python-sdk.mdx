@@ -1,0 +1,362 @@
+---
+title: "Parrot STT"
+sidebarTitle: "Python SDK"
+description: "Transcribe audio files or stream live audio in Hindi and English with the Parrot STT Python SDK. Sync and async clients included."
+icon: "mic"
+"og:title": "Parrot STT Python SDK | Ringg AI"
+---
+
+Parrot STT is Ringg's speech-to-text engine. The `ringglabs` Python SDK can transcribe a complete audio file in a single REST request, or stream live audio over a WebSocket and receive transcripts as the speaker talks. Every feature is available with a synchronous `Client` and an `AsyncClient`.
+
+<Note>
+Parrot STT is in **beta** (SDK `v0.1.x`, MIT licensed, Python 3.10+). Parameters and event fields may change before general availability.
+</Note>
+
+| Feature | Support |
+| --- | --- |
+| **Languages** | Hindi (`hi`, the default) and English (`en`) |
+| **File formats** | WAV, MP3, FLAC, M4A, up to 10 MB per file |
+| **Streaming audio** | Raw mono PCM, 8,000 to 48,000 Hz, `int16`, `linear16`, `int32` or `float32` |
+| **Billing** | Per second of transcribed audio. See the **Pricing** tab on the [Parrot STT dashboard](https://www.ringg.ai/dashboard/stt) for rates. |
+
+To try transcription without writing code, upload a file or record from your microphone on the [Parrot STT dashboard](https://www.ringg.ai/dashboard/stt).
+
+## Quickstart
+
+<Steps>
+  <Step title="Install">
+    Add the SDK to your environment:
+
+    ```bash
+    pip install ringglabs
+    ```
+  </Step>
+  <Step title="Get an API key">
+    In the Ringg dashboard open **Settings → API Key** and generate a workspace key (a UUID). Store it as `RINGG_API_KEY`. Details: [Authentication](/api-reference/quick-start/authentication).
+
+    The workspace needs at least one minute of credit to start a transcription.
+  </Step>
+  <Step title="First call">
+    Transcribe a local audio file:
+
+    ```python
+    import os
+    from ringglabs.stt import Client
+
+    with Client(api_key=os.environ["RINGG_API_KEY"]) as client:
+        result = client.transcribe("sample.wav", language="en")
+        print(result.transcription)
+    ```
+  </Step>
+</Steps>
+
+## SDK implementation
+
+Pick the example that matches your audio source and execution model. The streaming examples read a WAV file and send it in 20 ms chunks. They use two small helpers, defined in [Audio helpers](#audio-helpers) below.
+
+<Tabs>
+  <Tab title="Sync stream">
+    ```python
+    import os
+    from ringglabs.stt import Client, TimeoutError as SdkTimeoutError
+    from audio_helpers import load_wav_mono_int16_16k, iter_pcm_chunks
+
+    sample_rate, audio = load_wav_mono_int16_16k("sample.wav")
+    transcripts = []
+
+    with Client(api_key=os.environ["RINGG_API_KEY"]) as client, client.stream(
+        sample_rate=sample_rate, encoding="int16", language="en",
+        mode="stream", enable_cap_punc=True,
+    ) as session:
+        for chunk in iter_pcm_chunks(audio, sample_rate, 20):
+            session.send_audio(chunk)
+        session.end()
+
+        try:
+            for event in session.events():
+                if event.type == "transcript" and event.transcription.strip():
+                    transcripts.append(event.transcription.strip())
+        except SdkTimeoutError:
+            pass
+
+    print(transcripts)
+    ```
+  </Tab>
+  <Tab title="Async stream">
+    ```python
+    import asyncio
+    import os
+    from ringglabs.stt import AsyncClient, TimeoutError as SdkTimeoutError
+    from audio_helpers import load_wav_mono_int16_16k, iter_pcm_chunks
+
+    async def main():
+        sample_rate, audio = load_wav_mono_int16_16k("sample.wav")
+
+        async with AsyncClient(api_key=os.environ["RINGG_API_KEY"]) as client, client.stream(
+            sample_rate=sample_rate, encoding="int16", language="en",
+            mode="stream", enable_cap_punc=True,
+        ) as session:
+            for chunk in iter_pcm_chunks(audio, sample_rate, 20):
+                await session.send_audio(chunk)
+            await session.end()
+
+            try:
+                async for event in session.events():
+                    if event.type == "transcript":
+                        print(event.transcription)
+            except SdkTimeoutError:
+                pass
+
+    asyncio.run(main())
+    ```
+  </Tab>
+  <Tab title="On-final">
+    ```python
+    import os
+    from ringglabs.stt import Client, TimeoutError as SdkTimeoutError
+    from audio_helpers import load_wav_mono_int16_16k, iter_pcm_chunks
+
+    sample_rate, audio = load_wav_mono_int16_16k("sample.wav")
+    partials, finals = [], []
+
+    with Client(api_key=os.environ["RINGG_API_KEY"]) as client, client.stream(
+        sample_rate=sample_rate, encoding="int16", language="en",
+        mode="on_final", accept_client_vad_events=True,
+    ) as session:
+        session.start_speaking()
+        for chunk in iter_pcm_chunks(audio, sample_rate, 20):
+            session.send_audio(chunk)
+        session.stop_speaking()
+        session.end()
+
+        try:
+            for event in session.events():
+                if event.type != "transcript":
+                    continue
+                text = event.transcription.strip()
+                (finals if event.is_final else partials).append(text)
+        except SdkTimeoutError:
+            pass
+
+    print(finals)
+    ```
+  </Tab>
+  <Tab title="Offline">
+    ```python
+    import os
+    from ringglabs.stt import Client
+
+    with Client(api_key=os.environ["RINGG_API_KEY"]) as client:
+        result = client.transcribe(
+            "sample.wav",
+            language="en",
+            enable_cap_punc=True,
+        )
+        print(result.request_id, result.transcription)
+    ```
+  </Tab>
+  <Tab title="Bytes / IO">
+    ```python
+    import os
+    from io import BytesIO
+    from pathlib import Path
+    from ringglabs.stt import Client
+
+    wav_bytes = Path("sample.wav").read_bytes()
+
+    with Client(api_key=os.environ["RINGG_API_KEY"]) as client:
+        # bytes source
+        r1 = client.transcribe(wav_bytes, filename="sample.wav")
+
+        # file-like source
+        r2 = client.transcribe(BytesIO(wav_bytes), filename="sample.wav")
+    ```
+  </Tab>
+</Tabs>
+
+### Audio helpers
+
+The streaming examples import these from `audio_helpers.py`. They use only the Python standard library.
+
+<Accordion title="audio_helpers.py" icon="file-code">
+  ```python
+  import wave
+
+  def load_wav_mono_int16_16k(path):
+      """Read a 16 kHz, mono, 16-bit PCM WAV file. Returns (sample_rate, pcm_bytes)."""
+      with wave.open(str(path), "rb") as wav:
+          if (wav.getframerate(), wav.getnchannels(), wav.getsampwidth()) != (16000, 1, 2):
+              raise ValueError("Expected a 16 kHz, mono, 16-bit PCM WAV file")
+          return wav.getframerate(), wav.readframes(wav.getnframes())
+
+  def iter_pcm_chunks(pcm, sample_rate, chunk_ms=20):
+      """Yield raw int16 PCM in chunks of chunk_ms milliseconds."""
+      chunk_bytes = sample_rate * chunk_ms // 1000 * 2  # 2 bytes per int16 sample
+      for start in range(0, len(pcm), chunk_bytes):
+          yield pcm[start:start + chunk_bytes]
+  ```
+
+  To convert another file to this format, run `ffmpeg -i input.mp3 -ac 1 -ar 16000 -sample_fmt s16 sample.wav`.
+</Accordion>
+
+<Tip>
+For live audio, such as a microphone or a call leg, send each chunk as it is captured instead of reading a file. Chunks of 20 to 40 ms work best.
+</Tip>
+
+## Client initialization
+
+`Client(...)` and `AsyncClient(...)` share the same constructor. Both can be used as context managers (`with` / `async with`), which close the underlying connections on exit.
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `base_url` | `"prod-api.ringg.ai"` | Host name. |
+| `api_key` | `None` | Default API key for all requests; can be overridden per call. |
+| `timeout` | `TimeoutConfig()` | HTTP and WebSocket timeout budgets. See [Timeouts](#timeouts). |
+| `default_headers` | `None` | Extra headers attached to SDK requests. |
+
+## transcribe() (offline / REST)
+
+Single-shot transcription of a complete audio file. Available on both `Client` and `AsyncClient` (`await client.transcribe(...)`).
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `source` | | Input audio: `str`, `Path`, `bytes`, `bytearray`, or `BinaryIO`. |
+| `language` | `"hi"` | Language of the audio: `"hi"` or `"en"`. |
+| `enable_cap_punc` | `True` | Enable capitalization and punctuation. |
+| `api_key` | `None` | Per-request API key override. |
+| `filename` | auto-detected | Multipart filename, used to detect the audio format. Falls back to `"audio.wav"`. Set it when passing `bytes` or a stream that isn't WAV. |
+| `content_type` | `"audio/wav"` | Multipart content type. |
+
+### Response: `RestTranscriptionResult`
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `status` | `str` | `"success"` when the file was transcribed. |
+| `transcription` | `str` | Full transcript of the file. |
+| `is_final` | `bool` | Always `True` for file transcription. |
+| `language` | `str` | Language used for transcription. |
+| `duration_seconds` | `float` | Length of the transcribed audio, in seconds. |
+| `processing_time_seconds` | `float` | Server processing time, in seconds. |
+| `request_id` | `str` | Unique ID for the request. Include it when contacting support. |
+| `raw` | `dict` | The unparsed JSON response. |
+
+## stream() (real-time / WebSocket)
+
+Open a streaming session, send audio chunks, and receive transcript events. Use it as a context manager so the session is opened on entry and closed on exit.
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `sample_rate` | `16000` | Audio sample rate in Hz, from 8000 to 48000. |
+| `encoding` | `"int16"` | `int16`, `linear16`, `float32`, or `int32`. Audio must be raw mono PCM with no file header. |
+| `language` | `"hi"` | Language hint: `"hi"` or `"en"`. |
+| `mode` | `"stream"` | `"stream"` or `"on_final"`. See below. |
+| `vad_tail_sil_ms` | `200` | Server VAD tail silence in ms: how long a pause ends a segment. |
+| `vad_confidence` | `0.55` | Server VAD confidence threshold. |
+| `enable_cap_punc` | `True` | Capitalization / punctuation. |
+| `accept_client_vad_events` | `False` | Enables `start_speaking()` / `stop_speaking()`. Only applies in `on_final` mode. |
+| `api_key` | `None` | Per-stream API key override. |
+
+### Stream and on-final modes
+
+- **`stream`**: the server detects pauses with its own voice activity detection (VAD) and sends a final `transcript` event for each spoken segment. Join the segments to build the full transcript. The session's closing `transcript` event can have an empty `transcription`, so skip blank ones.
+- **`on_final`**: you mark each turn with `start_speaking()` and `stop_speaking()` (requires `accept_client_vad_events=True`). The server sends partial transcripts (`is_final=False`) that grow as the turn continues, then one final transcript (`is_final=True`) after `stop_speaking()`.
+
+### Session methods
+
+| Method | Purpose |
+| --- | --- |
+| `send_audio(bytes)` | Send a raw audio chunk. |
+| `send_vad_event(state)` | Send an explicit VAD event: `"user_start_speaking"` or `"user_stop_speaking"`. |
+| `start_speaking()` / `stop_speaking()` | Convenience wrappers for VAD events. |
+| `ping()` | Send a ping frame. The SDK also pings automatically every 30 seconds. |
+| `end(command="end")` | Finalize / terminate the stream. |
+| `recv_event()` / `events()` | Receive parsed server events. `events()` stops when the server closes the session. |
+| `close()` | Close the WebSocket session. |
+
+The async session is identical, with `await` on every call and `async for` on `events()`.
+
+### WebSocket event types
+
+| Type | When it is sent |
+| --- | --- |
+| `ready` | Once, when the session opens. Confirms the effective settings and the session's `request_id`. The SDK reads it during the handshake and exposes it as `session.ready_event`. |
+| `transcript` | A transcription result. See the fields below. |
+| `ack` | Acknowledges a VAD event or `end`. `ack_for` names the message and `state` gives the result. |
+| `pong` | Reply to `ping()`, with a server `timestamp`. |
+| `error` | The server rejected a message or ended the session. Read `code` and `detail`. |
+
+### Transcript event fields
+
+| Field | Description |
+| --- | --- |
+| `transcription` | Transcribed text for this segment or turn. |
+| `is_final` | `True` when the text will not change. |
+| `language` | Language used for transcription. |
+| `request_id` | Session ID. Include it when contacting support. |
+| `segment_idx` | Position of this segment within the session. |
+| `segments` | Number of segments, on the closing event. |
+| `compute_latency_ms` | Model compute time for this segment, in ms. |
+| `audio_duration_sec` | Audio received in the session, in seconds. |
+| `transcribed_audio_duration_sec` | Audio that was transcribed, in seconds. |
+| `processing_time_ms` | Total processing time, in ms. |
+| `raw` | The unparsed JSON event. |
+
+Fields that don't apply to an event are `None`.
+
+## Timeouts
+
+Pass a `TimeoutConfig` to `Client(timeout=...)`. All values are in seconds.
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `connect` | `10.0` | HTTP connect. |
+| `read` | `10.0` | HTTP read. |
+| `write` | `10.0` | HTTP write. |
+| `pool` | `10.0` | HTTP pool. |
+| `ws_open` | `10.0` | WebSocket open. |
+| `ws_recv` | `30.0` | WebSocket receive. `events()` raises `TimeoutError` if no event arrives in this time. |
+| `ws_close` | `10.0` | WebSocket close. |
+
+```python
+import os
+from ringglabs.stt import Client, TimeoutConfig
+
+client = Client(
+    api_key=os.environ["RINGG_API_KEY"],
+    timeout=TimeoutConfig(read=60.0, ws_recv=60.0),
+)
+```
+
+## Errors
+
+All SDK exceptions are importable from `ringglabs.stt` and inherit from `RinggLabsError`.
+
+| Exception | Raised when |
+| --- | --- |
+| `ValidationError` | An argument is invalid, for example a file path that doesn't exist. |
+| `ApiError` | The server returns an error. Has `message`, `status_code`, `code`, and `payload`. |
+| `AuthenticationError` | The API key is missing or invalid (`401`), or the workspace doesn't have enough credit (`402`). Subclass of `ApiError`. |
+| `TransportError` | A network failure. |
+| `TimeoutError` | A request or receive exceeded its [timeout](#timeouts). Subclass of `TransportError`. |
+| `ProtocolError` | The server sent a malformed or unexpected message. |
+
+Files larger than 10 MB are rejected with an `ApiError` (`status_code=413`). Streaming sessions are limited to one hour.
+
+## Recommended practices
+
+- Reuse client instances in long-running services.
+- Set explicit timeout budgets via `TimeoutConfig`.
+- Log `result.raw` and `event.raw` for observability.
+- Use retries only for idempotent operations and transport failures.
+- Keep sync and async execution models separate.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Authentication" icon="key-round" href="/api-reference/quick-start/authentication">
+    Generate and store your workspace API key.
+  </Card>
+  <Card title="Parrot STT dashboard" icon="mic" href="https://www.ringg.ai/dashboard/stt">
+    Try transcription in the browser and view logs, usage, and pricing.
+  </Card>
+</CardGroup>
