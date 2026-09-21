@@ -599,7 +599,7 @@ app.listen(3000);
 | `bulk_list_id` | string | ID of the bulk/campaign list this call belongs to (`null` for single calls). |
 | `agent_name` | string | Display name of the AI agent that handled the call |
 | `version_id` | string | UUID of the agent version used for this call |
-| `call_cost` | number | Cost of the call in credits (null if not yet calculated) |
+| `call_cost` | number | Cost of the call in credits (defaults to 0.0) |
 | `overall_latency_seconds` | number | Total response latency in seconds (sum of median latencies across all metrics) |
 | `first_utterance_seconds` | number | Time to first AI response (TTS) in seconds |
 | `tool_call_logs` | array | Tool execution logs (pre-call, on-call) for the call |
@@ -624,7 +624,7 @@ typically `null` at this point.
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `call_duration` | number | Duration of the call in seconds (`null` if the call never connected). |
+| `call_duration` | number | Duration of the call in seconds (defaults to 0.0). |
 | `call_type` | string | Direction: `inbound`, `outbound`, or `webcall` |
 | `status` | string | Final call status: `completed`, `failed`, `error`, `cancelled`, `forwarded`, or interim `retry`. |
 | `sub_status` | string | Reason refining the status (e.g. `ACCEPTED`, `busy line`, `not_able_to_call`). See the Status & Sub-Status Reference section. |
@@ -635,7 +635,7 @@ typically `null` at this point.
 | `created_at` | string | ISO 8601 timestamp when the call record was created (UTC). |
 | `transcript` | array | Array of conversation turns (`bot`/`user` content). Empty for calls that never connected. |
 | `custom_args_values` | object | Custom data you provided when initiating the call |
-| `retry_count` | number | Number of retry attempts (0 for first attempt). |
+| `retry_count` | number | Number of retry attempts (defaults to 0). |
 | `attempts` | array | Per-dial history, oldest first. Each entry is `{ status, called_on_time }`, where `status` is the **original-cased** outcome of that attempt (e.g. `"Busy Line"`, `"ACCEPTED"`). |
 | `version_slug` | string | Slug of the agent version used. |
 | `version_description` | string | Description of the agent version (nullable). |
@@ -676,7 +676,7 @@ This event combines all data from the call lifecycle into a single payload. It i
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `call_duration` | number | Duration of the call in seconds |
+| `call_duration` | number | Duration of the call in seconds (defaults to 0.0) |
 | `call_type` | string | Direction: `inbound`, `outbound`, or `webcall` |
 | `status` | string | Final call status: `completed`, `failed`, `error`, `cancelled`, `forwarded` |
 | `sub_status` | string | Detailed call sub-status (e.g., `ACCEPTED`, `VOICEMAIL_DETECTED`) |
