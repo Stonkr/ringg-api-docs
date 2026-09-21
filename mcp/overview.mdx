@@ -29,8 +29,11 @@ Transport: Streamable HTTP. Authentication: OAuth 2.1 (sign in with your workspa
 | Place and follow calls | `place_call`, `get_call` (waits until the call ends and returns transcript, recording and analysis) |
 | Browse history and metrics | `list_calls`, `get_call_analytics` |
 | Manage assistants | `list_agents`, `get_agent`, `create_agent`, `update_agent`, `list_voices` |
+| Edit the prompt precisely | `edit_prompt_section` (change one section — replace, append, find-and-replace, insert, rename, delete — without touching the rest), `set_agent_prompt` |
+| Wire up integrations | `get_agent_tools`, `upsert_api_tool`, `upsert_function_tool`, `remove_agent_tool` — pre-call, on-call and post-call tools with typed parameters and jq response shaping |
+| Test before trusting | `test_api_tool` (dry-run a request or a saved tool), `test_jq` (evaluate a jq expression on sample data) |
 
-Every tool returns structured data the model can reason over, and errors say what to do next (for example, which caller IDs are usable when one is missing). The server also exposes **resources** (`ringg://workspace`, `ringg://agents`, `ringg://voices`, `ringg://calls/{id}/transcript`) and ready-made **prompts** for common workflows. See the [tool reference](/mcp/tools).
+Every tool returns structured data the model can reason over, and errors say what to do next (for example, which caller IDs are usable when one is missing). The server also exposes **resources** (`ringg://workspace`, `ringg://agents`, `ringg://agents/{id}/prompt`, `ringg://agents/{id}/tools`, `ringg://voices`, `ringg://calls/{id}/transcript`) and ready-made **prompts** for common workflows. See the [tool reference](/mcp/tools).
 
 ## Quick start
 
