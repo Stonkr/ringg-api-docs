@@ -63,6 +63,56 @@ Add `call_config.call_time.scheduled_at` when the call should be queued for a sp
 
 `call_start_time` and `call_end_time` still act as the allowed calling window in the specified timezone.
 
+## Call deadlines
+
+A queued call is not always dialled straight away: it waits for the allowed calling
+window, for a free concurrency slot, and for any retry backoff. Set a deadline when a
+call stops being worth making after a certain point — an appointment reminder for a slot
+that has passed, or an offer that has expired.
+
+Two ways to express it. Both are optional, and both are honoured on `POST /calling/outbound/individual`
+and its v2 counterpart.
+
+| Field | Meaning | Use when |
+|---|---|---|
+| `call_deadline` | Absolute instant, ISO 8601 | You have a real-world cut-off: `"2026-08-27T18:00:00+05:30"` |
+| `call_validity_hours` | Hours from creation (or from `scheduled_at`) | You have a duration: `2` means "useless after two hours" |
+
+```json
+{
+  "name": "John Doe",
+  "mobile_number": "+919876543210",
+  "agent_id": "your-agent-id",
+  "from_number_id": "your-from-number-id",
+  "call_deadline": "2026-08-27T18:00:00+05:30"
+}
+```
+
+<Warning>
+**Always include a UTC offset in `call_deadline`.** A value without one — `"2026-08-27T18:00:00"` —
+is read as UTC, so a cut-off you meant as 18:00 IST would take effect at 23:30 IST.
+</Warning>
+
+If both fields are set, the **earlier** deadline applies. They do not override one
+another: a call is never dialled past the tightest cut-off you supplied.
+
+### What happens when the deadline passes
+
+The call is **never placed**. When the picker next reaches a call whose deadline has
+passed, it ends it immediately:
+
+| | |
+|---|---|
+| `status` | `cancelled` |
+| `sub_status` | `DEADLINE_PASSED` |
+
+Nothing is dialled, no carrier request is made, and no credits are consumed. The call
+also stops being retried — a deadline that has passed ends the call whether or not it is
+inside the calling window.
+
+Calls with no deadline are unaffected: omit both fields and the call waits as long as it
+needs to.
+
 ## Retry configuration
 
 Use retry settings when a recipient is busy, does not answer, or the provider fails the call.
