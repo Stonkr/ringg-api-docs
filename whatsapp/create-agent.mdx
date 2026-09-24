@@ -1,0 +1,133 @@
+---
+title: "Create a WhatsApp Agent"
+sidebarTitle: "Create an Agent"
+icon: "bot"
+description: "Create an assistant of type WhatsApp, attach a WhatsApp number, write a prompt for chat, and test it from your phone."
+"og:title": "Create a WhatsApp Agent | Ringg AI Guide"
+---
+
+A WhatsApp agent is an assistant whose type is **WhatsApp**. It answers the messages that arrive on its attached WhatsApp number. Create one after you've [connected WhatsApp Business](/whatsapp/onboarding) and registered at least one number.
+
+## Create the agent
+
+<Steps>
+  <Step title="Start a new assistant">
+    Go to **Assistants** and select **Create agent**. In **Create Assistant**, choose the **WhatsApp** tab.
+  </Step>
+  <Step title="Pick Single Prompt">
+    Under **Create from scratch**, choose **Single Prompt**, described as "Create a WhatsApp assistant from scratch for simple workflows". This template's prompt already carries the WhatsApp formatting rules.
+  </Step>
+  <Step title="Fill in the basics">
+    Enter the **Agent Name** and the **Primary Language**, with an optional **Secondary Language**. The form also asks you to pick a voice, since every assistant carries one. A WhatsApp agent never speaks, so any voice will do. Select **Next**.
+  </Step>
+  <Step title="Describe the business and the goal">
+    Enter **Company** and **Call Details**: what the business is and what the agent should achieve in the chat. These are used to generate the first version of the prompt. Add any **Custom variables** and **Knowledge Base** the agent needs.
+  </Step>
+  <Step title="Select the WhatsApp number">
+    Under **Select WhatsApp Number**, pick the registered number this assistant answers on. Only registered numbers that no other assistant uses are listed. You can also leave it empty and [attach a number later](#attach-a-whatsapp-number).
+  </Step>
+  <Step title="Create">
+    Select **Create Assistant**. The agent editor opens, with a **WhatsApp** badge next to the agent name.
+  </Step>
+</Steps>
+
+<Frame caption="Assistants → Create agent → WhatsApp → Single Prompt, through to selecting the WhatsApp number.">
+  <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/whatsapp/09-create-agent.png" className="w-full rounded-lg">
+    <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/whatsapp/09-create-agent.mp4" type="video/mp4" />
+  </video>
+</Frame>
+
+<Tip>
+To find your WhatsApp agents later, set the **Channels** filter on the **Assistants** page to **WhatsApp**. Each card shows its channel, for example "WhatsApp • Activity: 3".
+</Tip>
+
+## Attach a WhatsApp number
+
+A WhatsApp agent answers on exactly one WhatsApp Business number, and each number serves one assistant at a time. Messages to a number with no assistant attached get no reply.
+
+A number is offered only when all of these are true:
+
+<Check>It belongs to the WhatsApp Business account connected to this workspace.</Check>
+<Check>It is **registered**, meaning it shows **Ready** on the account's **Phone numbers** tab. See [Connect WhatsApp Business](/whatsapp/onboarding#connect-your-whatsapp-business-account).</Check>
+<Check>No other assistant uses it, or this assistant already does.</Check>
+
+You can pick the number while creating the agent, as in the steps above. To attach or change it later:
+
+<Steps>
+  <Step title="Open Attach Number">
+    In the agent editor, select **Attach Number** in the left menu.
+  </Step>
+  <Step title="Choose the number">
+    Open the **WhatsApp Number** field and choose a number. The current number is marked with a check. The field saves as soon as you choose.
+  </Step>
+  <Step title="Need another number?">
+    The last option, **+ Connect WhatsApp Number**, opens **Numbers → WhatsApp**, where you can add and register a new number.
+  </Step>
+</Steps>
+
+<Frame caption="Attach Number lists the WhatsApp numbers this agent can use. Test assistant then opens a chat with it.">
+  <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/whatsapp/10-attach-number.png" className="w-full rounded-lg">
+    <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/whatsapp/10-attach-number.mp4" type="video/mp4" />
+  </video>
+</Frame>
+
+**To move a number to another agent**, first clear the **WhatsApp Number** field on the agent that has it, or pick a different number there. Then attach it on the new agent. **Numbers → WhatsApp** shows which assistant uses each number in its **Used By** column. WhatsApp numbers are only offered to WhatsApp assistants, and phone numbers only to voice assistants.
+
+<Warning>
+De-registering a number, or archiving it, detaches it from its assistant. That assistant stops answering until you attach another number.
+</Warning>
+
+## What's different in the editor
+
+The editor is the same one used for voice assistants, with a few changes for chat:
+
+| Section | For a WhatsApp agent |
+|---|---|
+| **Prompt** | The first message is sent as a WhatsApp message at the start of the conversation. |
+| **Attach Number** | Sits in the main menu and offers only WhatsApp numbers. See [above](#attach-a-whatsapp-number). |
+| **Chat → Settings** | Session limits for the chat, covered below. |
+| **Tools** | Pre-call, on-call and post-call tools as usual, plus the WhatsApp send tools ([on-call](/whatsapp/on-call-tools), [post-call](/whatsapp/post-call-tools)). Pre-call tools run when a chat opens, on the customer's first message. They never hold up the reply, and a field a tool didn't return resolves to "not available". |
+| **Event Subscription** | Offers chat events instead of call events. See [Events](/whatsapp/events). |
+| Not shown | **Embed & Widgets**, **Convert to multi-prompt**, and version A/B testing. |
+
+### When a chat opens and closes
+
+A WhatsApp conversation is one **chat**. The customer's first message opens it, and it stays open while messages keep flowing. It closes when any of these happens:
+
+| Trigger | When |
+|---|---|
+| The agent ends it | The assistant decides the conversation is over and closes the chat. |
+| The customer goes quiet | After **3 hours** with no messages, the session expires. The customer's next message then closes the old chat and opens a new one. |
+| It reaches the maximum age | A chat lasts at most **24 hours**. The next message after that opens a new chat. |
+| Nobody writes again | Chats still open about **25 hours** after they started are closed automatically. |
+
+Closing the chat is what runs post-call tools and analysis and fires the `chat_completed` webhook. So if a customer simply stops replying, those results can arrive hours later.
+
+<Note>
+The timeouts under **Chat → Settings** (maximum length and idle warning/end) apply to text chat in the web widget. WhatsApp chats follow the rules above instead.
+</Note>
+
+## Write a prompt for WhatsApp
+
+<Check>Keep replies short, one to three small paragraphs. WhatsApp hides long messages behind "Read more".</Check>
+<Check>Use WhatsApp formatting only: `*bold*`, `_italic_`, `~strike~`, and lines starting with `- ` or `1. ` for lists.</Check>
+<Check>Never use Markdown headings, tables or `[label](url)` links. Send the bare URL and WhatsApp turns it into a link.</Check>
+<Check>Don't mention calls, audio, holding or keypad input. The customer is typing.</Check>
+<Check>Mention every on-call tool with `@` at the point in the prompt where it should be used.</Check>
+
+```text
+You are Neha, a WhatsApp assistant for Acme Insurance. You help customers renew
+their health policy.
+
+- Greet the customer by name if {{name}} is available, and ask how you can help.
+- Answer plan questions from the knowledge base. Keep each reply under 80 words.
+- When the customer is ready to renew, send the renewal link with
+  @||WhatsApp_send_template_message|| and tell them it has been sent.
+- Use *bold* for plan names and prices. Never use headings or tables.
+```
+
+## Test from your phone
+
+Select **Test assistant** in the editor's top bar. A QR code for the attached number appears with **Scan to start a WhatsApp chat**. Scan it with your phone's camera, or use **Open in WhatsApp**, and send a message. Your conversation appears under **Logs → WhatsApp** like any other. The recording under [Attach a WhatsApp number](#attach-a-whatsapp-number) ends on this QR code.
+
+If no number is attached you'll see **No number attached**. Attach one, then reopen **Test assistant**.

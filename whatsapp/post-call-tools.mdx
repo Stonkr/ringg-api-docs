@@ -1,0 +1,68 @@
+---
+title: "WhatsApp Post-call Tools"
+sidebarTitle: "Post-call Tools"
+icon: "circle-check"
+description: "Send a WhatsApp template automatically after every call or chat ends, such as a summary, a link or the next steps."
+"og:title": "Send WhatsApp Messages After a Call or Chat | Ringg AI Guide"
+---
+
+A post-call tool runs automatically once a conversation ends, with no prompt mention needed. On a voice assistant it runs when the call completes. On a WhatsApp assistant it runs when the chat closes. Use it to follow up with a summary, a payment link or the next steps.
+
+Only **Send WhatsApp Template** is offered post-call. By the time the conversation ends, the customer may be outside the 24-hour customer service window, and only templates are delivered outside it.
+
+<Note>
+You need a connected WhatsApp Business account with at least one **Ready** number and one **Ready** template. See [Connect WhatsApp Business](/whatsapp/onboarding).
+</Note>
+
+## Add the tool
+
+<Steps>
+  <Step title="Open Post-call tools">
+    In the agent editor, select **Tools** in the left menu, then the **Post-call** tab.
+  </Step>
+  <Step title="Pick WhatsApp Business">
+    In the side panel select **Integration**, then **WhatsApp Business** with your account name beneath it. It shows **1 tool available**: **Send WhatsApp Template**.
+  </Step>
+  <Step title="Configure the message">
+    | Field | What to enter |
+    |---|---|
+    | **Send from** | A registered number on the account. |
+    | **Send to** | Leave blank to message the customer from the conversation: the caller's number on a voice call, or their WhatsApp number on a chat. Or set a **Variable** or **Static** number. |
+    | **Template** | An approved template. |
+    | **Body variables** | One row per variable, each **Variable** (a custom variable of the conversation) or **Static**. |
+  </Step>
+  <Step title="Test and import">
+    Use **Add test value** and **Run test** to send a real message, then select **Import**. From now on the template is sent after every conversation this assistant handles.
+  </Step>
+</Steps>
+
+<Frame caption="Post-call → Integration → WhatsApp Business offers only Send WhatsApp Template.">
+  <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/whatsapp/08-post-call-tool.png" className="w-full rounded-lg">
+    <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/whatsapp/08-post-call-tool.mp4" type="video/mp4" />
+  </video>
+</Frame>
+
+## Common set-ups
+
+<AccordionGroup>
+  <Accordion title="Follow up on WhatsApp after a voice call">
+    Add the tool to a **voice** assistant's post-call tools with a Utility template such as:
+
+    ```text
+    Hi {{1}}, thanks for speaking with us about {{2}}. Reply here if you have any
+    questions and we'll pick up where we left off.
+    ```
+
+    Map `{{1}}` to the `name` custom variable and `{{2}}` to a static product name. Leave **Send to** blank so it goes to the number that was called.
+  </Accordion>
+  <Accordion title="Send a summary when a WhatsApp chat closes">
+    Add the tool to the **WhatsApp** assistant itself. It runs when the chat closes. A customer who simply stops replying may not trigger it for several hours; see [when a chat opens and closes](/whatsapp/create-agent#when-a-chat-opens-and-closes).
+  </Accordion>
+  <Accordion title="Notify your team instead of the customer">
+    Set **Send to** to **Static** with a team member's number, and use a template that carries the details you need in its variables.
+  </Accordion>
+</AccordionGroup>
+
+## Check what was sent
+
+Post-call sends appear as tool calls on the conversation in **Logs**, with the resolved sender, recipient, template and Meta's result. To be notified from your own systems as well, subscribe to [webhook events](/whatsapp/events).

@@ -1,0 +1,147 @@
+---
+title: "WhatsApp Events and Webhooks"
+sidebarTitle: "Events"
+icon: "webhook"
+description: "Subscribe your endpoint to chat events from a WhatsApp agent: chat completed, analysis done, and all processing done."
+"og:title": "WhatsApp Chat Webhooks | Ringg AI Guide"
+---
+
+A WhatsApp agent can notify your server at each stage after a chat closes. You subscribe per agent, under **Event Subscription** in the agent editor. The mechanics are the same as [call webhooks](/webhooks/initial-setup), but the events and payloads describe a chat, not a call.
+
+## Events a WhatsApp agent can send
+
+| Event | Label in the dashboard | Fires when | Extra fields |
+|---|---|---|---|
+| `chat_completed` | **Chat Completed** | The chat closes, before any analysis. | `transcript` |
+| `platform_analysis_completed` | **Platform Analysis Done** | Platform analysis (summary, key points, action items) succeeds. | `transcript`, `analysis_data`, `platform_analysis_status` |
+| `client_analysis_completed` | **Advanced Analysis Complete** | Your **Advanced Analysis** succeeds. | `transcript`, `analysis_data`, `client_analysis_status` |
+| `all_processing_completed` | **All Processing Done** | Everything after the chat has finished. | `transcript`, `platform_analysis`, `client_analysis`, both statuses, `classification` |
+
+They arrive in that order: `chat_completed` first, then the two analysis events as each finishes, then `all_processing_completed`. An analysis event is skipped when its analysis didn't succeed, but `all_processing_completed` still fires and carries the status.
+
+<Note>
+Call events (`call_started`, `call_ringing`, `call_ongoing`, `call_completed`, `recording_completed`) never fire for a chat, so they aren't offered on a WhatsApp agent. Subscribing to one through the API returns `400`: *Event type 'call_completed' is not available for a WhatsApp agent — it can only be produced by a voice call.* Likewise, `chat_completed` can't be added to a voice agent.
+</Note>
+
+## Create a subscription
+
+<Steps>
+  <Step title="Open Event Subscription">
+    In the agent editor, select **Event Subscription** under **Advanced Settings**.
+  </Step>
+  <Step title="Enter your endpoint">
+    Choose the **Method** (POST by default) and enter the **Callback URL**, for example `https://your-domain.com/webhook`.
+  </Step>
+  <Step title="Select events">
+    Tick the events you want. Only the four chat events above are listed for a WhatsApp agent.
+  </Step>
+  <Step title="Add headers (optional)">
+    Use **Add Header** for anything your endpoint needs, such as an `Authorization` token.
+  </Step>
+  <Step title="Save">
+    Select **Create Subscription**. Each event type can have up to four subscriptions.
+  </Step>
+</Steps>
+
+<Frame caption="Event Subscription on a WhatsApp agent offers only the chat events.">
+  <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/whatsapp/11-events.png" className="w-full rounded-lg">
+    <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/whatsapp/11-events.mp4" type="video/mp4" />
+  </video>
+</Frame>
+
+## Payload
+
+Every chat event shares the same base fields, and none of them carries `call_id` or `call_sid`. Use `entity_type` to tell chat events from call events on a shared endpoint.
+
+| Field | Type | Description |
+|---|---|---|
+| `event_type` | string | One of the four events above. |
+| `entity_type` | string | Always `"chat"`. |
+| `chat_id` | string | Ringg's ID for the chat. It is the same ID shown in **Logs → WhatsApp**. |
+| `channel` | string | `"whatsapp"`. |
+| `agent_id`, `agent_name` | string | The assistant that handled the chat. |
+| `version_id`, `version_slug`, `version_description` | string | The agent version that handled the chat. |
+| `workspace_id` | string | Your workspace. |
+| `status` | string | Chat status, for example `completed`. |
+| `from_number` | string | The customer's WhatsApp number in E.164 format, for example `+919876543210`. |
+| `to_number` | string | Your business number's Meta **phone number ID**, not the phone number itself. |
+| `custom_args_values` | object | Custom variables for the chat, including values set by pre-call tools. |
+| `created_at` | string | When the chat started, in ISO 8601. |
+| `transcript` | array | Messages in order, each an object with one key, `user` or `bot`. Text only. |
+
+<Tabs>
+  <Tab title="chat_completed">
+    ```json
+    {
+      "event_type": "chat_completed",
+      "entity_type": "chat",
+      "chat_id": "3c6e2a1d-5b7f-4e8a-9c21-0f4d7b8e6a53",
+      "channel": "whatsapp",
+      "agent_id": "7a1f0c2e-9d34-4b6a-8e57-1c2b3d4e5f60",
+      "agent_name": "Acme Renewals WhatsApp",
+      "workspace_id": "0e9d8c7b-6a5f-4e3d-2c1b-0a9f8e7d6c5b",
+      "status": "completed",
+      "version_id": "3f0c9a52-0d1e-4c55-9d7e-2a8f5b1c7e10",
+      "version_slug": "v1",
+      "version_description": null,
+      "from_number": "+919876543210",
+      "to_number": "109876543210987",
+      "custom_args_values": { "name": "Priya" },
+      "created_at": "2026-09-24T10:29:46.123+00:00",
+      "transcript": [
+        { "user": "Hi, I want to renew my policy" },
+        { "bot": "Hi Priya! Happy to help. Which plan are you on?" },
+        { "user": "Family Health Plus" },
+        { "bot": "I've sent your renewal link on WhatsApp. It's valid for 7 days." }
+      ]
+    }
+    ```
+  </Tab>
+  <Tab title="all_processing_completed">
+    ```json
+    {
+      "event_type": "all_processing_completed",
+      "entity_type": "chat",
+      "chat_id": "3c6e2a1d-5b7f-4e8a-9c21-0f4d7b8e6a53",
+      "channel": "whatsapp",
+      "agent_id": "7a1f0c2e-9d34-4b6a-8e57-1c2b3d4e5f60",
+      "agent_name": "Acme Renewals WhatsApp",
+      "workspace_id": "0e9d8c7b-6a5f-4e3d-2c1b-0a9f8e7d6c5b",
+      "status": "completed",
+      "version_id": "3f0c9a52-0d1e-4c55-9d7e-2a8f5b1c7e10",
+      "version_slug": "v1",
+      "version_description": null,
+      "from_number": "+919876543210",
+      "to_number": "109876543210987",
+      "custom_args_values": { "name": "Priya" },
+      "created_at": "2026-09-24T10:29:46.123+00:00",
+      "transcript": [
+        { "user": "Hi, I want to renew my policy" },
+        { "bot": "Hi Priya! Happy to help. Which plan are you on?" }
+      ],
+      "platform_analysis": {
+        "summary": "Customer asked to renew Family Health Plus and received the renewal link.",
+        "key_points": ["Wants to renew", "On Family Health Plus"],
+        "action_items": ["Follow up if not renewed in 7 days"]
+      },
+      "platform_analysis_status": "success",
+      "client_analysis": { "renewal_intent": "high" },
+      "client_analysis_status": "success",
+      "classification": "renewal_link_sent"
+    }
+    ```
+  </Tab>
+</Tabs>
+
+`platform_analysis_completed` and `client_analysis_completed` carry the base fields and `transcript`, plus that analysis in `analysis_data` and its status.
+
+## Delivery and retries
+
+- Requests use the subscription's method with `Content-Type: application/json` plus your custom headers. A `GET` subscription is sent without a body.
+- Your endpoint has 30 seconds to respond. Any `2xx` counts as delivered.
+- `5xx` responses and timeouts are retried with backoff. A `429` is retried more slowly. Other `4xx` responses are not retried.
+- The same event can be delivered more than once, so make your handler idempotent on `chat_id` + `event_type`.
+
+<Tip>
+`chat_completed` fires when the chat **closes**, not after each message. If the customer simply stops replying, the chat can stay open for hours. See [when a chat opens and closes](/whatsapp/create-agent#when-a-chat-opens-and-closes).
+</Tip>
