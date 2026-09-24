@@ -1,0 +1,145 @@
+---
+title: "WhatsApp Chat History"
+sidebarTitle: "Chat History"
+icon: "history"
+description: "Find WhatsApp conversations in Logs, read transcripts and analysis, export a CSV by email, or fetch chats through the API."
+"og:title": "WhatsApp Chat History and Export | Ringg AI Guide"
+---
+
+Every WhatsApp conversation is logged as a **chat** under **Logs → WhatsApp**, separate from phone and web calls. The tab has its own filters, a transcript view styled like WhatsApp, and a CSV export.
+
+## Open WhatsApp logs
+
+Go to **Logs** and choose the **WhatsApp** tab, next to **Phone** and **Workflows**. The table lists chats from the selected date range, newest first. The default range is the last month.
+
+| Column | What it shows |
+|---|---|
+| **Assistant** | The WhatsApp agent that handled the chat, with its version. Filter with the icon in the header. |
+| **Contact** | The customer's WhatsApp number in international format. Below it is their name: the `name` custom variable if set, otherwise their WhatsApp profile name. |
+| **Started on** | When the customer's first message arrived. Sortable. |
+| **Status** | **Ongoing**, **Completed** or **Failed**. Filter with the icon in the header. |
+| **Duration** | Time from the first message to when the chat closed. |
+
+<Frame caption="Logs → WhatsApp, opening a completed chat and reading its transcript.">
+  <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/whatsapp/12-chat-history.png" className="w-full rounded-lg">
+    <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/whatsapp/12-chat-history.mp4" type="video/mp4" />
+  </video>
+</Frame>
+
+<Note>
+A chat shows **Ongoing** until it closes, which can be hours after the last message. See [when a chat opens and closes](/whatsapp/create-agent#when-a-chat-opens-and-closes).
+</Note>
+
+## Filter chats
+
+Select **Filters** to narrow the list:
+
+| Filter | Notes |
+|---|---|
+| **Date range** | Applies to **Started on**. |
+| **Assistants** | Only WhatsApp agents are listed. |
+| **Chat status** | **Ongoing**, **Completed**, **Failed**. |
+| **From number** | The customer's number. |
+| **To number** | Your business number. |
+| **Chat ID** | The full chat UUID, for example from a webhook's `chat_id`. |
+
+Active filters show as chips above the table, and they are kept in the page URL, so you can share a filtered view by copying the link.
+
+## Read a chat
+
+Select a row to open the chat panel. The header shows the agent and version, the chat ID with a copy button, the status, the customer's number and the channel. The tabs below it are:
+
+| Tab | Contents |
+|---|---|
+| **Chat details** | Chat duration, custom variables (including values from pre-call tools), and platform analysis: summary, key points, classification and call status reason. |
+| **Advanced analysis** | Your **Advanced Analysis** fields, when configured. |
+| **Transcript** | The conversation as WhatsApp bubbles with timestamps. Tool calls appear inline as small pills with their duration, for example the pre-call greeting or a template send. |
+| **Evals** | Evaluation results, when the chat has been evaluated. |
+
+The **⋮** menu has **Test this agent**, **Download analysis**, **Copy transcript** and **Download transcript**.
+
+## Export to CSV
+
+<Steps>
+  <Step title="Filter first">
+    The export uses the filters currently applied on the WhatsApp tab.
+  </Step>
+  <Step title="Choose the export">
+    Select **Export** at the bottom of the table, then **Export without analysis** or **Export with analysis**.
+  </Step>
+  <Step title="Check your email">
+    You'll see *Chat history report (with the applied filters) is being sent to your email.* The email links to a zip containing `chat_history_report.csv`. The link is valid for 7 days.
+  </Step>
+</Steps>
+
+<Frame caption="Export offers the chat history with or without analysis columns.">
+  <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/whatsapp/13-export.png" className="w-full rounded-lg">
+    <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/whatsapp/13-export.mp4" type="video/mp4" />
+  </video>
+</Frame>
+
+The CSV has one row per chat, with these columns in order:
+
+| Column | Description |
+|---|---|
+| `ID` | Chat ID. |
+| `To Number` | Your business number's Meta phone number ID. |
+| `From Number` | The customer's number in E.164 format. |
+| `Name` | The `name` custom variable, or else the customer's WhatsApp profile name. |
+| *one column per custom variable* | The values of each custom variable. |
+| `Chat Status` | `ongoing`, `completed` or `failed`. |
+| `Transcript` | The conversation, one `speaker: text` line per message. |
+| `Created At` | When the chat started. |
+| `Agent Name`, `Version` | The assistant and version that handled it. |
+| `Chat Duration` | Length of the chat. |
+| `Channel` | `whatsapp`. |
+| `External Chat ID` | The ID of the chat on the messaging platform. |
+| `Classification` | The platform analysis classification. |
+
+**Export with analysis** adds `summary`, `key_points` and `action_items`, followed by one column for every other platform and advanced analysis field. An export can hold up to 200,000 chats. If nothing matches the filters, you get an email saying the export was empty.
+
+## Fetch chats through the API
+
+The same data is available to your backend with your workspace API key in the `X-API-KEY` header.
+
+<Tabs>
+  <Tab title="List chats">
+    ```bash
+    curl -G "https://prod-api.ringg.ai/ca/api/v0/chat/history/v2" \
+      -H "X-API-KEY: your-api-key" \
+      --data-urlencode "start_date=2026-09-01" \
+      --data-urlencode "end_date=2026-09-24" \
+      --data-urlencode "channel=whatsapp" \
+      --data-urlencode "status=completed" \
+      --data-urlencode "limit=20" \
+      --data-urlencode "offset=0"
+    ```
+
+    | Parameter | Description |
+    |---|---|
+    | `start_date`, `end_date` | Date range on the chat start time. |
+    | `limit`, `offset` | Paging. `limit` defaults to 10. |
+    | `agent_id`, `version_id`, `status` | Repeatable filters. |
+    | `channel` | `whatsapp`. |
+    | `from_number`, `to_number`, `chat_id` | Exact-match filters. |
+    | `include_analysis` | `true` adds platform and advanced analysis to each row. |
+    | `sort_order` | `desc` (default) or `asc`. |
+    | `download` | `true` queues the CSV export email instead of returning rows. |
+
+    The response is `{ "calls": [...], "limit", "offset", "count", "total" }`. Each row has `id`, `from_number`, `to_number`, `name`, `status`, `created_at`, `call_duration`, `agent`, `channel`, `external_chat_id` and `classification`. Transcripts are not included. Fetch a single chat for those.
+  </Tab>
+  <Tab title="Get one chat">
+    ```bash
+    curl -G "https://prod-api.ringg.ai/ca/api/v0/chat/details" \
+      -H "X-API-KEY: your-api-key" \
+      --data-urlencode "chat_id=3c6e2a1d-5b7f-4e8a-9c21-0f4d7b8e6a53" \
+      --data-urlencode "send_analysis=true"
+    ```
+
+    Returns `{ "status": "success", "data": { ... } }`. The `data` object holds the chat's `id`, `status`, `from_number`, `to_number`, `agent_id`, `agent_name`, version fields, `initiation_time`, `chat_duration`, `custom_args_values`, `classification` and `transcript`. With `send_analysis=true` it also holds `platform_analysis` and `client_analysis`.
+  </Tab>
+</Tabs>
+
+<Tip>
+For near-real-time processing, subscribe to [chat webhooks](/whatsapp/events) instead of polling this API. `all_processing_completed` carries the transcript and both analyses in one payload.
+</Tip>

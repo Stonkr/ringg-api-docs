@@ -109,6 +109,25 @@
         ]
       },
       {
+        "group": "WhatsApp",
+        "tag": "NEW",
+        "pages": [
+          "whatsapp/overview",
+          {
+            "group": "Onboarding",
+            "icon": "plug",
+            "pages": [
+              "whatsapp/onboarding",
+              "whatsapp/on-call-tools",
+              "whatsapp/post-call-tools"
+            ]
+          },
+          "whatsapp/create-agent",
+          "whatsapp/events",
+          "whatsapp/chat-history"
+        ]
+      },
+      {
         "group": "API Reference",
         "pages": [
           {

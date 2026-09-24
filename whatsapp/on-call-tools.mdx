@@ -1,0 +1,92 @@
+---
+title: "WhatsApp On-call Tools"
+sidebarTitle: "On-call Tools"
+icon: "phone"
+description: "Let an assistant send a WhatsApp template or text message while a call or chat is still live."
+"og:title": "Send WhatsApp Messages Mid-conversation | Ringg AI Guide"
+---
+
+An on-call tool is one the assistant calls itself during a live conversation, at the point your prompt says. With WhatsApp Business connected, a voice assistant can send a brochure link while the customer is still on the call. A WhatsApp assistant can send an approved template in the middle of a chat.
+
+Two WhatsApp tools are available on-call:
+
+| Tool | Use it for | Works outside the 24-hour window |
+|---|---|---|
+| **Send WhatsApp Template** | Pre-approved messages: links, confirmations, documents. | Yes |
+| **Send WhatsApp Text** | A free-form message the prompt writes. | No, it is only delivered within 24 hours of the customer's last message. |
+
+<Note>
+You need a connected WhatsApp Business account with at least one **Ready** number, and for the template tool at least one **Ready** template. See [Connect WhatsApp Business](/whatsapp/onboarding).
+</Note>
+
+## Add the tool
+
+<Steps>
+  <Step title="Open On-call tools">
+    In the agent editor, select **Tools** in the left menu, then the **On-call** tab.
+  </Step>
+  <Step title="Pick WhatsApp Business">
+    In the side panel select **Integration**, then **WhatsApp Business** with your account name beneath it. The picker lists the account's **Available Tools**.
+  </Step>
+  <Step title="Choose the sender and recipient">
+    Expand **Send WhatsApp Template** (or **Send WhatsApp Text**):
+
+    - **Send from**: a registered number on the account.
+    - **Send to**: leave blank to message the customer in the conversation. To send elsewhere, set **Type** to **Variable** and pick a custom variable, or to **Static** and enter a number such as `+919876543210`.
+  </Step>
+  <Step title="Choose the content">
+    - **Template** tool: pick a template. Its language and number of variables are shown beneath it. Then fill **Body variables**: one row per variable, set to **Variable** (a custom variable, filled when the conversation runs) or **Static** (a fixed value).
+    - **Text** tool: write the **Message text**.
+  </Step>
+  <Step title="Test and import">
+    **Add test value** under a variable gives it a sample for testing. **Run test** sends a real message with those values. When it looks right, select **Import**.
+  </Step>
+</Steps>
+
+<Frame caption="On-call → Integration → WhatsApp Business: choosing the sender, the template, and its body variables, then the Send WhatsApp Text tool.">
+  <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/whatsapp/07-on-call-tool.png" className="w-full rounded-lg">
+    <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/whatsapp/07-on-call-tool.mp4" type="video/mp4" />
+  </video>
+</Frame>
+
+## Tell the assistant when to use it
+
+The assistant only calls an on-call tool when its prompt says to. In the prompt editor, type `@` and choose the tool. It is inserted as `@||tool_name||`. Next to it, say in plain words when to send it and what to say afterwards:
+
+<Tabs>
+  <Tab title="Voice assistant">
+    ```text
+    If the customer asks for the brochure, send it on WhatsApp with
+    @||WhatsApp_send_template_message|| and tell them it is on its way to their WhatsApp.
+    Don't read the link out loud.
+    ```
+  </Tab>
+  <Tab title="WhatsApp assistant">
+    ```text
+    When the customer confirms they want to renew, send the renewal link with
+    @||WhatsApp_send_template_message||, then reply: "Done! I've sent your renewal link above."
+    ```
+  </Tab>
+</Tabs>
+
+## Filling template variables
+
+Variables are filled from the conversation's custom variables, so declare them under **Custom Variables** in the agent. They can be passed when the call or chat starts, or set by a pre-call tool.
+
+| Template body | Variable row | Type | Value |
+|---|---|---|---|
+| `Hi {{1}}, your {{2}} link: {{3}}` | `{{1}}` | Variable | `name` |
+| | `{{2}}` | Static | `renewal` |
+| | `{{3}}` | Variable | `renewal_url` |
+
+For a template with named variables (`{{customer_name}}`), the rows are labelled with those names instead of numbers.
+
+## Check what was sent
+
+Every send appears in the conversation's transcript under **Logs** as a tool call, showing the sender, recipient and template actually used and Meta's result.
+
+| You see | Where | What to do |
+|---|---|---|
+| *Outside the 24-hour customer service window… send an approved template instead.* | The tool call in **Logs** | **Send WhatsApp Text** was used more than 24 hours after the customer's last message. Use **Send WhatsApp Template** instead. |
+| *"template_name" is no longer available. Pick another template.* | The tool editor | The template was deleted or is no longer approved. Pick another and save. |
+| *No registered WhatsApp numbers on this account.* | The tool editor | Register a number on the account first. |
