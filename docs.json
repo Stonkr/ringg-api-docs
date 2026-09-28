@@ -123,6 +123,7 @@
             ]
           },
           "whatsapp/create-agent",
+          "whatsapp/start-conversation-api",
           "whatsapp/events",
           "whatsapp/chat-history"
         ]

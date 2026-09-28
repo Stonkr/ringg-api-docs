@@ -2468,7 +2468,8 @@
                       "edit_vocab",
                       "edit_api_settings",
                       "edit_secondary_language",
-                      "edit_secondary_voice"
+                      "edit_secondary_voice",
+                      "edit_chat_settings"
                     ],
                     "example": "edit_agent_display_name"
                   },
@@ -2575,6 +2576,34 @@
                   "voice_speed": {
                     "type": "number",
                     "example": 1.2
+                  },
+                  "chat_settings": {
+                    "type": "object",
+                    "description": "Used with `operation: \"edit_chat_settings\"`. `whatsapp_session` sets how long a WhatsApp agent's chats stay open. Fields you leave out keep their current values.",
+                    "properties": {
+                      "whatsapp_session": {
+                        "type": "object",
+                        "description": "WhatsApp chat session timeouts. Send both fields: one you leave out is reset to its default. The maximum length must be at least the idle timeout. Applies to chats that open after the change.",
+                        "properties": {
+                          "idle_timeout_minutes": {
+                            "type": "integer",
+                            "minimum": 5,
+                            "maximum": 1440,
+                            "default": 180,
+                            "description": "End the chat after this many minutes with no message from the customer.",
+                            "example": 1440
+                          },
+                          "max_duration_minutes": {
+                            "type": "integer",
+                            "minimum": 60,
+                            "maximum": 10080,
+                            "default": 1440,
+                            "description": "Start a new chat once a chat is this many minutes old.",
+                            "example": 4320
+                          }
+                        }
+                      }
+                    }
                   }
                 }
               }

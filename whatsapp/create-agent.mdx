@@ -96,16 +96,52 @@ A WhatsApp conversation is one **chat**. The customer's first message opens it, 
 
 | Trigger | When |
 |---|---|
-| The agent ends it | The assistant decides the conversation is over and closes the chat. |
-| The customer goes quiet | After **3 hours** with no messages, the session expires. The customer's next message then closes the old chat and opens a new one. |
-| It reaches the maximum age | A chat lasts at most **24 hours**. The next message after that opens a new chat. |
-| Nobody writes again | Chats still open about **25 hours** after they started are closed automatically. |
+| The agent ends it | The assistant decides the conversation is over and calls its **End Chat** tool, which sends a closing message and closes the chat. See [End the chat](#end-the-chat). |
+| The customer goes quiet | After the agent's **idle timeout** (3 hours by default) with no messages, the session expires. The customer's next message then closes the old chat and opens a new one. |
+| It reaches the maximum length | A chat lasts at most the agent's **maximum length** (24 hours by default), however active it is. The next message after that opens a new chat. |
+| Nobody writes again | A chat that goes quiet and gets no further message is closed automatically shortly after its idle timeout. |
+
+A new chat starts without the previous chat's messages, so choose timeouts that fit how long your customers take to reply. See [Set the session timeouts](#set-the-session-timeouts).
 
 Closing the chat is what runs post-call tools and analysis and fires the `chat_completed` webhook. So if a customer simply stops replying, those results can arrive hours later.
 
 <Note>
-The timeouts under **Chat → Settings** (maximum length and idle warning/end) apply to text chat in the web widget. WhatsApp chats follow the rules above instead.
+The timeouts under **Chat → Settings** (maximum length and idle warning/end, in seconds) apply to text chat in the web widget. WhatsApp chats use the session timeouts below instead.
 </Note>
+
+### Set the session timeouts
+
+Each WhatsApp agent sets its own idle timeout and maximum chat length:
+
+| Setting | What it does | Default | Allowed |
+|---|---|---|---|
+| `idle_timeout_minutes` | Ends the chat after this many minutes with no message from the customer. Each customer message restarts the clock. | 180 (3 hours) | 5 to 1440 (1 day) |
+| `max_duration_minutes` | Starts a new chat once the chat is this many minutes old. | 1440 (24 hours) | 60 to 10080 (7 days) |
+
+The maximum length must be at least the idle timeout. Set both with [Edit Assistant](/api-reference/endpoint/assistant/edit-assistant) and `operation: "edit_chat_settings"`:
+
+```bash
+curl --request PATCH "https://prod-api.ringg.ai/ca/api/v0/agent/v1" \
+  --header "X-API-KEY: your-api-key" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "operation": "edit_chat_settings",
+    "agent_id": "your-agent-id",
+    "chat_settings": {
+      "whatsapp_session": { "idle_timeout_minutes": 1440, "max_duration_minutes": 4320 }
+    }
+  }'
+```
+
+A chat keeps the timeouts it started with, so a change applies to chats that open after it.
+
+### End the chat
+
+WhatsApp agents have an **End Chat** tool, the chat counterpart of **End Call**. The assistant uses it to send a closing message and close the chat, which runs post-call tools and analysis straight away instead of waiting for the idle timeout. Mention it in your prompt as `@||end_chat||` at the point where the conversation should end.
+
+<Warning>
+Use `@||end_chat||` in a WhatsApp agent's prompt, not `@||end_call||`. **End Call** and the other call tools (call transfer, DTMF, stay on line) only work on voice calls and are not offered to the assistant during a chat.
+</Warning>
 
 ## Write a prompt for WhatsApp
 
@@ -114,6 +150,7 @@ The timeouts under **Chat → Settings** (maximum length and idle warning/end) a
 <Check>Never use Markdown headings, tables or `[label](url)` links. Send the bare URL and WhatsApp turns it into a link.</Check>
 <Check>Don't mention calls, audio, holding or keypad input. The customer is typing.</Check>
 <Check>Mention every on-call tool with `@` at the point in the prompt where it should be used.</Check>
+<Check>Say when the conversation is over and mention `@||end_chat||` there.</Check>
 
 ```text
 You are Neha, a WhatsApp assistant for Acme Insurance. You help customers renew
@@ -124,7 +161,13 @@ their health policy.
 - When the customer is ready to renew, send the renewal link with
   @||WhatsApp_send_template_message|| and tell them it has been sent.
 - Use *bold* for plan names and prices. Never use headings or tables.
+- When the customer says they're done, thank them and end the chat with
+  @||end_chat||.
 ```
+
+### Replies to earlier messages
+
+When a customer swipes to reply to an earlier message, or taps a quick-reply button on a template, the assistant sees which message they're answering. Their reply reaches the assistant with a short quote of that message, so an answer like "yes, this one" is understood in context. You don't need to handle this in the prompt.
 
 ## Test from your phone
 
