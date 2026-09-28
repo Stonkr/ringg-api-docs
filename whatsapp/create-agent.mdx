@@ -165,6 +165,35 @@ their health policy.
   @||end_chat||.
 ```
 
+## Send a template during a chat
+
+A WhatsApp agent can send an approved message template in the middle of a chat, for example a brochure, a payment link or a quick-reply menu. Pick the templates the assistant may send, then tag them in the prompt.
+
+<Steps>
+  <Step title="Select the templates">
+    In the editor sidebar, open **WhatsApp Templates** and click **Select Template**. The list shows the approved templates for the attached number. Tick each one the assistant may send. To add or edit templates, use **Manage templates**, which opens [Message templates](/whatsapp/onboarding#message-templates).
+  </Step>
+  <Step title="Fill in the variables">
+    If a template has variables or a media header, a setup dialog opens. For each variable, choose where its value comes from:
+
+    - **Static**: fixed text, sent as written.
+    - **Variable**: a custom variable such as `{{name}}`, filled when the chat starts.
+    - **Dynamic**: the assistant fills it from the conversation, for example the plan the customer chose.
+
+    For an image, video or document header, paste an `https://` link to the file. Edit these later with the pencil next to the template.
+  </Step>
+  <Step title="Tag the template in the prompt">
+    Type `@` in the prompt and pick the template. Each one appears under its own tool name, `send_` followed by the template name, for example `@||send_renewal_reminder||`. Mention it at the point where it should be sent.
+  </Step>
+</Steps>
+
+```text
+- When the customer asks for the renewal link, send it with
+  @||send_renewal_reminder||.
+```
+
+The template is the assistant's whole reply for that turn, so it won't send a separate text message as well. If a **Variable** isn't available in a chat, the assistant fills it in from the conversation instead. Each send appears in the chat under **Logs → WhatsApp**.
+
 ### Replies to earlier messages
 
 When a customer swipes to reply to an earlier message, or taps a quick-reply button on a template, the assistant sees which message they're answering. Their reply reaches the assistant with a short quote of that message, so an answer like "yes, this one" is understood in context. You don't need to handle this in the prompt.
