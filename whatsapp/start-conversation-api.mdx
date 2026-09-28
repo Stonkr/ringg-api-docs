@@ -1,0 +1,77 @@
+---
+title: "Start a WhatsApp Conversation by API"
+sidebarTitle: "Start a Conversation"
+icon: "send"
+description: "Send the first WhatsApp message to a customer with an approved template, and let your WhatsApp agent take over when they reply."
+"og:title": "Start a WhatsApp Conversation by API | Ringg AI Guide"
+---
+
+Use this endpoint to message a customer first, for example after a missed call, a form submission or a renewal reminder. It sends an approved message template from your agent's WhatsApp number and opens a chat. When the customer replies, the WhatsApp agent attached to that number answers, with the template already in the chat history.
+
+A template is required because WhatsApp only allows free-form messages within 24 hours of the customer's last message. See [Message templates](/whatsapp/onboarding#message-templates).
+
+## Before you start
+
+- A [WhatsApp agent](/whatsapp/create-agent) with a WhatsApp number attached.
+- An approved (**Ready**) template on that number.
+- Your workspace API key. See [Authentication](/api-reference/quick-start/authentication).
+
+## Send the first message
+
+```bash
+curl --request POST "https://prod-api.ringg.ai/cp/meta/whatsapp/outbound" \
+  --header "X-API-KEY: your-api-key" \
+  --header "X-Idempotency-Key: lead-1042-first-message" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "to_number": "919876543210",
+    "phone_number_id": "your-whatsapp-phone-number-id",
+    "workspace_id": "your-workspace-id",
+    "agent_id": "your-agent-id",
+    "template": {
+      "name": "missed_call_follow_up",
+      "language": { "code": "en_US" },
+      "components": [
+        { "type": "body", "parameters": [ { "type": "text", "text": "Asha" } ] }
+      ]
+    },
+    "custom_args_values": { "name": "Asha", "lead_id": "L-1042" }
+  }'
+```
+
+### Request body
+
+| Field | Required | Description |
+|---|---|---|
+| `to_number` | Yes | The customer's number in international format, without `+`. |
+| `phone_number_id` | Yes | Meta's phone number ID for the WhatsApp number your agent is attached to. |
+| `workspace_id` | Yes | Your workspace ID. |
+| `agent_id` | Yes | The WhatsApp agent attached to that number. It must match, or the request fails with `409`. |
+| `template.name` | Yes | The approved template to send. |
+| `template.language.code` | No | The template's language code. Defaults to `en_US`. |
+| `template.components` | No | Values for the template's variables and buttons, in Meta's component format: `body` parameters, `button` parameters with `sub_type` and `index`, and `cards` for carousel templates. |
+| `custom_args_values` | No | Values for your agent's custom variables, such as `{{name}}`. They're also included as `custom_args` on every [event](/whatsapp/events) for this chat. |
+
+### Headers
+
+| Header | Required | Description |
+|---|---|---|
+| `X-API-KEY` | Yes | Your workspace API key. |
+| `X-Idempotency-Key` | No | A unique value per message. If you retry with the same key within 24 hours, you get the first response back and the template is not sent again. |
+
+## Responses
+
+| Status | Body | Meaning |
+|---|---|---|
+| `200` | `{"status": "sent", "chat_id": "…", "message_id": "…"}` | The template was accepted by WhatsApp. `message_id` is WhatsApp's message ID. |
+| `401` | `{"detail": …}` | The API key is missing or invalid. |
+| `409` | `{"detail": "active_session_exists", "chat_id": "…"}` | The customer already has an open chat with this agent. No template was sent. |
+| `409` | `{"detail": "agent_id_mismatch"}` or `workspace_id_mismatch` | The IDs don't match the agent attached to `phone_number_id`. |
+| `502` | `{"status": "delivery_failed", "chat_id": "…", "error": "…"}` | WhatsApp rejected the template, for example a wrong template name or variable count. The chat is marked failed. |
+| `503` | `{"detail": "session_lock_contention"}` or `auth_unavailable` | A temporary conflict or outage. Retry with the same `X-Idempotency-Key`. |
+
+## What happens next
+
+1. The template appears as the agent's first message in the chat, under **Logs → WhatsApp**.
+2. When the customer replies, including by tapping a quick-reply button on the template, the agent answers in the same chat, with the template in context.
+3. The chat then follows the agent's usual [session timeouts](/whatsapp/create-agent#set-the-session-timeouts) and closes the same way as any other chat, firing the [events](/whatsapp/events) you subscribed to.
