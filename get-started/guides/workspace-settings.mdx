@@ -59,12 +59,14 @@ Use **API Key** when engineers need to connect Ringg AI to your product, CRM, we
 
 <Warning>
   The key is shown **only once**, at the moment it is generated. Afterwards the
-  screen shows only a masked form such as `ringg_live_••••••••2e63`, and the full
+  screen shows only a masked form such as `rg_live_••••••••2e63`, and the full
   value cannot be retrieved. If you lose it, regenerate — which immediately
   revokes the old key and breaks any integration still using it.
 </Warning>
 
 Only the workspace owner can generate or regenerate a key.
+
+New keys start with `rg_live_`. A key generated earlier may start with `ringg_live_` or be a plain UUID; it keeps working until you regenerate it.
 
 The API key is sent as the `X-API-KEY` header in Ringg AI API requests.
 

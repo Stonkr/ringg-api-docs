@@ -50,7 +50,7 @@ The MCP server does not log API keys, tokens, or the contents of tool results.
     Sign-in links are valid for ten minutes and for a single use. Start again from the client by clicking **Connect**. If you submitted the form twice by accident, the second submit simply repeats the redirect — you will still be signed in.
   </Accordion>
   <Accordion title="My API key is rejected on the sign-in page.">
-    Keys look like `ringg_live_…` or a UUID. Copy it directly from **Settings → API Key**; a regenerated key invalidates the previous one. After five wrong attempts the link is invalidated — restart from the client.
+    Keys look like `rg_live_…`; older keys may start with `ringg_live_…` or be a plain UUID, and still work. Copy it directly from **Settings → API Key**; a regenerated key invalidates the previous one. After five wrong attempts the link is invalidated — restart from the client.
   </Accordion>
   <Accordion title="Calls fail immediately with a caller-ID error.">
     The chosen `from_number_id` cannot originate live calls — typically a Ringg test number or a customer SIP trunk that is not yet provisioned for outbound. Ask the assistant for numbers that are usable for live calls, or check **Numbers** in the dashboard.
