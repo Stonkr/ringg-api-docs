@@ -167,7 +167,7 @@ This walkthrough builds a working booking Flow from a ready-made design. Plan ab
     After saving, Ringg tells you where things stand:
 
     - ***WhatsApp calls Ringg for this Flow's data.*** Everything is connected. Go to the next step.
-    - ***Meta kept this Flow's own endpoint*** with a URL beneath it. Copy the URL with the copy icon. In WhatsApp Manager, open the Flow, paste the URL as its **endpoint**, and save.
+    - ***Meta kept this Flow's own endpoint*** with a URL beneath it. This happens when the Flow was already published. Copy the URL with the copy icon. In WhatsApp Manager, open the Flow, paste the URL as its **endpoint**, and publish it again.
   </Step>
   <Step title="Finish in WhatsApp Manager">
     Back in the Flow in WhatsApp Manager:
@@ -279,7 +279,7 @@ After changing a published Flow, clone it, publish the copy, and set up live dat
     WhatsApp encrypts everything a Flow sends, using a key set on each phone number. When you save live data, Ringg puts its key on every number of the WhatsApp Business account, reusing the key it already has. If a developer connected the same numbers to their own Flow server with a different key, that setup stops working. Talk to them first, or have them use [Your server](/whatsapp/flows-your-server) instead.
   </Accordion>
   <Accordion title="Published Flows">
-    Meta doesn't always let Ringg change a published Flow's endpoint. That's why saving live data can ask you to paste the URL in WhatsApp Manager. Setting up live data before publishing avoids this.
+    Changing a published Flow's endpoint moves it back to Draft in WhatsApp Manager, so Ringg never changes it for you. If a published Flow isn't already using Ringg's endpoint, saving live data shows the URL to paste in WhatsApp Manager, and you publish the Flow again there. Setting up live data before you publish avoids this.
   </Accordion>
   <Accordion title="A slot can be taken in the meantime">
     Free times are read when the customer picks a date. If someone else books the same time before they submit, the booking tool returns an error and the assistant can offer another time, as the prompt above tells it to.

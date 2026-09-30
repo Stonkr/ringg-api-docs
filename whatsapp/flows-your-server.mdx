@@ -207,7 +207,7 @@ app.listen(3000);
     Ringg shows a **signing secret** once. Copy it and store it on your server, for example as `RINGG_FLOW_SIGNING_SECRET`. It can't be shown again. If it is lost, edit the live data, tick **Issue a new signing secret** and save.
   </Step>
   <Step title="Check the endpoint">
-    If Ringg says ***Meta kept this Flow's own endpoint***, copy the URL shown and paste it as the Flow's endpoint in WhatsApp Manager. That URL is Ringg's, not your server's: WhatsApp calls Ringg, and Ringg calls you.
+    If Ringg says ***Meta kept this Flow's own endpoint***, the Flow was already published. Copy the URL shown, paste it as the Flow's endpoint in WhatsApp Manager, and publish the Flow again. That URL is Ringg's, not your server's: WhatsApp calls Ringg, and Ringg calls you.
   </Step>
   <Step title="Finish in WhatsApp Manager">
     Open the Flow's endpoint settings, connect the Meta app you use with Ringg, and run the **health check**. Ringg answers it, so it passes even before your server is live. Then **Preview** the Flow, which calls your server for real, and **Publish** it.
