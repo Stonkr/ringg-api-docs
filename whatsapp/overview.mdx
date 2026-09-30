@@ -28,6 +28,9 @@ Setup is done entirely from the dashboard. You connect your WhatsApp Business ac
   <Card title="Start a conversation by API" icon="send" href="/whatsapp/start-conversation-api">
     Message a customer first with an approved template. Your agent takes over when they reply.
   </Card>
+  <Card title="WhatsApp Flows" icon="clipboard-list" href="/whatsapp/flows">
+    Send forms inside WhatsApp, like bookings, lead forms and surveys, with free slots from your calendar or data from your server.
+  </Card>
   <Card title="Events and webhooks" icon="webhook" href="/whatsapp/events">
     Get notified when a chat closes and when its analysis is ready, with the transcript in the payload.
   </Card>
@@ -69,7 +72,7 @@ flowchart TD
     **Assistants → Create agent → WhatsApp → Single Prompt**. Pick the number on the second step. See [Create a WhatsApp agent](/whatsapp/create-agent).
   </Step>
   <Step title="Add tools and webhooks">
-    Add **Send WhatsApp Template** or **Send WhatsApp Text** as [on-call](/whatsapp/on-call-tools) or [post-call](/whatsapp/post-call-tools) tools, and subscribe your endpoint to [chat events](/whatsapp/events).
+    Add **Send WhatsApp Template** or **Send WhatsApp Text** as [on-call](/whatsapp/on-call-tools) or [post-call](/whatsapp/post-call-tools) tools, add any [WhatsApp Flows](/whatsapp/flows) the assistant should send, and subscribe your endpoint to [chat events](/whatsapp/events).
   </Step>
   <Step title="Test it">
     Open **Test assistant** in the agent editor and scan the QR code with your phone to start a real chat.
