@@ -2,7 +2,7 @@
 openapi: post /workspace/sub
 ---
 
-Create a new sub-workspace under the primary workspace that owns the API key. The sub-workspace starts empty: no balance or credit limit, no concurrency, no assistants, and no API key.
+Create a new Ringg Space under the primary workspace that owns the API key. The Ringg Space starts empty: no balance or credit limit, no concurrency, no assistants, and no API key.
 
 ## When to use
 
@@ -17,15 +17,15 @@ Create a new sub-workspace under the primary workspace that owns the API key. Th
 
 ## Integration notes
 
-- Authenticate with the **primary** workspace's API key. A sub-workspace's key returns `400`.
+- Authenticate with the **primary** workspace's API key. A Ringg Space's key returns `400`.
 - Store the returned `sub_workspace.id`; every allocation call needs it.
-- The first sub-workspace you create turns the primary into a family in **individual** billing mode. Contact Ringg support if the family should use common billing instead.
-- Every member of the primary automatically gets access to the new sub-workspace.
-- The response never contains an API key. See [Sub-workspaces](/api-reference/endpoint/sub-workspace/overview#create-an-assistant-inside-a-sub-workspace) for how to get one.
+- The first Ringg Space you create turns the primary into a family in **individual** billing mode. Contact Ringg support if the family should use common billing instead.
+- Every member of the primary automatically gets access to the new Ringg Space.
+- The response never contains an API key. See [Ringg Spaces](/api-reference/endpoint/sub-workspace/overview#create-an-assistant-inside-a-ringg-space) for how to get one.
 
 ## Error responses
 
-- **400**: `Sub-workspaces cannot have their own sub-workspaces.` — the key belongs to a sub-workspace.
+- **400**: `Sub-workspaces cannot have their own sub-workspaces.` — the key belongs to a Ringg Space.
 - **401**: Invalid or missing API key.
 - **403**: `Sub-workspaces are not enabled for this workspace.`
 - **422**: Missing or blank `name`, or a name longer than 100 characters.
@@ -41,4 +41,4 @@ curl --request POST "https://prod-api.ringg.ai/ca/api/v0/workspace/sub" \
 
 ## After creation
 
-Give the sub-workspace capacity with [Allocate Concurrency](/api-reference/endpoint/sub-workspace/allocate-concurrency) and, in an individual family, a [credit limit](/api-reference/endpoint/sub-workspace/reallocate-credit-limits) or [balance](/api-reference/endpoint/sub-workspace/reallocate-credit-balances). Then generate its API key in the dashboard and [create an assistant](/api-reference/endpoint/assistant/create-agent) with that key.
+Give the Ringg Space capacity with [Allocate Concurrency](/api-reference/endpoint/sub-workspace/allocate-concurrency) and, in an individual family, a [credit limit](/api-reference/endpoint/sub-workspace/reallocate-credit-limits) or [balance](/api-reference/endpoint/sub-workspace/reallocate-credit-balances). Then generate its API key in the dashboard and [create an assistant](/api-reference/endpoint/assistant/create-agent) with that key.

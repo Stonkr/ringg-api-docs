@@ -158,7 +158,7 @@
             ]
           },
           {
-            "group": "Sub-workspaces",
+            "group": "Ringg Spaces",
             "pages": [
               "api-reference/endpoint/sub-workspace/overview",
               "api-reference/endpoint/sub-workspace/create-sub-workspace",
