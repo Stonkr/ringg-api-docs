@@ -8,7 +8,7 @@ description: "Send customers a form inside WhatsApp, like a booking, a lead form
 
 A **WhatsApp Flow** is a form that opens inside WhatsApp. The customer taps a button in the chat, fills in a few screens (text fields, dropdowns, dates, checkboxes) and submits. Their answers come straight back into the conversation, so your assistant can act on them.
 
-You design the Flow once in Meta's **WhatsApp Manager**. Ringg picks it up automatically, and then any WhatsApp assistant can send it or a message template can carry it as a button.
+You build the Flow once, either in Ringg's [Flow builder](/whatsapp/flow-builder) or in Meta's **WhatsApp Manager**, which Ringg picks up automatically. Then any WhatsApp assistant can send it, or a message template can carry it as a button.
 
 {/* RECORDING 18-flow-on-phone: screen recording on a phone: the Flow message with its button, filling in the form, submitting, and the assistant's reply. Mask the phone number.
 <Frame caption="What the customer sees: the Flow message, the form, and the assistant's reply after submitting.">
@@ -22,7 +22,7 @@ You design the Flow once in Meta's **WhatsApp Manager**. Ringg picks it up autom
 
 | | Static Flow | Dynamic Flow (live data) |
 |---|---|---|
-| What it shows | Only what you typed in WhatsApp Manager, plus values your assistant fills in when sending | Screens filled in while the customer is inside the form, such as free time slots from your calendar |
+| What it shows | Only what you typed when building it, plus values your assistant fills in when sending | Screens filled in while the customer is inside the form, such as free time slots from your calendar |
 | Good for | Lead forms, feedback, surveys, address or document collection, KYC details | Appointment booking, picking a branch near a pincode, checking stock or prices |
 | Setup | This page | This page, then [Flows with live data](/whatsapp/flows-live-data) |
 
@@ -32,53 +32,73 @@ Start with a static Flow. Everything on this page also applies to Flows with liv
 
 - A connected WhatsApp Business account with at least one **Ready** number. See [Connect WhatsApp Business](/whatsapp/onboarding).
 - A WhatsApp assistant with that number attached. See [Create a WhatsApp agent](/whatsapp/create-agent).
-- Access to the same WhatsApp Business account in Meta's [WhatsApp Manager](https://business.facebook.com/wa/manage/home/).
+- To build in WhatsApp Manager instead of Ringg: access to the same WhatsApp Business account in Meta's [WhatsApp Manager](https://business.facebook.com/wa/manage/home/).
 
 ## Build a static Flow
 
-<Steps>
-  <Step title="Create the Flow in WhatsApp Manager">
-    In WhatsApp Manager, open **Account tools → Flows** and select **Create Flow**.
+<Tabs>
+  <Tab title="In Ringg">
+    <Steps>
+      <Step title="Open the builder">
+        Go to **Integrations → WhatsApp Business**, open your account, select the **Flows** tab, then **Create Flow**. Name it, for example *Site visit request*, pick a category, and leave **Start from** on **Builder**.
+      </Step>
+      <Step title="Design the screens">
+        Add questions and text with **Add content**, and more screens with **Add new**. The preview on the right works like the customer's phone: fill it in to try the Flow.
+      </Step>
+      <Step title="Save, then publish">
+        Select **Save draft**. In the details that open, select **Publish** and confirm. Only published Flows can be sent to customers.
+      </Step>
+    </Steps>
 
-    - **Name**: something your team will recognise, such as *Site visit request*.
-    - **Categories**: pick the closest match, for example *Lead generation* or *Appointment booking*.
-    - **Template**: start from one of Meta's templates, or a blank Flow. Choose one **without an endpoint**.
-  </Step>
-  <Step title="Design the screens">
-    Edit each screen in the builder: rename the title, add or remove fields, and change labels. The preview on the right shows exactly what the customer will see.
+    Every component, the JSON tab and changing a published Flow are covered in [Build WhatsApp Flows in Ringg](/whatsapp/flow-builder).
+  </Tab>
+  <Tab title="In WhatsApp Manager">
+    <Steps>
+      <Step title="Create the Flow in WhatsApp Manager">
+        In WhatsApp Manager, open **Account tools → Flows** and select **Create Flow**.
 
-    Keep it short. Two or three screens with a handful of fields each gets the most submissions.
+        - **Name**: something your team will recognise, such as *Site visit request*.
+        - **Categories**: pick the closest match, for example *Lead generation* or *Appointment booking*.
+        - **Template**: start from one of Meta's templates, or a blank Flow. Choose one **without an endpoint**.
+      </Step>
+      <Step title="Design the screens">
+        Edit each screen in the builder: rename the title, add or remove fields, and change labels. The preview on the right shows exactly what the customer will see.
 
-    <Tip>
-    Field labels matter. Ringg shows the customer's answers under these labels in the chat, in **Logs** and in your webhooks, and your assistant reads them too. *Preferred visit date* is clearer than *Date*.
-    </Tip>
-  </Step>
-  <Step title="Save, then publish">
-    Select **Save**, check the preview once more, then **Publish**. Only published Flows can be sent to customers.
+        Keep it short. Two or three screens with a handful of fields each gets the most submissions.
+      </Step>
+      <Step title="Save, then publish">
+        Select **Save**, check the preview once more, then **Publish**. Only published Flows can be sent to customers.
+      </Step>
+      <Step title="Find it in Ringg">
+        In Ringg, go to **Integrations → WhatsApp Business**, open your account and select the **Flows** tab. It syncs with Meta every time you open it. Select the refresh icon to sync again at any time.
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
 
-    <Warning>
-    Meta locks a Flow once it is published. To change it later, clone it in WhatsApp Manager, edit the copy, publish it, and switch your assistant to the new Flow.
-    </Warning>
-  </Step>
-  <Step title="Find it in Ringg">
-    In Ringg, go to **Integrations → WhatsApp Business**, open your account and select the **Flows** tab. It syncs with Meta every time you open it. Select the refresh icon to sync again at any time.
+<Tip>
+Field labels matter. Ringg shows the customer's answers under these labels in the chat, in **Logs** and in your webhooks, and your assistant reads them too. *Preferred visit date* is clearer than *Date*.
+</Tip>
 
-    Each row shows the Flow's **Status**, how many **Questions** it asks, whether it uses **Live data**, and when it was **Last synced**.
-  </Step>
-  <Step title="Check what the Flow collects">
-    Select the Flow to open its details. Three sections tell you what it does:
+<Warning>
+Meta locks a Flow once it is published. To change it later, open it in the **Flows** tab and select **Duplicate to edit**, or **Copy to edit in Ringg** for a Flow made in WhatsApp Manager. See [Change a published Flow](/whatsapp/flow-builder#change-a-published-flow).
+</Warning>
 
-    - **What the customer fills in**: every question, screen by screen.
-    - **Your assistant can prefill**: fields your assistant can fill in before sending, like the customer's name.
-    - **What comes back into the chat**: the answers your assistant receives when the customer submits.
+### Check what the Flow collects
 
-    **Open preview** opens Meta's preview of the Flow in a new tab.
-  </Step>
-</Steps>
+The **Flows** tab lists every Flow on the account, with its **Status**, how many **Questions** it asks, whether it uses **Live data**, and when it was **Last synced**.
 
-<Frame caption="The Flows tab syncs from Meta, and a Flow's details show what it asks and what comes back.">
-  <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/whatsapp/14-flows-tab.png" className="w-full rounded-lg">
-    <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/whatsapp/14-flows-tab.mp4" type="video/mp4" />
+Select a Flow to open its details:
+
+- **The preview** on the right: fill in the form and move between screens as the customer would. When you submit it, it shows the message your assistant reads.
+- **Your assistant can prefill**: fields your assistant can fill in before sending, like the customer's name.
+- **What comes back into the chat**: the answers your assistant receives when the customer submits.
+
+**Open preview** opens Meta's own preview of the Flow in a new tab.
+
+<Frame caption="The Flows tab, and a Flow's details: what it collects, and a preview you can fill in.">
+  <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/whatsapp/14-flows-tab-v2.png" className="w-full rounded-lg">
+    <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/whatsapp/14-flows-tab-v2.mp4" type="video/mp4" />
   </video>
 </Frame>
 
@@ -88,7 +108,7 @@ Start with a static Flow. Everything on this page also applies to Flows with liv
   <Step title="Add the Flow to the assistant">
     Open the WhatsApp assistant in the agent editor. In the left menu, expand **WhatsApp Flows**, open **Add a Flow** and pick your Flow.
 
-    Flows that can't be sent yet are greyed out with the reason, for example *Draft: publish it in WhatsApp Manager*. If you just published one, select **Sync from Meta** at the bottom of the list.
+    Flows that can't be sent yet are greyed out with the reason, for example *Draft: publish it from the Flows tab*. If you just published one in WhatsApp Manager, select **Sync from Meta** at the bottom of the list.
   </Step>
   <Step title="Write the message around it">
     The Flow goes out as a chat message with a button. The live preview on the right updates as you type.
@@ -204,7 +224,7 @@ Ringg only sends **Published** Flows.
 
 | Status | Meaning | What to do |
 |---|---|---|
-| **Draft** | Saved in WhatsApp Manager but not published. | Publish it, then sync. |
+| **Draft** | Saved but not published. | Publish it from its details in the **Flows** tab. For a Flow made in WhatsApp Manager, publish it there, then sync. |
 | **Published** | Live. | Nothing: it can be sent. |
 | **Throttled** | Meta is limiting it, usually because of errors or customer complaints. | Check its health in WhatsApp Manager and sync once it is Published again. |
 | **Blocked** | Meta stopped it. | Check its health in WhatsApp Manager, or build a new Flow. |
@@ -214,12 +234,13 @@ Ringg only sends **Published** Flows.
 
 | You see | Where | What to do |
 |---|---|---|
-| *No Flows on this account yet* | Flows tab | Build and publish a Flow in WhatsApp Manager under the same WhatsApp Business account, then select **Sync from Meta**. |
+| *No Flows on this account yet* | Flows tab | Select **Create Flow**. Or build and publish one in WhatsApp Manager under the same WhatsApp Business account, then select **Sync from Meta**. |
+| *Draft: publish it from the Flows tab* | The Flow picker | Open the Flow in the **Flows** tab and select **Publish**. |
 | *Draft: publish it in WhatsApp Manager* | The Flow picker | Publish the Flow in WhatsApp Manager, then sync. |
 | *Not read from Meta yet: sync this account's Flows* | The Flow picker | Select **Sync from Meta**. |
-| *Its questions are filled in when it's sent* | The Flow picker | This Flow builds its questions from data at send time, so Ringg can't send it. Use a Flow whose questions are written in WhatsApp Manager. |
+| *Its questions are filled in when it's sent* | The Flow picker | This Flow builds its questions from data at send time, so Ringg can't send it. Use a Flow whose questions are written in the Flow itself. |
 | *Uses Ringg's retired form endpoint* | Flows tab and picker | An older form Flow. Open it and use **Set up live data**, or build a new Flow. |
-| *Not in this WhatsApp account* | The assistant's Flow list | The Flow was deleted in WhatsApp Manager, or the assistant's number moved to another account. Remove it and add another. |
+| *Not in this WhatsApp account* | The assistant's Flow list | The Flow was deleted, or the assistant's number moved to another account. Remove it and add another. |
 | The assistant never sends the Flow | The chat | Tag the Flow in the prompt with `@` and say when to send it. |
 | The customer's form says it can't open | The phone | The Flow isn't published, or it is **Blocked**. Check its status in the Flows tab. |
 
@@ -233,6 +254,6 @@ Ringg only sends **Published** Flows.
     The Flows tab lists the Flows of the connected account. An assistant can use the Flows of the account its number belongs to.
   </Accordion>
   <Accordion title="Changing a Flow">
-    Published Flows can't be edited. Clone the Flow in WhatsApp Manager, publish the copy, sync, and in the assistant remove the old Flow and add the new one. Update the `@` tag in the prompt too.
+    Published Flows can't be edited. Open the Flow in the **Flows** tab and select **Duplicate to edit**, or **Copy to edit in Ringg** for a Flow made in WhatsApp Manager. Publish the copy, then in the assistant remove the old Flow and add the new one. Update the `@` tag in the prompt too. See [Change a published Flow](/whatsapp/flow-builder#change-a-published-flow).
   </Accordion>
 </AccordionGroup>

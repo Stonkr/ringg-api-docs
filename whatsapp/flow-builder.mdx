@@ -1,0 +1,233 @@
+---
+title: "Build WhatsApp Flows in Ringg"
+sidebarTitle: "Flow Builder"
+icon: "layout-template"
+description: "Create, preview and publish WhatsApp Flows from the Ringg dashboard, without opening WhatsApp Manager."
+"og:title": "WhatsApp Flow Builder | Ringg AI Guide"
+---
+
+You can build a [WhatsApp Flow](/whatsapp/flows) in Ringg instead of Meta's WhatsApp Manager. The builder works like Meta's: screens on the left, their content in the middle, and on the right a preview you can fill in like the customer would. Ringg saves the Flow to your WhatsApp Business account as a draft, and when you publish it, any of your WhatsApp assistants can send it.
+
+There are three ways to start:
+
+| Start from | Use it for |
+|---|---|
+| **Builder** | Forms such as lead capture, feedback, site visit requests or KYC details. |
+| **Booking preset** | Appointment booking with free times from Calendly, Google Calendar or Cal.com. See [Booking preset](#booking-preset). |
+| **Flow JSON** | Anything the builder doesn't offer. Paste or write Meta's Flow JSON. See [See and edit the Flow JSON](#see-and-edit-the-flow-json). |
+
+## Before you start
+
+- A connected WhatsApp Business account. See [Connect WhatsApp Business](/whatsapp/onboarding).
+- You don't need access to WhatsApp Manager.
+
+## Build a Flow
+
+<Steps>
+  <Step title="Open the builder">
+    Go to **Integrations → WhatsApp Business**, open your account, select the **Flows** tab, then **Create Flow**.
+  </Step>
+  <Step title="Name it">
+    - **Name**: something your team will recognise, such as *Site visit request*.
+    - **Category**: the closest match, for example *Lead generation* or *Appointment booking*.
+    - **Start from**: **Builder**.
+  </Step>
+  <Step title="Add screens and content">
+    The first screen starts with an empty **Short answer**. Select a row to edit it, use the arrows to reorder it, and the bin to remove it.
+
+    - **Add content** adds text or a question to the screen. See [What you can add](#what-you-can-add).
+    - **Add new** under **Screens** adds another screen. Give each screen a **Screen title**.
+
+    Keep it short. Two or three screens with a handful of questions each gets the most submissions.
+  </Step>
+  <Step title="Name the buttons">
+    Every screen ends with a **Button**:
+
+    - On each screen except the last, it takes the customer to the next screen. It says *Continue* unless you change it.
+    - On the last screen, it submits the form and sends every answer back into the chat, labelled by question. For example: *Request visit*.
+  </Step>
+  <Step title="Try it in the preview">
+    Fill in the preview on the right and tap its buttons to move between screens, as the customer would. Required questions you leave empty are flagged. Select a screen name above the preview to jump to it.
+
+    When you submit, the preview shows the answers and, under **Your assistant reads**, the exact message your assistant gets:
+
+    ```text
+    User submitted the WhatsApp Flow "Site visit request": Full name=Priya Sharma,
+    Phone=9876543210, Project=Green Acres Villas, Preferred visit date=2026-10-04
+    ```
+
+    Select **Start again** to clear it.
+  </Step>
+  <Step title="Save the draft">
+    Select **Save draft**. Ringg creates the Flow on your WhatsApp account as a draft and opens its details.
+
+    If Meta finds a problem, the builder stays open and lists it under *Meta found problems in the saved draft*. The draft is saved, but it can't be published until you fix the problem and save again.
+  </Step>
+  <Step title="Publish it">
+    In the details, check the preview once more, select **Publish**, then **Publish** again to confirm.
+
+    <Warning>
+    Published Flows can't be changed. To change one later, see [Change a published Flow](#change-a-published-flow).
+    </Warning>
+
+    The Flow is now ready to [add to an assistant](/whatsapp/flows#let-your-assistant-send-it) or to [a template's Flow button](/whatsapp/flows#open-a-flow-from-a-message-template).
+  </Step>
+</Steps>
+
+<Frame caption="Building a two-screen Flow, trying it in the preview, then saving and publishing it.">
+  <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/whatsapp/21-flow-builder.png" className="w-full rounded-lg">
+    <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/whatsapp/21-flow-builder.mp4" type="video/mp4" />
+  </video>
+</Frame>
+
+## What you can add
+
+**Add content** lists the same components as WhatsApp Manager. The character limits are Meta's, and the builder shows how many you've used.
+
+| Group | Content | What the customer gets | Limit |
+|---|---|---|---|
+| Text | **Large heading**, **Small heading** | A title inside the screen | 80 characters |
+| | **Body** | A paragraph of text | 4,096 characters |
+| | **Caption** | Small print | 409 characters |
+| Text answer | **Short answer** | A one-line field. Choose its **Input type**: *Text*, *Email*, *Number* or *Phone*. | Label up to 20 characters |
+| | **Paragraph** | A field for a few lines, such as an address | Label up to 20 characters |
+| | **Date picker** | A calendar to pick a date | Label up to 40 characters |
+| Selection | **Single choice** | A list where they pick one | Up to 20 options. Label up to 30 characters. |
+| | **Multiple choice** | A list where they pick one or more | Up to 20 options. Label up to 30 characters. |
+| | **Dropdown** | A menu where they pick one | Up to 200 options. Label up to 20 characters. |
+| | **Opt-in** | A checkbox they tick, such as consent to be contacted | Up to 120 characters |
+
+Each question also has:
+
+- **Label**: what the customer sees, and the name its answer comes back under.
+- **Required**: on by default. The customer can't continue until they answer.
+- **Instructions** (optional): a hint under the field, such as *As on your ID*. Up to 80 characters. For short answers, paragraphs and date pickers.
+- **Options**, for choices and dropdowns: each has a title of up to 30 characters and an optional description of up to 300.
+
+A screen holds up to 49 pieces of content, and a button label is up to 35 characters.
+
+<Tip>
+Labels matter. Ringg shows the customer's answers under these labels in the chat, in **Logs** and in your webhooks, and your assistant reads them too. *Preferred visit date* is clearer than *Date*.
+</Tip>
+
+## See and edit the Flow JSON
+
+Every Flow is a Flow JSON document that WhatsApp reads. Select the **JSON** tab in the builder to see the complete Flow JSON for what you've built. It updates as you edit. Developers can read it, or copy it into WhatsApp Manager.
+
+To use something the builder doesn't offer, such as images, screens that depend on earlier answers, or other components from Meta's [Flow JSON reference](https://developers.facebook.com/docs/whatsapp/flows/reference/flowjson):
+
+1. In the **JSON** tab, select **Edit JSON**, then **Edit JSON** again to confirm.
+2. Edit the JSON in the code editor. The preview follows your changes.
+3. Select **Save draft**.
+
+This is one way: once a Flow is edited as JSON, it can't go back to the builder.
+
+To start from JSON, for example one a developer wrote, choose **Start from → Flow JSON** when you create the Flow and paste it in. Ringg sends it to Meta exactly as it is.
+
+<Note>
+In a Flow you write as JSON, only the values in the last screen's `complete` action come back into the chat. Add every answer you need to its `payload`, such as `"full_name": "${form.full_name}"`. The builder does this for you.
+</Note>
+
+The preview draws text, text fields, choices, dropdowns, date pickers and opt-ins. Other components show only their name, such as *Image*. To see them, save the draft and select **Open preview** in its details for Meta's own preview.
+
+<Frame caption="The JSON tab, then Edit JSON: changing a label in the JSON updates the preview.">
+  <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/whatsapp/22-flow-json.png" className="w-full rounded-lg">
+    <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/whatsapp/22-flow-json.mp4" type="video/mp4" />
+  </video>
+</Frame>
+
+## Drafts
+
+Open a draft from the **Flows** tab to see its details. Its buttons are:
+
+- **Edit**: reopens it in the builder.
+- **Publish**: makes it ready to send.
+- **Delete draft**: removes it from your WhatsApp account. Only drafts can be deleted.
+
+Drafts can't be sent to customers. In an assistant's Flow picker, a draft is greyed out with *Draft: publish it from the Flows tab*.
+
+## Change a published Flow
+
+Meta locks a Flow once it's published, so you change a copy instead:
+
+<Steps>
+  <Step title="Copy it">
+    Open the Flow in the **Flows** tab:
+
+    - For a Flow built in Ringg, select **Duplicate to edit**. The copy opens in the builder.
+    - For a Flow made in WhatsApp Manager, select **Copy to edit in Ringg**. The copy opens as Flow JSON.
+
+    The copy is a new draft named after the original, with *(copy)* at the end. Rename it if you like.
+  </Step>
+  <Step title="Edit, save and publish the copy">
+    Make your changes, select **Save draft**, then publish it from its details. If the original used [live data](/whatsapp/flows-live-data), set it up again on the copy before publishing.
+  </Step>
+  <Step title="Switch to the copy">
+    - In each assistant that sent the original, remove the old Flow under **WhatsApp Flows**, add the copy, and update its `@` tag in the prompt.
+    - A template's Flow button keeps opening the original. Edit the template to use the copy.
+  </Step>
+</Steps>
+
+<Frame caption="Copying a Flow made in WhatsApp Manager into Ringg, renaming it and saving the draft.">
+  <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/whatsapp/23-copy-to-edit.png" className="w-full rounded-lg">
+    <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/whatsapp/23-copy-to-edit.mp4" type="video/mp4" />
+  </video>
+</Frame>
+
+## Booking preset
+
+The booking preset is a ready-made appointment Flow. The customer picks a date, then a free time from your calendar, then enters their name and email. You don't design anything.
+
+<Steps>
+  <Step title="Create it">
+    Select **Create Flow**, name it, for example *Book a clinic visit*, choose the category **Appointment booking**, and set **Start from** to **Booking preset**. Select **Save draft**.
+  </Step>
+  <Step title="Connect a calendar">
+    In the Flow's details, under **Live data**, select **Set up live data**, choose **A calendar**, pick your connected calendar and select **Save**. The screens are already filled in for you. For the other settings, see [Flows with live data](/whatsapp/flows-live-data#set-up-appointment-booking).
+  </Step>
+  <Step title="Publish it">
+    Select **Publish**, then confirm. **Publish** stays greyed out until a calendar is connected.
+  </Step>
+  <Step title="Let your assistant book">
+    Add the Flow and the calendar's booking tool to your assistant, as in [Let your assistant send it and book](/whatsapp/flows-live-data#let-your-assistant-send-it-and-book).
+  </Step>
+</Steps>
+
+In the builder's preview, **See times** can't load times, because only WhatsApp can ask the calendar. Select **2. Pick a time** above the preview to see the next screen, or try the whole Flow with **Open preview** once it's saved.
+
+<Frame caption="Creating a booking Flow from the preset, connecting Google Calendar under Live data, and publishing it.">
+  <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/whatsapp/24-booking-preset.png" className="w-full rounded-lg">
+    <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/whatsapp/24-booking-preset.mp4" type="video/mp4" />
+  </video>
+</Frame>
+
+## Troubleshooting
+
+The builder names the first problem it finds at the bottom left, next to **Save draft**, which stays greyed out until it's fixed.
+
+| You see | Where | What to do |
+|---|---|---|
+| *Give the Flow a name.* or *Give screen 2 a title.* | Builder | Fill in the **Name** or the **Screen title**. |
+| *Every question on screen 2 needs a label.* | Builder | Fill in the question's **Label**, or remove the question. |
+| *"Preferred date of the site visit" is longer than 40 characters.* | Builder | Shorten it. The limits are Meta's. See [What you can add](#what-you-can-add). |
+| *"Project" needs at least one option.* | Builder | Add an option, or remove the question. |
+| *Add some content to screen 2.* | Builder | Add a question or text, or delete the screen with its bin. |
+| *Meta found problems in the saved draft* | Top of the builder | The draft is saved, but Meta lists what it won't accept. Fix each one and select **Save draft** again. |
+| *Not valid JSON* or *The Flow JSON needs a screens list.* | Flow JSON editor | Fix the JSON. Every Flow needs a `screens` list. |
+| *Could not save the Flow* | A pop-up message | The reason is shown under it. Fix it and save again. |
+| *Connect a calendar under Live data to publish.* | Details of a booking preset Flow | [Connect a calendar](#booking-preset) first. |
+| *This step asks the Flow's endpoint for the next screen* | Builder preview | Steps that load live data only run in WhatsApp. Select the next screen above the preview, or use **Open preview** after saving. |
+
+## Good to know
+
+<AccordionGroup>
+  <Accordion title="Drafts also appear in WhatsApp Manager">
+    A Flow built in Ringg lives on your WhatsApp Business account, like one made in WhatsApp Manager, so you can see it there too. If you change a draft in WhatsApp Manager, saving it again in Ringg replaces those changes.
+  </Accordion>
+  <Accordion title="How answers are named">
+    Each answer comes back under its question's label, such as *Full name=Priya Sharma*. If you change a label in a copy, update any prompt or analysis that mentions the old one.
+  </Accordion>
+  <Accordion title="Flows belong to one WhatsApp Business account">
+    A Flow is created on the account whose **Flows** tab you build it in. Only assistants with a number on that account can send it.
+  </Accordion>
+</AccordionGroup>

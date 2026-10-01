@@ -45,13 +45,44 @@ The Flow itself doesn't book anything. It shows the free times and sends the cus
 
 ## Set up appointment booking
 
-This walkthrough builds a working booking Flow from a ready-made design. Plan about 15 minutes.
-
 ### Before you start
 
 - A WhatsApp assistant with a **Ready** WhatsApp number attached. See [Create a WhatsApp agent](/whatsapp/create-agent).
 - Calendly, Google Calendar or Cal.com connected under **Integrations** in Ringg.
-- Access to the same WhatsApp Business account in Meta's [WhatsApp Manager](https://business.facebook.com/wa/manage/home/).
+
+### The quick way: the booking preset
+
+Ringg has a ready-made booking Flow. Plan about 5 minutes.
+
+<Steps>
+  <Step title="Create it from the preset">
+    Go to **Integrations → WhatsApp Business**, open your account, select the **Flows** tab, then **Create Flow**. Name it, for example *Book a visit*, choose the category **Appointment booking**, set **Start from** to **Booking preset**, and select **Save draft**.
+  </Step>
+  <Step title="Connect your calendar">
+    In the Flow's details, under **Live data**, select **Set up live data**, then choose **A calendar** and pick your calendar. **Date screen** and **Slots screen** are already set to **Pick a date** and **Pick a time**. The other settings are explained in the **Connect your calendar** step of [Or design it in WhatsApp Manager](#or-design-it-in-whatsapp-manager).
+
+    Select **Save**. Ringg confirms *WhatsApp calls Ringg for this Flow's data*.
+  </Step>
+  <Step title="Publish it">
+    Select **Publish**, then confirm.
+  </Step>
+</Steps>
+
+<Frame caption="Creating a booking Flow from the preset, connecting Google Calendar under Live data, and publishing it.">
+  <video autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/whatsapp/24-booking-preset.png" className="w-full rounded-lg">
+    <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/whatsapp/24-booking-preset.mp4" type="video/mp4" />
+  </video>
+</Frame>
+
+Now [let your assistant send it and book](#let-your-assistant-send-it-and-book).
+
+### Or design it in WhatsApp Manager
+
+To change the booking Flow's layout beyond its words, build it from the design below in WhatsApp Manager. You need access to the same WhatsApp Business account in Meta's [WhatsApp Manager](https://business.facebook.com/wa/manage/home/). Plan about 15 minutes.
+
+<Tip>
+You can also paste the same design into Ringg: **Create Flow → Start from → Flow JSON**. Then skip to **Connect your calendar**, and publish from the Flow's details instead of WhatsApp Manager.
+</Tip>
 
 <Steps>
   <Step title="Create the Flow in WhatsApp Manager">
@@ -256,7 +287,7 @@ Leave these exactly as they are, because Ringg relies on them:
 | `"name": "date"` on the date picker, and `"date"` in the **See times** payload | That is the **Date field** Ringg reads. |
 | `${data.min_date}`, `${data.max_date}`, `${data.slots}`, `${data.date}` and the `data` blocks | These are where Ringg's dates and free times appear. |
 
-After changing a published Flow, clone it, publish the copy, and set up live data on the copy.
+To change a published Flow, open it in the **Flows** tab and select **Duplicate to edit**, or **Copy to edit in Ringg** for one made in WhatsApp Manager. Edit the copy, set up live data on it, and publish it. See [Change a published Flow](/whatsapp/flow-builder#change-a-published-flow).
 
 ## Troubleshooting
 
