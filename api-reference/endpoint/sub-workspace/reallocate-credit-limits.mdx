@@ -2,7 +2,7 @@
 openapi: patch /workspace/sub/credit-limits
 ---
 
-Set every sub-workspace's credit limit in one call, and optionally the family total. Postpaid families in **individual** billing mode only.
+Set every Ringg Space's credit limit in one call, and optionally the family total. Postpaid families in **individual** billing mode only.
 
 ## When to use
 
@@ -13,23 +13,23 @@ Set every sub-workspace's credit limit in one call, and optionally the family to
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `allocations` | object | Yes | Map of `sub_workspace_id` to its new credit limit. Must include **every active sub-workspace exactly once**. Values are absolute, `0` or more, two decimals. |
+| `allocations` | object | Yes | Map of `sub_workspace_id` to its new credit limit. Must include **every active Ringg Space exactly once**. Values are absolute, `0` or more, two decimals. |
 | `parent_credit_limit` | number | No | New family total (the primary's credit limit). Omit to keep the current total. |
 
 ## Rules
 
-- A sub-workspace's limit cannot go below what it has already used this month.
+- A Ringg Space's limit cannot go below what it has already used this month.
 - The sum of all allocations cannot exceed the family total. Allocating less than the total is allowed; the remainder stays with the primary.
 - What remains with the primary must still cover the primary's own utilized amount.
 
 ## Integration notes
 
 - Authenticate with the primary workspace's API key.
-- Read the current limits and usage from [Get Sub-workspaces](/api-reference/endpoint/sub-workspace/get-sub-workspaces) first, then send the full map.
+- Read the current limits and usage from [Get Ringg Spaces](/api-reference/endpoint/sub-workspace/get-sub-workspaces) first, then send the full map.
 - Amounts in the response are **decimal strings** (`"200000.00"`), unlike the read endpoints.
 
 <Note>
-In a **common-billing** family there are no per-sub-workspace limits: every charge utilizes the primary's single credit limit. This endpoint returns `400 This family uses common billing; per-sub credit limits do not exist.` Allocate [concurrency](/api-reference/endpoint/sub-workspace/allocate-concurrency) instead.
+In a **common-billing** family there are no limits per Ringg Space: every charge utilizes the primary's single credit limit. This endpoint returns `400 This family uses common billing; per-sub credit limits do not exist.` Allocate [concurrency](/api-reference/endpoint/sub-workspace/allocate-concurrency) instead.
 </Note>
 
 ## Error responses
@@ -42,7 +42,7 @@ In a **common-billing** family there are no per-sub-workspace limits: every char
 - **400**: `These allocations would leave the primary workspace with 1000.00, below its already-utilized 12500.00. Lower the sub-workspace limits or raise the primary credit limit.`
 - **401**: Invalid or missing API key.
 - **403**: `Sub-workspaces are not enabled for this workspace.`
-- **404**: `Workspace is not a sub-workspace family parent.` — the primary has no sub-workspaces yet.
+- **404**: `Workspace is not a sub-workspace family parent.` — the primary has no Ringg Spaces yet.
 - **422**: Empty map, negative value, or a key that is not a UUID.
 
 ## Example

@@ -2,34 +2,34 @@
 openapi: patch /workspace/sub/{sub_workspace_id}/concurrency
 ---
 
-Set how many concurrent calls one sub-workspace may run. Capacity is bought on the primary; the allocations across all sub-workspaces cannot exceed it.
+Set how many concurrent calls one Ringg Space may run. Capacity is bought on the primary; the allocations across all Ringg Spaces cannot exceed it.
 
 ## When to use
 
-- Giving a newly created sub-workspace its first capacity (it starts at `0` and cannot call until allocated).
+- Giving a newly created Ringg Space its first capacity (it starts at `0` and cannot call until allocated).
 - Rebalancing capacity between clients or teams.
 
 ## Request parameters
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `sub_workspace_id` | string (path) | Yes | ID of the sub-workspace. |
-| `concurrency` | integer | Yes | Concurrent calls to allocate, `0` or more. `0` stops the sub-workspace from calling. |
+| `sub_workspace_id` | string (path) | Yes | ID of the Ringg Space. |
+| `concurrency` | integer | Yes | Concurrent calls to allocate, `0` or more. `0` stops the Ringg Space from calling. |
 
 ## Integration notes
 
 - Authenticate with the primary workspace's API key.
-- The value is absolute, not a delta. Lowering an allocation always succeeds; raising it must fit `family.concurrency_available` from [Get Sub-workspaces](/api-reference/endpoint/sub-workspace/get-sub-workspaces).
+- The value is absolute, not a delta. Lowering an allocation always succeeds; raising it must fit `family.concurrency_available` from [Get Ringg Spaces](/api-reference/endpoint/sub-workspace/get-sub-workspaces).
 - `limit_concurrency` in the response is the persisted ceiling. In an individual-billing family it equals the allocation. In a common-billing family it is the family total, because idle capacity is shared, so it can be larger than `concurrency`.
 - This is the only allocation endpoint that applies to common-billing families; money is pooled on the primary there.
 
 ## Error responses
 
 - **400**: `Only 30 concurrent calls are available to allocate from the parent workspace (capacity 50, 20 already allocated to other sub-workspaces).` — the allocation does not fit.
-- **400**: `Sub-workspaces cannot have their own sub-workspaces.` — the key belongs to a sub-workspace.
+- **400**: `Sub-workspaces cannot have their own sub-workspaces.` — the key belongs to a Ringg Space.
 - **401**: Invalid or missing API key.
 - **403**: `Sub-workspaces are not enabled for this workspace.`
-- **404**: `Sub-workspace not found` — no active sub-workspace with this id under your primary.
+- **404**: `Sub-workspace not found` — no active Ringg Space with this id under your primary.
 - **422**: `sub_workspace_id` is not a UUID, or `concurrency` is negative or missing.
 
 ## Example

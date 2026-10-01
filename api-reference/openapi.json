@@ -680,7 +680,7 @@
                           "parent_workspace_id": {
                             "type": "string",
                             "nullable": true,
-                            "description": "Set when the workspace is a sub-workspace: the id of its primary. null for a standalone workspace and for a primary itself.",
+                            "description": "Set when the workspace is a Ringg Space: the id of its primary. null for a standalone workspace and for a primary itself.",
                             "example": null
                           },
                           "credits": {
@@ -711,19 +711,19 @@
     "/workspace/sub": {
       "post": {
         "tags": ["workspace"],
-        "summary": "Create Sub-workspace",
+        "summary": "Create Ringg Space",
         "x-mint": {
           "metadata": {
-            "og:title": "Create Sub-workspace | Ringg AI"
+            "og:title": "Create Ringg Space | Ringg AI"
           }
         },
-        "description": "Creates a new sub-workspace under the primary workspace that owns the API key. The sub-workspace is a full workspace (own assistants, numbers, campaigns, call history, members) that starts with zero balance or credit limit and zero concurrency; allocate to it afterwards. Every member of the primary is given inherited access to it. The first sub-workspace turns the primary into a family in individual billing mode.",
+        "description": "Creates a new Ringg Space under the primary workspace that owns the API key. The Ringg Space is a full workspace (own assistants, numbers, campaigns, call history, members) that starts with zero balance or credit limit and zero concurrency; allocate to it afterwards. Every member of the primary is given inherited access to it. The first Ringg Space turns the primary into a family in individual billing mode.",
         "operationId": "createSubWorkspace",
         "parameters": [
           {
             "name": "X-API-KEY",
             "in": "header",
-            "description": "(Required) The API key of the PRIMARY workspace. A sub-workspace's key is refused with 400.",
+            "description": "(Required) The API key of the PRIMARY workspace. A Ringg Space's key is refused with 400.",
             "required": true,
             "schema": {
               "type": "string",
@@ -743,7 +743,7 @@
                     "type": "string",
                     "minLength": 1,
                     "maxLength": 100,
-                    "description": "(Required) Display name of the new sub-workspace, 1-100 characters. Surrounding whitespace is trimmed.",
+                    "description": "(Required) Display name of the new Ringg Space, 1-100 characters. Surrounding whitespace is trimmed.",
                     "example": "Mumbai Collections"
                   }
                 }
@@ -756,7 +756,7 @@
         },
         "responses": {
           "200": {
-            "description": "Successful Response: The new sub-workspace.",
+            "description": "Successful Response: The new Ringg Space.",
             "content": {
               "application/json": {
                 "schema": {
@@ -813,7 +813,7 @@
             }
           },
           "400": {
-            "description": "Bad Request - The API key belongs to a sub-workspace (no nesting), or the name is blank.",
+            "description": "Bad Request - The API key belongs to a Ringg Space (no nesting), or the name is blank.",
             "content": {
               "application/json": {
                 "schema": {
@@ -854,7 +854,7 @@
             }
           },
           "403": {
-            "description": "Forbidden - Sub-workspaces are not enabled for this workspace, or the caller is not an active member of the primary.",
+            "description": "Forbidden - Ringg Spaces are not enabled for this workspace, or the caller is not an active member of the primary.",
             "content": {
               "application/json": {
                 "schema": {
@@ -898,19 +898,19 @@
       },
       "get": {
         "tags": ["workspace"],
-        "summary": "Get Sub-workspaces",
+        "summary": "Get Ringg Spaces",
         "x-mint": {
           "metadata": {
-            "og:title": "Get Sub-workspaces | Ringg AI"
+            "og:title": "Get Ringg Spaces | Ringg AI"
           }
         },
-        "description": "Returns the whole family in one call: the primary's summary, one row per active sub-workspace with its allocation, members and month-to-date usage, and the family totals. Works on a primary that has no sub-workspaces yet (empty list).",
+        "description": "Returns the whole family in one call: the primary's summary, one row per active Ringg Space with its allocation, members and month-to-date usage, and the family totals. Works on a primary that has no Ringg Spaces yet (empty list).",
         "operationId": "getSubWorkspaces",
         "parameters": [
           {
             "name": "X-API-KEY",
             "in": "header",
-            "description": "(Required) The API key of the PRIMARY workspace. A sub-workspace's key is refused with 400.",
+            "description": "(Required) The API key of the PRIMARY workspace. A Ringg Space's key is refused with 400.",
             "required": true,
             "schema": {
               "type": "string",
@@ -992,7 +992,7 @@
                     },
                     "sub_workspaces": {
                       "type": "array",
-                      "description": "Active sub-workspaces, oldest first.",
+                      "description": "Active Ringg Spaces, oldest first.",
                       "items": {
                         "type": "object",
                         "properties": {
@@ -1011,12 +1011,12 @@
                           },
                           "concurrency": {
                             "type": "integer",
-                            "description": "Concurrent calls allocated to this sub-workspace.",
+                            "description": "Concurrent calls allocated to this Ringg Space.",
                             "example": 20
                           },
                           "limit_concurrency": {
                             "type": "integer",
-                            "description": "The sub-workspace's ceiling: its own allocation in an individual-billing family, the family total in a common-billing family.",
+                            "description": "The Ringg Space's ceiling: its own allocation in an individual-billing family, the family total in a common-billing family.",
                             "example": 20
                           },
                           "member_counts": {
@@ -1085,7 +1085,7 @@
                         },
                         "concurrency_allocated": {
                           "type": "integer",
-                          "description": "Sum of the sub-workspaces' allocations.",
+                          "description": "Sum of the Ringg Spaces' allocations.",
                           "example": 20
                         },
                         "concurrency_available": {
@@ -1106,7 +1106,7 @@
                         "utilized_total": {
                           "type": "number",
                           "nullable": true,
-                          "description": "Postpaid: primary + sub-workspaces utilized.",
+                          "description": "Postpaid: primary + Ringg Spaces utilized.",
                           "example": 46710.5
                         },
                         "available_total": {
@@ -1124,7 +1124,7 @@
                         "allocated_balance_total": {
                           "type": "number",
                           "nullable": true,
-                          "description": "Prepaid individual: sum of the sub-workspaces' wallets.",
+                          "description": "Prepaid individual: sum of the Ringg Spaces' wallets.",
                           "example": 8000.0
                         },
                         "family_available_total": {
@@ -1186,7 +1186,7 @@
             }
           },
           "400": {
-            "description": "Bad Request - The API key belongs to a sub-workspace.",
+            "description": "Bad Request - The API key belongs to a Ringg Space.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1227,7 +1227,7 @@
             }
           },
           "403": {
-            "description": "Forbidden - Sub-workspaces are not enabled for this workspace, or the caller is not an active member of the primary.",
+            "description": "Forbidden - Ringg Spaces are not enabled for this workspace, or the caller is not an active member of the primary.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1279,13 +1279,13 @@
             "og:title": "List Family Members | Ringg AI"
           }
         },
-        "description": "Lists every person with access anywhere in the family and where that access comes from: members of the primary (who inherit access to every sub-workspace) and people added directly to one or more sub-workspaces.",
+        "description": "Lists every person with access anywhere in the family and where that access comes from: members of the primary (who inherit access to every Ringg Space) and people added directly to one or more Ringg Spaces.",
         "operationId": "listFamilyMembers",
         "parameters": [
           {
             "name": "X-API-KEY",
             "in": "header",
-            "description": "(Required) The API key of the PRIMARY workspace. A sub-workspace's key is refused with 400.",
+            "description": "(Required) The API key of the PRIMARY workspace. A Ringg Space's key is refused with 400.",
             "required": true,
             "schema": {
               "type": "string",
@@ -1330,12 +1330,12 @@
                           "scope": {
                             "type": "string",
                             "enum": ["primary", "sub"],
-                            "description": "primary = member of the primary, inherits access to every sub-workspace; sub = added directly to sub-workspaces only.",
+                            "description": "primary = member of the primary, inherits access to every Ringg Space; sub = added directly to Ringg Spaces only.",
                             "example": "primary"
                           },
                           "sub_workspace_ids": {
                             "type": "array",
-                            "description": "Sub-workspaces the person was added to directly (inherited access is not listed).",
+                            "description": "Ringg Spaces the person was added to directly (inherited access is not listed).",
                             "items": {
                               "type": "string"
                             },
@@ -1400,7 +1400,7 @@
             }
           },
           "400": {
-            "description": "Bad Request - The API key belongs to a sub-workspace.",
+            "description": "Bad Request - The API key belongs to a Ringg Space.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1441,7 +1441,7 @@
             }
           },
           "403": {
-            "description": "Forbidden - Sub-workspaces are not enabled for this workspace, or the caller is not an active member of the primary.",
+            "description": "Forbidden - Ringg Spaces are not enabled for this workspace, or the caller is not an active member of the primary.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1487,19 +1487,19 @@
     "/workspace/sub/{sub_workspace_id}/concurrency": {
       "patch": {
         "tags": ["workspace"],
-        "summary": "Allocate Concurrency to a Sub-workspace",
+        "summary": "Allocate Concurrency to a Ringg Space",
         "x-mint": {
           "metadata": {
-            "og:title": "Allocate Concurrency to a Sub-workspace | Ringg AI"
+            "og:title": "Allocate Concurrency to a Ringg Space | Ringg AI"
           }
         },
-        "description": "Sets how many concurrent calls one sub-workspace may run, taken from the family's capacity (bought on the primary). Allocations across all sub-workspaces cannot exceed the capacity. In an individual-billing family the allocation is also the sub-workspace's hard ceiling; in a common-billing family the ceiling is the family total, so idle capacity flows to whichever sub-workspace is busy.",
+        "description": "Sets how many concurrent calls one Ringg Space may run, taken from the family's capacity (bought on the primary). Allocations across all Ringg Spaces cannot exceed the capacity. In an individual-billing family the allocation is also the Ringg Space's hard ceiling; in a common-billing family the ceiling is the family total, so idle capacity flows to whichever Ringg Space is busy.",
         "operationId": "allocateSubWorkspaceConcurrency",
         "parameters": [
           {
             "name": "X-API-KEY",
             "in": "header",
-            "description": "(Required) The API key of the PRIMARY workspace. A sub-workspace's key is refused with 400.",
+            "description": "(Required) The API key of the PRIMARY workspace. A Ringg Space's key is refused with 400.",
             "required": true,
             "schema": {
               "type": "string",
@@ -1510,7 +1510,7 @@
             "name": "sub_workspace_id",
             "in": "path",
             "required": true,
-            "description": "(Required) ID of the sub-workspace.",
+            "description": "(Required) ID of the Ringg Space.",
             "schema": {
               "type": "string",
               "format": "uuid",
@@ -1529,7 +1529,7 @@
                   "concurrency": {
                     "type": "integer",
                     "minimum": 0,
-                    "description": "(Required) Concurrent calls to allocate to this sub-workspace. 0 stops it from calling.",
+                    "description": "(Required) Concurrent calls to allocate to this Ringg Space. 0 stops it from calling.",
                     "example": 20
                   }
                 }
@@ -1588,7 +1588,7 @@
                         },
                         "allocated_total": {
                           "type": "integer",
-                          "description": "Sum of all sub-workspace allocations after this change.",
+                          "description": "Sum of all Ringg Space allocations after this change.",
                           "example": 20
                         }
                       }
@@ -1613,7 +1613,7 @@
             }
           },
           "400": {
-            "description": "Bad Request - The allocation does not fit the family's capacity, or the API key belongs to a sub-workspace.",
+            "description": "Bad Request - The allocation does not fit the family's capacity, or the API key belongs to a Ringg Space.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1654,7 +1654,7 @@
             }
           },
           "403": {
-            "description": "Forbidden - Sub-workspaces are not enabled for this workspace, or the caller is not an active member of the primary.",
+            "description": "Forbidden - Ringg Spaces are not enabled for this workspace, or the caller is not an active member of the primary.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1670,7 +1670,7 @@
             }
           },
           "404": {
-            "description": "Not Found - No active sub-workspace with this id under the primary.",
+            "description": "Not Found - No active Ringg Space with this id under the primary.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1722,13 +1722,13 @@
             "og:title": "Reallocate Credit Limits | Ringg AI"
           }
         },
-        "description": "Postpaid, individual-billing families only. Sets every active sub-workspace's credit limit in one call and optionally the family total. The map must name every active sub-workspace exactly once; a slice cannot drop below what that sub-workspace has already used this month, the slices cannot exceed the family total, and what remains for the primary must cover its own usage. Not applicable to common-billing families, where credit is pooled on the primary.",
+        "description": "Postpaid, individual-billing families only. Sets every active Ringg Space's credit limit in one call and optionally the family total. The map must name every active Ringg Space exactly once; a slice cannot drop below what that Ringg Space has already used this month, the slices cannot exceed the family total, and what remains for the primary must cover its own usage. Not applicable to common-billing families, where credit is pooled on the primary.",
         "operationId": "reallocateSubWorkspaceCreditLimits",
         "parameters": [
           {
             "name": "X-API-KEY",
             "in": "header",
-            "description": "(Required) The API key of the PRIMARY workspace. A sub-workspace's key is refused with 400.",
+            "description": "(Required) The API key of the PRIMARY workspace. A Ringg Space's key is refused with 400.",
             "required": true,
             "schema": {
               "type": "string",
@@ -1746,7 +1746,7 @@
                 "properties": {
                   "allocations": {
                     "type": "object",
-                    "description": "(Required) sub_workspace_id -> new credit limit. Must include every active sub-workspace exactly once. Values >= 0, two decimals.",
+                    "description": "(Required) sub_workspace_id -> new credit limit. Must include every active Ringg Space exactly once. Values >= 0, two decimals.",
                     "additionalProperties": {
                       "type": "number"
                     }
@@ -1868,7 +1868,7 @@
             }
           },
           "403": {
-            "description": "Forbidden - Sub-workspaces are not enabled for this workspace, or the caller is not an active member of the primary.",
+            "description": "Forbidden - Ringg Spaces are not enabled for this workspace, or the caller is not an active member of the primary.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1884,7 +1884,7 @@
             }
           },
           "404": {
-            "description": "Not Found - The primary has no sub-workspaces yet.",
+            "description": "Not Found - The primary has no Ringg Spaces yet.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1936,13 +1936,13 @@
             "og:title": "Reallocate Credit Balances | Ringg AI"
           }
         },
-        "description": "Prepaid, individual-billing families only. Sets every active sub-workspace's wallet to an absolute balance; the net difference moves from or to the primary's unallocated pot, which must be able to cover it. Top up on the primary first, then allocate. Not applicable to common-billing families, where the wallet is shared on the primary.",
+        "description": "Prepaid, individual-billing families only. Sets every active Ringg Space's wallet to an absolute balance; the net difference moves from or to the primary's unallocated pot, which must be able to cover it. Top up on the primary first, then allocate. Not applicable to common-billing families, where the wallet is shared on the primary.",
         "operationId": "reallocateSubWorkspaceCreditBalances",
         "parameters": [
           {
             "name": "X-API-KEY",
             "in": "header",
-            "description": "(Required) The API key of the PRIMARY workspace. A sub-workspace's key is refused with 400.",
+            "description": "(Required) The API key of the PRIMARY workspace. A Ringg Space's key is refused with 400.",
             "required": true,
             "schema": {
               "type": "string",
@@ -1960,7 +1960,7 @@
                 "properties": {
                   "allocations": {
                     "type": "object",
-                    "description": "(Required) sub_workspace_id -> the sub-workspace's NEW absolute balance (not a delta). Must include every active sub-workspace exactly once. Values >= 0, two decimals.",
+                    "description": "(Required) sub_workspace_id -> the Ringg Space's NEW absolute balance (not a delta). Must include every active Ringg Space exactly once. Values >= 0, two decimals.",
                     "additionalProperties": {
                       "type": "number"
                     }
@@ -2075,7 +2075,7 @@
             }
           },
           "403": {
-            "description": "Forbidden - Sub-workspaces are not enabled for this workspace, or the caller is not an active member of the primary.",
+            "description": "Forbidden - Ringg Spaces are not enabled for this workspace, or the caller is not an active member of the primary.",
             "content": {
               "application/json": {
                 "schema": {
@@ -2091,7 +2091,7 @@
             }
           },
           "404": {
-            "description": "Not Found - The primary has no sub-workspaces yet.",
+            "description": "Not Found - The primary has no Ringg Spaces yet.",
             "content": {
               "application/json": {
                 "schema": {
