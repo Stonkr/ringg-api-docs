@@ -125,7 +125,21 @@
           "whatsapp/create-agent",
           "whatsapp/start-conversation-api",
           "whatsapp/events",
-          "whatsapp/chat-history"
+          "whatsapp/chat-history",
+          {
+            "group": "WhatsApp Relay",
+            "icon": "repeat",
+            "pages": [
+              "whatsapp/relay/overview",
+              "whatsapp/relay/supported",
+              "whatsapp/relay/client-requirements",
+              "whatsapp/relay/ringg-provides",
+              "whatsapp/relay/integration-guide",
+              "whatsapp/relay/handover",
+              "whatsapp/relay/troubleshooting",
+              "whatsapp/relay/faq"
+            ]
+          }
         ]
       },
       {

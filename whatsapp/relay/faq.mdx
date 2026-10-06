@@ -1,0 +1,81 @@
+---
+title: "WhatsApp Relay FAQ"
+sidebarTitle: "FAQ"
+icon: "circle-help"
+description: "Short answers to common questions about WhatsApp Relay: credentials, delivery, handover, media, templates and environments."
+"og:title": "WhatsApp Relay FAQ | Ringg AI Guide"
+---
+
+<AccordionGroup>
+  <Accordion title="Does Ringg ever get our WhatsApp access token?">
+    No. Your WhatsApp Business account, access token and every call to Meta stay with you. Ringg only receives the messages you forward and returns replies for you to send.
+  </Accordion>
+
+  <Accordion title="How is this different from connecting WhatsApp Business to Ringg?">
+    With the [standard setup](/whatsapp/overview), Ringg holds the account and talks to Meta directly, so there is nothing to build. With Relay, you keep the account and run a service between Meta and Ringg. Choose Relay when the account must stay in your control, for example because your own CRM and human agents use the same number.
+  </Accordion>
+
+  <Accordion title="Can the same WhatsApp Business account be on Relay and connected to Ringg directly?">
+    No. An account is either connected to Ringg directly or registered for Relay, never both. Ringg refuses a registration that would mix them.
+  </Accordion>
+
+  <Accordion title="Does the AI agent understand images and voice notes?">
+    Not yet. The relay is text only today: media messages are accepted but not answered, so route them to your human agents. Media understanding is planned.
+  </Accordion>
+
+  <Accordion title="Why did /inbound return 202 but no reply came?">
+    `202` means the message is safely stored, not that a reply will follow. See [No reply for a message](/whatsapp/relay/troubleshooting#no-reply-for-a-message).
+  </Accordion>
+
+  <Accordion title="Can we retry /inbound?">
+    Yes. Ringg processes each `value.messages[0].id` once, so a retry never causes a second reply. Retry on timeouts and `5xx`.
+  </Accordion>
+
+  <Accordion title="The customer sent three messages in a row. Why one reply?">
+    When messages arrive close together, the agent answers them together, as a person would, instead of replying to each.
+  </Accordion>
+
+  <Accordion title="What if our webhook is down?">
+    Ringg retries each reply for about two minutes, backing off from 1 to 60 seconds and honouring `Retry-After`. Replies have a 60-second `expires_at`: if you receive one late, don't send it, and ack it as `skipped`. While a reply is being retried, later replies in the same chat wait behind it, so order is kept.
+  </Accordion>
+
+  <Accordion title="Do we have to send the typing indicator?">
+    No. `message.typing` is optional. Sending it shows the customer that the message was read and a reply is coming, which makes the wait feel shorter.
+  </Accordion>
+
+  <Accordion title="How does the AI agent know what our human agent already discussed?">
+    You send the conversation so far in `prior_messages` when you hand over. The AI agent continues from it without greeting again or asking for details the customer already gave. See [Hand over from a human agent](/whatsapp/relay/handover).
+  </Accordion>
+
+  <Accordion title="Can we send the whole history on every handover?">
+    Yes, up to 200 messages. Ringg skips messages it already has, as long as each carries Meta's message id. The AI agent's own replies are recognised and kept as the AI's.
+  </Accordion>
+
+  <Accordion title="How do we take a conversation back from the AI agent?">
+    Stop forwarding that chat's messages to Ringg and let your human agent answer. When you hand it over again, include what was said in between.
+  </Accordion>
+
+  <Accordion title="Does the AI agent say it is an AI?">
+    That is set in the agent's prompt, which Ringg agrees with you. By default, Ringg sets the agent up to write as your team, without a personal name, and not to volunteer that it is an AI. If a customer asks directly whether they are talking to a bot, it answers honestly and offers to have a person call them.
+  </Accordion>
+
+  <Accordion title="Can the AI agent message a customer first?">
+    Only with an approved template, through [`/outbound`](/whatsapp/relay/integration-guide#start-a-conversation-post-outbound), which follows WhatsApp's 24-hour rule. You send the template; when the customer replies, the agent takes over.
+  </Accordion>
+
+  <Accordion title="How long does a conversation stay open?">
+    Until the AI agent ends it, you call `/close`, Meta refuses a reply in a way that ends the conversation, or the agent's idle or maximum-length timeout passes. The customer's next message then starts a new chat.
+  </Accordion>
+
+  <Accordion title="Do we get transcripts and analysis?">
+    Yes. Every relay conversation appears in **Logs → WhatsApp** with its transcript and analysis. You can subscribe to [chat events](/whatsapp/events) such as `chat_completed` to receive them on your own endpoint.
+  </Accordion>
+
+  <Accordion title="How do we rotate the signing secret?">
+    Ask Ringg for a new one. Both the old and new secrets work until you confirm the switch and the old one is retired, so there is no downtime.
+  </Accordion>
+
+  <Accordion title="Are staging and production separate?">
+    Yes. They have different base URLs, API keys, signing secrets and number registrations. Test on staging, then change those three values to go live.
+  </Accordion>
+</AccordionGroup>

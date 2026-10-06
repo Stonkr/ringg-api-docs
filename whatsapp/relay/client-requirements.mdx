@@ -1,0 +1,71 @@
+---
+title: "What We Need From You"
+sidebarTitle: "What we need from you"
+icon: "clipboard-list"
+description: "The details to share with Ringg to set up WhatsApp Relay, and what your WhatsApp service has to implement."
+"og:title": "WhatsApp Relay: What We Need From You | Ringg AI Guide"
+---
+
+Setting up WhatsApp Relay takes two things from you:
+
+- **Details:** a few facts about your number, shared with Ringg so it can be registered.
+- **A WhatsApp service that does five jobs:** forward messages, receive Ringg's events, send them to Meta, report back, and pass on Meta's statuses.
+
+## 1. Details to share for setup
+
+Share these for **each** WhatsApp number, separately for staging and production.
+
+| Detail | Example | Why Ringg needs it |
+|---|---|---|
+| `phone_number_id` | `109876543210987` | Meta's id for the number. Every relay request is keyed on it. |
+| Display number | `+91 98765 43210` | Shown in the Ringg dashboard and on the number's logs. |
+| WhatsApp Business Account (WABA) id | `102345678901234` | Lets Ringg make sure the account is not also connected to Ringg directly. |
+| Webhook URL | `https://wa.example.com/ringg/events` | Where Ringg posts replies and other events. Must be **HTTPS**. |
+| Webhook bearer token | a long random string | Ringg sends it as `Authorization: Bearer <token>` on every event, so you can reject anything else. |
+| Approved templates (optional) | `renewal_reminder`, `claim_update` | Only needed to [start conversations](/whatsapp/relay/integration-guide#start-a-conversation-post-outbound). If you list them, Ringg refuses any other template name up front. |
+| How the agent should behave | Use cases, tone, languages, product data, escalation rules | Ringg sets up the AI agent attached to the number. |
+
+<Warning>
+Share the bearer token and receive the signing secret over a secure channel, never in a ticket or chat thread. Use different values for staging and production.
+</Warning>
+
+## 2. What your WhatsApp service must do
+
+<Steps>
+  <Step title="Forward customer messages to /inbound">
+    For each message Meta sends to your webhook, `POST` Meta's `value` object to Ringg's [`/inbound`](/whatsapp/relay/integration-guide#forward-a-customer-message-post-inbound), unchanged, with `value.messages[0].id` set to Meta's message id. Retry on a timeout or a `5xx`: Ringg processes each message id once, so retries are safe.
+  </Step>
+  <Step title="Sign every request">
+    Send your workspace API key in `X-API-Key`, and an HMAC-SHA256 signature of the exact request body in `X-Relay-Timestamp` and `X-Relay-Signature`. See [Authentication](/whatsapp/relay/integration-guide#authentication).
+  </Step>
+  <Step title="Receive Ringg's events on your webhook">
+    Check the bearer token, store or queue the event, and answer `2xx` within 10 seconds. Don't wait for Meta before answering. Ringg sends the next reply in a chat only after your `2xx`.
+  </Step>
+  <Step title="Send each message.outbound to Meta, then ack it">
+    POST `delivery.message` to Meta's `/{phone_number_id}/messages` exactly as received, in `delivery.sequence` order per chat. Then call [`/ack`](/whatsapp/relay/integration-guide#report-the-result-post-ack) with `sent` and Meta's message id, or `failed` with Meta's error. If `expires_at` has passed before you could send, don't send: ack `skipped`.
+  </Step>
+  <Step title="Forward Meta's delivery statuses (recommended)">
+    `POST` the `statuses` array from Meta's status webhooks to [`/status`](/whatsapp/relay/integration-guide#forward-delivery-statuses-post-status). Ringg uses them to diagnose delivery problems.
+  </Step>
+</Steps>
+
+### Also yours
+
+- **The 24-hour window.** Free-form replies only reach a customer within 24 hours of their last message. Ringg answers inside that window. Outside it, use an approved template through `/outbound`.
+- **Media and interactive messages.** The AI agent answers text only. Route images, voice notes, documents and interactive replies to your human agents. See [What's supported](/whatsapp/relay/supported).
+- **Handover.** When a human agent hands a chat to the AI, send the conversation so far in `prior_messages`. When they take it back, stop forwarding that chat's messages to Ringg. See [Hand over from a human agent](/whatsapp/relay/handover).
+- **Clocks.** Keep your servers on NTP. A signature more than 300 seconds old is rejected.
+
+## 3. Before you go live
+
+<Steps>
+  <Step title="Test on staging">
+    Run your integration against Ringg's staging base URL with your staging number. Cover a plain conversation, a handover with `prior_messages`, a `failed` ack and a `/close`.
+  </Step>
+  <Step title="Check delivery end to end">
+    Confirm that every `message.outbound` you receive gets an ack, and that replies reach the customer in order.
+  </Step>
+  <Step title="Switch to production">
+    Change the base URL, API key and signing secret to the production values Ringg gives you. Nothing else changes.
+  </Step>
+</Steps>
