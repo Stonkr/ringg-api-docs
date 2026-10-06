@@ -17,9 +17,9 @@ Share these for **each** WhatsApp number, separately for staging and production.
 
 | Detail | Example | Why Ringg needs it |
 |---|---|---|
-| `phone_number_id` | `109876543210987` | Meta's id for the number. Every relay request is keyed on it. |
-| Display number | `+91 98765 43210` | Shown in the Ringg dashboard and on the number's logs. |
-| WhatsApp Business Account (WABA) id | `102345678901234` | Lets Ringg make sure the account is not also connected to Ringg directly. |
+| `phone_number_id` | `123456789012345` | Meta's id for the number. Every relay request is keyed on it. |
+| Display number | `+1 202-555-0100` | Shown in the Ringg dashboard and on the number's logs. |
+| WhatsApp Business Account (WABA) id | `234567890123456` | Lets Ringg make sure the account is not also connected to Ringg directly. |
 | Webhook URL | `https://wa.example.com/ringg/events` | Where Ringg posts replies and other events. Must be **HTTPS**. |
 | Webhook bearer token | a long random string | Ringg sends it as `Authorization: Bearer <token>` on every event, so you can reject anything else. |
 | Approved templates (optional) | `renewal_reminder`, `claim_update` | Only needed to [start conversations](/whatsapp/relay/integration-guide#start-a-conversation-post-outbound). If you list them, Ringg refuses any other template name up front. |

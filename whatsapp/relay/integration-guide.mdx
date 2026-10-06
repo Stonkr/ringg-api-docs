@@ -112,16 +112,16 @@ Send Meta's `value` object (from `entry[].changes[].value` in Meta's webhook) un
 
 ```json Request
 {
-  "phone_number_id": "109876543210987",
+  "phone_number_id": "123456789012345",
   "received_at": "2026-10-06T09:30:12Z",
   "value": {
     "messaging_product": "whatsapp",
-    "metadata": { "display_phone_number": "919876500000", "phone_number_id": "109876543210987" },
-    "contacts": [{ "wa_id": "919812345678", "profile": { "name": "Rahul" } }],
+    "metadata": { "display_phone_number": "12025550100", "phone_number_id": "123456789012345" },
+    "contacts": [{ "wa_id": "12025550123", "profile": { "name": "Rahul" } }],
     "messages": [
       {
-        "from": "919812345678",
-        "id": "wamid.HBgMOTE5ODEyMzQ1Njc4FQIAEhgUM0E5RjdDRDk5OUNFOUUyQkZBN0EA",
+        "from": "12025550123",
+        "id": "wamid.DUMMY_CUSTOMER_MESSAGE_ID",
         "timestamp": "1791279012",
         "type": "text",
         "text": { "body": "Which plan covers my parents?" }
@@ -165,25 +165,25 @@ A reply to send to the customer. `delivery.message` is the exact body for Meta's
 
 ```json
 {
-  "event_id": "5b0f3c1e-8a61-4f2e-9d0e-2b7c4e9a1f30",
+  "event_id": "00000000-0000-4000-8000-000000000011",
   "event_type": "message.outbound",
   "occurred_at": "2026-10-06T09:30:16Z",
   "channel": "whatsapp_relay",
-  "chat_id": "8759427d-c371-47c4-b5e7-bd6411f72077",
+  "chat_id": "00000000-0000-4000-8000-000000000001",
   "delivery": {
-    "phone_number_id": "109876543210987",
-    "to_number": "919812345678",
+    "phone_number_id": "123456789012345",
+    "to_number": "12025550123",
     "sequence": 3,
     "expires_at": "2026-10-06T09:31:16Z",
     "message": {
       "messaging_product": "whatsapp",
-      "to": "919812345678",
+      "to": "12025550123",
       "type": "text",
       "text": { "body": "For parents aged 62 and 58, these plans fit best…" }
     }
   },
   "custom_args": {},
-  "trace_id": "62614d9f-2030-4be8-8401-7b82e110ed9d"
+  "trace_id": "00000000-0000-4000-8000-000000000101"
 }
 ```
 
@@ -199,18 +199,18 @@ Sent as soon as Ringg starts working on a customer's message. `delivery.message`
 
 ```json
 {
-  "event_id": "0c9e4a7b-2f51-4c8e-a3d9-6e1f0b2c7d84",
+  "event_id": "00000000-0000-4000-8000-000000000012",
   "event_type": "message.typing",
   "occurred_at": "2026-10-06T09:30:13Z",
   "channel": "whatsapp_relay",
-  "chat_id": "8759427d-c371-47c4-b5e7-bd6411f72077",
+  "chat_id": "00000000-0000-4000-8000-000000000001",
   "delivery": {
-    "phone_number_id": "109876543210987",
+    "phone_number_id": "123456789012345",
     "to_number": "",
     "message": {
       "messaging_product": "whatsapp",
       "status": "read",
-      "message_id": "wamid.HBgMOTE5ODEyMzQ1Njc4FQIAEhgUM0E5RjdDRDk5OUNFOUUyQkZBN0EA",
+      "message_id": "wamid.DUMMY_CUSTOMER_MESSAGE_ID",
       "typing_indicator": { "type": "text" }
     }
   },
@@ -224,13 +224,13 @@ The chat has ended, either because the AI agent closed it (`reason: "completed"`
 
 ```json
 {
-  "event_id": "9a1d2e3f-4b5c-4d6e-8f70-1a2b3c4d5e6f",
+  "event_id": "00000000-0000-4000-8000-000000000013",
   "event_type": "conversation.closed",
   "occurred_at": "2026-10-06T09:41:02Z",
   "channel": "whatsapp_relay",
-  "chat_id": "8759427d-c371-47c4-b5e7-bd6411f72077",
+  "chat_id": "00000000-0000-4000-8000-000000000001",
   "reason": "completed",
-  "delivery": { "phone_number_id": "109876543210987", "to_number": "919812345678", "message": {} },
+  "delivery": { "phone_number_id": "123456789012345", "to_number": "12025550123", "message": {} },
   "custom_args": {}
 }
 ```
@@ -252,12 +252,12 @@ Call once per `message.outbound`, after you tried to send it.
 
 ```json Request
 {
-  "phone_number_id": "109876543210987",
-  "chat_id": "8759427d-c371-47c4-b5e7-bd6411f72077",
-  "event_id": "5b0f3c1e-8a61-4f2e-9d0e-2b7c4e9a1f30",
+  "phone_number_id": "123456789012345",
+  "chat_id": "00000000-0000-4000-8000-000000000001",
+  "event_id": "00000000-0000-4000-8000-000000000011",
   "sequence": 3,
   "status": "sent",
-  "message_id": "wamid.HBgMOTE5ODEyMzQ1Njc4FQIAERgSNjQ2NzBEQThBNDgwRDk4MzhEAA==",
+  "message_id": "wamid.DUMMY_REPLY_MESSAGE_ID",
   "sent_at": "2026-10-06T09:30:17Z"
 }
 ```
@@ -275,13 +275,13 @@ Pass on the `statuses` array from Meta's status webhooks, as received. The body 
 
 ```json Request
 {
-  "phone_number_id": "109876543210987",
+  "phone_number_id": "123456789012345",
   "statuses": [
     {
-      "id": "wamid.HBgMOTE5ODEyMzQ1Njc4FQIAERgSNjQ2NzBEQThBNDgwRDk4MzhEAA==",
+      "id": "wamid.DUMMY_REPLY_MESSAGE_ID",
       "status": "delivered",
       "timestamp": "1791279020",
-      "recipient_id": "919812345678"
+      "recipient_id": "12025550123"
     }
   ]
 }
@@ -306,30 +306,30 @@ Send an `X-Idempotency-Key` header to make retries safe: the same key within 24 
 
 ```json Request
 {
-  "phone_number_id": "109876543210987",
-  "to_number": "919812345678",
+  "phone_number_id": "123456789012345",
+  "to_number": "12025550123",
   "template": {
     "name": "renewal_reminder",
     "language": { "code": "en" },
     "components": [{ "type": "body", "parameters": [{ "type": "text", "text": "Rahul" }] }]
   },
-  "custom_args": { "policy_id": "PB-12345" }
+  "custom_args": { "policy_id": "POL-12345" }
 }
 ```
 
 ```json 200 OK
 {
   "status": "ready_to_send",
-  "chat_id": "3284e261-ebcc-426f-928f-7d7bbd8d2874",
-  "event_id": "7e2c1b9a-4d3f-4a8e-b6c5-0f1e2d3c4b5a",
+  "chat_id": "00000000-0000-4000-8000-000000000002",
+  "event_id": "00000000-0000-4000-8000-000000000014",
   "delivery": {
     "sequence": 1,
-    "phone_number_id": "109876543210987",
-    "to_number": "919812345678",
+    "phone_number_id": "123456789012345",
+    "to_number": "12025550123",
     "expires_at": "2026-10-06T09:31:16Z",
     "message": {
       "messaging_product": "whatsapp",
-      "to": "919812345678",
+      "to": "12025550123",
       "type": "template",
       "template": { "name": "renewal_reminder", "language": { "code": "en" }, "components": [ … ] }
     }
@@ -357,15 +357,15 @@ Ends a chat, for example when your human agent resolves it. Optionally sends one
 
 ```json Request
 {
-  "phone_number_id": "109876543210987",
-  "chat_id": "8759427d-c371-47c4-b5e7-bd6411f72077",
+  "phone_number_id": "123456789012345",
+  "chat_id": "00000000-0000-4000-8000-000000000001",
   "closing_message": "Thanks for chatting with us. Message us any time.",
   "reason": "resolved"
 }
 ```
 
 ```json 200 OK
-{ "status": "closing", "chat_id": "8759427d-c371-47c4-b5e7-bd6411f72077" }
+{ "status": "closing", "chat_id": "00000000-0000-4000-8000-000000000001" }
 ```
 
 `closing` means a final message is on its way to your webhook; without `closing_message` the status is `closed`. Either way, you then receive `conversation.closed`.
@@ -380,7 +380,7 @@ Authentication and validation errors share one shape. Quote the `trace_id` when 
     "error": {
       "code": "invalid_signature",
       "message": "X-Relay-Signature did not verify",
-      "trace_id": "791f5cc3-0df5-4f6c-b381-7db15942724a"
+      "trace_id": "00000000-0000-4000-8000-000000000102"
     }
   }
 }

@@ -21,15 +21,15 @@ When a human agent hands over, forward the customer's latest message as usual, a
 
 ```json
 {
-  "phone_number_id": "109876543210987",
+  "phone_number_id": "123456789012345",
   "value": {
     "messaging_product": "whatsapp",
-    "metadata": { "display_phone_number": "919876500000", "phone_number_id": "109876543210987" },
-    "contacts": [{ "wa_id": "919812345678", "profile": { "name": "Rahul" } }],
+    "metadata": { "display_phone_number": "12025550100", "phone_number_id": "123456789012345" },
+    "contacts": [{ "wa_id": "12025550123", "profile": { "name": "Rahul" } }],
     "messages": [
       {
-        "from": "919812345678",
-        "id": "wamid.HBgM…NEW",
+        "from": "12025550123",
+        "id": "wamid.DUMMY_LATEST",
         "timestamp": "1791279012",
         "type": "text",
         "text": { "body": "What would the premium be for 10 lakh cover?" }
@@ -37,11 +37,11 @@ When a human agent hands over, forward the customer's latest message as usual, a
     ]
   },
   "prior_messages": [
-    { "role": "customer", "text": "Hello, need a policy for my parents", "timestamp": "2026-10-06T09:10:02Z", "message_id": "wamid.HBgM…C1" },
-    { "role": "agent", "text": "Sure! What are your parents' ages?", "timestamp": "2026-10-06T09:11:40Z", "message_id": "wamid.HBgM…A1", "agent_name": "Priya" },
-    { "role": "customer", "text": "Papa is 62 and mummy is 58. We are in Lucknow", "timestamp": "2026-10-06T09:12:15Z", "message_id": "wamid.HBgM…C2" },
-    { "role": "agent", "text": "Noted. Any existing illness, like diabetes or BP?", "timestamp": "2026-10-06T09:13:01Z", "message_id": "wamid.HBgM…A2", "agent_name": "Priya" },
-    { "role": "customer", "text": "Papa has diabetes, on metformin", "timestamp": "2026-10-06T09:14:30Z", "message_id": "wamid.HBgM…C3" }
+    { "role": "customer", "text": "Hello, need a policy for my parents", "timestamp": "2026-10-06T09:10:02Z", "message_id": "wamid.DUMMY_C1" },
+    { "role": "agent", "text": "Sure! What are your parents' ages?", "timestamp": "2026-10-06T09:11:40Z", "message_id": "wamid.DUMMY_A1", "agent_name": "Priya" },
+    { "role": "customer", "text": "Papa is 62 and mummy is 58. We are in Lucknow", "timestamp": "2026-10-06T09:12:15Z", "message_id": "wamid.DUMMY_C2" },
+    { "role": "agent", "text": "Noted. Any existing illness, like diabetes or BP?", "timestamp": "2026-10-06T09:13:01Z", "message_id": "wamid.DUMMY_A2", "agent_name": "Priya" },
+    { "role": "customer", "text": "Papa has diabetes, on metformin", "timestamp": "2026-10-06T09:14:30Z", "message_id": "wamid.DUMMY_C3" }
   ],
   "handover_note": "Budget around 40k a year for both. Prefers a call after 6 pm."
 }
