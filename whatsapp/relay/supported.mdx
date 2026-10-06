@@ -1,0 +1,77 @@
+---
+title: "What's Supported in WhatsApp Relay"
+sidebarTitle: "What's supported"
+icon: "list-checks"
+description: "Message types, conversation features and limits for WhatsApp Relay, and what is not supported yet."
+"og:title": "WhatsApp Relay: What's Supported | Ringg AI Guide"
+---
+
+WhatsApp Relay is a **text conversation** channel. The AI agent reads text and replies in text. Everything below applies to every number registered for relay.
+
+## Messages from your customers
+
+| Customer sends | What happens |
+|---|---|
+| Text | The agent answers. |
+| A tap on a template's quick-reply button (`type: "button"`) | Read as the button's label, and answered like text. |
+| Image, voice note, video, document, sticker, location, contact card, reaction | Accepted (`202`), then **not answered**. Your human agents should handle these for now. |
+| Reply-button or list selection from an interactive message (`type: "interactive"`) | Accepted (`202`), then **not answered**. |
+| A message that replies to (quotes) an earlier message | Answered. The agent sees which message it replies to. |
+
+<Note>
+`/inbound` always answers `202 accepted` once the message is safely recorded. Whether the agent replies is decided afterwards, so a `202` does not mean a reply is coming. See [No reply for a message](/whatsapp/relay/troubleshooting#no-reply-for-a-message).
+</Note>
+
+## Messages Ringg asks you to send
+
+| Event | Contains | You |
+|---|---|---|
+| `message.outbound` | A text reply, or the template that opens a conversation | Send it to Meta as is, then [ack](/whatsapp/relay/integration-guide#report-the-result-post-ack) it |
+| `message.typing` | A "mark as read + typing indicator" request for the customer's message | Send it to Meta if you want the customer to see typing; no ack |
+| `conversation.closed` | The chat id and the reason | Update your own records; nothing to send |
+
+The agent's replies are plain text. Ringg does not ask you to send media, interactive messages or WhatsApp Flows over the relay.
+
+## Conversation features
+
+| Feature | Supported |
+|---|---|
+| AI agent replies, using the agent's prompt, knowledge base and tools | Yes |
+| [Hand over from a human agent](/whatsapp/relay/handover), with up to 200 earlier messages | Yes |
+| Hand back to a human agent, then over to the AI again, any number of times | Yes |
+| [Start a conversation with an approved template](/whatsapp/relay/integration-guide#start-a-conversation-post-outbound) | Yes |
+| [Close a conversation](/whatsapp/relay/integration-guide#close-a-conversation-post-close), optionally with a last message | Yes |
+| The agent ends a conversation itself (end-chat tool) | Yes, you receive `conversation.closed` |
+| Post-chat analysis and [chat events](/whatsapp/events) (`chat_completed`, analysis events) | Yes, same as other WhatsApp agents |
+| Chat history in the dashboard, with handover markers | Yes |
+| Several numbers, each with its own agent | Yes, register each number |
+
+## Delivery guarantees
+
+| Guarantee | Detail |
+|---|---|
+| Your inbound message is not lost | Ringg stores it before answering `202`. If processing fails it is retried, up to 3 attempts. |
+| Retries are safe | A message is processed once per `value.messages[0].id`, however many times you send it. |
+| Replies arrive in order | One reply per chat is in flight at a time. The next is sent only after your webhook answers `2xx`. Each carries a `sequence` (1, 2, 3, …) per chat. |
+| Replies are retried | On a timeout, a network error, or HTTP `408`, `425`, `429`, `500`, `502`, `503` or `504`: up to 8 attempts, backing off from 1 s to 60 s. `Retry-After` is honoured, up to 300 s. |
+| Replies expire | Each reply carries `expires_at`, 60 seconds after it was written. If you cannot send it to Meta before then, don't send it: ack it as `skipped`. |
+| Undelivered replies don't confuse the agent | A reply you ack as `failed` or `skipped`, or that your webhook rejected, is kept out of the agent's view of the conversation. |
+
+## Limits
+
+| Limit | Value |
+|---|---|
+| Clock skew allowed on a signed request | 300 seconds |
+| `prior_messages` per request | 200 |
+| Length of one prior message | 4,096 characters |
+| `handover_note` | 2,000 characters |
+| Time Ringg waits for your webhook | 10 seconds per attempt |
+| Window to ack a reply | 7 days, after which `/ack` answers `unknown_event` |
+| `X-Idempotency-Key` on `/outbound` | Remembered for 24 hours |
+
+## Not supported yet
+
+- **Media understanding:** the agent cannot read images, voice notes or documents. This is planned.
+- **Interactive replies:** reply-button and list selections from interactive messages are not answered.
+- **Rich replies:** the agent cannot send media, interactive messages or WhatsApp Flows over the relay.
+- **Template sends mid-conversation:** templates are only used to start a conversation.
