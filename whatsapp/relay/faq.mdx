@@ -47,6 +47,10 @@ description: "Short answers to common questions about WhatsApp Relay: credential
     You send the conversation so far in `prior_messages` when you hand over. The AI agent continues from it without greeting again or asking for details the customer already gave. See [Hand over from a human agent](/whatsapp/relay/handover).
   </Accordion>
 
+  <Accordion title="Can we change custom_args during a chat?">
+    No. Ringg reads `custom_args` only from the message that starts a chat, so later messages can't overwrite them. Send them with every message anyway: when a chat ends, the customer's next message starts a new one, which reads them again. See [Custom variables](/whatsapp/relay/integration-guide#custom-variables).
+  </Accordion>
+
   <Accordion title="Can we send the whole history on every handover?">
     Yes, up to 200 messages. Ringg skips messages it already has, as long as each carries Meta's message id. The AI agent's own replies are recognised and kept as the AI's.
   </Accordion>

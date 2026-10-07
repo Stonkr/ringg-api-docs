@@ -39,6 +39,7 @@ The agent's replies are plain text. Ringg does not ask you to send media, intera
 | AI agent replies, using the agent's prompt, knowledge base and tools | Yes |
 | [Hand over from a human agent](/whatsapp/relay/handover), with up to 200 earlier messages | Yes |
 | Hand back to a human agent, then over to the AI again, any number of times | Yes |
+| [Custom variables](/whatsapp/relay/integration-guide#custom-variables) for the agent, set by the message that starts a chat | Yes |
 | [Start a conversation with an approved template](/whatsapp/relay/integration-guide#start-a-conversation-post-outbound) | Yes |
 | [Close a conversation](/whatsapp/relay/integration-guide#close-a-conversation-post-close), optionally with a last message | Yes |
 | The agent ends a conversation itself (end-chat tool) | Yes, you receive `conversation.closed` |
@@ -65,6 +66,7 @@ The agent's replies are plain text. Ringg does not ask you to send media, intera
 | `prior_messages` per request | 200 |
 | Length of one prior message | 4,096 characters |
 | `handover_note` | 2,000 characters |
+| Keys in `custom_args` | 100 |
 | Time Ringg waits for your webhook | 10 seconds per attempt |
 | Window to ack a reply | 7 days, after which `/ack` answers `unknown_event` |
 | `X-Idempotency-Key` on `/outbound` | Remembered for 24 hours |
