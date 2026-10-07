@@ -123,6 +123,16 @@
             ]
           },
           "whatsapp/create-agent",
+          {
+            "group": "Flows",
+            "icon": "clipboard-list",
+            "pages": [
+              "whatsapp/flows",
+              "whatsapp/flow-builder",
+              "whatsapp/flows-live-data",
+              "whatsapp/flows-your-server"
+            ]
+          },
           "whatsapp/start-conversation-api",
           "whatsapp/events",
           "whatsapp/chat-history",
