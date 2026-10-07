@@ -108,6 +108,7 @@ Send Meta's `value` object (from `entry[].changes[].value` in Meta's webhook) un
 | `received_at` | string | No | When you received it from Meta, RFC 3339 UTC |
 | `prior_messages` | array | No | The conversation so far, when [handing over from a human agent](/whatsapp/relay/handover). Up to 200 |
 | `handover_note` | string | No | Anything the AI agent should know that isn't in the messages. Up to 2,000 characters |
+| `custom_args` | object | No | The agent's [custom variables](#custom-variables) for the chat this message starts. Up to 100 keys |
 | `media` | array | No | Accepted for compatibility, not read. The relay answers text only |
 
 ```json Request
@@ -127,7 +128,8 @@ Send Meta's `value` object (from `entry[].changes[].value` in Meta's webhook) un
         "text": { "body": "Which plan covers my parents?" }
       }
     ]
-  }
+  },
+  "custom_args": { "policy_id": "POL-12345", "plan_name": "Family Floater" }
 }
 ```
 
@@ -136,6 +138,15 @@ Send Meta's `value` object (from `entry[].changes[].value` in Meta's webhook) un
 ```
 
 `202` means the message is stored and will be processed; the reply follows on your webhook. Sending the same `messages[0].id` again is harmless: it is processed once. If you get a `5xx` or no response, retry the same request.
+
+### Custom variables
+
+Use `custom_args` to give the AI agent facts about the customer that it can't learn from the chat, such as a policy number or plan name. The agent's prompt refers to them by name, so use the variable names agreed with Ringg.
+
+- **Set when a chat starts.** Ringg reads `custom_args` only from the message that starts a chat. Later messages in the same chat can't change them.
+- **Send them with every message anyway.** When a chat closes or times out, the customer's next message starts a new chat, which reads `custom_args` again. If you send them every time, a new chat always has them.
+- **Missing and extra keys.** A variable defined on the agent that you don't send is stored as `null`, and the agent works without it. Keys the agent doesn't define are stored too.
+- **Where they show up.** Every event for the chat carries them in `custom_args`, and the dashboard lists them with the conversation. Ringg adds `mobile_number`, the customer's number, when you don't send it, and `source`.
 
 ## Events Ringg sends to your webhook
 

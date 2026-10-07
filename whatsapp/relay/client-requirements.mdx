@@ -54,6 +54,7 @@ Share the bearer token and receive the signing secret over a secure channel, nev
 - **The 24-hour window.** Free-form replies only reach a customer within 24 hours of their last message. Ringg answers inside that window. Outside it, use an approved template through `/outbound`.
 - **Media and interactive messages.** The AI agent answers text only. Route images, voice notes, documents and interactive replies to your human agents. See [What's supported](/whatsapp/relay/supported).
 - **Handover.** When a human agent hands a chat to the AI, send the conversation so far in `prior_messages`. When they take it back, stop forwarding that chat's messages to Ringg. See [Hand over from a human agent](/whatsapp/relay/handover).
+- **Custom variables.** Send the customer details the agent's prompt uses, such as a policy number, in `custom_args` on every `/inbound`. Ringg reads them only when a message starts a chat. See [Custom variables](/whatsapp/relay/integration-guide#custom-variables).
 - **Clocks.** Keep your servers on NTP. A signature more than 300 seconds old is rejected.
 
 ## 3. Before you go live

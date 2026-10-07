@@ -47,6 +47,7 @@ The body doesn't match the endpoint's shape. The `message` names the field. Comm
 - **Extra top-level fields.** Every relay body accepts only its documented fields. On `/status`, send `{ "phone_number_id": "…", "statuses": [ … ] }` only, not Meta's whole `entry` or `value` wrapper.
 - **`prior_messages` too long, or a message with empty text.** Up to 200 messages, each 1 to 4,096 characters.
 - **`role` not `customer` or `agent`.**
+- **`custom_args` not an object, or with more than 100 keys.**
 - **A wrong type,** such as `chat_id` not being a UUID on `/ack` or `/close`.
 
 ### 422 missing_message_id
@@ -94,6 +95,14 @@ Ack every `message.outbound`, even when the send failed. A `failed` or `skipped`
 | The dashboard shows the same message twice | The same message was sent with different ids, or without ids | Always send `message_id`, using Meta's id for each message |
 | The AI agent's replies show as **Human agent** | They were sent in `prior_messages` without their message ids | Include Meta's message id for every message, including the AI agent's |
 | The customer's latest question appears twice | The message being forwarded was also included in `prior_messages` | Leave it out of `prior_messages` |
+
+## The agent doesn't use a custom variable
+
+| Cause | Fix |
+|---|---|
+| The chat had already started when you first sent `custom_args` | They're read only from the message that starts a chat. Send them with every message; the next new chat picks them up |
+| The name doesn't match the agent's variable | Names are case-sensitive. Use them exactly as agreed with Ringg |
+| The value was `null` or empty | The variable is stored, but the agent has nothing to use. Send a value |
 
 ## A chat closed unexpectedly
 
