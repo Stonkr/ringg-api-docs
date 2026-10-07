@@ -1,20 +1,22 @@
 ---
 openapi: get /calling/history
+description: "List calls in your workspace by date range, agent, status or campaign, with transcript, recording link, duration and cost, to reconcile results or backfill."
+related:
+  - "Call logs": /documentation/monitor/logs
 ---
 
-Retrieve call records for dashboards, support tools, exports, and reconciliation. This is the polling counterpart to webhooks.
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-## When to use
+Webhooks are the better fit for reacting to each call as it ends ([Event Subscription](/documentation/build-agents/customize-agent-behaviour/event-subscription)); use this endpoint for dashboards, backfills and checking that no webhook was missed.
 
-- Show recent calls in your product.
-- Reconcile webhook events with stored call records.
-- Filter campaign results by `bulk_list_id`.
-- Debug a recipient's latest call status.
+## Notes
 
-## Query guidance
+- `start_date` and `end_date` take a timezone offset, for example `2026-10-01T00:00:00+05:30`. `bulk_list_id` is the campaign's ID. `status` is one of `registered`, `ongoing`, `retry`, `error`, `completed`, `failed`, `cancelled`, `forwarded`. Repeat `agent_id`, `status` or `bulk_list_id` to filter by several values.
+- `limit` defaults to `10`; more than `200` returns `400`. Page with `offset`.
+- The list allows 10 requests per workspace per minute; more return `429`.
+- `transcript` is a JSON-encoded string; parse it to get the turns.
+- The response's `total` is the number of calls matching the filters, for paging.
+- `audio_recording` links may expire. Fetch a fresh link from [Get call details](/api-reference/endpoint/history/get-call-details), and download recordings you need to keep.
+- For one call with its post-call analysis, use [Get call details](/api-reference/endpoint/history/get-call-details). To get many calls as a CSV by email, use [Download call history](/api-reference/endpoint/history/download-call-history).
 
-Use date ranges and pagination for production dashboards. Add filters such as `agent_id`, `status`, `call_type`, or `bulk_list_id` to keep responses focused.
-
-## Production note
-
-Prefer webhooks for real-time workflows. Use call history for dashboards, backfills, and periodic consistency checks.
+<RelatedTopics items={[["Call logs", "/documentation/monitor/logs"]]} />

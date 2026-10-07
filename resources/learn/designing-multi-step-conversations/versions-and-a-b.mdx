@@ -1,0 +1,82 @@
+---
+title: "Lesson: Versions and A/B"
+sidebarTitle: "Versions and A/B"
+description: "Turn on Create Versions for the EMI reminder agent, add V2 with a shorter first message, split traffic 70/30 with Assign Traffic, and find A/B Analytics."
+related:
+  - "Drafts and versions": /documentation/build-agents/test-and-improve/drafts-and-versions
+  - "Test an agent": /documentation/build-agents/test-and-improve/test-an-agent
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 5: Designing multi-step conversations · Lesson 3 of 3 · 10 minutes**
+
+## Objective
+
+Add a second version of Ananya with a shorter first message and split call traffic between the two, so a prompt change is measured on real calls before it replaces the original.
+
+## The scenario
+
+Calls where the customer hangs up during the first message are wasted, and the team suspects Ananya's opening is too long. Rather than change the prompt for everyone, V2 gets a shorter opening and 30% of the calls. After a week, **A/B Analytics** shows which version did better, and the winner takes all the traffic.
+
+## Hands-on
+
+<Frame caption="Adding a version and splitting traffic in the dashboard">
+  <video alt="Adding a version and splitting traffic in the dashboard" aria-label="Adding a version and splitting traffic in the dashboard" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/agents-versions/poster.webp">
+    <source src="/media/agents-versions/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Turn on versions">
+    In Ananya's editor sidebar under **Advanced Settings**, switch on **Create Versions**. A version bar appears above the editor, showing **V1**.
+  </Step>
+  <Step title="Add V2">
+    Click **+** in the version bar. With one version, the new one copies it: prompt, voice, variables, knowledge base and tools. V2 shows 0% with a red dot: it gets no calls yet.
+  </Step>
+  <Step title="Shorten the first message">
+    Click **V2** to switch to it. In **Prompt**, replace the first message with "Hello `@{{callee_name}}`, this is Ananya from Acme Lending about your EMI due on `@{{due_date}}`. Is this a good time?" Click **Save**. It stores the prompt on V2 only; V1 is unchanged.
+  </Step>
+  <Step title="Add a note">
+    Open V2's menu and choose **Add notes**. Write "Shorter first message, 30% from 15 October", so that in a week you know what V2 changed and when.
+  </Step>
+  <Step title="Split the traffic">
+    Click the gear in the version bar and choose **Assign Traffic**. Set V1 to 70% and V2 to 30% with the sliders (they move in 5% steps, and **Save** needs a total of exactly 100%), then click **Save**.
+  </Step>
+</Steps>
+
+<Frame caption="Assign Traffic with a 70/30 split">
+  <img src="/media/agents-versions/assign-traffic.webp" alt="Assign Traffic dialog with V1 set to 70% and V2 set to 30%, Total Traffic 100% in green, and Cancel and Save buttons" />
+</Frame>
+
+## Checkpoint
+
+<Check>
+The version bar shows **V1** at 70% and **V2** at 30%, both with a green dot, and the sidebar row reads **A/B Tests Live!** with a **Finalize** button. From the gear menu, **View Analytics** opens **A/B Analytics**, which compares the versions over the last 7 days once calls come in.
+</Check>
+
+## Exercise
+
+Open **Assign Traffic** again, set V1 to 100% and V2 to 0%, and save. Expected result: V2's dot turns red, because it now receives no calls. Put the split back to 70/30; part 6 compares the two versions in Analytics.
+
+## What you learned
+
+- A version is a complete copy of the agent's configuration, so attachments such as variables and knowledge bases belong to a version; a single-prompt agent can have up to 5.
+- **Save** writes to the version you are viewing, and the traffic split must total 100% in 5% steps.
+- Every call records the version it used, so webhooks and call history say which one a call ran on; **Finalize** ends the test by sending all calls to the winner.
+
+<Quiz
+  question="You open Assign Traffic and set V1 to 60% and V2 to 30%. What happens when you click Save?"
+  answers={[
+    { text: "It saves; the remaining 10% goes to the newest version", correct: false },
+    { text: "It saves; traffic outside the split is routed to V1", correct: false },
+    { text: "Save is not possible until the total is exactly 100%", correct: true },
+    { text: "It saves and Finalize is triggered", correct: false },
+  ]}
+  correctFeedback="Right. The sliders move in 5% steps and Save needs a total of exactly 100%, so the split has to be 70/30, 65/35 or similar. Finalize is a separate action that sends all traffic to one winner and ends the test."
+  incorrectFeedback="Not quite. Nothing is routed by default: Save needs the versions to add up to exactly 100%, in 5% steps. Finalize is a separate action that picks the winner and turns A/B testing off."
+/>
+
+<RelatedTopics items={[["Drafts and versions", "/documentation/build-agents/test-and-improve/drafts-and-versions"], ["Test an agent", "/documentation/build-agents/test-and-improve/test-an-agent"]]} />

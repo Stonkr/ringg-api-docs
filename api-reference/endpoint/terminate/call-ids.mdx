@@ -1,0 +1,45 @@
+---
+title: Terminate Calls by Call IDs
+sidebarTitle: Stop calls by ID
+description: "Cancel specific queued or retry calls by their call IDs, from the call response, call history or webhooks, without stopping the rest of the campaign."
+api: "PATCH /campaign/terminate"
+related:
+  - "Monitor a campaign": /documentation/deploy/campaigns/manage-a-campaign
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+<ParamField header="X-API-KEY" type="string" required>
+  Your Ringg AI API key.
+</ParamField>
+
+<ParamField body="call_ids" type="string[]" required>
+  The calls to cancel. Example: `["00000000-0000-4000-8000-000000000116", "00000000-0000-4000-8000-00000000010d"]`
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl --request PATCH "https://prod-api.ringg.ai/ca/api/v0/campaign/terminate" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{ "call_ids": ["00000000-0000-4000-8000-000000000116"] }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{ "message": "Calls terminated successfully!" }
+```
+</ResponseExample>
+
+Only `registered` and `retry` outbound calls created in the last 7 days are cancelled. A call already in progress is not hung up; it ends normally and is not retried.
+
+Call IDs come from the [call response](/api-reference/endpoint/calling/initiate-individual-call) (`data.call_id`), [call history](/api-reference/endpoint/history/get-call-history) (`id`) and [webhook payloads](/documentation/build-agents/customize-agent-behaviour/webhooks/call-events).
+
+## Errors
+
+- `200` is returned even when no call matched the ID; check the calls in [call history](/api-reference/endpoint/history/get-call-history).
+- `401`: `X-API-KEY` is missing or invalid.
+- `422`: no field, more than one way of choosing calls at once, or a field of the wrong type.
+
+<RelatedTopics items={[["Monitor a campaign", "/documentation/deploy/campaigns/manage-a-campaign"]]} />

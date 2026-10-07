@@ -1,35 +1,24 @@
 ---
 openapi: post /campaign/v2/start
+description: "Start a campaign uploaded with POST /campaign/save, taking caller numbers from a number pool that rotates numbers and skips ones flagged as spam."
+related:
+  - "Monitor a campaign": /documentation/deploy/campaigns/manage-a-campaign
+  - "Run a campaign by API": /documentation/deploy/campaigns/campaigns-by-api#with-the-api
+  - "Terminate calls by campaign": /api-reference/endpoint/terminate/campaign
 ---
 
-Start a campaign using a managed number pool. Numbers are resolved automatically from the pool — handling rotation, spam skipping, and auto-purchase — so you don't need to specify individual `from_numbers`.
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-<Warning>
-Before starting a campaign, ensure you have:
-- Uploaded a contact list using [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list)
-- Configured your agent with the appropriate prompts and settings
-- Created a number pool and added numbers to it
-</Warning>
+`list_id` is the one returned by [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list); `agent_id` is the agent the list was uploaded for. Copy `number_pool_id` with **Copy pool ID** on the **Number pools** page ([Number pools](/documentation/inventory/phone-numbers/number-pools)). `email_completion_user_ids` are workspace user IDs from [List workspace users](/api-reference/endpoint/workspace/list-workspace-users).
 
-## Request parameters
+```json
+{
+  "agent_id": "your-agent-id",
+  "list_id": "123e4567-e89b-12d3-a456-426614174000",
+  "number_pool_id": "your-number-pool-id"
+}
+```
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `agent_id` | string | Yes | ID of the agent that will handle all campaign calls |
-| `list_id` | string | Yes | ID of the uploaded campaign contact list |
-| `number_pool_id` | string | Yes | ID of the managed number pool to use for outbound calls |
-| `callback_url` | string | No | URL to receive a webhook when the campaign completes |
-| `email_completion_user_ids` | array | No | User IDs to notify by email on campaign completion |
+The response, the balance requirement and the errors are the same as for [Start campaign](/api-reference/endpoint/campaign/start-campaign).
 
-## Standard flow
-
-1. Upload contacts with [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list).
-2. Save the returned `list_id`.
-3. Start calls with this endpoint using a `number_pool_id`.
-4. Monitor progress with [Get all campaigns](/api-reference/endpoint/campaign/get-all-campaigns).
-
-## Error responses
-
-- **400**: Invalid agent_id, list_id, or number_pool_id; campaign already started
-- **401**: Invalid or missing API key
-- **500**: Unexpected server error
+<RelatedTopics items={[["Monitor a campaign", "/documentation/deploy/campaigns/manage-a-campaign"], ["Run a campaign by API", "/documentation/deploy/campaigns/campaigns-by-api#with-the-api"], ["Terminate calls by campaign", "/api-reference/endpoint/terminate/campaign"]]} />

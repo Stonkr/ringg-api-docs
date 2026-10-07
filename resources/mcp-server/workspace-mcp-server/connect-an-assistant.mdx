@@ -1,0 +1,147 @@
+---
+title: "Connect an AI assistant"
+sidebarTitle: "Connect an assistant"
+description: "Add the Ringg AI MCP server to Claude, ChatGPT, Claude Code, Cursor or your own agent, with OAuth sign-in or your workspace API key as a bearer token."
+"og:title": "Connect an AI assistant to the Ringg AI MCP server"
+---
+
+There are two ways in, and the client decides which one you use.
+
+## Before you start
+
+<Card title="A workspace API key" icon="key" href="/documentation/manage-account/api-key" horizontal>
+  Both methods need it; the owner generates it under **Settings → API key**.
+</Card>
+
+## Pick your client
+
+Testing and disconnecting, shared by all clients, follow the tabs.
+
+| Method | Who uses it | What you do |
+| --- | --- | --- |
+| OAuth sign-in | Claude.ai, Claude Desktop, ChatGPT connectors | Add `https://mcp.ringg.ai/mcp` and sign in on the Ringg page the client opens. The client gets its own token, never your key. |
+| API key as bearer token | Claude Code, Cursor, Codex CLI, custom agents, scripts | Send `Authorization: Bearer <RINGG_API_KEY>` on every request. No sign-in. |
+
+<Tabs>
+  <Tab title="Claude.ai / Desktop">
+    <Steps>
+      <Step title="Add the connector">
+        Open **Settings → Connectors → Add custom connector**. Name it *Ringg AI* and set the URL to:
+
+        ```text
+        https://mcp.ringg.ai/mcp
+        ```
+
+        Claude detects the server's settings automatically. Leave **Authentication** on *Always required* and **OAuth client** on *No client ID — register one automatically*. Click **Add**.
+      </Step>
+      <Step title="Connect">
+        Click **Connect** on the Ringg AI row. A Ringg sign-in page opens in a new tab, naming the application (Claude) and where it will send you back (`claude.ai`). Paste your API key and click **Allow access**.
+      </Step>
+      <Step title="Verify">
+        Back in Claude, the connector shows a tick. Ask "What's in my Ringg AI workspace?" The first tool call asks for permission; choose **Allow**, or **Always allow** for read-only tools.
+        <Check>Claude answers with your agents, numbers and credits.</Check>
+      </Step>
+    </Steps>
+
+    <Tip>
+    Prompts and resources appear under the **+** menu in the chat, for example the `launch_first_call` playbook, or `ringg://agents` to attach your agent list as context.
+    </Tip>
+  </Tab>
+
+  <Tab title="ChatGPT">
+    <Steps>
+      <Step title="Enable developer mode">
+        Open **Settings → Connectors → Advanced** and turn on **Developer mode**.
+      </Step>
+      <Step title="Add the MCP server">
+        Choose **Create**, name it *Ringg AI*, set the URL to `https://mcp.ringg.ai/mcp` and authentication to **OAuth**. Save.
+      </Step>
+      <Step title="Sign in">
+        Click **Connect**. On the Ringg page, paste your API key and click **Allow access**. ChatGPT registers itself with the server, so no client ID or secret is needed.
+      </Step>
+    </Steps>
+  </Tab>
+
+  <Tab title="Claude Code">
+    One command, no sign-in:
+
+    ```bash
+    claude mcp add --transport http ringg https://mcp.ringg.ai/mcp \
+      --header "Authorization: Bearer $RINGG_API_KEY"
+    ```
+
+    Then, in a session: "Using Ringg, what agents do I have?"
+
+    <Warning>
+    The key is saved in Claude Code's local configuration. If the machine is shared or lost, [rotate the key](/documentation/manage-account/api-key#rotate-the-key).
+    </Warning>
+  </Tab>
+
+  <Tab title="Cursor & JSON-configured clients">
+    Most desktop clients read a JSON file of MCP servers. For Cursor, add to `.cursor/mcp.json` (project) or `~/.cursor/mcp.json` (global):
+
+    ```json
+    {
+      "mcpServers": {
+        "ringg": {
+          "url": "https://mcp.ringg.ai/mcp",
+          "headers": {
+            "Authorization": "Bearer <RINGG_API_KEY>"
+          }
+        }
+      }
+    }
+    ```
+
+    Any client that supports Streamable HTTP with custom headers works the same way. Clients that implement MCP OAuth can be pointed at the URL instead; the server publishes what they need at `/.well-known/oauth-authorization-server` and `/.well-known/oauth-protected-resource`.
+  </Tab>
+
+  <Tab title="Your own agent (Python)">
+    With the official MCP Python SDK:
+
+    ```python
+    import asyncio, os
+    import httpx
+    from mcp import ClientSession
+    from mcp.client.streamable_http import streamable_http_client
+
+    async def main():
+        headers = {"Authorization": f"Bearer {os.environ['RINGG_API_KEY']}"}
+        async with httpx.AsyncClient(headers=headers, timeout=120) as http, \
+                   streamable_http_client("https://mcp.ringg.ai/mcp", http_client=http) as (read, write):
+            async with ClientSession(read, write) as session:
+                await session.initialize()
+                overview = await session.call_tool("get_account_overview", {})
+                print(overview.structuredContent["workspace"]["name"])
+
+    asyncio.run(main())
+    ```
+
+    `get_call` with `wait_for_completion=true` can run for minutes (up to its `timeout_seconds`, at most 600), so give your HTTP client a long timeout.
+  </Tab>
+</Tabs>
+
+## Test it safely
+
+1. Ask for the account overview. It only reads.
+2. Ask the client to create a test agent from a short brief.
+3. Ask it to call your own number with that agent and wait for the transcript. Your client should ask you to confirm before dialling.
+
+If the call fails at once with a caller-ID error, pick a number the overview marks as usable for live calls ([why](/resources/mcp-server/workspace-mcp-server/security-and-faq#faq)).
+
+## Disconnect
+
+Remove the connector in the client's settings, or [regenerate the API key](/documentation/manage-account/api-key#rotate-the-key) to cut off every client at once; see [Revoking access](/resources/mcp-server/workspace-mcp-server/security-and-faq#revoking-access).
+
+Next: the [tool reference](/resources/mcp-server/workspace-mcp-server/tool-reference) lists every tool, resource and prompt the connected client can use, with inputs and defaults.
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Tool reference" icon="wrench" href="/resources/mcp-server/workspace-mcp-server/tool-reference">
+    What the client can and cannot do in your workspace, and how to phrase requests.
+  </Card>
+  <Card title="Security and FAQ" icon="shield-check" href="/resources/mcp-server/workspace-mcp-server/security-and-faq">
+    How sign-in protects the key, what is stored and how to revoke access.
+  </Card>
+</Columns>

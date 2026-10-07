@@ -1,15 +1,16 @@
 ---
 openapi: get /agent/voices
+description: "List the voices you can give an agent, with their supported languages, preview audio and gender, optionally filtered by one or more language codes."
+related:
+  - "Voice and language": /documentation/build-agents/customize-agent-behaviour/voice-and-language
 ---
 
-List available voices for assistant configuration. You can optionally filter by language when building assistant creation or configuration workflows.
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-## When to use
+Pass the chosen voice's `id` as `voice_id` when you [create an agent](/api-reference/endpoint/assistant/create-agent) or change its voice.
 
-- Populate a voice picker in a custom assistant setup UI.
-- Validate that a desired language has available voices before creating an assistant.
-- Let internal operators compare voice options without opening the Ringg dashboard.
+## Notes
 
-## Integration notes
+- A voice works only in the languages listed in its `languages`. Pairing a voice with a language it does not support returns `400`.
 
-Voice availability can vary by language and provider. Store the selected voice ID only after the operator confirms the assistant configuration.
+<RelatedTopics items={[["Voice and language", "/documentation/build-agents/customize-agent-behaviour/voice-and-language"]]} />

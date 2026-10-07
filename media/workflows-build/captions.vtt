@@ -1,0 +1,43 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:03.739
+Go to Workflows and click Create workflow
+
+00:00:03.739 --> 00:00:05.862
+Name it
+
+00:00:05.862 --> 00:00:08.102
+Click + on Start and add an Agent block
+
+00:00:08.102 --> 00:00:16.367
+Pick the agent, its numbers, and fill its variables
+
+00:00:16.367 --> 00:00:25.297
+Add a Conditional: did the borrower promise to pay?
+
+00:00:25.297 --> 00:00:32.580
+On Match, add an Action that calls your CRM
+
+00:00:32.580 --> 00:00:37.361
+On No match, add an Await block: wait 1 day
+
+00:00:37.361 --> 00:00:47.452
+Then an Agent block in Chat mode: a WhatsApp nudge
+
+00:00:47.452 --> 00:00:49.084
+Call, branch, act, wait and message in one flow
+
+00:00:49.084 --> 00:00:50.903
+Click Save
+
+00:00:50.903 --> 00:00:54.035
+Click Publish, then confirm
+
+00:00:54.035 --> 00:00:57.808
+Click Test and enter who to call
+
+00:00:57.808 --> 00:01:03.070
+Click Start run and watch each block finish
+
+00:01:03.070 --> 00:01:05.601
+Completed: the run took the Match path

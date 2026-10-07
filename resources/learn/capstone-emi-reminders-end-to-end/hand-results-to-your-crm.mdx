@@ -1,0 +1,159 @@
+---
+title: "Lesson: Hand results to your CRM"
+sidebarTitle: "Hand results to your CRM"
+description: "Subscribe Ananya to All Processing Done so each finished call reaches the Acme CRM endpoint with a bearer header, then store the fields that record the promise."
+related:
+  - "Event Subscription": /documentation/build-agents/customize-agent-behaviour/event-subscription
+  - "Webhook payloads": /documentation/build-agents/customize-agent-behaviour/webhooks/call-events
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 7: Capstone: EMI reminders end to end · Lesson 3 of 4 · 20 minutes**
+
+## Objective
+
+Have Ringg send every finished call to your CRM endpoint as one request, and know which fields to store.
+
+## The scenario
+
+After each call, Acme's CRM needs to know, per loan account, whether the customer promised to pay and for when, with a link to the recording for disputes. In part 6 you read that from Logs by hand; from now on the CRM gets it on its own.
+
+## Hands-on
+
+<Frame caption="Adding an event subscription">
+  <video alt="Adding an event subscription" aria-label="Adding an event subscription" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/agents-event-subscription/poster.webp">
+    <source src="/media/agents-event-subscription/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open Event Subscription">
+    Open `EMI reminder - Hindi`, then **Advanced Settings → Event Subscription**. With no subscriptions yet, the **New subscription** form is already open; otherwise click **Create Subscription**.
+  </Step>
+  <Step title="Point it at the CRM">
+    Leave **Method** on **POST** and set **Callback URL** to your endpoint; Acme's is `https://crm.acme-lending.example/webhooks/ringg`. It must use HTTPS and return a `2xx` status within 30 seconds, so store the request first and process it later ([endpoint requirements](/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors#endpoint-requirements)).
+  </Step>
+  <Step title="Pick the event">
+    Under **Select Events**, tick **All Processing Done** only. It fires once the recording, transcript and both analyses are ready and carries all of them, so the CRM gets one request per call. **Call Completed** fires for every attempt, busy and unanswered included, with no analysis yet; add it, or **Call Started**, only for live progress.
+  </Step>
+  <Step title="Add the secret header">
+    Under **Custom Headers**, click **Add Header** and enter `Authorization` with the value `Bearer <your-token>`. Ringg sends it with every request, so your server can reject requests without it. After saving, the value is masked (`sk_l***`).
+  </Step>
+  <Step title="Save and fire it">
+    Click **Create Subscription**: "Event subscription added", and a card with the **Webhook URL**, **Events** and **Headers**. Place a test call to your phone, answer, and say you will pay on 15 October.
+  </Step>
+</Steps>
+
+By API, the same subscription is one `PATCH /agent/v1` with `operation: "edit_event_subscriptions"`; see [Configure subscriptions](/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors#configure-subscriptions).
+
+### The request your CRM receives
+
+The `all_processing_completed` event for one outbound call, from [Webhook payloads](/documentation/build-agents/customize-agent-behaviour/webhooks/call-events#all-processing-completed-event). This example comes from an agent with other keys; on Ananya, `custom_args_values` holds `due_amount`, `due_date` and `loan_account`, and `client_analysis` holds `payment_promised`, `promised_date` and `objection`.
+
+```json
+{
+  "event_type": "all_processing_completed",
+  "call_id": "00000000-0000-4000-8000-0000000000c4",
+  "parent_call_id": null,
+  "call_sid": "00000000-0000-4000-8000-0000000000c2",
+  "agent_id": "00000000-0000-4000-8000-0000000000a1",
+  "workspace_id": "00000000-0000-4000-8000-0000000000c3",
+  "status": "completed",
+  "sub_status": "ACCEPTED",
+  "call_type": "outbound",
+  "call_duration": 15.73,
+  "called_on": "2026-08-04T12:29:13.310707Z",
+  "created_at": "2026-08-04T12:29:13.315211Z",
+  "to_number": "+919876543210",
+  "from_number": "+919876540111",
+  "custom_args_values": {
+    "callee_name": "Priya",
+    "emi_amount": "4500",
+    "due_date": "12 August"
+  },
+  "bulk_list_id": null,
+  "agent_name": "EMI Reminder",
+  "version_id": "00000000-0000-4000-8000-0000000000c1",
+  "version_slug": "v1",
+  "version_description": "Initial version",
+  "call_cost": 0.15,
+  "agent_message_count": 3,
+  "user_message_count": 2,
+  "overall_latency_seconds": 0.892345,
+  "first_utterance_seconds": 0.456789,
+  "transcript": [
+    { "bot": "Hi Priya, this is Riya from Acme Lending. Your EMI of 4,500 rupees is due on 12 August." },
+    { "user": "Yes, I know. I'll pay it this week." },
+    { "bot": "Thank you. Have a good day." }
+  ],
+  "recording_url": "https://recordings.example.com/00000000-0000-4000-8000-0000000000c4.mp3",
+  "platform_analysis": {
+    "key_points": [
+      "Reminded the customer of the 4,500 rupee EMI due on 12 August.",
+      "The customer said they will pay this week."
+    ],
+    "action_items": [],
+    "summary": "The agent reminded Priya of her EMI due on 12 August. She confirmed she will pay this week.",
+    "classification": "payment_confirmed",
+    "callback_requested": false,
+    "callback_requested_time": null,
+    "status": "analyzed",
+    "call_disconnect_reason": "agent_hangup",
+    "timezone": "Asia/Kolkata"
+  },
+  "platform_analysis_status": "success",
+  "client_analysis": {
+    "payment_intent": "will_pay",
+    "promised_date": "this week",
+    "dispute_raised": false
+  },
+  "client_analysis_status": "success",
+  "tool_call_logs": []
+}
+```
+
+### What to store
+
+| Field | Why |
+|---|---|
+| `call_id` and `event_type` | The dedupe key: the same event can arrive twice, so update rather than insert. |
+| `custom_args_values.loan_account` | Which account the result belongs to. |
+| `status`, `sub_status` | `completed` / `ACCEPTED` means the call connected normally; anything else has no promise to record. |
+| `client_analysis` | `payment_promised`, `promised_date` and `objection`, when `client_analysis_status` is `success`. |
+| `platform_analysis.summary` | One line for the relationship manager. |
+| `recording_url` | The link may expire; fetch a fresh one from [Get Call Details](/api-reference/endpoint/history/get-call-details), and download the file if disputes need it. |
+| `bulk_list_id` | The campaign the call belongs to; `null` for single calls. |
+| `parent_call_id` | Set on a retry or callback of an earlier call; link it to that call rather than counting a second contact. |
+
+## Checkpoint
+
+<Check>
+The subscription card shows **POST**, your URL and `all_processing_completed`. After the test call, your server has logged one request with `event_type` `all_processing_completed`, `client_analysis_status` `success`, and `payment_promised` `true` with the `promised_date` you gave in `client_analysis`.
+</Check>
+
+## Exercise
+
+Open the card's menu (**⋮**), click **Edit**, tick **Call Started** too, and click **Update Subscription**. Place one more test call. Expected result: your server logs a `call_started` request as the call is dialled, then the usual `all_processing_completed`. Untick **Call Started** again afterwards.
+
+## What you learned
+
+- One event, `all_processing_completed`, carries the whole call; the earlier events are for live progress.
+- Your endpoint answers `2xx` fast and deduplicates on `call_id` plus `event_type`; retries and callbacks are separate calls that point back with `parent_call_id`.
+- The promise lives in `client_analysis`, under the keys you defined in Advanced Analysis.
+
+<Quiz
+  question="Your CRM receives the same all_processing_completed request twice for one call. What do you do?"
+  answers={[
+    { text: "Treat the second as a retry attempt and count a second contact", correct: false },
+    { text: "Update the record keyed on call_id and event_type instead of inserting another", correct: true },
+    { text: "Reply with a non-200 status so Ringg stops resending", correct: false },
+    { text: "Subscribe to Call Completed instead, which never repeats", correct: false },
+  ]}
+  correctFeedback="Right. The same event can arrive twice, so call_id plus event_type is the dedupe key: update the record rather than inserting another. A retry of an earlier call is a different call that points back with parent_call_id."
+  incorrectFeedback="Not quite. Duplicates are expected and handled on your side: dedupe on call_id plus event_type and update the record. A retry is a separate call with parent_call_id set, and your endpoint should answer 2xx fast either way."
+/>
+
+<RelatedTopics items={[["Event Subscription", "/documentation/build-agents/customize-agent-behaviour/event-subscription"], ["Webhook payloads", "/documentation/build-agents/customize-agent-behaviour/webhooks/call-events"]]} />

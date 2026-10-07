@@ -1,0 +1,291 @@
+---
+title: "Webhook field reference"
+sidebarTitle: "Field reference"
+description: "Every field in Ringg AI webhook payloads, by event, plus the status and sub-status values a call can end with and what each one means."
+related:
+  - "Event Subscription": /documentation/build-agents/customize-agent-behaviour/event-subscription
+  - "Webhook setup and errors": /documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors
+  - "Call events": /documentation/build-agents/customize-agent-behaviour/webhooks/call-events
+  - "WhatsApp chat events": /documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+## Status and sub-status reference
+
+`status` is the call's lifecycle state and `sub_status` refines it. Every call event carries both, except `recording_completed`, which has only `sub_status`.
+
+### `status`
+
+| Value | Meaning |
+|-------|---------|
+| `registered` | Registered and queued, not dialled yet. Usual on `call_started`. |
+| `ongoing` | Connected, in progress |
+| `retry` | The attempt didn't connect; the call will be retried |
+| `completed` | Answered and a conversation took place |
+| `failed` | Retries exhausted without success |
+| `error` | Terminal error, often because the call could never be placed |
+| `cancelled` | Ended before connecting (ended by the caller, or rate-limited) |
+| `forwarded` | Transferred before connecting (rare) |
+
+### `sub_status`
+
+The values depend on `status`.
+
+- On `registered` and `retry`: `QUEUED`.
+- On `ongoing`: `ACCEPTED`.
+
+On `completed`, upper-case:
+
+| Value | Meaning |
+|-------|---------|
+| `ACCEPTED` | Connected normally |
+| `VOICEMAIL_DETECTED` | Voicemail detected by the telephony provider |
+| `VOICEMAIL_DETECTED_VIA_LLM` | Voicemail detected from the transcript |
+| `MAX_CALL_DURATION` | Reached the maximum call duration |
+| `PHONOS_TIMEOUT` | The voice agent runtime timed out |
+
+On `cancelled`:
+
+| Value | Meaning |
+|-------|---------|
+| `USER_TERMINATED` | The caller ended the call before it connected |
+| `RATE_LIMITED` | Blocked by rate limiting before connecting |
+
+On `failed` and `error`, `sub_status` is the telephony provider's hangup cause, lower-cased, plus a few Ringg reasons. Treat it as a free-form string, not an enum. Common values:
+
+| Value | Meaning |
+|-------|---------|
+| `busy line` | The line was busy |
+| `rejected` | Rejected by the callee or carrier |
+| `no answer` or `no_answer` | Not picked up |
+| `ring timeout reached` | Rang until the timeout |
+| `request timeout` | The dial request timed out |
+| `declined` | Declined by the callee or carrier |
+| `forbidden` | The carrier refused the call (blocked route or number) |
+| `unallocated_number` | The number is unallocated or invalid |
+| `invalid destination address` | The carrier rejected the destination |
+| `network congestion from carrier` | Carrier network congestion |
+| `internal error from carrier` | Carrier-side error |
+| `routing error` | The carrier could not route the call |
+| `network error` | Generic network failure |
+| `busy everywhere` | All endpoints busy |
+| `loop detected` | The carrier detected a routing loop |
+| `not_able_to_call` | Ringg could not place the call (typical with `error`) |
+| `retry_limit_reached` | All retries used |
+| `user_did_not_join` | The user never joined (for example, a web call) |
+| `failed` | The carrier gave no specific reason |
+
+## Field reference
+
+### Common fields
+
+Present on every event unless the per-event notes below say otherwise.
+
+<ResponseField name="event_type" type="string" required>
+  One of `call_started`, `call_ringing`, `call_ongoing`, `call_completed`, `chat_completed`, `recording_completed`, `platform_analysis_completed`, `client_analysis_completed`, `all_processing_completed`.
+</ResponseField>
+<ResponseField name="event_id" type="string">
+  Unique ID of this event. On `call_started`; `call_ringing` and `call_ongoing` don't carry it.
+</ResponseField>
+<ResponseField name="timestamp" type="string">
+  ISO 8601 time the event was generated, UTC.
+</ResponseField>
+<ResponseField name="version" type="string">
+  Event schema version, for example `"1.0"`.
+</ResponseField>
+<ResponseField name="call_id" type="string" required>
+  The call's ID.
+</ResponseField>
+<ResponseField name="parent_call_id" type="string | null" required>
+  The call this one was created from; `null` if dialled directly. See [Linking retries and callbacks](/documentation/build-agents/customize-agent-behaviour/webhooks/call-events#linking-retries-and-callbacks-to-the-original-call).
+</ResponseField>
+<ResponseField name="call_sid" type="string | null">
+  The telephony provider's call ID. `null` until the call is dialled.
+</ResponseField>
+<ResponseField name="agent_id" type="string">
+  The agent that handled the call. Not on `recording_completed`.
+</ResponseField>
+<ResponseField name="workspace_id" type="string">
+  Your workspace ID. Not on `recording_completed`.
+</ResponseField>
+<ResponseField name="calling_source" type="string">
+  Telephony provider of the number that placed the call, for example `plivo`, `twilio`, `exotel`, `vobiz`. Only on `call_started` for API, campaign and scheduled calls; not on test calls, web calls or any other event. Can be `null`.
+</ResponseField>
+<ResponseField name="custom_args_values" type="object">
+  The variables you sent when starting the call.
+</ResponseField>
+<ResponseField name="bulk_list_id" type="string | null">
+  The campaign list the call belongs to; `null` for single calls.
+</ResponseField>
+<ResponseField name="agent_name" type="string">
+  The agent's display name.
+</ResponseField>
+<ResponseField name="version_id" type="string">
+  The agent version used.
+</ResponseField>
+<ResponseField name="version_slug" type="string">
+  Slug of the agent version, for example `v1`. Not on `recording_completed`.
+</ResponseField>
+<ResponseField name="version_description" type="string | null">
+  Description of the agent version. Not on `recording_completed`.
+</ResponseField>
+<ResponseField name="call_cost" type="number | null">
+  Cost of the call in credits; `null` until calculated.
+</ResponseField>
+<ResponseField name="overall_latency_seconds" type="number | null">
+  Total response latency in seconds (sum of the median latencies across metrics).
+</ResponseField>
+<ResponseField name="first_utterance_seconds" type="number | null">
+  Time to the agent's first spoken response, in seconds.
+</ResponseField>
+<ResponseField name="tool_call_logs" type="array">
+  Logs of the [tools](/documentation/build-agents/customize-agent-behaviour/tools/overview) run before and during the call.
+</ResponseField>
+
+### Call started fields
+
+<ResponseField name="status" type="string">
+  Normally `registered`; `ongoing` on the second `call_started` a fast-connecting call can send.
+</ResponseField>
+<ResponseField name="sub_status" type="string">
+  Normally `QUEUED`; `ACCEPTED` on the `ongoing` variant.
+</ResponseField>
+<ResponseField name="call_type" type="string">
+  `outbound` or `webcall`; inbound phone calls don't send `call_started`.
+</ResponseField>
+<ResponseField name="to_number" type="string">
+  The number being called.
+</ResponseField>
+<ResponseField name="from_number" type="string">
+  The caller ID.
+</ResponseField>
+
+### Call completed fields
+
+Also present on `platform_analysis_completed`, `client_analysis_completed` and `all_processing_completed`.
+
+<ResponseField name="status" type="string">
+  `completed`, `failed`, `error`, `cancelled`, `forwarded`, or the interim `retry`. See [Status and sub-status reference](#status-and-sub-status-reference).
+</ResponseField>
+<ResponseField name="sub_status" type="string">
+  The reason, for example `ACCEPTED`, `busy line`, `not_able_to_call`.
+</ResponseField>
+<ResponseField name="call_type" type="string">
+  `inbound`, `outbound` or `webcall`.
+</ResponseField>
+<ResponseField name="call_duration" type="number | null">
+  Seconds; `null` if the call never connected.
+</ResponseField>
+<ResponseField name="to_number" type="string">
+  The number that received the call.
+</ResponseField>
+<ResponseField name="from_number" type="string">
+  The number that placed the call.
+</ResponseField>
+<ResponseField name="called_on" type="string">
+  ISO 8601 time this attempt was dialled, UTC.
+</ResponseField>
+<ResponseField name="created_at" type="string">
+  ISO 8601 time the call record was created, UTC.
+</ResponseField>
+<ResponseField name="transcript" type="array">
+  Turns as `{ "bot": "…" }` and `{ "user": "…" }` entries. Empty if the call never connected.
+</ResponseField>
+<ResponseField name="agent_message_count" type="number">
+  Messages spoken by the agent.
+</ResponseField>
+<ResponseField name="user_message_count" type="number">
+  Messages spoken by the user.
+</ResponseField>
+<ResponseField name="retry_count" type="number">
+  Retries so far; `0` on the first attempt. `call_completed` only.
+</ResponseField>
+<ResponseField name="attempts" type="array">
+  Dial history, oldest first. `call_completed` only.
+  <Expandable title="attempt">
+    <ResponseField name="status" type="string">
+      That attempt's outcome in the provider's original casing, for example `"Busy Line"` or `"ACCEPTED"`.
+    </ResponseField>
+    <ResponseField name="called_on_time" type="string">
+      ISO 8601 time the attempt was dialled, UTC.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="recording_url" type="string | null">
+  `null` on `call_completed`; the recording arrives with `recording_completed` and `all_processing_completed`.
+</ResponseField>
+
+### Recording fields
+
+`recording_completed` carries the common fields except `status`, `agent_id`, `workspace_id`, `version_slug` and `version_description`, plus:
+
+<ResponseField name="recording_url" type="string">
+  Recording URL. It may expire about a day after the event is sent; [Get Call Details](/api-reference/endpoint/history/get-call-details) always returns a fresh link.
+</ResponseField>
+<ResponseField name="recording_duration" type="number">
+  Recording length in seconds.
+</ResponseField>
+<ResponseField name="sub_status" type="string">
+  The call's sub-status.
+</ResponseField>
+
+### Analysis fields
+
+<ResponseField name="entity_type" type="string">
+  `call` for calls, `chat` for WhatsApp chats.
+</ResponseField>
+<ResponseField name="analysis_data" type="object">
+  The results. On `client_analysis_completed` the keys are the ones you defined in [Advanced Analysis](/documentation/build-agents/customize-agent-behaviour/advanced-analysis). On `platform_analysis_completed`:
+  <Expandable title="platform analysis">
+    <ResponseField name="summary" type="string">
+      Summary of the conversation's purpose and outcome.
+    </ResponseField>
+    <ResponseField name="classification" type="string">
+      Category label, for example `payment_confirmed`.
+    </ResponseField>
+    <ResponseField name="key_points" type="string[]">
+      Main takeaways.
+    </ResponseField>
+    <ResponseField name="action_items" type="string[]">
+      Follow-up tasks.
+    </ResponseField>
+    <ResponseField name="callback_requested" type="boolean">
+      Whether the customer asked to be called back.
+    </ResponseField>
+    <ResponseField name="callback_requested_time" type="string | null">
+      ISO 8601 time of the requested callback.
+    </ResponseField>
+    <ResponseField name="status" type="string">
+      `analyzed` when analysis ran.
+    </ResponseField>
+    <ResponseField name="call_disconnect_reason" type="string">
+      `agent_hangup` or `user_hangup`.
+    </ResponseField>
+    <ResponseField name="timezone" type="string">
+      Time zone used for the call.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+### All processing completed fields
+
+Every common field, the call completed fields, plus:
+
+<ResponseField name="recording_url" type="string">
+  Same as `recording_completed`'s `recording_url`.
+</ResponseField>
+<ResponseField name="platform_analysis" type="object">
+  Same shape as `platform_analysis_completed`'s `analysis_data`.
+</ResponseField>
+<ResponseField name="platform_analysis_status" type="string">
+  `success`, `failed`, `not_enabled` or `cancelled`.
+</ResponseField>
+<ResponseField name="client_analysis" type="object">
+  Same shape as `client_analysis_completed`'s `analysis_data`: the keys you defined.
+</ResponseField>
+<ResponseField name="client_analysis_status" type="string">
+  `success`, `failed`, `not_enabled` or `cancelled`.
+</ResponseField>
+
+<RelatedTopics items={[["Event Subscription", "/documentation/build-agents/customize-agent-behaviour/event-subscription"], ["Webhook setup and errors", "/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors"], ["Call events", "/documentation/build-agents/customize-agent-behaviour/webhooks/call-events"], ["WhatsApp chat events", "/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events"]]} />

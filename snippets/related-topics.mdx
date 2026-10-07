@@ -1,0 +1,13 @@
+export const RelatedTopics = ({ items }) => (
+  <div className="not-prose mt-12">
+    <div className="text-sm font-medium text-gray-500 dark:text-zinc-400 mb-3">Related topics</div>
+    <div className="flex flex-col gap-2.5">
+      {items.map(([title, href]) => (
+        <a key={href} href={href} className="flex items-center gap-2.5 text-sm text-gray-700 hover:text-gray-950 dark:text-zinc-300 dark:hover:text-white">
+          <Icon icon="file-text" size={16} color="currentColor" />
+          {title}
+        </a>
+      ))}
+    </div>
+  </div>
+);

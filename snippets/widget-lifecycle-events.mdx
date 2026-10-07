@@ -1,4 +1,4 @@
-The widget emits five lifecycle events. The names and payloads are identical on every platform; only the delivery mechanism differs (browser `CustomEvent` on the web, an in-memory bus on React Native and Flutter).
+The React Native and Flutter widgets emit five lifecycle events on an in-memory event bus. The web widget uses the same names as browser `CustomEvent`s, with two differences: it never emits `ringg:component_acknowledgement`, and its `ringg:calendar_booking` has no `"failed"` status. See [web widget events](/documentation/deploy/web-and-apps/web-widget/events).
 
 | Event | Fires when | Payload |
 |---|---|---|
@@ -9,5 +9,5 @@ The widget emits five lifecycle events. The names and payloads are identical on 
 | `ringg:component_acknowledgement` | The user responds to an interactive component (form submit, button tap, slot pick). | `componentName`: string. `componentId`: string. `status`: string. |
 
 <Note>
-`ringg:calendar_booking` and `ringg:component_acknowledgement` only fire when the assistant sends interactive components. An assistant configured for plain voice or text never emits them.
+`ringg:calendar_booking` and `ringg:component_acknowledgement` only fire when the agent sends interactive components. An agent configured for plain voice or text never emits them.
 </Note>

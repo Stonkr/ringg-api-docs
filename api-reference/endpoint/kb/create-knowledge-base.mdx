@@ -1,51 +1,29 @@
 ---
 openapi: post /external/kb
+description: "Create a knowledge base from files, web page URLs and FAQ pairs, processed in the background, then attach it to an agent so it can answer from that content."
+related:
+  - "Edit knowledge base": /api-reference/endpoint/kb/edit-knowledge-base
 ---
 
-## Create Knowledge Base
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-Create a new non-deterministic knowledge base that can be used to provide context and information to your AI agents. Knowledge bases support multiple content types including files, URLs, and FAQs.
+The response returns its `kb_id` with `processing_status` `pending`; poll [Get knowledge base](/api-reference/endpoint/kb/get-knowledge-base-by-id) until `status` is `completed`, then attach it to an agent with the `attach_kb` operation of [Edit agent settings](/api-reference/endpoint/assistant/edit-assistant).
 
-<Warning>
-**Rate Limits**:
-- Maximum 10 requests per hour per workspace
-- File size limit: 2 MB per file, 5 MB total
-- Maximum 10 files and 20 URLs per request
-</Warning>
+## Content
 
-## Content Types
+Send `kb_name` and any mix of `files`, `urls` and `faqs`; each FAQ is a `{"question", "answer"}` object. One request takes up to 10 files (2 MB each, 5 MB in total) and 20 URLs.
 
-### Files
-Upload documents (PDF, TXT, DOCX, etc.) to provide structured information to your knowledge base.
-- Max 10 files per request
-- 2 MB per file limit
-- 5 MB total size limit
+Files are read by extension: PDF, DOCX, TXT, CSV (one entry per row) and JSON. Any other extension, such as `.md`, is read as plain text.
 
-### URLs
-Index web pages to automatically extract and store their content.
-- Max 20 URLs per request
-- URLs are crawled and indexed automatically
-- Content is refreshed periodically
+Knowledge bases created with the API are not listed on the dashboard's **Knowledge Base** page. They do appear in the agent editor's knowledge base picker and in [Get all knowledge bases](/api-reference/endpoint/kb/get-all-knowledge-bases), which also lists the ones made in the dashboard.
 
-### FAQs
-Provide question-answer pairs for deterministic responses to common queries.
-```json
-{
-  "faqs": "[{\"question\": \"What is your return policy?\", \"answer\": \"30-day money back guarantee\"}]"
-}
+```bash
+curl --request POST "https://prod-api.ringg.ai/ca/api/v0/external/kb" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --form 'kb_name="Acme Lending FAQ"' \
+  --form 'urls="[\"https://example.com/faq\"]"' \
+  --form 'faqs="[{\"question\": \"Can I pay my EMI early?\", \"answer\": \"Yes, from the Acme app under Loans.\"}]"' \
+  --form "files=@loan-terms.pdf"
 ```
 
-## Processing Status
-
-Knowledge base creation is asynchronous. The response includes:
-- `kb_id`: Unique identifier for the knowledge base
-- `processing_status`: Current status (`pending`, `processing`, `completed`)
-- `files_queued`: Number of files being processed
-
-Use the [Get Knowledge Base by ID](/api-reference/endpoint/kb/get-knowledge-base-by-id) endpoint to check processing status.
-
-## Important Notes
-
-- **Asynchronous Processing**: Files and URLs are processed in the background
-- **Content Updates**: Use the [Edit Knowledge Base](/api-reference/endpoint/kb/edit-knowledge-base) endpoint to update content
-- **Agent Integration**: Link knowledge bases to agents via the assistant configuration
+<RelatedTopics items={[["Edit knowledge base", "/api-reference/endpoint/kb/edit-knowledge-base"]]} />

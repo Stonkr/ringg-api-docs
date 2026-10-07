@@ -1,0 +1,344 @@
+---
+title: "Campaigns by API"
+sidebarTitle: "Campaigns by API"
+description: "Create and start Ringg AI campaigns from your backend: the standard save-then-start flow and the large-campaign flow that verifies uploads before scheduling calls."
+---
+
+## With the API
+
+All requests go to `https://prod-api.ringg.ai/ca/api/v0` with the header `X-API-KEY: $RINGG_API_KEY` ([API key](/documentation/manage-account/api-key), [Authentication](/api-reference/introduction/authentication)). You need the agent's ID ([Find an agent's ID](/documentation/build-agents/agents/agent-types#find-the-agent-id)) and either caller numbers ([Get Workspace Numbers](/api-reference/endpoint/numbers/get-workspace-numbers)) or a pool ID (**Copy pool ID** on [the pool list](/documentation/inventory/phone-numbers/number-pools#the-pool-list)). Campaign times use the format `DD/MM/YYYY, HH:MM` and are read in `call_config.call_time.timezone`.
+
+Two flows exist: the standard one (save, then start) and the large-campaign one (upload, poll verification, then schedule), which the dashboard uses for every campaign. Both apply the same [row limit](/documentation/deploy/campaigns/calling-list#file-rules).
+
+### Standard flow: save, then start
+
+<Steps>
+  <Step title="Upload the list and settings">
+    [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list) (`POST /campaign/save`) takes the CSV and the campaign settings as `multipart/form-data`. The response includes `list_id`, `total_rows`, `successful_rows` and `failed_rows`.
+
+    <CodeGroup>
+    ```bash cURL
+    curl --request POST "https://prod-api.ringg.ai/ca/api/v0/campaign/save" \
+      --header "X-API-KEY: $RINGG_API_KEY" \
+      --form 'campaign_name="October payment reminders"' \
+      --form 'agent_id="b1972188-038e-4605-916c-3926e9d7bde4"' \
+      --form 'country_code="+91"' \
+      --form 'variables_map="{\"callee_name\":\"callee_name\",\"mobile_number\":\"mobile_number\",\"amount_due\":\"amount_due\"}"' \
+      --form 'campaign_start_time="18/10/2026, 09:00"' \
+      --form 'campaign_end_time="19/10/2026, 09:00"' \
+      --form 'call_config="{\"call_retry_config\":{\"retry_count\":3,\"retry_busy\":30,\"retry_not_picked\":30,\"retry_failed\":30},\"call_time\":{\"call_start_time\":\"08:00\",\"call_end_time\":\"20:00\",\"timezone\":\"Asia/Kolkata\"}}"' \
+      --form 'remove_invalid_rows="true"' \
+      --form "file=@payment-reminders.csv"
+    ```
+
+    ```javascript JavaScript
+    import { readFile } from "node:fs/promises";
+
+    const form = new FormData();
+    form.append("campaign_name", "October payment reminders");
+    form.append("agent_id", "b1972188-038e-4605-916c-3926e9d7bde4");
+    form.append("country_code", "+91");
+    form.append("variables_map", JSON.stringify({ callee_name: "callee_name", mobile_number: "mobile_number", amount_due: "amount_due" }));
+    form.append("campaign_start_time", "18/10/2026, 09:00");
+    form.append("campaign_end_time", "19/10/2026, 09:00");
+    form.append("call_config", JSON.stringify({
+      call_retry_config: { retry_count: 3, retry_busy: 30, retry_not_picked: 30, retry_failed: 30 },
+      call_time: { call_start_time: "08:00", call_end_time: "20:00", timezone: "Asia/Kolkata" },
+    }));
+    form.append("remove_invalid_rows", "true");
+    form.append("file", new Blob([await readFile("payment-reminders.csv")]), "payment-reminders.csv");
+
+    const res = await fetch("https://prod-api.ringg.ai/ca/api/v0/campaign/save", {
+      method: "POST",
+      headers: { "X-API-KEY": process.env.RINGG_API_KEY },
+      body: form,
+    });
+    console.log(await res.json());
+    ```
+
+    ```python Python
+    import json
+    import os
+
+    import requests
+
+    with open("payment-reminders.csv", "rb") as f:
+        res = requests.post(
+            "https://prod-api.ringg.ai/ca/api/v0/campaign/save",
+            headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+            data={
+                "campaign_name": "October payment reminders",
+                "agent_id": "b1972188-038e-4605-916c-3926e9d7bde4",
+                "country_code": "+91",
+                "variables_map": json.dumps({"callee_name": "callee_name", "mobile_number": "mobile_number", "amount_due": "amount_due"}),
+                "campaign_start_time": "18/10/2026, 09:00",
+                "campaign_end_time": "19/10/2026, 09:00",
+                "call_config": json.dumps({
+                    "call_retry_config": {"retry_count": 3, "retry_busy": 30, "retry_not_picked": 30, "retry_failed": 30},
+                    "call_time": {"call_start_time": "08:00", "call_end_time": "20:00", "timezone": "Asia/Kolkata"},
+                }),
+                "remove_invalid_rows": "true",
+            },
+            files={"file": ("payment-reminders.csv", f)},
+        )
+    print(res.json())
+    ```
+    </CodeGroup>
+  </Step>
+  <Step title="Start the calls">
+    Pass the `list_id` to [Start campaign (number pool)](/api-reference/endpoint/campaign/start-campaign-v2) (`POST /campaign/v2/start`) with a `number_pool_id`. `email_completion_user_ids` (workspace user IDs to email when the campaign is scheduled and when it completes) is optional; an ID that isn't a member of the workspace returns `404`.
+
+    <CodeGroup>
+    ```bash cURL
+    curl --request POST "https://prod-api.ringg.ai/ca/api/v0/campaign/v2/start" \
+      --header "X-API-KEY: $RINGG_API_KEY" \
+      --header "Content-Type: application/json" \
+      --data '{
+        "agent_id": "b1972188-038e-4605-916c-3926e9d7bde4",
+        "list_id": "123e4567-e89b-12d3-a456-426614174000",
+        "number_pool_id": "5f0c2a8e-1d3b-4c6e-9a7f-2b8d4e6f1a3c"
+      }'
+    ```
+
+    ```javascript JavaScript
+    const res = await fetch("https://prod-api.ringg.ai/ca/api/v0/campaign/v2/start", {
+      method: "POST",
+      headers: { "X-API-KEY": process.env.RINGG_API_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        agent_id: "b1972188-038e-4605-916c-3926e9d7bde4",
+        list_id: "123e4567-e89b-12d3-a456-426614174000",
+        number_pool_id: "5f0c2a8e-1d3b-4c6e-9a7f-2b8d4e6f1a3c",
+      }),
+    });
+    console.log(await res.json());
+    ```
+
+    ```python Python
+    import os
+
+    import requests
+
+    res = requests.post(
+        "https://prod-api.ringg.ai/ca/api/v0/campaign/v2/start",
+        headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+        json={
+            "agent_id": "b1972188-038e-4605-916c-3926e9d7bde4",
+            "list_id": "123e4567-e89b-12d3-a456-426614174000",
+            "number_pool_id": "5f0c2a8e-1d3b-4c6e-9a7f-2b8d4e6f1a3c",
+        },
+    )
+    print(res.json())
+    ```
+    </CodeGroup>
+
+    To pass explicit caller numbers instead, use [Start campaign](/api-reference/endpoint/campaign/start-campaign) (`POST /campaign/start`) with `from_numbers`: number IDs, or numbers written exactly as [Get Workspace Numbers](/api-reference/endpoint/numbers/get-workspace-numbers) returns them. Retries rotate through the list in order. It is deprecated in favour of the pool version.
+  </Step>
+</Steps>
+
+### Large-campaign flow
+
+The upload is verified in the background, and you schedule the calls once it is ready. It works for a list of any size, from one row. These endpoints are <Badge>Beta</Badge>.
+
+<Steps>
+  <Step title="Upload the CSV">
+    [Upload large campaign CSV](/api-reference/endpoint/campaign/upload-large-campaign-csv) (`POST /campaign/upload-csv`) takes `campaign_name`, `agent_id`, `country_code`, `variables_map`, `file` and optionally `remove_invalid_rows`, `transliterate_fields` and `transliterate_callee_name`. It returns `bulk_list_id`, `status` (`verifying`), `total_rows` and `campaign_name`. Save the `bulk_list_id`; it is also the campaign ID. A list over your [row limit](/documentation/deploy/campaigns/calling-list#file-rules) returns `402`.
+
+    <CodeGroup>
+    ```bash cURL
+    curl --request POST "https://prod-api.ringg.ai/ca/api/v0/campaign/upload-csv" \
+      --header "X-API-KEY: $RINGG_API_KEY" \
+      --form 'campaign_name="October payment reminders"' \
+      --form 'agent_id="b1972188-038e-4605-916c-3926e9d7bde4"' \
+      --form 'country_code="+91"' \
+      --form 'variables_map="{\"callee_name\":\"callee_name\",\"mobile_number\":\"mobile_number\",\"amount_due\":\"amount_due\"}"' \
+      --form 'remove_invalid_rows="true"' \
+      --form "file=@payment-reminders.csv"
+    ```
+
+    ```javascript JavaScript
+    import { readFile } from "node:fs/promises";
+
+    const form = new FormData();
+    form.append("campaign_name", "October payment reminders");
+    form.append("agent_id", "b1972188-038e-4605-916c-3926e9d7bde4");
+    form.append("country_code", "+91");
+    form.append("variables_map", JSON.stringify({ callee_name: "callee_name", mobile_number: "mobile_number", amount_due: "amount_due" }));
+    form.append("remove_invalid_rows", "true");
+    form.append("file", new Blob([await readFile("payment-reminders.csv")]), "payment-reminders.csv");
+
+    const res = await fetch("https://prod-api.ringg.ai/ca/api/v0/campaign/upload-csv", {
+      method: "POST",
+      headers: { "X-API-KEY": process.env.RINGG_API_KEY },
+      body: form,
+    });
+    console.log(await res.json());
+    ```
+
+    ```python Python
+    import json
+    import os
+
+    import requests
+
+    with open("payment-reminders.csv", "rb") as f:
+        res = requests.post(
+            "https://prod-api.ringg.ai/ca/api/v0/campaign/upload-csv",
+            headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+            data={
+                "campaign_name": "October payment reminders",
+                "agent_id": "b1972188-038e-4605-916c-3926e9d7bde4",
+                "country_code": "+91",
+                "variables_map": json.dumps({"callee_name": "callee_name", "mobile_number": "mobile_number", "amount_due": "amount_due"}),
+                "remove_invalid_rows": "true",
+            },
+            files={"file": ("payment-reminders.csv", f)},
+        )
+    print(res.json())
+    ```
+    </CodeGroup>
+  </Step>
+  <Step title="Wait for verification">
+    Poll [Get large campaign upload status](/api-reference/endpoint/campaign/get-large-campaign-upload-status) (`GET /campaign/upload-status/{bulk_list_id}`) every few seconds (the dashboard uses 5). Continue when `status` is `draft`; stop on `failed`, `no_valid_contacts` or `insufficient_balance`. The response also gives `campaign_name`, `total_callees` (valid contacts loaded) and `invalidated_rows_count`. The invalid rows can be downloaded from the campaign's [detail panel](/documentation/deploy/campaigns/manage-a-campaign#the-detail-panel).
+  </Step>
+  <Step title="If balance is short">
+    On `insufficient_balance`, [add balance](/documentation/manage-account/billing#add-balance-prepaid), then call [Check large campaign balance](/api-reference/endpoint/campaign/check-large-campaign-balance) (`POST /campaign/check-balance/{bulk_list_id}`). Nothing resumes on its own. If the balance now covers it, the response has `status: "draft"` and `total_callees`, and you continue to the next step with the same `bulk_list_id`. If it is still short, `status` stays `insufficient_balance` and the response gives `required_credits` and `additional_balance_required`.
+  </Step>
+  <Step title="Schedule the calls">
+    [Make large campaign calls async](/api-reference/endpoint/campaign/make-large-campaign-calls-async) (`POST /campaign/make-call-async`) takes the schedule and exactly one of `from_numbers` or `number_pool_id`; both or neither returns `422`. `email_completion_user_ids` and `concurrency_percentage` are optional. The balance is checked again here: if it no longer covers the campaign, the response is `402` and the campaign goes back to `insufficient_balance`. Caller numbers and `email_completion_user_ids` are checked after the request is accepted, so a number or user that isn't found sets the campaign to `failed` instead of returning an error.
+
+    <CodeGroup>
+    ```bash cURL
+    curl --request POST "https://prod-api.ringg.ai/ca/api/v0/campaign/make-call-async" \
+      --header "X-API-KEY: $RINGG_API_KEY" \
+      --header "Content-Type: application/json" \
+      --data '{
+        "bulk_list_id": "123e4567-e89b-12d3-a456-426614174000",
+        "agent_id": "b1972188-038e-4605-916c-3926e9d7bde4",
+        "country_code": "+91",
+        "campaign_start_time": "18/10/2026, 09:00",
+        "campaign_end_time": "19/10/2026, 09:00",
+        "number_pool_id": "5f0c2a8e-1d3b-4c6e-9a7f-2b8d4e6f1a3c",
+        "call_config": {
+          "call_retry_config": { "retry_count": 3, "retry_busy": 30, "retry_not_picked": 30, "retry_failed": 30 },
+          "call_time": { "call_start_time": "08:00", "call_end_time": "20:00", "timezone": "Asia/Kolkata" }
+        }
+      }'
+    ```
+
+    ```javascript JavaScript
+    const res = await fetch("https://prod-api.ringg.ai/ca/api/v0/campaign/make-call-async", {
+      method: "POST",
+      headers: { "X-API-KEY": process.env.RINGG_API_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        bulk_list_id: "123e4567-e89b-12d3-a456-426614174000",
+        agent_id: "b1972188-038e-4605-916c-3926e9d7bde4",
+        country_code: "+91",
+        campaign_start_time: "18/10/2026, 09:00",
+        campaign_end_time: "19/10/2026, 09:00",
+        number_pool_id: "5f0c2a8e-1d3b-4c6e-9a7f-2b8d4e6f1a3c",
+        call_config: {
+          call_retry_config: { retry_count: 3, retry_busy: 30, retry_not_picked: 30, retry_failed: 30 },
+          call_time: { call_start_time: "08:00", call_end_time: "20:00", timezone: "Asia/Kolkata" },
+        },
+      }),
+    });
+    console.log(await res.json());
+    ```
+
+    ```python Python
+    import os
+
+    import requests
+
+    res = requests.post(
+        "https://prod-api.ringg.ai/ca/api/v0/campaign/make-call-async",
+        headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+        json={
+            "bulk_list_id": "123e4567-e89b-12d3-a456-426614174000",
+            "agent_id": "b1972188-038e-4605-916c-3926e9d7bde4",
+            "country_code": "+91",
+            "campaign_start_time": "18/10/2026, 09:00",
+            "campaign_end_time": "19/10/2026, 09:00",
+            "number_pool_id": "5f0c2a8e-1d3b-4c6e-9a7f-2b8d4e6f1a3c",
+            "call_config": {
+                "call_retry_config": {"retry_count": 3, "retry_busy": 30, "retry_not_picked": 30, "retry_failed": 30},
+                "call_time": {"call_start_time": "08:00", "call_end_time": "20:00", "timezone": "Asia/Kolkata"},
+            },
+        },
+    )
+    print(res.json())
+    ```
+    </CodeGroup>
+  </Step>
+</Steps>
+
+Body fields of `POST /campaign/make-call-async`:
+
+<ResponseField name="bulk_list_id" type="string" required>
+  The draft list ID returned by `/campaign/upload-csv`.
+</ResponseField>
+<ResponseField name="agent_id" type="string" required>
+  The agent ID used during upload.
+</ResponseField>
+<ResponseField name="country_code" type="string" required>
+  Phone number country code, for example `+91`.
+</ResponseField>
+<ResponseField name="campaign_start_time" type="string">
+  Start time in `DD/MM/YYYY, HH:MM` format. Required unless you send `call_slots`. Send it together with `campaign_end_time`.
+</ResponseField>
+<ResponseField name="campaign_end_time" type="string">
+  End time in `DD/MM/YYYY, HH:MM` format. Required unless you send `call_slots`. Send it together with `campaign_start_time`.
+</ResponseField>
+<ResponseField name="from_numbers" type="string[]">
+  Caller number IDs or phone numbers. Send exactly one of `from_numbers` or `number_pool_id`.
+</ResponseField>
+<ResponseField name="number_pool_id" type="string">
+  A [number pool](/documentation/inventory/phone-numbers/number-pools) ID. Send exactly one of `from_numbers` or `number_pool_id`.
+</ResponseField>
+<ResponseField name="call_config" type="object" required>
+  Retries and calling window. They replace the agent's own [call settings](/documentation/build-agents/customize-agent-behaviour/call-settings#calling-window) for this campaign.
+  <Expandable title="properties">
+    <ResponseField name="call_retry_config.retry_count" type="integer" default="0">
+      Number of retries.
+    </ResponseField>
+    <ResponseField name="call_retry_config.retry_busy" type="integer" default="30">
+      Cooldown in minutes after a busy attempt.
+    </ResponseField>
+    <ResponseField name="call_retry_config.retry_not_picked" type="integer" default="30">
+      Cooldown in minutes after an attempt that was not picked up.
+    </ResponseField>
+    <ResponseField name="call_retry_config.retry_failed" type="integer" default="30">
+      Cooldown in minutes after a failed attempt.
+    </ResponseField>
+    <ResponseField name="call_time.call_start_time" type="string" default="09:00">
+      Start of the daily calling window.
+    </ResponseField>
+    <ResponseField name="call_time.call_end_time" type="string" default="21:00">
+      End of the daily calling window.
+    </ResponseField>
+    <ResponseField name="call_time.timezone" type="string" default="Asia/Kolkata">
+      IANA timezone for the campaign times and the calling window.
+    </ResponseField>
+    <ResponseField name="call_time.scheduled_at" type="string | null">
+      Optional ISO 8601 date and time for a scheduled call, read in `call_time.timezone`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="call_slots" type="object">
+  Optional calling slots, read in `call_time.timezone`. A call is placed only inside a slot and inside the daily `call_time` window. Without `campaign_start_time` and `campaign_end_time`, the campaign runs from the first slot's start to the last slot's end; with them, every slot must fit inside. Use one of two shapes:
+
+  - `{"mode": "absolute", "intervals": [{"start": "18/10/2026, 10:00", "end": "18/10/2026, 13:00"}]}`, up to 500 intervals.
+  - `{"mode": "weekly", "until": "31/10/2026, 21:00", "windows": [{"days": ["mon", "tue"], "start": "10:00", "end": "13:00"}]}`, up to 21 windows, repeated from the campaign start (or now) until `until`, at most 90 days.
+
+  Each slot lasts 1 minute to 24 hours and can't be in the past, the last must end at least 5 minutes from now, and overlapping slots are merged, up to 100 in all. Mixing the two shapes returns `422`.
+</ResponseField>
+<ResponseField name="concurrency_percentage" type="integer" default="0">
+  0 to 100. This campaign's share of campaign concurrency. See [Manage concurrency](/documentation/deploy/campaigns/manage-a-campaign#manage-concurrency).
+</ResponseField>
+<ResponseField name="email_completion_user_ids" type="string[]">
+  Optional. Workspace members to email when the campaign is scheduled and when it completes.
+</ResponseField>
+
+Through the API you can set a different cooldown per outcome (`retry_busy`, `retry_not_picked`, `retry_failed`, in minutes). `call_time` sets one daily window; for several windows or weekly hours, send `call_slots`. Without `call_time`, the campaign calls 09:00–21:00 in `Asia/Kolkata`, whatever the agent's calling window, and without `call_retry_config` it makes no retries, unlike the dashboard's default of 3.
+
+Before a real run, send a 5-row list first and listen to a few calls in [Logs](/documentation/monitor/logs), and set `call_time` in the timezone of the people you are calling.

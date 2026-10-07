@@ -1,0 +1,176 @@
+---
+title: "Chat component data"
+sidebarTitle: "Data"
+description: "Fill a Ringg AI chat component from your API before it shows, send what the visitor tapped or typed to your API, and fire browser events on your own page."
+"og:title": "Wire Chat Components to Your APIs | Ringg AI Guide"
+---
+
+Pick the mechanism by the direction the data moves:
+
+| You want to | Use |
+|---|---|
+| Fill the component from your API before it shows | [Fetch data before showing](#fetch-data-before-showing) |
+| Send what the visitor tapped or typed to your API | [Call an API on response](#call-an-api-on-response) |
+| Run code on your page when a button is tapped | [Page event](#fire-an-event-on-your-page) |
+| Send the visitor to a URL | [Open a link](#open-a-link) |
+| Let the agent run code on your page without a component | [Agent actions](#agent-actions) |
+
+**Fetch data before showing** and **Call an API on response** live in the component's **Advanced** settings; the rest is set under a button's **When tapped**.
+
+## Before you start
+
+<Columns cols={2}>
+  <Card title="A saved component" icon="blocks" href="/documentation/deploy/web-and-apps/web-widget/components" horizontal>
+    Everything here is set in its builder under **Embed & Widgets → Components**.
+  </Card>
+  <Card title="A 2.0 widget version" icon="git-branch" href="/documentation/deploy/web-and-apps/web-widget/launch-checklist#version-pinning" horizontal>
+    Components and agent actions run from a `2.0.0-beta` build.
+  </Card>
+</Columns>
+
+## Fetch data before showing
+
+The request runs when the component is sent, and the response is available to blocks as `${{api_res.…}}`. Use it for anything that must be current: live pricing, the visitor's open orders, slots that are still free.
+
+Set the method (`GET`, `POST`, `PUT` or `PATCH`), the URL, and rows for headers, query params and body. There is no separate auth setting, so add an `Authorization` header row. In the request you can use your component [parameters](#parameters) and the agent's variables as `${{custom_args.<name>}}`.
+
+Once the URL is set, blocks can bind to the response:
+
+| Binding | Resolves to |
+|---|---|
+| `${{api_res}}` | The whole JSON response. |
+| `${{api_res.plans}}` | The response's `plans` field. |
+
+A binding can sit inside a longer string, such as `₹${{plan.premium}}/mo`.
+
+## Call an API on response
+
+This request fires when the visitor taps a **Send to agent** button. It takes the same method, URL, header, query and body fields, and offers these bindings:
+
+| Binding | Value |
+|---|---|
+| `${{component_data.action_id}}` | The **Action ID** of the tapped button. |
+| `${{component_data.value}}` | That button's **Value**. |
+| `${{component_data.values.<input name>}}` | A submitted input, by its name. |
+
+## Submit a form
+
+There is no separate submit action. A **Send to agent** button inside a `form` block also submits that form's named inputs. The widget sends the agent the button's **Action ID**, its **Value** if set, and the input values:
+
+```json
+{
+  "action_id": "submit_lead",
+  "values": {
+    "full_name": "Priya Sharma",
+    "loan_type": "Home loan",
+    "amount": 2500000
+  }
+}
+```
+
+To forward the same values to your CRM, reference the input names in the **Call an API on response** body:
+
+```json
+{
+  "name": "${{component_data.values.full_name}}",
+  "loan_type": "${{component_data.values.loan_type}}",
+  "amount": "${{component_data.values.amount}}",
+  "source": "ringg-chat"
+}
+```
+
+## Fire an event on your page
+
+Set **When tapped** to **Page event** and enter an **Event name**. The name is lowercased, spaces become `_`, and only `a-z`, `0-9`, `_`, `-` and `:` are kept. A tap dispatches a `CustomEvent` with that name on `window`; `event.detail` carries the button's `value` and `action_id`.
+
+```javascript
+window.addEventListener("ringg:open_pricing", (event) => {
+  const { value, action_id } = event.detail;
+  document.querySelector("#pricing")?.scrollIntoView({ behavior: "smooth" });
+});
+```
+
+A page event doesn't reach the agent. If the agent should know the visitor acted, use **Send to agent** instead.
+
+## Open a link
+
+Set **When tapped** to **Open a link** for a brochure, a policy PDF, a payment page or a phone number. Enter the **URL**; **Open in new tab** is on by default.
+
+The URL must start with `https://`, `mailto:` or `tel:`, or be a binding such as `${{api_res.brochure_url}}`. Return the full URL from your API when it differs per visitor or plan.
+
+Opening a link tells the agent nothing. Put a **Send to agent** button next to it when the agent should follow up.
+
+## Render an image
+
+The `image` block takes a `url` and an optional `alt`. Set a width or height in the inspector. To show an image from your API, bind the URL to the complete address your API returns:
+
+```text
+url  ${{api_res.photo_url}}
+alt  Home loan plan illustration
+```
+
+## Parameters
+
+Parameters are values filled in each time the component is shown, such as the plans to compare or the order to display. Add them under **Parameters** with a key, a description and a type: `string`, `number`, `boolean`, `array` or `object`. Keys keep only `a-z`, `0-9` and `_`.
+
+| Kind | Filled from |
+|---|---|
+| **Dynamic** | The agent, from the conversation. Its description and test value are what the agent is shown, so say exactly what belongs in it. |
+| **Variable** | An agent [variable](/documentation/build-agents/customize-agent-behaviour/custom-variables). The test value only fills the preview. |
+| **Static** | A fixed value saved in the component. |
+
+## What you can bind to
+
+| Root | Where |
+|---|---|
+| `${{<parameter key>}}` | Blocks, and the fetch request. |
+| `${{custom_args.<name>}}` | Blocks, and the fetch request. |
+| `${{api_res…}}` | Blocks, once **Fetch data before showing** has a URL. |
+| `${{<alias>}}`, `${{<alias>_index}}` | Inside a repeated block. |
+| `${{component_data…}}` | **Call an API on response** only. |
+
+An input's name is not a binding: you can't show what the visitor typed in another block. Input values reach the agent and your API only after a submit.
+
+## Agent actions
+
+An agent action lets the agent fire a browser event on your page during a conversation, with nothing for the visitor to tap: focus the search box, open a promo modal, scroll to pricing. Actions are configured in the **Execute DOM Action** legacy widget, so they are available only on agents that already have one under **Embed & Widgets → Components → Legacy widgets**. The web widget runs them from CDN version `2.0.0-beta`.
+
+Each entry under **Actions** has:
+
+| Field | What it is |
+|---|---|
+| **Event ID** | The event name your page listens for, for example `ringg:click_subscribe`. |
+| **Description** | When the agent should fire it. |
+| **Payload Schema** (optional) | Fields sent with the event. |
+
+When the agent fires an action, the widget dispatches a `CustomEvent` on `window` named after the **Event ID**. `event.detail` holds the payload fields plus `action_id`.
+
+```javascript
+window.addEventListener("shop_show_promo", (event) => {
+  const { discount_pct, product_id } = event.detail;
+  openPromoModal({ discount: discount_pct, productId: product_id });
+});
+```
+
+In React, remove the listener on unmount, as for [widget events](/documentation/deploy/web-and-apps/web-widget/events#clean-up-in-single-page-apps).
+
+While building, add `eventLogs: { enabled: true }` to `loadAgent`. Each fired action then shows as a pill in the chat (**Triggered** and the event name), and failures show as **Event missing name** or **Action failed**. Add `showIds: true` to include the action ID.
+
+Prefix Event IDs with your own namespace (`shop_…`) so they don't collide with other events on the page. These are separate from the widget's own [lifecycle events](/documentation/deploy/web-and-apps/web-widget/events).
+
+## Verify the wiring
+
+- With your real endpoint in **Fetch data before showing**, the component shows live values and no raw `${{…}}`.
+- A **Send to agent** tap reaches your **Call an API on response** endpoint with the expected input names.
+- Each **Page event** and agent action has a listener, and fires once per tap or action.
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Copy a recipe" icon="lightbulb" href="/documentation/deploy/web-and-apps/web-widget/recipes">
+    Lead capture, live pricing, downloads and more.
+  </Card>
+  <Card title="Prepare for launch" icon="shield-check" href="/documentation/deploy/web-and-apps/web-widget/launch-checklist">
+    Domains, <Tooltip tip="Content Security Policy: the header that controls which scripts and styles your site may load.">CSP</Tooltip>, versions and browser QA.
+  </Card>
+</Columns>

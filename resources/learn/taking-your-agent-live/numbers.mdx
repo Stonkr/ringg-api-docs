@@ -1,0 +1,78 @@
+---
+title: "Lesson: Numbers"
+sidebarTitle: "Numbers"
+description: "Buy a Ringg-provided number or import one from your telephony provider in the Add Numbers dialog, then put it in a number pool that rotates Acme's caller IDs."
+related:
+  - "Buy or import a number": /documentation/inventory/phone-numbers/buy-or-import-a-number
+  - "Number pools": /documentation/inventory/phone-numbers/number-pools
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 4: Taking your agent live · Lesson 1 of 4 · 15 minutes**
+
+## Objective
+
+Have a number of your own in the workspace, inside a number pool, ready to be the caller ID for Acme's first campaign.
+
+## The scenario
+
+So far Ananya has called from Ringg's shared test numbers. They are for testing only: the campaign form does not offer them, and they can't join a pool. Acme needs its own number. And because one line that dials hundreds of customers soon gets flagged as spam, the number goes into a pool, which rotates across its numbers and skips flagged ones.
+
+## Hands-on
+
+<Frame caption="Buying a number in the dashboard">
+  <video alt="Buying a number in the dashboard" aria-label="Buying a number in the dashboard" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/numbers-buy/poster.webp">
+    <source src="/media/numbers-buy/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open Add Numbers">
+    In the sidebar, open **Inventory → Numbers**. On the **Phone** tab, under **All Numbers**, click **Add number**. The **Add Numbers** dialog lists providers on the left, with Plivo selected. Your workspace role needs the **Numbers** permission.
+  </Step>
+  <Step title="Pick the provider and account">
+    Keep **Plivo** and choose **Ringg** in the telephony account selector: Ringg holds the line and bills a rental rate per billing period. If Acme already had numbers with a provider such as Exotel, you would select that provider, click the gear (**Configure provider**) to connect the account, and use the **Import your own** tab instead; the steps are on the [buy or import](/documentation/inventory/phone-numbers/buy-or-import-a-number#import-a-number-you-already-own) page.
+  </Step>
+  <Step title="Choose where the number is from">
+    Pick **India** and a region, or leave the region on **All**. If the **Buy new** tab says "No new numbers available.", widen the region.
+  </Step>
+  <Step title="Buy it">
+    On **Buy new**, each row shows the number and its **Rental Rate**, for example `₹499 / 1 Month`. Click **Buy Number** on one and confirm with **Buy Number**. You see "Purchase has been completed successfully." and the number appears in **All Numbers**.
+  </Step>
+  <Step title="Create the pool">
+    Open **Number Pools** and click **Add pool**. Set **Pool name** to `Acme EMI reminders`, open **Add numbers to pool** and tick your new number. Switch on **Auto purchase** so the pool buys a replacement if the number is flagged as spam. The replacement comes from the flagged number's own country; set **Replacement country** to India as the fallback. Click **Create pool**.
+  </Step>
+</Steps>
+
+## Checkpoint
+
+<Check>
+You see "Pool created" and a card for **Acme EMI reminders** showing **1 Numbers**. Back on **All Numbers**, the number's **Pool** column names the pool.
+</Check>
+
+## Exercise
+
+Tag the number so your team can tell it apart from the ones Acme adds later. On its row in **All Numbers**, click **Add Tags**, type `collections` in **Enter tag** and click **Add**. Expected result: the tag shows in the **Tags** column and in number pickers from now on. Test numbers can't be tagged, which is one more way to spot them.
+
+## What you learned
+
+- Every number enters the workspace through **Add Numbers**: bought on the **Ringg** account or on a provider account you connected, imported from that account, or typed in by hand.
+- Test numbers are for test calls only; they are not offered to campaigns and can't join a pool.
+- A pool rotates caller IDs, skips spam-flagged numbers and, with **Auto purchase**, buys replacements. A number belongs to at most one pool.
+
+<Quiz
+  question="Acme's campaign form shows no numbers under Select number, even though test calls worked all week. Why?"
+  answers={[
+    { text: "Numbers must be tagged before a campaign can use them", correct: false },
+    { text: "The campaign form lists only pools, never single numbers", correct: false },
+    { text: "Test numbers are for test calls only; the campaign form does not offer them", correct: true },
+    { text: "The workspace role lacks the Numbers permission", correct: false },
+  ]}
+  correctFeedback="Right. Ringg's shared test numbers are for testing only: the campaign form does not offer them and they can't join a pool. A campaign needs a number of your own, bought or imported through Add Numbers."
+  incorrectFeedback="Not quite. Test calls use Ringg's shared test numbers, which the campaign form never offers. Buy or import a number of your own in Add Numbers, then pick it under Individual numbers or put it in a pool."
+/>
+
+<RelatedTopics items={[["Buy or import a number", "/documentation/inventory/phone-numbers/buy-or-import-a-number"], ["Number pools", "/documentation/inventory/phone-numbers/number-pools"]]} />

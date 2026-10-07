@@ -1,0 +1,83 @@
+---
+title: "Lesson: How a call flows"
+sidebarTitle: "How a call flows"
+description: "Follow one EMI reminder call from its trigger through the conversation, analysis and events to Logs, and read the call statuses it passes through on the way."
+related:
+  - "How Ringg works": /get-started/how-ringg-works
+  - "Call statuses": /documentation/monitor/logs#call-statuses
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 1: Getting to know Ringg AI · Lesson 2 of 3 · 10 minutes**
+
+## Objective
+
+Trace a single call from the moment it is placed to the analysis that lands in Logs, and name the status it has at each point.
+
+## The scenario
+
+Rahul Verma's EMI of ₹4,500 is due on 15 October. Three days earlier, Ananya calls him. Everything that happens to that call, from the row that triggers it to the "payment promised" field your team reads afterwards, follows the same eight stages.
+
+## Hands-on
+
+<Steps>
+  <Step title="Trigger">
+    Something asks Ringg to start a conversation: a test in the dashboard, an API request, a campaign row, a workflow step, a call to an attached number, a visitor in the web widget, or a WhatsApp message. For Rahul, it is a campaign row. In Logs the call reads **Registered**: queued and not placed yet.
+  </Step>
+  <Step title="Agent and number">
+    Ringg loads Ananya. The call goes out from a number in your workspace, which Rahul's phone shows as the caller ID.
+  </Step>
+  <Step title="Pre-call tools">
+    Pre-call tools run before the call connects, so a CRM lookup is ready for the agent's first sentence. Ananya gets one in part 3.
+  </Step>
+  <Step title="Conversation">
+    Rahul picks up and the status becomes **Ongoing**. Ananya follows her prompt, searches her knowledge base when she decides a question needs it, and uses on-call tools when the prompt says to.
+  </Step>
+  <Step title="Call ends">
+    Ringg stores the transcript and, for a voice call, the recording. The status becomes **Completed**: the call connected and ended.
+  </Step>
+  <Step title="Analysis">
+    Ringg's platform analysis extracts a summary, key points, action items and a classification of the call. Your own Advanced Analysis fields are extracted too; for Acme, whether Rahul promised to pay and on which date.
+  </Step>
+  <Step title="Post-call tools and events">
+    Post-call tools push results to your systems. Event Subscription sends each event to your server as it happens, from `call_started` to `all_processing_completed`; the capstone wires this into Acme's CRM.
+  </Step>
+  <Step title="Logs and Analytics">
+    The call shows in **Monitor → Logs** with its transcript and analysis, and rolls up into **Monitor → Analytics**.
+  </Step>
+</Steps>
+
+Not every call takes that path. When an attempt does not connect and another is scheduled, the status is **Retry**. **Failed** means no conversation took place and nothing is left to try, for example when the retries ran out; **Error** means a system-side failure stopped it; **Cancelled** means it was stopped before it completed. **Waiting for limit** holds a call because the callee reached a call limit. The full list is in [Call statuses](/documentation/monitor/logs#call-statuses).
+
+## Checkpoint
+
+<Check>
+For Rahul's call you can say which stage produces the transcript (call ends), which fills "payment promised" (analysis), and which status Logs shows while Ananya is talking (**Ongoing**).
+</Check>
+
+## Exercise
+
+Trace the call again, but this time Rahul does not pick up and the campaign allows another attempt. Expected result: the call stops before the Conversation stage and its status in Logs reads **Retry**; hovering it shows the next attempt time, and the retry count comes from the campaign.
+
+## What you learned
+
+- A call passes through eight stages, from trigger to Logs and Analytics.
+- Pre-call tools run before the call connects; analysis, post-call tools and events run after it ends.
+- The status in Logs tells you where a call is: **Registered**, **Ongoing**, then **Completed**, or **Retry** when it did not connect.
+
+<Quiz
+  question="Ananya is mid-conversation with Rahul and the collections lead opens Logs. Which status does the call show, and when will the payment_promised field be filled?"
+  answers={[
+    { text: "Registered; the field fills as soon as the call connects", correct: false },
+    { text: "Ongoing; the field fills after the call ends, when analysis runs", correct: true },
+    { text: "Completed; the field fills during the call as Ananya hears it", correct: false },
+    { text: "Retry; the field fills once the next attempt connects", correct: false },
+  ]}
+  correctFeedback="Right. A connected call is Ongoing. The transcript is stored when the call ends, and only then does analysis extract the summary and your Advanced Analysis fields, so the promise appears after the call, not during it."
+  incorrectFeedback="Not quite. Registered is a queued call, Completed is a finished one, and Retry is an attempt that did not connect. While Ananya talks the call is Ongoing, and Advanced Analysis fields are filled after it ends."
+/>
+
+<RelatedTopics items={[["How Ringg works", "/get-started/how-ringg-works"], ["Call statuses", "/documentation/monitor/logs#call-statuses"]]} />

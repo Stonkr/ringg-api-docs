@@ -1,0 +1,50 @@
+---
+title: Terminate Calls by Campaign ID
+sidebarTitle: Stop a campaign
+description: "Stop a campaign by cancelling all of its queued and retry calls with PATCH /campaign/terminate; its status changes to terminated and no new calls go out."
+api: "PATCH /campaign/terminate"
+related:
+  - "Terminate a campaign": /documentation/deploy/campaigns/manage-a-campaign#terminate-a-campaign
+  - "by campaign numbers": /api-reference/endpoint/terminate/campaign-numbers
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+<ParamField header="X-API-KEY" type="string" required>
+  Your Ringg AI API key.
+</ParamField>
+
+<ParamField body="campaign_id" type="string" required>
+  The campaign's ID: `id` from [Get all campaigns](/api-reference/endpoint/campaign/get-all-campaigns), which is also the `list_id` or `bulk_list_id` returned when the list was uploaded. Example: `00000000-0000-4000-8000-000000000103`
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl --request PATCH "https://prod-api.ringg.ai/ca/api/v0/campaign/terminate" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{ "campaign_id": "00000000-0000-4000-8000-000000000103" }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{ "message": "Calls terminated successfully!" }
+```
+</ResponseExample>
+
+## What happens
+
+- Calls with status `registered` (queued) or `retry` are cancelled (`cancelled`, sub-status `USER_TERMINATED`); calls in other campaigns are not affected.
+- A call already in progress is not hung up. It ends normally and is not retried afterwards.
+- Completed calls are not affected.
+- The campaign's status becomes `terminated`.
+- To call the remaining contacts later, create a new campaign.
+
+## Errors
+
+- `200` is returned even when no call matched the ID; check the calls in [call history](/api-reference/endpoint/history/get-call-history).
+- `401`: `X-API-KEY` is missing or invalid.
+- `422`: no field, more than one way of choosing calls at once, or a field of the wrong type.
+
+<RelatedTopics items={[["Terminate a campaign", "/documentation/deploy/campaigns/manage-a-campaign#terminate-a-campaign"], ["by campaign numbers", "/api-reference/endpoint/terminate/campaign-numbers"]]} />

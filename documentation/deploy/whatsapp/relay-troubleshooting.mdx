@@ -1,0 +1,138 @@
+---
+title: "WhatsApp Relay troubleshooting"
+sidebarTitle: "Relay troubleshooting"
+description: "Find and fix the common WhatsApp Relay problems: rejected requests, missing or late replies, acks, handover history and closed chats."
+"og:title": "WhatsApp Relay Troubleshooting | Ringg AI Guide"
+related:
+  - "WhatsApp agents": /documentation/build-agents/agents/whatsapp-agents/overview
+  - "Connect WhatsApp": /documentation/inventory/tools-integrations/connect-whatsapp
+  - "Create a WhatsApp agent": /documentation/build-agents/agents/whatsapp-agents/create-an-agent
+  - "WhatsApp tools": /documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools
+  - "WhatsApp chat events": /documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events
+  - "Start a conversation": /documentation/deploy/whatsapp/start-a-conversation
+  - "WhatsApp Relay": /documentation/deploy/whatsapp/relay-overview
+  - "WhatsApp Relay integration guide": /documentation/deploy/whatsapp/relay-integration-guide
+  - "WhatsApp chats in Logs": /documentation/monitor/logs#whatsapp-chats
+  - "Errors": /documentation/deploy/whatsapp/relay-integration-guide#errors
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Start with the HTTP status and the `code` in the error body. Every error includes a `trace_id`, which lets Ringg find the request in seconds. Keep it in your logs.
+
+## Rejected requests
+
+### 401 missing_api_key or invalid_api_key
+
+The `X-API-Key` header is missing, or the key isn't a current key for your workspace.
+
+- Check you are using the key for the right environment: staging and production keys differ.
+- If the key was regenerated in the dashboard, update your service.
+
+### 403 invalid_signature
+
+The signature didn't match, or the timestamp was out of range. In order of how often we see them:
+
+| Cause | Fix |
+|---|---|
+| The body was re-serialized after signing (a framework re-encoded the JSON, changed spacing or key order) | Sign the exact bytes you send. Serialize once, sign, and send that string as the raw body |
+| Timestamp in milliseconds | `X-Relay-Timestamp` is Unix time in **seconds** |
+| Server clock off by more than 300 seconds | Sync the clock with NTP |
+| The signature is missing the `sha256=` prefix, or uses uppercase or base64 | Send `sha256=` plus the **lowercase hex** digest |
+| Signed `{body}` instead of `{timestamp}.{body}` | The signed string is the timestamp, a dot, then the raw body |
+| Wrong secret: another number's, or another environment's | Each number has its own secret, per environment |
+
+When Ringg rotates a secret, the old one keeps working until it is retired, so a rotation alone doesn't cause this error.
+
+### 403 workspace_mismatch
+
+The API key works, but its workspace doesn't own the `phone_number_id` in the body. Use the key of the workspace the number is registered to.
+
+### 404 unknown_phone_number_id
+
+The number isn't registered for relay in this environment. Check the `phone_number_id` is Meta's numeric id for the number, not the display number, and that you are calling the environment it was registered in.
+
+### 422 invalid_body
+
+The body doesn't match the endpoint's shape. The `message` names the field. Common causes:
+
+- **Extra top-level fields.** Every relay body accepts only its documented fields. On `/status`, send `{ "phone_number_id": "…", "statuses": [ … ] }` only, not Meta's whole `entry` or `value` wrapper.
+- **`prior_messages` too long, or a message with empty text.** Up to 200 messages, each 1 to 4,096 characters.
+- **`role` not `customer` or `agent`.**
+- **`custom_args` not an object, or with more than 100 keys.**
+- **A wrong type,** such as `chat_id` not being a UUID on `/ack` or `/close`.
+
+### 422 missing_message_id
+
+`value.messages[0].id` is empty. Forward Meta's original message id: it is how Ringg avoids answering the same message twice.
+
+### 503 errors
+
+`unable_to_accept`, `auth_unavailable`, `config_unavailable` and `relay_unavailable` are temporary. Retry with backoff. Retrying `/inbound` with the same message id is always safe.
+
+## No reply for a message
+
+`/inbound` answers `202` as soon as the message is stored. If no `message.outbound` follows, check these in order:
+
+| Check | What to look for |
+|---|---|
+| Is it a type the agent answers? | Images, voice notes, documents, stickers, locations, contacts, reactions, and reply-button or list selections are not answered. See [What's supported](/documentation/deploy/whatsapp/relay-overview#supported-features). |
+| Did the customer send several messages quickly? | The agent answers a quick burst with one reply that covers all of them. |
+| Is your webhook reachable? | It must be public HTTPS with a valid certificate. Ringg retries for about two minutes, then gives up on that reply. |
+| Did your webhook answer `4xx`? | Any `4xx` other than `408`, `425` or `429` stops delivery of that reply straight away. Check your bearer-token check and body parsing. |
+| Is an earlier reply in the same chat stuck? | Replies are delivered in order. While an earlier reply is still being retried, later ones wait behind it. |
+| Was the chat closed? | After `conversation.closed`, the next message starts a new chat, which the agent answers normally. |
+
+If none of these explain it, send Ringg the `phone_number_id`, the customer message id and the time.
+
+## Replies arrive out of order
+
+Ringg delivers one reply per chat at a time, in `sequence` order. Out-of-order messages on WhatsApp usually mean your service sends to Meta in parallel. Send each chat's replies one at a time, in `sequence` order.
+
+## Acks
+
+| Response | Meaning | Do |
+|---|---|---|
+| `{"status": "recorded"}` | Saved | Nothing |
+| `{"status": "unknown_event"}` | The `event_id` isn't one Ringg sent, belongs to another `chat_id`, or is more than 7 days old | Don't retry. Check you are acking with the `event_id` and `chat_id` from the same event |
+| `{"chat_closed": true}` | Meta's error means the customer can't receive more messages on this conversation | Start again with a template through `/outbound` if you need to reach them |
+
+Ack every `message.outbound`, even when the send failed. A `failed` or `skipped` ack keeps the AI agent from referring to a message the customer never saw.
+
+## Handover history looks wrong
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| The AI agent repeats or re-asks things | Earlier messages were not sent in `prior_messages` | Send every message Ringg hasn't seen, oldest first |
+| The dashboard shows the same message twice | The same message was sent with different ids, or without ids | Always send `message_id`, using Meta's id for each message |
+| The AI agent's replies show as **Human agent** | They were sent in `prior_messages` without their message ids | Include Meta's message id for every message, including the AI agent's |
+| The customer's latest question appears twice | The message being forwarded was also included in `prior_messages` | Leave it out of `prior_messages` |
+
+## The agent doesn't use a custom variable
+
+| Cause | Fix |
+|---|---|
+| The chat had already started when you first sent `custom_args` | They're read only from the message that starts a chat. Send them with every message; the next new chat picks them up |
+| The name doesn't match the agent's variable | Names are case-sensitive. Use them exactly as agreed with Ringg |
+| The value was `null` or empty | The variable is stored, but the agent has nothing to use. Send a value |
+
+## A chat closed unexpectedly
+
+A chat closes when:
+
+- the AI agent ends it (`conversation.closed`, `reason: "completed"`);
+- you call `/close`;
+- you ack a reply as `failed` with Meta error `131047` (24-hour window closed), `131026` (undeliverable) or `131051` (unsupported type);
+- it reaches the agent's idle or maximum-length timeout.
+
+The customer's next message starts a new chat.
+
+## What to send Ringg support
+
+- The `trace_id` from any error response
+- The `phone_number_id`, `chat_id` and `event_id` involved
+- The customer message id (`wamid…`), if a reply is missing
+- The time, with time zone
+- Environment: staging or production
+
+<RelatedTopics items={[["WhatsApp agents", "/documentation/build-agents/agents/whatsapp-agents/overview"], ["Connect WhatsApp", "/documentation/inventory/tools-integrations/connect-whatsapp"], ["Create a WhatsApp agent", "/documentation/build-agents/agents/whatsapp-agents/create-an-agent"], ["WhatsApp tools", "/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools"], ["WhatsApp chat events", "/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events"], ["Start a conversation", "/documentation/deploy/whatsapp/start-a-conversation"], ["WhatsApp Relay", "/documentation/deploy/whatsapp/relay-overview"], ["WhatsApp Relay integration guide", "/documentation/deploy/whatsapp/relay-integration-guide"], ["WhatsApp chats in Logs", "/documentation/monitor/logs#whatsapp-chats"], ["Errors", "/documentation/deploy/whatsapp/relay-integration-guide#errors"]]} />

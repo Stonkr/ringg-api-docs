@@ -1,0 +1,93 @@
+---
+title: "Parrot STT on TrueFoundry"
+sidebarTitle: "TrueFoundry"
+description: "Add Ringg AI's Parrot speech-to-text to the TrueFoundry AI Gateway as a Custom Endpoint, then transcribe audio through the gateway's proxy-api path."
+"og:title": "Use Parrot STT through the TrueFoundry AI Gateway"
+---
+
+[TrueFoundry AI Gateway](https://www.truefoundry.com/ai-gateway) is a proxy between your applications and model providers: your teams get its access control and tracing instead of calling Ringg directly. To call Parrot without a gateway, use the [Python SDK](/documentation/ringg-labs/parrot-stt/python-sdk); the model itself is described on the [Parrot STT model page](https://www.ringg.ai/models/speech-to-text/v1).
+
+## Before you start
+
+<Columns cols={2}>
+  <Card title="A Ringg API key" icon="key" href="/documentation/manage-account/api-key" horizontal>
+    The gateway sends it to Ringg on every request.
+  </Card>
+  <Card title="TrueFoundry AI Gateway access" icon="plug" href="https://docs.truefoundry.com/docs/ai-gateway/custom-endpoints" horizontal>
+    Permission to add Custom Endpoints.
+  </Card>
+</Columns>
+
+## Add Parrot STT as a Custom Endpoint
+
+<Steps>
+  <Step title="Create a Custom Endpoint provider account">
+    In TrueFoundry, go to **AI Gateway → Models → Custom Endpoints** and click **Add Custom Endpoint**. Under **Configure Account**, set:
+
+    - **Name**: a unique name. It becomes `{providerAccountName}` in the request URL.
+    - **Endpoint Type**: `None`, or any value you use for tracking.
+    - **Header Auth**: leave it disabled.
+  </Step>
+  <Step title="Add the Ringg endpoint">
+    Click **Add Endpoint** and set:
+
+    - **Display Name**: any name. It becomes `{endpointName}` in the request URL.
+    - **Base URL**: `https://prod-api.ringg.ai/stt/v1/transcriptions`
+
+    Turn on **Custom Headers** and add `x-api-key` with your Ringg API key as the value. Keep **Header Auth** disabled.
+
+    <Frame caption="Endpoint settings: Base URL and the x-api-key header">
+      <img src="https://mintcdn.com/truefoundry/JzCFcqgKHPlAsyLc/images/ringgAI.png?fit=max&auto=format&n=JzCFcqgKHPlAsyLc&q=85&s=9b01ea07c1f0f6a7b208a1ab4ae37589" alt="TrueFoundry Custom Endpoint form for Ringg AI STT with the Base URL and an x-api-key custom header" width="965" height="712" />
+    </Frame>
+
+    Your clients send only their TrueFoundry API key to the gateway.
+  </Step>
+  <Step title="Set access and save">
+    On **Access Control**, add the users or teams who may use this provider account, then click **Save**.
+  </Step>
+</Steps>
+
+## Transcribe through the gateway
+
+Call the endpoint at `{GATEWAY_BASE_URL}/proxy-api/{providerAccountName}/{endpointName}` ([finding the gateway base URL](https://docs.truefoundry.com/docs/ai-gateway/quick-start#gateway-base-url)). Send a multipart form with the audio in `file` and optional fields such as `language` and `enable_cap_punc`.
+
+```python Transcribe through the gateway
+import os
+import requests
+
+GATEWAY_BASE_URL = os.environ["TFY_GATEWAY_BASE_URL"]
+TFY_API_KEY = os.environ["TFY_API_KEY"]
+PROVIDER_ACCOUNT = "ringg"        # the Custom Endpoint account name
+ENDPOINT_NAME = "parrot-stt"      # the endpoint's display name
+
+url = f"{GATEWAY_BASE_URL}/proxy-api/{PROVIDER_ACCOUNT}/{ENDPOINT_NAME}"
+
+with open("audio.mp3", "rb") as audio:
+    response = requests.post(
+        url,
+        headers={"Authorization": f"Bearer {TFY_API_KEY}"},
+        files={"file": audio},
+        data={"language": "hi", "enable_cap_punc": "false"},
+        timeout=120,
+    )
+
+response.raise_for_status()
+print(response.json())
+```
+
+| API | Endpoint | Tracing | Cost tracking |
+|---|---|---|---|
+| Speech-to-text | `/proxy-api/{providerAccountName}/{endpointName}` | Yes | No |
+
+Only HTTPS, non-streaming requests work through this integration. For live streaming, use the [Python SDK's streaming mode](/documentation/ringg-labs/parrot-stt/python-sdk#stream-and-on-final-modes) directly. To ask TrueFoundry for more endpoints, email [support@truefoundry.com](mailto:support@truefoundry.com).
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Parrot STT Python SDK" icon="mic" href="/documentation/ringg-labs/parrot-stt/python-sdk">
+    File and streaming transcription, with every parameter.
+  </Card>
+  <Card title="TrueFoundry Custom Endpoints" icon="book-open" href="https://docs.truefoundry.com/docs/ai-gateway/custom-endpoints">
+    URL structure and path rules on TrueFoundry's side.
+  </Card>
+</Columns>

@@ -1,27 +1,36 @@
 ---
 openapi: get /campaign/all
+description: "List the campaigns in your workspace with their status, schedule and contact counts, to follow each campaign from upload to completion."
+related:
+  - "Monitor a campaign": /documentation/deploy/campaigns/manage-a-campaign
 ---
 
-Return campaigns in the current workspace. Use this for campaign dashboards, monitoring pages, and post-run reconciliation after either the standard flow or the beta large-campaign flow.
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-## Query guidance
+A campaign's `id` is the `list_id` or `bulk_list_id` returned when its list was uploaded, so you can match rows to the campaigns you created.
 
-- Use `limit` and `offset` for pagination.
-- Use `call_count=true` when the UI needs call totals with each campaign.
-- Pair this endpoint with call history filtered by `bulk_list_id` for detailed call-level results.
-- For beta large campaigns, poll [Upload status](/api-reference/endpoint/campaign/get-large-campaign-upload-status) until CSV processing is complete before relying on campaign-level call progress.
+## Statuses
 
-## Typical flow
+| `campaign_status` | Meaning |
+|---|---|
+| `verifying` | The uploaded list is being validated |
+| `draft` | Validated, calls not started |
+| `insufficient_balance` | The workspace balance does not cover the list. Listing the campaigns re-checks it and moves it back to `draft` once the balance covers it |
+| `preparing` | Launched; calls are being prepared |
+| `scheduled` | Calls are waiting for the start time |
+| `ongoing` | Calls are being placed |
+| `completed` | The campaign has finished |
+| `terminated` | Stopped with [Terminate calls](/api-reference/endpoint/terminate/campaign) |
+| `no_valid_contacts` | Every row in the list was invalid |
+| `failed` | The list or the launch failed |
+| `processing` | A workflow campaign is being prepared |
+| `null` | The row is a list that is not a campaign, such as a contact list |
 
-1. Upload contacts with [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list).
-2. Start calls with [Start campaign](/api-reference/endpoint/campaign/start-campaign).
-3. Monitor campaign state here.
-4. Inspect calls through [Get call history](/api-reference/endpoint/history/get-call-history).
+## Notes
 
-## Beta 5,000+ row flow
+- `limit` defaults to `10`; page with `offset`.
+- `total_calls` is the number of valid contacts loaded from the list, not the number of calls placed. It is `0` until the list has been validated. `invalidated_rows_count` is the number of rows dropped as invalid.
+- Rows in `insufficient_balance` also carry `additional_balance_required`, the extra balance needed, as a decimal string.
+- For the calls inside one campaign, use [call history](/api-reference/endpoint/history/get-call-history) with `bulk_list_id`.
 
-1. Upload the CSV with [Upload large campaign CSV](/api-reference/endpoint/campaign/upload-large-campaign-csv).
-2. Poll [Get large campaign upload status](/api-reference/endpoint/campaign/get-large-campaign-upload-status).
-3. Confirm balance with [Check large campaign balance](/api-reference/endpoint/campaign/check-large-campaign-balance).
-4. Start calls with [Make large campaign calls async](/api-reference/endpoint/campaign/make-large-campaign-calls-async).
-5. Monitor campaign state here and inspect call rows through call history.
+<RelatedTopics items={[["Monitor a campaign", "/documentation/deploy/campaigns/manage-a-campaign"]]} />

@@ -1,15 +1,12 @@
 ---
 openapi: get /analytics/number-analytics
+description: "Get call metrics grouped by caller number to compare how each of your numbers performs, filtered by date range, agent, campaign or voicemail status."
+related:
+  - "List workspace numbers": /api-reference/endpoint/numbers/get-workspace-numbers
 ---
 
-Break analytics down by phone number. Use this to compare caller ID performance, monitor BYOT numbers, and identify numbers with poor pickup or completion rates.
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-## Useful filters
+Use it to find a number that connects less often than the others. [Phone numbers](/documentation/inventory/phone-numbers/overview) covers spam-flagged numbers, and a [number pool](/documentation/inventory/phone-numbers/number-pools) can rotate past them.
 
-- `start_date` and `end_date` for reporting windows.
-- `agent_id` to compare numbers used by one assistant.
-- `bulk_list_id` to compare numbers inside one campaign.
-
-## How to act on results
-
-If one number underperforms, check number assignment, telephony provider health, calling hours, and recipient region fit.
+<RelatedTopics items={[["List workspace numbers", "/api-reference/endpoint/numbers/get-workspace-numbers"]]} />

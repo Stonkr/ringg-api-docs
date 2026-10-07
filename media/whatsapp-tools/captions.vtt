@@ -1,0 +1,49 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:04.081
+Open the voice agent and select Tools
+
+00:00:04.081 --> 00:00:06.193
+Open the On-call tab
+
+00:00:06.193 --> 00:00:10.746
+Expand Integration and pick WhatsApp Business
+
+00:00:10.746 --> 00:00:13.577
+Two tools: Send WhatsApp Template and Send WhatsApp Text
+
+00:00:13.577 --> 00:00:16.617
+Text is free-form, inside the 24-hour window only
+
+00:00:16.617 --> 00:00:20.067
+Choose the sender; leave Send to blank for the customer
+
+00:00:20.067 --> 00:00:23.714
+Pick the template
+
+00:00:23.714 --> 00:00:34.698
+Map each body variable to a custom variable
+
+00:00:34.698 --> 00:00:38.228
+Add test value gives a variable a sample for Run test
+
+00:00:38.228 --> 00:00:44.340
+Click Run test, then Import
+
+00:00:44.340 --> 00:00:45.764
+The tool appears in the On-call list
+
+00:00:45.764 --> 00:00:52.109
+Post-call: the template is sent after every conversation
+
+00:00:52.109 --> 00:00:59.315
+Only Send WhatsApp Template is offered post-call
+
+00:00:59.315 --> 00:01:08.707
+Named variables get rows with their names
+
+00:01:08.707 --> 00:01:11.635
+Click Import
+
+00:01:11.635 --> 00:01:14.239
+Each send shows as a tool call in Logs

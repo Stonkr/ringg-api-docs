@@ -1,0 +1,124 @@
+---
+title: "Chat mode"
+sidebarTitle: "Chat mode"
+description: "Run the Ringg AI web widget as a text chat: chat-first and chat-only embeds, a chat-tuned agent, prompt examples, and the legacy calendar and form widgets."
+"og:title": "Chat Mode for the Ringg AI Web Widget"
+---
+
+Use chat mode for support and lead capture on pages where people won't turn on a microphone, and add [Components](/documentation/deploy/web-and-apps/web-widget/components) so the [agent](/documentation/build-agents/agents/agent-types) can show forms and slot pickers in the thread.
+
+## Before you start
+
+<Card title="An installed widget" icon="globe" href="/documentation/deploy/web-and-apps/web-widget/overview" horizontal>
+  The mode is set in its `loadAgent` object.
+</Card>
+
+## Choose the mode
+
+| Mode | Settings | Visitor sees |
+|---|---|---|
+| Voice first | `defaultTab: "audio"`, `hideTabSelector: false` | Call and chat, call preselected. |
+| Chat first | `defaultTab: "text"`, `hideTabSelector: false` | Call and chat, chat preselected. |
+| Chat only | `defaultTab: "text"`, `hideTabSelector: true` | Chat only. |
+| Voice only | `defaultTab: "audio"`, `hideTabSelector: true` | Call only. |
+
+```javascript
+loadAgent({
+  agentId: "your-chat-agent-id",
+  authorization: "Bearer your-webcall-public-key",
+  defaultTab: "text",
+  hideTabSelector: true,
+});
+```
+
+Add `bypassStartScreen: true` to skip the start screen, so a click on the trigger opens the chat straight away.
+
+## Give chat its own agent
+
+A prompt written for voice reads badly in text: it spells out numbers, avoids lists and keeps turns short for the ear. For a chat-only or chat-first embed, run a separate agent with a prompt written for reading.
+
+<Steps>
+  <Step title="Clone the voice agent">
+    In **Assistants**, open the agent's menu and click **Clone**.
+  </Step>
+  <Step title="Rewrite the prompt for text">
+    Allow short Markdown lists, give exact figures, and say when to show which component, for example `Show @[[lead_form]] once the visitor asks for a callback.`
+  </Step>
+  <Step title="Embed the new agent">
+    Copy the snippet from the clone's **Embed & Widgets → Install & domains**, and set `defaultTab: "text"`.
+    <Check>The widget opens on chat and the agent answers in your text style.</Check>
+  </Step>
+</Steps>
+
+## Full chat-only embed
+
+```javascript
+loadAgentsCdn("1.0.21", function () {
+  loadAgent({
+    agentId: "your-chat-agent-id",
+    authorization: "Bearer your-webcall-public-key",
+    defaultTab: "text",
+    hideTabSelector: true,
+    title: "Acme Lending chat",
+    description: "Ask about your EMI, or book a callback.",
+    logoUrl: "https://www.acme-lending.example/logo.svg",
+    buttons: {
+      modalTrigger: {
+        styles: { backgroundColor: "#2563eb" },
+        icon: { url: "https://www.acme-lending.example/chat-icon.svg", size: 24 },
+      },
+    },
+    feedbackScreen: {
+      title: "How was your chat?",
+      submitBtnCTA: "Send",
+    },
+  });
+});
+```
+
+Every option is in the [configuration reference](/documentation/deploy/web-and-apps/web-widget/configuration).
+
+## Prompt examples
+
+Mention each component at the point in the prompt where it should appear, and have the agent confirm what the component returned.
+
+```text Callback booking
+You are the support assistant for Acme Lending. Answer questions about loans
+and EMIs from the knowledge base.
+
+- If the visitor wants to talk to a person, show @[[callback_slots]] so they
+  can pick a time.
+- After they pick a slot, confirm the date, time and timezone in one line.
+- Keep replies under four sentences. This is a chat, not an email.
+```
+
+```text Lead capture
+You qualify loan enquiries for Acme Lending.
+
+- First find out what the visitor needs: loan type and rough amount.
+- Then show @[[lead_form]] to collect name, phone and email. Don't ask for
+  those fields in the conversation; the form collects them.
+- After the form is submitted, thank them and say an advisor will call
+  within one working day.
+```
+
+## Legacy widgets
+
+Before Components, agents used fixed-purpose widgets. Agents that already have them still list them under **Embed & Widgets → Components → Legacy widgets**, where you can switch each on or off or open it to edit. New legacy widgets can't be added; build a [component](/documentation/deploy/web-and-apps/web-widget/components) instead.
+
+- **Calendar**: **Slot Duration (Days)** 1 to 7, default 1. **Slot Interval (Minutes)** 30, 60 or 90, default 30. **Start Time** and **End Time** (24h), default 09:00 to 18:00. **Max slots to show**: **Default**, or a number up to what the window and interval allow. **Timezone**, default `Asia/Kolkata`. An optional API call on booking (**API URL**, **Method**, headers, **Request Body**).
+- **Form**: **Form Title** (default "Fill in your details") and **Submit Button Label** (default "Submit"). Field types: **Text**, **Textarea**, **Number**, **Email**, **Phone Number**, **Single Select**, **Multi Select**, **Checkbox**, **Date**. An optional API call on submit.
+- **Quick Reply**: **Reply Mode** is **Options** (fixed choices you type, four rows by default, **Add Option** for more) or **LLM inferred** (the agent generates the choices from an **Inference Prompt** describing what to offer).
+- **Execute DOM Action**: events the agent fires on your page. See [agent actions](/documentation/deploy/web-and-apps/web-widget/data#agent-actions).
+- **Disease Acceptance**: a **Tool Name** and a **Prompt** holding the underwriting instructions for accepting or declining a disease declaration.
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Build a component" icon="blocks" href="/documentation/deploy/web-and-apps/web-widget/components">
+    Forms, cards and pickers the agent shows in chat.
+  </Card>
+  <Card title="Prepare for launch" icon="shield-check" href="/documentation/deploy/web-and-apps/web-widget/launch-checklist">
+    Domains, <Tooltip tip="Content Security Policy: the header that controls which scripts and styles your site may load.">CSP</Tooltip>, version pinning and browser QA.
+  </Card>
+</Columns>

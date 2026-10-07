@@ -1,0 +1,187 @@
+---
+title: "New provider requirements"
+sidebarTitle: "New provider requirements"
+description: "Check whether a telephony provider can be added to Ringg AI: outbound call API, call lookup, inbound webhooks, WebSocket audio with DTMF, and blind transfer."
+"og:title": "Requirements for a new telephony provider"
+---
+
+If your carrier isn't among the [supported providers](/documentation/inventory/phone-numbers/your-own-telephony/byot-overview#supported-providers), Ringg can add it when it meets the capabilities below. Missing any one of them means the provider can't be fully integrated; if it supports standard <Tooltip tip="Session Initiation Protocol: the standard for connecting voice calls between phone systems.">SIP</Tooltip> instead, a [SIP trunk](/documentation/inventory/phone-numbers/your-own-telephony/sip-trunking) is the faster route.
+
+## 1. Outbound call API
+
+The provider must expose an API to start an outbound call. Ringg calls it with:
+
+| Parameter | Format | Example |
+|---|---|---|
+| **To**, the customer's number | E.164 | `+919876543210` |
+| **From**, the caller ID / <Tooltip tip="Direct inward dialing number: a phone number that routes straight to a line or agent.">DID</Tooltip> | E.164 | `+919876540111` |
+| **WebSocket URL**, which the provider connects to for two-way audio once the callee answers | WSS | `wss://api.ringg.ai/stream/newprovider/{call_id}` |
+| **Callback / hangup URL**, which the provider POSTs to when the call ends, with status, duration and recording URL | HTTPS | `https://api.ringg.ai/callback/newprovider/{call_id}/hangup` |
+
+How a call runs:
+
+1. Ringg calls the provider's outbound API with your credentials, passing the WebSocket URL in the request.
+2. The provider places the call. When the callee answers, it connects to that WebSocket URL at once and streams audio both ways. No answer-URL round trip is needed: unlike inbound calls, the WebSocket URL is in the request itself.
+3. When the call ends, the provider hits the callback URL with the call's status and metadata.
+4. Ringg runs post-call processing: transcript, recording, webhooks and analytics.
+
+<CodeGroup>
+```http Request
+POST https://api.newprovider.com/v1/calls
+Authorization: Bearer <api_key>
+Content-Type: application/json
+
+{
+  "from": "+919876540111",
+  "to": "+919876543210",
+  "websocket_url": "wss://api.ringg.ai/stream/newprovider/{call_id}",
+  "hangup_url": "https://api.ringg.ai/callback/newprovider/{call_id}/hangup"
+}
+```
+
+```json Response
+{
+  "call_id": "provider-unique-call-id",
+  "status": "queued"
+}
+```
+</CodeGroup>
+
+## 2. Get call by ID API
+
+The provider must expose an API to fetch a call by its ID. Ringg uses it to verify call status during and after the call, fetch duration and billing metadata, and retrieve the recording URL when the provider records.
+
+<CodeGroup>
+```http Request
+GET https://api.newprovider.com/v1/calls/{call_id}
+Authorization: Bearer <api_key>
+```
+
+```json Response
+{
+  "call_id": "provider-unique-call-id",
+  "status": "completed",
+  "duration": 120,
+  "from": "+919876540111",
+  "to": "+919876543210",
+  "recording_url": "https://recordings.newprovider.com/rec_123.mp3",
+  "start_time": "2026-03-12T10:00:00Z",
+  "end_time": "2026-03-12T10:02:00Z"
+}
+```
+</CodeGroup>
+
+How existing providers do it:
+
+| Provider | Endpoint | Auth |
+|---|---|---|
+| Plivo | `GET /v1/Account/{auth_id}/Call/{call_uuid}/` | Basic Auth (auth_id:auth_token) |
+| Twilio | `GET /2010-04-01/Accounts/{sid}/Calls/{call_sid}.json` | Basic Auth (sid:auth_token) |
+| Exotel | `GET /v2_beta/Accounts/{sid}/Calls/{call_sid}.json` | Basic Auth (api_key:api_token) |
+| Tata Tele | `GET /v1/live_calls` | Bearer token |
+| Vobiz | `GET /api/v1/Account/{auth_id}/Call/{call_uuid}/` | Custom headers (`X-Auth-ID`, `X-Auth-Token`) |
+
+## 3. Inbound calls
+
+For inbound calls the flow is reversed: the provider calls Ringg when a call arrives.
+
+1. A caller dials a DID. The provider receives the call.
+2. The provider sends a webhook to Ringg's inbound endpoint with `call_sid`, `from_number` and `to_number` (the DID), and keeps the caller in a ringing state. The caller must not hear silence or be disconnected while Ringg sets up.
+3. Ringg looks up `to_number`, finds the workspace and agent attached to that DID, builds the call config and returns the WebSocket URL in the webhook response.
+4. The provider connects to that URL at once and streams audio both ways.
+
+The response format depends on the provider:
+
+<CodeGroup>
+```xml Plivo-style XML
+<Response>
+  <Stream keepalive="true" audio="true" contentType="audio/x-mulaw">
+    wss://api.ringg.ai/stream/newprovider/{call_id}
+  </Stream>
+</Response>
+```
+
+```xml TwiML
+<Response>
+  <Connect>
+    <Stream url="wss://api.ringg.ai/stream/newprovider/{call_id}" />
+  </Connect>
+</Response>
+```
+
+```json JSON
+{
+  "websocket_url": "wss://api.ringg.ai/stream/newprovider/{call_id}"
+}
+```
+</CodeGroup>
+
+## 4. WebSocket streaming
+
+The provider must stream audio over WebSocket in both directions. This is how the agent hears and speaks to the caller.
+
+| Requirement | Detail |
+|---|---|
+| Protocol | WSS (WebSocket Secure) |
+| Audio format | PCM 16-bit, mu-law or a-law (provider-dependent) |
+| Sample rate | 8 kHz or 16 kHz |
+| Direction | The provider sends caller audio and receives agent audio |
+| Latency | Low; under 200 ms round trip is the target |
+
+Over that socket the provider must send three kinds of message:
+
+- **Audio**: binary frames of caller audio.
+- **DTMF events**: one per keypad digit the caller presses, for example `{ "event": "dtmf", "digit": "5", "call_id": "provider-call-id" }`.
+- **Call control**: start, stop and hangup signals for the call lifecycle. Tata Tele's format is the reference: a connection-established message, binary audio frames, <Tooltip tip="The tones sent when a caller presses keys on the phone keypad.">DTMF</Tooltip> digit events, call state changes (connected, disconnected) and metadata messages (call ID, caller info).
+
+<Warning>
+DTMF is mandatory. Ringg agents use the `wait_for_dtmf` tool to collect keypad input ("Press 1 to confirm, press 2 to cancel"). Without DTMF events, those agent flows cannot work.
+</Warning>
+
+## 5. Call transfer
+
+The provider must support a blind transfer: handing an active call to another number without waiting for the target to answer. During a call the agent decides to transfer from the conversation and its transfer rules, calls the `call_transfer` tool with a target number, and Ringg sends the transfer command to the provider by REST API or WebSocket control message. The provider connects the caller to the target, and Ringg logs the transfer for analytics.
+
+<CodeGroup>
+```http REST API
+POST https://api.newprovider.com/v1/calls/{call_id}/transfer
+Authorization: Bearer <api_key>
+
+{
+  "target_number": "+919876543210",
+  "transfer_type": "blind"
+}
+```
+
+```json WebSocket control message
+{
+  "action": "transfer",
+  "target_number": "+919876543210",
+  "call_id": "provider-call-id"
+}
+```
+</CodeGroup>
+
+## Checklist
+
+Before requesting an integration, confirm the provider supports all six:
+
+| Capability | Required |
+|---|---|
+| Outbound call API that accepts a WebSocket URL | Yes |
+| Get call by ID API | Yes |
+| Inbound call webhook with ringing hold | Yes |
+| Bidirectional WebSocket audio | Yes |
+| DTMF events over the WebSocket | Yes |
+| Blind call transfer | Yes |
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Request an integration" icon="mail" href="mailto:admin@ringg.ai">
+    Email Ringg once your provider meets the requirements.
+  </Card>
+  <Card title="Use a SIP trunk instead" icon="network" href="/documentation/inventory/phone-numbers/your-own-telephony/sip-trunking">
+    Connect any SIP-capable platform directly.
+  </Card>
+</Columns>

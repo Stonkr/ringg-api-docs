@@ -1,0 +1,50 @@
+---
+title: Terminate Calls by Campaign Numbers
+sidebarTitle: Stop numbers in a campaign
+description: "Stop calls to up to 100 phone numbers inside one campaign while the rest of it keeps running, for example when a contact asks not to be called again."
+api: "PATCH /campaign/terminate"
+related:
+  - "Monitor a campaign": /documentation/deploy/campaigns/manage-a-campaign
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+The same numbers in other campaigns are still called; to stop a number everywhere, use [by numbers](/api-reference/endpoint/terminate/numbers).
+
+<ParamField header="X-API-KEY" type="string" required>
+  Your Ringg AI API key.
+</ParamField>
+
+<ParamField body="campaign_id" type="string" required>
+  The campaign's ID. Example: `00000000-0000-4000-8000-000000000103`
+</ParamField>
+
+<ParamField body="mobile_numbers" type="string[]" required>
+  Up to 100 numbers, each with country code. Example: `["+919876543210", "+919876543211"]`
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl --request PATCH "https://prod-api.ringg.ai/ca/api/v0/campaign/terminate" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "campaign_id": "00000000-0000-4000-8000-000000000103",
+    "mobile_numbers": ["+919876543210", "+919876543211"]
+  }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{ "message": "Calls terminated successfully!" }
+```
+</ResponseExample>
+
+## Errors
+
+- `400`: a number has no call, or no call that can still be terminated, for example `Mobile numbers not found in campaign: …`.
+- `401`: `X-API-KEY` is missing or invalid.
+- `422`: no field, more than 100 numbers, or a field of the wrong type.
+
+<RelatedTopics items={[["Monitor a campaign", "/documentation/deploy/campaigns/manage-a-campaign"]]} />

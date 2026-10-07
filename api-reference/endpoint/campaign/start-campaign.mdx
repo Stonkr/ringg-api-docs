@@ -1,51 +1,34 @@
 ---
 openapi: post /campaign/start
+description: "Start a campaign uploaded with POST /campaign/save using caller numbers you list in from_numbers; the campaign then moves to scheduled or ongoing."
+related:
+  - "Monitor a campaign": /documentation/deploy/campaigns/manage-a-campaign
+  - "Run a campaign by API": /documentation/deploy/campaigns/campaigns-by-api#with-the-api
+  - "Terminate calls by campaign": /api-reference/endpoint/terminate/campaign
 ---
 
-<Warning>
-**Deprecated.** This endpoint requires you to pass and manage `from_numbers` yourself. New integrations should use [Start Campaign (Pool)](/api-reference/endpoint/campaign/start-campaign-v2), which resolves numbers automatically from a managed pool (rotation, spam skipping, and auto-purchase).
-</Warning>
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-Start a campaign that was created with `POST /campaign/save`. This is the legacy start endpoint for the standard campaign flow.
+To let Ringg choose caller numbers from a [number pool](/documentation/inventory/phone-numbers/number-pools) instead, use [Start campaign (number pool)](/api-reference/endpoint/campaign/start-campaign-v2).
 
-The endpoint schedules outbound calls for all valid contacts in the uploaded campaign list.
+`list_id` is the one returned by [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list); `agent_id` is the agent the list was uploaded for; `from_numbers` are workspace numbers from [List workspace numbers](/api-reference/endpoint/numbers/get-workspace-numbers): send each number's `id` (recommended), or the number written exactly as it is listed there. Each retry dials the next number in the list.
 
-<Warning>
-Before starting a campaign, ensure you have:
-- Uploaded a contact list using [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list)
-- Configured your agent with the appropriate prompts and settings
-- Selected valid `from_numbers` that are provisioned for your workspace
-</Warning>
+```json
+{
+  "agent_id": "your-agent-id",
+  "list_id": "123e4567-e89b-12d3-a456-426614174000",
+  "from_numbers": ["00000000-0000-4000-8000-000000000109"]
+}
+```
 
-## Request parameters
+A success returns `{"status": "campaign registered successfully!"}` and the campaign's `campaign_status` becomes `scheduled` or `ongoing` in [Get all campaigns](/api-reference/endpoint/campaign/get-all-campaigns).
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `agent_id` | string | Yes | ID of the agent that will handle all campaign calls |
-| `list_id` | string | Yes | ID of the uploaded campaign contact list |
-| `from_numbers` | array | Yes | Workspace caller numbers or number IDs to use for outbound calls |
+The workspace balance must cover the campaign ([Billing](/documentation/manage-account/billing)); otherwise the request returns `402`.
 
-## Standard flow
+## Errors
 
-1. Upload contacts with [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list).
-2. Save the returned `list_id`.
-3. Start calls with this endpoint.
-4. Monitor progress with [Get all campaigns](/api-reference/endpoint/campaign/get-all-campaigns) and call history filtered by `bulk_list_id`.
+- `400`: an ID is wrong, a caller number is not in the workspace (`From numbers not found: …`), or the campaign has already started.
+- `402`: the balance does not cover the campaign.
+- `401`: `X-API-KEY` is missing or invalid.
 
-## Beta large-campaign start
-
-Do not use this endpoint for the beta 5,000+ row flow. After `POST /campaign/upload-csv`, wait for upload processing to complete, check balance, then start calls with [Make large campaign calls async](/api-reference/endpoint/campaign/make-large-campaign-calls-async).
-
-## Important notes
-
-- **Credits Required**: Ensure your workspace has sufficient credits for all contacts in the campaign
-- **International Calls**: For international numbers, only Twilio from_numbers are supported
-- **Campaign Status**: Once started, the campaign status changes to "scheduled" or "ongoing"
-- **Duplicate Prevention**: Cannot start a campaign that's already in "scheduled" or "ongoing" status
-
-## Error responses
-
-- **400**: Invalid agent_id, campaign not found, insufficient credits, or campaign already started
-- **401**: Invalid or missing API key
-- **404**: Campaign or agent not found
-- **402**: Insufficient credits to initiate campaign
+<RelatedTopics items={[["Monitor a campaign", "/documentation/deploy/campaigns/manage-a-campaign"], ["Run a campaign by API", "/documentation/deploy/campaigns/campaigns-by-api#with-the-api"], ["Terminate calls by campaign", "/api-reference/endpoint/terminate/campaign"]]} />

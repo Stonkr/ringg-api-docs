@@ -1,0 +1,48 @@
+---
+title: "System tools"
+sidebarTitle: "System tools"
+description: "Ringg AI's built-in on-call tools: call transfer, wait for keypad input, stay on line, end call and end chat, with each tool's settings and how to mention it in the prompt."
+---
+
+## System tools
+
+System tools are built-in on-call actions under **System Tools** on the **On-call** tab. The list comes from Ringg; WhatsApp agents also get **End chat**. A new agent starts with Stay on line and End call (plus End chat on a WhatsApp agent); add the others from the panel. A [WhatsApp agent](/documentation/build-agents/agents/whatsapp-agents/create-an-agent) splits them into **Call Tools** and **Chat Tools**; to send templates during a chat, see [WhatsApp on-call tools](/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#on-call).
+
+Every system tool except end chat has a **Tool name** (lowercase letters, numbers and underscores), a **Description** and a **Tool Execution Message**.
+
+| Tool | What it does and its own settings |
+|---|---|
+| Call transfer | Transfers the caller to a number or <Tooltip tip="An address for a call over SIP, such as sip:billing@pbx.example.com.">SIP URI</Tooltip>. Destinations, business hours and an unavailability message ([below](#call-transfer)). |
+| Wait for <Tooltip tip="The tones sent when a caller presses keys on the phone keypad.">DTMF</Tooltip> | Waits for the caller to type digits on the keypad. **Digits** and **Timeout** (seconds). |
+| Stay on line | Waits silently when the caller asks the agent to hold, then resumes. **Duration** (seconds). |
+| End call | Hangs up after a closing line. With no execution message, the agent says goodbye in its own words. |
+| End chat | Closes a WhatsApp chat; the agent writes its own farewell. Mention it as `@end_chat`. |
+| Capture code | Captures an alphanumeric code, such as an AWB or booking number. You can add more than one. **Output variable**, **Length** (min and max), **Examples**, **Repeat while listening** (on), **Read back & confirm** (on), **Pause before confirming** (7 seconds). |
+| DTMF | Sends keypad tones into the call, for example to get through another company's phone menu. It doesn't listen for keys; that is Wait for DTMF. Works on Plivo and Vobiz numbers (Plivo only on multi-prompt agents). Common fields only. |
+| Collect long input | Lets the caller speak at length, such as an address, without the agent replying. Collection ends when the caller presses the end key (`#` by default) or after a timeout (45 seconds by default); the agent then gets everything said as one message. |
+
+A system tool's menu has **Enable** or **Disable** and **Delete**.
+
+<Frame caption="On-call tools with the side panel">
+  <img src="/media/agents-tools/on-call-tools.webp" alt="On-call tab listing check_payment_status, End Call and Call Transfer, with the side panel showing API, Integration, Function, workspace tools and System Tools" />
+</Frame>
+
+### Call transfer
+
+<Steps>
+  <Step title="Add destinations">
+    Click **New destination**. In **Target**, enter a number such as `+91 98765 4xxxx` or a SIP URI, or type `@` to pick a [variable](/documentation/build-agents/customize-agent-behaviour/custom-variables) (`@{{customer_phone}}`) or a pre-call result (`@((crm_lookup.rm_phone))`), resolved at transfer time. In **Description**, say who it reaches: "Billing team for payment disputes".
+  </Step>
+  <Step title="Set business hours">
+    **Business hours** takes a start hour, an end hour and a timezone. The default is 08:00 to 16:00 IST.
+  </Step>
+  <Step title="Write the unavailability message">
+    What the agent says when a transfer is requested outside business hours, one per agent language, such as "Transfers are unavailable outside business hours."
+  </Step>
+  <Step title="Save">
+    Click **Save tool**, then mention `@||call_transfer||` in the prompt. With an empty **Tool Execution Message**, the agent announces the transfer in its own words.
+    <Frame caption="Call transfer settings">
+      <img src="/media/agents-tools/call-transfer.webp" alt="Call Transfer dialog with tool name call_transfer, business hours 08:00 to 16:00 IST, English and Hindi unavailability messages, and Destination 1 with target +91 98765 40200 and description Billing team" />
+    </Frame>
+  </Step>
+</Steps>

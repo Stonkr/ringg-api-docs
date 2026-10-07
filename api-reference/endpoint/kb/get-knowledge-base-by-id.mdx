@@ -1,58 +1,17 @@
 ---
 openapi: get /external/kb/{kb_id}
+description: "Get one knowledge base with its processing status and every file, URL and FAQ in it, including the IDs you need to remove items with the edit endpoint."
+related:
+  - "Knowledge base": /documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base
 ---
 
-## Get Knowledge Base by ID
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-Retrieve detailed information about a specific knowledge base, including all files, URLs, and FAQs along with their processing status.
+Each item has a `file_id`, which is the ID [Edit knowledge base](/api-reference/endpoint/kb/edit-knowledge-base) takes to remove it.
 
-<Warning>
-**Rate Limit**: Maximum 60 requests per hour per workspace
-</Warning>
+## Notes
 
-## Response Structure
+- Poll this endpoint after creating or editing until `status` is `completed`. Large files or many URLs can take several minutes.
+- Files carry `filename`, `file_type` and `file_size` (bytes); URLs carry `url`; FAQs carry `content` with the question and answer.
 
-The response includes comprehensive details about your knowledge base:
-
-### Basic Information
-- `kb_id`: Unique identifier
-- `kb_name`: Name of the knowledge base
-- `status`: Overall processing status (`pending`, `processing`, `completed`, `failed`)
-- `created_at`: Creation timestamp
-- `updated_at`: Last modification timestamp
-
-### Content Arrays
-
-#### Files
-Each file object includes:
-- `file_id`: Unique identifier for removal operations
-- `file_type`: Document type (pdf, txt, docx, etc.)
-- `file_size`: Size in bytes
-- `filename`: Original filename
-- `file_path`: Storage path
-
-#### URLs
-Each URL object includes:
-- `file_id`: Unique identifier for removal operations
-- `file_type`: Content type
-- `file_size`: Extracted content size
-- `url`: Original URL
-- `file_path`: Storage path for indexed content
-
-#### FAQs
-Each FAQ object includes:
-- `file_id`: Unique identifier for removal operations
-- `file_type`: Always "faq"
-- `file_size`: Content size
-- `content`: Question and answer object
-
-## Use Cases
-
-- **Check Processing Status**: Monitor when content is ready for use
-- **Get Content IDs**: Retrieve file and FAQ IDs for removal operations
-- **Audit Content**: Review what's currently in your knowledge base
-- **Debug Issues**: Identify failed or pending items
-
-<Note>
-**Processing Time**: Large files or many URLs may take several minutes to process. Check the `status` field to confirm completion.
-</Note>
+<RelatedTopics items={[["Knowledge base", "/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base"]]} />

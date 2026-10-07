@@ -1,21 +1,78 @@
 ---
 openapi: patch /agent/v1
+description: "Change one setting on an existing agent per request, such as its prompt, voice, knowledge base, inbound number or webhook subscriptions, by operation name."
+related:
+  - "Webhook payloads": /documentation/build-agents/customize-agent-behaviour/webhooks/call-events
 ---
 
-Update an existing assistant. The request uses an `operation` field so each edit is explicit, such as updating prompts, variables, or webhook event subscriptions.
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-## When to use
+Each request names an `operation` and carries the field that operation needs, so a prompt edit cannot overwrite the voice or the webhooks by accident.
 
-- Update assistant configuration from your own admin backend.
-- Configure event subscriptions for webhooks.
-- Keep assistant behavior synchronized with templates in your product.
+## Operations and fields
 
-## Integration notes
+| `operation` | Field to send |
+|---|---|
+| `edit_prompt` | `agent_prompt` |
+| `edit_call_config` | `call_config` |
+| `edit_agent_display_name` | `agent_display_name` |
+| `edit_intro_message` | `intro_message` |
+| `edit_voice` | `voice_id`, plus `language` (a voice must support the language); optional `secondary_voice_id` |
+| `edit_voice_speed` | `voice_speed` |
+| `edit_noise_settings` | `mute_during_intro` and `mute_while_bot_speaking`, both required |
+| `edit_vocab` | `vocab` |
+| `edit_query_phrases` | `pre_query_response_phrases`, optional `pre_query_phrase_probability` |
+| `edit_vad_settings` | `vad_settings` |
+| `edit_custom_vars` | `custom_variables` |
+| `attach_kb`, `remove_kb` | `kb_id` |
+| `attach_inbound_number`, `remove_inbound_number` | `number_id` |
+| `edit_agent_whitelisted_domains` | `whitelisted_domains` (web agents) |
+| `edit_chat_settings` | `chat_settings` (WhatsApp agents) |
+| `edit_event_subscriptions` | `event_subscriptions` |
 
-- Test configuration changes with one individual call before running a campaign.
-- Avoid overwriting unrelated assistant settings in broad update flows.
-- For webhook setup, use `operation: "edit_event_subscriptions"` and provide the events plus callback URL Ringg should call.
+`agent_id` is required on every request. Without `version_id`, the change applies to the agent's active version; send `version_id` to change another version. An unknown operation, or a missing field, returns `422`.
 
-## Related guide
+## Replace or merge
 
-See [webhook setup](/webhooks/initial-setup) for a complete event subscription example.
+- `edit_prompt` replaces the whole prompt. Send every section; a section you leave out is deleted.
+- `edit_call_config` merges: only the keys you send change, and nested objects such as `voicemail` merge key by key.
+- `edit_custom_vars`, `edit_vocab`, `edit_query_phrases`, `edit_vad_settings`, `edit_agent_whitelisted_domains` and `edit_event_subscriptions` replace the current value with the one you send. An outbound agent must keep `callee_name` and `mobile_number` in `custom_variables`, or the request returns `403`.
+
+```json
+{
+  "operation": "edit_call_config",
+  "agent_id": "your-agent-id",
+  "call_config": {
+    "max_call_length": 300,
+    "voicemail": { "detect": true, "action": "end" }
+  }
+}
+```
+
+## Webhook subscriptions
+
+`edit_event_subscriptions` replaces the agent's whole subscription list with the one you send. Read the current list first and send it back with your change, or you will delete the subscriptions you left out.
+
+```json
+{
+  "operation": "edit_event_subscriptions",
+  "agent_id": "your-agent-id",
+  "event_subscriptions": [
+    {
+      "event_type": ["all_processing_completed"],
+      "callback_url": "https://api.example.com/webhooks/ringg",
+      "method_type": "POST",
+      "headers": { "Authorization": "Bearer your-webhook-receiver-token" }
+    }
+  ]
+}
+```
+
+Each event type can have up to 4 subscriptions on one agent. Call events (`call_started`, `call_ringing`, `call_ongoing`, `call_completed`, `recording_completed`) apply to voice agents and `chat_completed` to WhatsApp agents; subscribing to an event the agent's channel never sends returns `400`.
+
+## Notes
+
+- Place one test [individual call](/api-reference/endpoint/calling/initiate-individual-call) after a change, before the agent runs a campaign.
+- Call settings such as the calling window and voicemail handling are changed with `edit_call_config`, or in the dashboard under [Call settings](/documentation/build-agents/customize-agent-behaviour/call-settings).
+
+<RelatedTopics items={[["Webhook payloads", "/documentation/build-agents/customize-agent-behaviour/webhooks/call-events"]]} />

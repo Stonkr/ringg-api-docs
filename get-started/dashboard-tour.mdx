@@ -1,0 +1,173 @@
+---
+title: "Dashboard tour"
+sidebarTitle: "Dashboard tour"
+description: "Sign in to the Ringg AI dashboard, answer the onboarding questions, then find every sidebar item, the workspace switcher, Settings and where to copy IDs."
+icon: "layout-dashboard"
+"og:title": "Ringg AI dashboard tour: sign in, sidebar, top bar and settings"
+---
+
+The dashboard is at `https://www.ringg.ai/dashboard`. Each section below links to the page that covers it; how the objects relate is in [How Ringg works](/get-started/how-ringg-works).
+
+## Sign in for the first time
+
+There is no password.
+
+<Steps>
+  <Step title="Sign in with Google or email">
+    The sign-in page (**Welcome back**, "Sign in to Ringg AI") offers **Continue with Google** and **Continue with Email**.
+
+    With email: enter your address, click **Send OTP**, then type the 6-digit code from the email within 5 minutes; it submits as soon as the sixth digit is in. **Resend OTP** unlocks after a 60-second countdown.
+
+    The page runs a Cloudflare browser check first. If it reports "Unsupported browser detected, please change your browser to continue.", open the page in another browser.
+
+    By continuing you accept Ringg AI's Terms of Service and Privacy Policy, and periodic update emails.
+  </Step>
+  <Step title="Answer the onboarding questions (new workspaces)">
+    A new workspace opens on a three-step questionnaire (**Step 1 / 3** with a progress bar). **Continue** is enabled once the step's fields are filled; the last step's button is **Let's Start**.
+
+    1. **Help us understand your use case better!**: **Startup**, **Agency**, **Enterprise** or **Personal project**.
+    2. **We need a few more details.**: the fields below, all required.
+    3. **Where did you hear about Ringg AI?**: **Google**, **YouTube**, **LinkedIn**, **X**, **Blog**, **News**, **Friends** or **Others** (with a text box).
+
+    | Field | Options | Asked for |
+    |---|---|---|
+    | **Name of organization** / **Name of agency** | Free text | Startup, Enterprise / Agency |
+    | **What kind of agency?** | Digital / Growth, Automation Agency, Support BPO, AI Agency, Other | Agency |
+    | **Your role** | Founder / Co-founder, Product Manager, Software Engineer, Marketing / Growth, Operations, Other | Startup, Agency, Enterprise |
+    | **Use cases** (pick several) | Loan Collection, Survey, Inbound Support, Lead Qualification, Hiring, Others | Everyone |
+    | **Volume of calls** | Less than 100k minutes, 100k - 500k minutes, More than 500k minutes | Startup, Enterprise |
+    | **How many clients?** | 0-10, 10-50, 50+ | Agency |
+    | **Currency for payment** | ₹ INR, $ USD | Everyone |
+
+    <Warning>
+    **Currency for payment** is the currency your workspace is billed in. It also sets the symbol on the credits chip and which Ringg test number is picked by default for [test calls](/documentation/build-agents/test-and-improve/test-an-agent#test-numbers-and-verification), and the dashboard has no setting to change it later; contact Ringg if you need to.
+    </Warning>
+  </Step>
+  <Step title="Land on Agents">
+    <Check>
+    You see "Logged in successfully." and, after onboarding, "Onboarding completed successfully!". The dashboard opens on the **Agents** page (**Assistants** in the sidebar), or on the page you were headed to, such as an invite link.
+    </Check>
+  </Step>
+</Steps>
+
+## Join a workspace from an invite
+
+An invite to someone else's workspace ([Invite a member](/documentation/manage-account/members#invite-a-member)) comes with a 6-digit code, and its join page is `/dashboard/invite/<code>`. Open it; if you are not signed in, the sign-in page (and onboarding, for a new account) runs first and then returns you to the link. Sign in with the invited email address: the code works for no other account.
+
+The **Join workspace** page asks for the code ("Enter your 6-character invite code"), filled in from the link. Click **Join**.
+
+<Check>
+"You have joined the workspace" appears, the dashboard switches to that workspace, and the **Agents** page opens. Switch between your workspaces with the workspace switcher in the [top bar](#top-bar).
+</Check>
+
+## The screen
+
+<Frame caption="A tour of the dashboard sections">
+  <video alt="A tour of the dashboard sections" aria-label="A tour of the dashboard sections" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/dashboard-tour/poster.webp">
+    <source src="/media/dashboard-tour/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+The screen has a sidebar on the left, a top bar, and the page itself. Collapse or expand the sidebar with <kbd>⌘</kbd> + <kbd>.</kbd> (<kbd>Ctrl</kbd> + <kbd>.</kbd> on Windows and Linux). Inside the agent editor a collapsed sidebar hides fully; drag or hover the left edge to peek at it. The Ringg logo opens the first section in the sidebar.
+
+<Frame caption="The dashboard: sidebar, top bar and the Agents page">
+  <img src="/media/dashboard-tour/dashboard-shell.webp" alt="Ringg AI dashboard with the sidebar (Assistants, Workflows, Monitor, Inventory and Labs groups, Report a bug, Settings), the top bar with the Acme Lending workspace switcher and Search, and the Agents page listing six agents" />
+</Frame>
+
+## Sidebar
+
+**Assistants** and **Workflows** sit at the top; the rest is grouped under **Monitor**, **Inventory** and **Labs**.
+
+| Item | What you do there |
+|---|---|
+| [**Assistants**](/documentation/build-agents/agents/agent-types) | List, create, edit and test agents. The page heading reads **Agents**; the list is described in [The Agents page](/documentation/build-agents/agents/agent-types#the-agents-page). |
+| [**Workflows**](/documentation/build-agents/workflows/overview) | Build multi-step flows of calls, messages, waits and API requests, and launch them over a list. |
+| Monitor → [**Logs**](/documentation/monitor/logs) | Every call and chat, with recording, transcript and analysis. Tabs: **Phone**, **WhatsApp**, **Workflows**. |
+| Monitor → [**Campaigns**](/documentation/deploy/campaigns/overview) | Create campaigns from a calling list and watch their progress. |
+| Monitor → [**Analytics**](/documentation/monitor/analytics) | Call volume, connectivity, goals and cost over a period. |
+| Monitor → [**Evals**](/documentation/monitor/evals) | Quality scores for completed calls, issues, and test cases. |
+| Monitor → [**Alerts**](/documentation/monitor/alerts) | Notifications by email, Slack or webhook when a metric crosses a threshold. |
+| Inventory → [**Knowledge base**](/documentation/inventory/knowledge-base) | Upload files and web pages for agents to look up. |
+| Inventory → [**Numbers**](/documentation/inventory/phone-numbers/overview) | Buy, import and manage numbers. Tabs: **Phone** (with **All Numbers** and **Number Pools**) and **WhatsApp**. |
+| Inventory → [**Tools**](/documentation/build-agents/customize-agent-behaviour/tools/workspace-tools#workspace-tools) | Tools you set up once and reuse in any agent, plus the integrations catalog. The URL is `/integrations`. |
+| Labs → [**STT**](/documentation/ringg-labs/parrot-stt/python-sdk) | **Speech To Text**: Ringg's speech-to-text API. Tabs: **Quick start**, **Logs**, **Usage**, **Pricing**. |
+
+At the bottom of the sidebar are **Report a bug**, **Settings** and the email you are logged in as.
+
+### Report a bug
+
+**Report a bug** opens the "Something not working?" form, which goes to Ringg. **Summary** (up to 160 characters) and **Details** (up to 4,000 characters) are required. Pick a **Severity**: **Critical** (P0, 100+ users affected), **High** (P1, 10–100 users affected), **Medium** (P2, limited, non-critical impact) or **Low** (P2, minor, no customer impact). Attach up to 5 files, 4 MB in total, then click **Submit report**.
+
+## Top bar
+
+| Element | What it does |
+|---|---|
+| Workspace switcher | The first crumb. Click the workspace name to switch; **Copy workspace ID** sits beside each workspace in the menu. Inside a Ringg Space the trail shows the primary, then the Ringg Space, and each crumb switches at its own level. See [Ringg Spaces](/documentation/manage-account/ringg-spaces/overview). |
+| Breadcrumb | Where you are. In the agent editor it shows the agent name, which you can rename in place, and a button that copies the agent ID. See [Find the agent ID](/documentation/build-agents/agents/agent-types#find-the-agent-id). |
+| **Search** | Opens the command palette (<kbd>⌘</kbd> + <kbd>K</kbd> or <kbd>Ctrl</kbd> + <kbd>K</kbd>). See [Command palette](#command-palette). |
+| **Help** | Opens Ringg's help agent, on workspaces where it is turned on. |
+| Credits | Your balance (prepaid) or used / limit (postpaid). Click it to open **Billing plan** ([Billing](/documentation/manage-account/billing)). Inside the agent editor the chip gives way to **Test assistant**, **Save** and **Publish**. |
+
+### Command palette
+
+Type to find any section or settings page, or jump to an agent, campaign, knowledge base or workspace by name (on a primary hub, agents, campaigns and knowledge bases are not listed). The footer shows **Open**, **Copy ID** and **Close** for the highlighted row.
+
+To open something by ID, press a shortcut below anywhere in the dashboard, paste the ID and press <kbd>Enter</kbd>.
+
+| Look up | macOS | Windows and Linux |
+|---|---|---|
+| Agent (opens the agent editor) | <kbd>⌃</kbd> + <kbd>1</kbd> | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>1</kbd> |
+| Log (opens the call in Logs) | <kbd>⌃</kbd> + <kbd>2</kbd> | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>2</kbd> |
+| Campaign (opens the campaign) | <kbd>⌃</kbd> + <kbd>3</kbd> | <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>3</kbd> |
+
+## Settings
+
+**Settings** has its own left menu, grouped under **Workspace**, **Access** and **Billing**.
+
+| Item | What you do there |
+|---|---|
+| Workspace → [**Workspace members**](/documentation/manage-account/members) | Invite teammates and set what each can edit. |
+| Workspace → [**Company details**](/documentation/manage-account/members#company-details-kyc) | Your company's details (<Tooltip tip="Know your customer: your registered company details.">KYC</Tooltip>), needed for payments, some test calls and larger calling lists. |
+| Workspace → [**Call limits**](/documentation/manage-account/call-limits) | Cap how many outbound calls one person can receive in a rolling window. |
+| Workspace → [**Workspace logs**](/documentation/manage-account/members#workspace-logs) | The audit trail of changes in the workspace. |
+| Workspace → [**Sub-workspaces**](/documentation/manage-account/ringg-spaces/overview) | Create and manage Ringg Spaces. Shown when Ringg Spaces are enabled for your company and you are not inside a Ringg Space; editing members of a Ringg Space is owner-only. |
+| Access → [**API key**](/documentation/manage-account/api-key) | Generate or regenerate the workspace API key. |
+| Billing → [**Billing plan**](/documentation/manage-account/billing) | Balance, concurrency, transactions and invoices. |
+
+The settings menu also has **Contact us** (an email to Ringg support) and **Logout**.
+
+## IDs your developers need
+
+Dashboard work produces the IDs the API and webhooks use. Copy them here and hand them over with the names.
+
+| Object | Where to copy it |
+|---|---|
+| Agent: `agent_id` | The copy button beside the agent name in the top bar, or the URL `/assistants/<agent_id>` |
+| Number: `from_number_id` | The copy button in the **ID** column on **Numbers** |
+| Campaign ID | The copy button beside the ID in the campaign's detail panel |
+| Call: `call_id` | The copy button beside the call ID in the call panel in **Logs** |
+| API key: `X-API-KEY` header | **Settings → API key**, shown once when generated. Share it through a secret manager, not chat or email. |
+
+## Primary workspaces show fewer sections
+
+When a workspace has Ringg Spaces, it becomes the family's primary workspace, a management hub. Its sidebar keeps only **Logs**, **Analytics**, **Alerts** and **Settings**, and it opens on **Logs**, where the workspace filter covers every Ringg Space. Any other section's URL redirects to Logs. Settings keeps every item except **Call limits**, which each Ringg Space sets for itself.
+
+To build agents, buy numbers or run campaigns, switch to a Ringg Space with the workspace switcher. See [Ringg Spaces](/documentation/manage-account/ringg-spaces/overview#how-a-family-works).
+
+## When the workspace is locked
+
+Ringg can lock a workspace, for example a prepaid workspace that stays out of balance ([If the workspace is locked](/documentation/manage-account/billing#if-the-workspace-is-locked)). Every section except the ones the lock allows then shows a lock screen with a title, the reason, and, when there is an action that lifts the lock, a button for it. Complete the action, then refresh the page ("Refresh the page after completing the action."). If the reason is unclear, use **Contact us** in Settings.
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Pick an agent type" icon="bot" href="/documentation/build-agents/agents/agent-types">
+    Channels, single- or multi-prompt, and the Agents page.
+  </Card>
+  <Card title="Create an agent" icon="plus" href="/documentation/build-agents/agents/create-an-agent">
+    Start from a template or from scratch.
+  </Card>
+  <Card title="Get a number" icon="hash" href="/documentation/inventory/phone-numbers/buy-or-import-a-number">
+    Buy, import or add a number for your agents.
+  </Card>
+</Columns>

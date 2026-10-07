@@ -1,15 +1,12 @@
 ---
 openapi: get /analytics/duration-distribution
+description: "Get how call durations are distributed for a date range, agent or campaign, to spot early hang-ups or calls running into the maximum call length limit."
+related:
+  - "Classification analytics": /api-reference/endpoint/analytics/get-classification-analytics
 ---
 
-Return call duration distribution analytics. Use this to understand whether conversations are too short, too long, or clustered around expected script lengths.
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-## Use this for
+A cluster of very short calls usually means people hang up during the first message; a cluster at the top means calls are hitting the agent's maximum call length (set in [Call settings](/documentation/build-agents/customize-agent-behaviour/call-settings)).
 
-- Detecting early hangups or low engagement.
-- Spotting calls that exceed the expected script length.
-- Tuning assistant prompts, transfer rules, and max call length.
-
-Filter by `agent_id` or `bulk_list_id` when investigating one assistant or campaign.
-
-For campaign dashboards, combine this distribution with classification analytics so teams can see whether short calls are failed attempts, successful quick confirmations, or early hangups.
+<RelatedTopics items={[["Classification analytics", "/api-reference/endpoint/analytics/get-classification-analytics"]]} />

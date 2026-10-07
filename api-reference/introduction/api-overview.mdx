@@ -1,0 +1,98 @@
+---
+title: "API Overview"
+description: "Find the Ringg AI API base URL, resource groups, request formats, the IDs that link agents, numbers, campaigns and calls, and how errors and paging work."
+"og:title": "Understand the API Structure & Concepts | Ringg AI"
+---
+
+The Ringg AI API lets your backend do what the dashboard does for day-to-day calling: pick an agent, place calls, run campaigns, read call logs and analytics, and receive results by webhook. Building and editing agents is mostly done in the dashboard; the API covers creating an agent from a prompt and changing selected settings.
+
+## Base URL and version
+
+```text
+https://prod-api.ringg.ai/ca/api/v0
+```
+
+The version (`v0`) is part of the base URL. Some endpoints have a newer variant with its own path, for example `POST /calling/v2/outbound/individual` next to `POST /calling/outbound/individual`.
+
+## Resources
+
+| Group | What you can do |
+|---|---|
+| [Workspace](/api-reference/endpoint/workspace/get-workspace-info) | Check the key, read balance, members and the workspaces you can access |
+| [Ringg Spaces](/documentation/manage-account/ringg-spaces/ringg-spaces-by-api#manage-the-family-by-api) | Create client or team workspaces and allocate concurrency or money to them |
+| [Agents](/api-reference/endpoint/assistant/get-assistants) | List, read and create agents, list voices, change settings and webhook subscriptions |
+| [Knowledge bases](/api-reference/endpoint/kb/get-all-knowledge-bases) | Create and update knowledge bases from files, URLs and FAQs |
+| [Numbers](/api-reference/endpoint/numbers/get-workspace-numbers) | List the caller numbers in the workspace |
+| [Calling](/api-reference/endpoint/calling/initiate-individual-call-v2) | Place one outbound call |
+| [Campaigns](/api-reference/endpoint/campaign/upload-campaign-contact-list) | Upload a calling list, start it, and track campaigns |
+| [Termination](/api-reference/endpoint/terminate/campaign) | Stop queued and retry calls by campaign, agent, call ID or number |
+| [Call history](/api-reference/endpoint/history/get-call-history) | List calls, fetch one call's transcript and recording, export to CSV |
+| [Analytics](/api-reference/endpoint/analytics/get-platform-analytics) | Aggregate call metrics by campaign, number, duration and outcome |
+
+## Requests
+
+Send the API key in `X-API-KEY` on every request (see [Authentication](/api-reference/introduction/authentication)). Request and response bodies are JSON; set `Content-Type: application/json` on `POST` and `PATCH` requests with a JSON body.
+
+Endpoints that take a file (campaign CSVs, knowledge-base documents) use `multipart/form-data`. Let your HTTP client set that `Content-Type` so it includes the boundary; setting it by hand breaks the upload.
+
+## IDs to store
+
+| ID | Where you get it | Where you use it |
+|---|---|---|
+| `agent_id` | `GET /agent/all`, or the agent page in the dashboard | Calls, campaigns, agent settings |
+| `from_number_id` | `GET /workspace/numbers` | Caller ID on individual calls and campaigns |
+| `number_pool_id` | The **Number pools** page in the dashboard | Caller ID from a [pool](/documentation/inventory/phone-numbers/number-pools) |
+| `list_id` / `bulk_list_id` | The campaign upload response | Starting the campaign; filtering history and analytics. It is also the campaign's ID |
+| `call_id` | The call response, call history, webhook payloads | Call details, deduplicating webhooks, support requests |
+
+## Errors
+
+Failed requests return a `4xx` or `5xx` status and a JSON body with the reason in `message`:
+
+```json
+{ "message": "Provide either from_number_id or from_number, not both" }
+```
+
+Some endpoints add keys beside `message`, such as `code` on [Create agent](/api-reference/endpoint/assistant/create-agent) (for example `VOICE_LANGUAGE_MISMATCH`). A `429` may carry its reason in `error` instead. Log the status code and the whole body.
+
+| Status | Meaning |
+|---|---|
+| `400` | The request is invalid, for example a campaign that already started or a caller number that is not in the workspace |
+| `401` | The API key is missing or invalid: `{"message": "Invalid credentials"}` |
+| `402` | The balance, or the available credit limit, does not cover the call or campaign |
+| `403` | The workspace or key cannot use this endpoint |
+| `404` | The agent, call, campaign or knowledge base was not found in this workspace |
+| `409` | The same request is already being processed, for example a call history export |
+| `422` | A field is missing or failed validation; `message` names the problem |
+| `429` | Rate limit hit; retry later with backoff. Endpoint pages list their limits |
+| `5xx` | Server-side failure; retry with backoff and log the request and any `call_id` |
+
+## Paging
+
+Paging differs by endpoint:
+
+| Endpoint | `limit` | `offset` |
+|---|---|---|
+| [Get call history](/api-reference/endpoint/history/get-call-history) | Default `10`, maximum `200` (more returns `400`) | Default `0` |
+| [Get all campaigns](/api-reference/endpoint/campaign/get-all-campaigns) | Default `10` | Default `0` |
+| [List agents](/api-reference/endpoint/assistant/get-assistants) | Leave it out to get every agent | Default `0` |
+| [List workspace numbers](/api-reference/endpoint/numbers/get-workspace-numbers) | Not paged: every number comes back | Not paged |
+
+## Typical integration order
+
+1. Check the key with [`GET /workspace`](/api-reference/endpoint/workspace/get-workspace-info).
+2. Pick an agent with [`GET /agent/all`](/api-reference/endpoint/assistant/get-assistants) and a caller number with [`GET /workspace/numbers`](/api-reference/endpoint/numbers/get-workspace-numbers).
+3. Place one test call with [`POST /calling/outbound/individual`](/api-reference/endpoint/calling/initiate-individual-call).
+4. Subscribe the agent to [webhook events](/documentation/build-agents/customize-agent-behaviour/event-subscription) so results reach your server without polling.
+5. Move to [campaigns](/documentation/deploy/campaigns/campaigns-by-api#with-the-api) for lists of people, and to [call history](/api-reference/endpoint/history/get-call-history) and [analytics](/api-reference/endpoint/analytics/get-platform-analytics) for reporting.
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Make your first call" icon="phone" href="/api-reference/introduction/quickstart">
+    From API key to a ringing phone.
+  </Card>
+  <Card title="Run a campaign by API" icon="megaphone" href="/documentation/deploy/campaigns/campaigns-by-api#with-the-api">
+    Upload a CSV and start calling it.
+  </Card>
+</Columns>

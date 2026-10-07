@@ -1,0 +1,28 @@
+---
+title: "Post-call tools"
+sidebarTitle: "Post-call tools"
+description: "Run Ringg AI tools after a call ends: when each post-call tool fires, what data it can read, and how callback scheduling calls the person back."
+---
+
+## Post-call tools
+
+You don't pick when a post-call tool runs: Ringg derives its trigger point from the data it references.
+
+| Trigger point | Runs when | Tool can read |
+|---|---|---|
+| `call_completed` | The call ends | `custom_args`, `call_data`, `tool_output` |
+| `platform_analysis` | Platform analysis is done | Also `platform_analysis` |
+| `client_analysis` | Advanced Analysis is done | Also `platform_analysis` and `client_analysis` |
+
+A tool that reads `call_data.recording_url` waits until the recording is ready. When the call never connected, it runs without waiting and the URL is empty.
+
+### Callback scheduling
+
+The **Post-call** tab also has a **Callback scheduling** row with **Enable** or **Disable** and **Configure**, which calls the person back.
+
+- **Triggers**: **Callee requested callback** (always on) and **No response from callee** (fewer than 2 messages from the caller), each with a delay as `hh:mm` (default `24:00`). Custom triggers test a [call data](/documentation/build-agents/customize-agent-behaviour/tools/api-tools#parameter-sources) or [Advanced Analysis](/documentation/build-agents/customize-agent-behaviour/advanced-analysis) field with the [condition operators](/documentation/build-agents/customize-agent-behaviour/tools/function-tools-and-conditions#conditions).
+- **Schedule callback instructions** (required): how the agent decides when to offer and confirm a callback.
+- **Callback message** (required): spoken when the callback connects, such as "Hi, calling you back as requested."
+- **Maximum callback attempts**: 1 or more, default 3.
+
+Callbacks show in [Logs](/documentation/monitor/logs#call-types) with the **Callback** call type.

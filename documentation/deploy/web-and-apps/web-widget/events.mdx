@@ -1,0 +1,89 @@
+---
+title: "Web widget events"
+sidebarTitle: "Events"
+description: "Listen for the browser events the Ringg AI web widget fires when it opens or closes, a call or chat starts or ends, and a visitor rates the conversation."
+"og:title": "Listen for web widget events"
+---
+
+Each is a `CustomEvent` on `window`. Use them to send analytics, hide a competing chat launcher, or start a follow-up after the conversation.
+
+Events the agent fires on purpose during a conversation (focus a field, open a modal) are a different feature: see [Agent actions](/documentation/deploy/web-and-apps/web-widget/data#agent-actions).
+
+## Before you start
+
+<Card title="An installed widget" icon="globe" href="/documentation/deploy/web-and-apps/web-widget/overview" horizontal>
+  The events fire from CDN version 1.0.17 onward.
+</Card>
+
+## Event reference
+
+| Event | Fires when | `event.detail` |
+|---|---|---|
+| `ringg:widget_status` | The panel opens or closes. | `status`: `"maximised"` or `"minimised"`. `mode`: `"audio"` or `"text"`. |
+| `ringg:conversation_status` | A call or chat starts or ends. | `status`: `"started"` or `"ended"`. `mode`. `callId`. |
+| `ringg:feedback_status` | The visitor submits or skips the rating. | `status`: `"submitted"` or `"skipped"`. `callId`. `rating` (submitted only). |
+| `ringg:calendar_booking` | A legacy calendar or form is shown or completed. On `2.0.0-beta` builds it also fires for every [component](/documentation/deploy/web-and-apps/web-widget/components) shown and every button tap on one, not only calendars. | `status`: `"shown"` or `"confirmed"`. `componentId`. `message` (confirmed only). |
+
+## Send events to analytics
+
+```javascript
+window.addEventListener("ringg:conversation_status", (event) => {
+  const { status, mode, callId } = event.detail;
+  analytics.track(status === "started" ? "Ringg conversation started" : "Ringg conversation ended", { mode, callId });
+});
+
+window.addEventListener("ringg:feedback_status", (event) => {
+  const { status, rating, callId } = event.detail;
+  if (status === "submitted") analytics.track("Ringg rating", { rating, callId });
+});
+```
+
+## React to the panel
+
+Hide your own support launcher while the widget is open:
+
+```javascript
+const supportLauncher = document.querySelector("[data-support-launcher]");
+
+window.addEventListener("ringg:widget_status", (event) => {
+  if (supportLauncher) supportLauncher.hidden = event.detail.status === "maximised";
+});
+```
+
+## Clean up in single-page apps
+
+Add listeners once and remove them on unmount; otherwise every client-side navigation adds another handler.
+
+```javascript
+import { useEffect } from "react";
+
+export function RinggEventBridge() {
+  useEffect(() => {
+    function onConversation(event) {
+      console.log(event.detail);
+    }
+    window.addEventListener("ringg:conversation_status", onConversation);
+    return () => window.removeEventListener("ringg:conversation_status", onConversation);
+  }, []);
+
+  return null;
+}
+```
+
+## Verify your listeners
+
+- Opening and closing the panel fires one `ringg:widget_status` each.
+- A test call fires `ringg:conversation_status` twice, both with the same `callId`.
+- Submitting and skipping the rating (in separate runs) each fire `ringg:feedback_status`.
+- After navigating away and back in your app, each event still fires once.
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Drive your page from the agent" icon="database" href="/documentation/deploy/web-and-apps/web-widget/data#agent-actions">
+    Let the agent focus fields, open modals or scroll.
+  </Card>
+  <Card title="Prepare for launch" icon="shield-check" href="/documentation/deploy/web-and-apps/web-widget/launch-checklist">
+    Domains, <Tooltip tip="Content Security Policy: the header that controls which scripts and styles your site may load.">CSP</Tooltip>, version pinning and browser QA.
+  </Card>
+</Columns>

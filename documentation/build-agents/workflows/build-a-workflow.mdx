@@ -1,0 +1,152 @@
+---
+title: "Build a workflow"
+sidebarTitle: "Build a workflow"
+description: "Create a Ringg AI workflow on the canvas: add call, wait, condition, action and message blocks, pass variables and data between steps, duplicate or archive it."
+"og:title": "Build, test and run a workflow"
+related:
+  - "Workflows": /documentation/build-agents/workflows/overview
+  - "Test and publish a workflow": /documentation/build-agents/workflows/test-and-publish
+  - "Workflow block reference": /documentation/build-agents/workflows/block-reference
+  - "Workflow campaign": /documentation/deploy/campaigns/workflow-campaign
+  - "Workflow runs in Logs": /documentation/monitor/logs#workflow-runs
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+This page covers building, testing and publishing a [workflow](/documentation/build-agents/workflows/overview), plus the [block reference](/documentation/build-agents/workflows/block-reference#block-reference) with every setting; launching it at a list of contacts is [Launch a workflow campaign](/documentation/deploy/campaigns/workflow-campaign#workflow-campaigns), in the Campaigns chapter of **Deploy**. If you only need one conversation with several stages, a [multi-prompt agent](/documentation/build-agents/agents/multi-prompt-agents/overview) is simpler.
+
+In the dashboard: **Sidebar → Workflows → Create workflow**.
+
+## Before you start
+
+<Columns cols={3}>
+  <Card title="An agent for each Agent block" icon="bot" href="/documentation/build-agents/agents/create-an-agent">
+    Voice agents for calls, WhatsApp agents for chats.
+  </Card>
+  <Card title="A phone number" icon="hash" href="/documentation/inventory/phone-numbers/buy-or-import-a-number">
+    Every call step needs a caller number from your workspace.
+  </Card>
+  <Card title="WhatsApp Business connected" icon="message-square" href="/documentation/inventory/tools-integrations/connect-whatsapp">
+    Optional: only for Chat steps on WhatsApp.
+  </Card>
+</Columns>
+
+## Create a workflow
+
+The video builds a payment-reminder workflow with every block type (a call, a branch on whether the customer promised to pay, a CRM update, a one-day wait and a WhatsApp nudge), then saves, publishes and tests it.
+
+<Frame caption="Building, publishing and testing a workflow">
+  <video alt="Building, publishing and testing a workflow" aria-label="Building, publishing and testing a workflow" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/workflows-build/poster.webp">
+    <source src="/media/workflows-build/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open a blank canvas">
+    Go to **Workflows** and click **Create workflow**. The editor opens with a **Start** marker. Nothing is saved yet.
+  </Step>
+  <Step title="Name it">
+    Click the name in the breadcrumb at the top, type a name such as "Payment reminder follow-up", and press Enter.
+  </Step>
+  <Step title="Add blocks">
+    - Drag a block from the **Blocks** panel (bottom left) onto the canvas, or click it to drop it in the middle of the view.
+    - Click the **+** connector on the right of a block (or of Start) and pick the next block: it is added and connected in one step.
+    - Drag from a connector into empty canvas: the most likely next block is added, already connected.
+  </Step>
+  <Step title="Connect the blocks">
+    Drag from a block's right-hand connector to the next block's left edge. Start must connect to your first block.
+  </Step>
+  <Step title="Configure each block">
+    Every setting is edited on the block's card; the [block reference](/documentation/build-agents/workflows/block-reference#block-reference) lists them.
+    <Frame caption="A call, a branch, then a CRM update or a wait and a WhatsApp nudge">
+      <img src="/media/workflows-build/workflow-canvas.webp" alt="Workflow editor canvas: Start leads to an Agent block (Payment reminder agent, calling from +91 98765 40300, Variables 2/2), then a Condition “Promised to pay?” with the rule Custom analysis · Payment reminder · Payment promised is true. Match leads to the Action “Log promise in CRM” (POST to a CRM URL); No match leads to the Await “Wait a day” (1 day), then an Agent block in Chat mode, “WhatsApp nudge” (WhatsApp, WhatsApp concierge, template emi_due_reminder)" />
+    </Frame>
+  </Step>
+  <Step title="Save">
+    Click **Save** in the top bar. There is no autosave. The first save creates the workflow as a **Draft**.
+    <Check>You see "Workflow saved".</Check>
+  </Step>
+</Steps>
+
+### Editor controls
+
+| Control | What it does |
+| --- | --- |
+| **Variables** (top bar) | Declares the workflow's input variables. See [Variables](#variables-and-data-between-steps). |
+| **Save** | Shown while you have unsaved changes. |
+| **Test** | Starts one run. Shown once the workflow is saved and has no unsaved changes. |
+| **Publish** | Shown while a draft version is waiting to be published. |
+| **2 issues** chip (count varies) | Opens the **Issues** panel. Click an issue to jump to its block. |
+| Canvas controls (bottom) | Hand tool (pan or select), **Organize nodes**, **Fit to screen**, **Zoom in**, **Zoom out**. |
+| Keyboard | Delete or Backspace removes the selected blocks (Start cannot be deleted). Cmd/Ctrl + C, V, A, Z, Shift + Z and Y copy, paste, select all, undo and redo. |
+
+Connection rules:
+
+| Rule | Behaviour |
+| --- | --- |
+| A block connecting to itself | Refused: "A block cannot connect to itself". |
+| Anything connecting into Start | Refused: "Nothing can connect into Start". |
+| Several blocks into one block | Allowed (paths can merge). |
+| Loops back to an earlier block | Allowed by the editor. |
+| A second edge from the same connector | Moves the edge instead of adding one. |
+| A block with nothing after it | Allowed. The run ends there. |
+
+## Variables and data between steps
+
+### Input variables
+
+Click **Variables** in the top bar. **Input variables** are "Values each run starts with": each row has a **Name** and an optional **Default**. Two rows are always present and cannot be renamed or removed: `callee_name` and `callee_number`. `callee.*` fields and block outputs need no declaration.
+
+A [workflow campaign](/documentation/deploy/campaigns/workflow-campaign#workflow-campaigns) fills input variables from [CSV columns](/documentation/deploy/campaigns/calling-list#map-variables-to-columns); a [test run](/documentation/build-agents/workflows/test-and-publish#test-a-run) asks you for them.
+
+### Insert a variable
+
+Text fields that accept variables have a `{}` button listing what that block can use, grouped as **Workflow variables**, **Callee**, **Agent outputs** and **Application responses**. Pick from the menu rather than typing paths: block references contain the block's internal ID.
+
+| What | Example |
+| --- | --- |
+| A workflow input variable | `{{plan}}` |
+| Callee name and number | `{{callee.name}}`, `{{callee.mobile_number}}` |
+| An earlier call's summary, duration or retry count | Pick *Block name* · **Summary**, **Call duration** or **Retry count** |
+| An earlier call's Advanced Analysis field | Pick *Block name* · *field name* |
+| A field from an earlier Action's response | Pick *Block name* · **response**, then type the field |
+
+### Feed an agent its variables
+
+An agent's prompt reads [variables](/documentation/build-agents/customize-agent-behaviour/custom-variables) such as `callee_name` or `due_amount`. On an Agent (Call) block, click **Variables** to open **Map variables** ("Assign values from earlier blocks, or type a literal."): one row per variable the agent uses, each filled from the menu or with a literal value.
+
+If an earlier Agent block exists, the summary row is pre-filled ("Filled in from the previous call unless you change it."). Saving with an empty row fails with "2 agent inputs need a value" (the count varies) and highlights the block.
+
+## Duplicate or archive
+
+On the **Workflows** list, hover a card and open its menu. **Duplicate** creates a draft named "Copy of …". **Archive** asks for confirmation: "Archived workflows stop appearing in the main list and can't start new runs. This can't be undone."
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="My workflow is greyed out when creating a campaign">
+    Only Active workflows can run as a campaign. Open it and click **Publish**.
+  </Accordion>
+  <Accordion title="Cancel on a running run shows a warning">
+    Runs can't be cancelled from the dashboard. The run continues to its end.
+  </Accordion>
+  <Accordion title="I can't select Webhook URL or Event trigger">
+    Both are marked **Coming soon**. Use **File upload**, or **Test** for single runs.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Prepare a calling list" icon="book-open" href="/documentation/deploy/campaigns/calling-list">
+    Format the CSV that starts one run per row.
+  </Card>
+  <Card title="Launch a workflow campaign" icon="megaphone" href="/documentation/deploy/campaigns/workflow-campaign#workflow-campaigns">
+    Each row of the list starts one run of the published workflow.
+  </Card>
+  <Card title="Read the runs" icon="scroll-text" href="/documentation/monitor/logs#workflow-runs">
+    Each run's path and calls in Logs.
+  </Card>
+</Columns>
+
+<RelatedTopics items={[["Workflows", "/documentation/build-agents/workflows/overview"], ["Test and publish a workflow", "/documentation/build-agents/workflows/test-and-publish"], ["Workflow block reference", "/documentation/build-agents/workflows/block-reference"], ["Workflow campaign", "/documentation/deploy/campaigns/workflow-campaign"], ["Workflow runs in Logs", "/documentation/monitor/logs#workflow-runs"]]} />

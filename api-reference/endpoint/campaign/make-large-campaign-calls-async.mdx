@@ -1,58 +1,76 @@
 ---
 title: "Make large campaign calls async (Beta)"
-description: "Start outbound calls for a beta large campaign after upload processing and balance checks."
+description: "Schedule the calls of a validated large campaign: set the campaign window, calling hours, retries and caller numbers or a number pool for the bulk_list_id."
 openapi: post /campaign/make-call-async
+related:
+  - "Monitor a campaign": /documentation/deploy/campaigns/manage-a-campaign
+  - "Run a campaign by API": /documentation/deploy/campaigns/campaigns-by-api#large-campaign-flow
 ---
 
-<Warning>
-This endpoint is beta. Use it only after [Get large campaign upload status](/api-reference/endpoint/campaign/get-large-campaign-upload-status) shows processing is complete and [Check large campaign balance](/api-reference/endpoint/campaign/check-large-campaign-balance) confirms sufficient balance.
-</Warning>
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-`POST /campaign/make-call-async` queues outbound calls for a beta large campaign. Use it instead of `POST /campaign/start` for 5,000+ row campaigns created with `POST /campaign/upload-csv`.
+Call it once the [upload status](/api-reference/endpoint/campaign/get-large-campaign-upload-status) is `draft`.
 
-## Endpoint
+## Fields
 
-```text
-POST /campaign/make-call-async
-```
+`country_code` must be the same dialling code as the upload. Send exactly one of `from_numbers` or `number_pool_id`: both, or neither, returns `422`. `from_numbers` takes workspace number IDs from [List workspace numbers](/api-reference/endpoint/numbers/get-workspace-numbers); a number that is not in the workspace makes the campaign `failed` after launch. `campaign_start_time` and `campaign_end_time` (`DD/MM/YYYY, HH:MM`) are required unless `call_slots` is sent, and go together. `email_completion_user_ids` are workspace user IDs from [List workspace users](/api-reference/endpoint/workspace/list-workspace-users), emailed when the campaign completes.
 
-## Request body
+`call_config` has two parts:
 
-Send JSON.
-
-| Field | Required | Description |
-|-------|----------|-------------|
-| `agent_id` | Yes | Assistant that will handle the campaign calls |
-| `bulk_list_id` | Yes | Large campaign list ID returned by `POST /campaign/upload-csv` |
-| `from_numbers` | Yes | Workspace caller numbers or number IDs to use for outbound calls |
-| `callback_url` | No | URL that should receive post-call events, if configured |
+- `call_time`: `call_start_time` and `call_end_time` (`HH:MM`, defaults `09:00` and `21:00`) and `timezone` (default `Asia/Kolkata`) set the daily calling hours. They replace the agent's calling window for this campaign. `scheduled_at` (ISO 8601, in that timezone) schedules the start.
+- `call_retry_config`: `retry_count` (default `0`, so leaving the block out means no retries) and the wait in minutes before retrying a busy (`retry_busy`), unanswered (`retry_not_picked`) or failed (`retry_failed`) call, each defaulting to `30`.
 
 ```bash
 curl --request POST "https://prod-api.ringg.ai/ca/api/v0/campaign/make-call-async" \
   --header "X-API-KEY: $RINGG_API_KEY" \
   --header "Content-Type: application/json" \
   --data '{
+    "bulk_list_id": "123e4567-e89b-12d3-a456-426614174000",
     "agent_id": "your-agent-id",
-    "bulk_list_id": "your-bulk-list-id",
-    "from_numbers": ["your-from-number-id"],
-    "callback_url": "https://api.example.com/ringg/campaign-callback"
+    "country_code": "+91",
+    "campaign_start_time": "18/10/2026, 09:00",
+    "campaign_end_time": "18/10/2026, 18:00",
+    "number_pool_id": "your-number-pool-id",
+    "call_config": {
+      "call_time": { "call_start_time": "09:00", "call_end_time": "18:00", "timezone": "Asia/Kolkata" },
+      "call_retry_config": { "retry_count": 1, "retry_busy": 30, "retry_not_picked": 30, "retry_failed": 30 }
+    }
   }'
 ```
 
-## Response guidance
+## Calling slots
 
-A successful response means the large campaign was accepted for async scheduling.
+`call_slots` limits dialling to exact windows, in `call_time.timezone`. Without `campaign_start_time` and `campaign_end_time`, the campaign runs from the first slot's start to the last slot's end.
+
+- `absolute`: dated `intervals`, each `{"start": "DD/MM/YYYY, HH:MM", "end": "DD/MM/YYYY, HH:MM"}`, up to 500.
+- `weekly`: `windows` of `days` (`mon` to `sun`) with `start` and `end` (`HH:MM`), up to 21, repeated until `until` (`DD/MM/YYYY, HH:MM`), at most 90 days ahead.
+
+Each slot lasts 1 minute to 24 hours, is not in the past and sits inside the daily `call_time` window; the last one must end at least 5 minutes from now. Mixing the two modes returns `422`.
 
 ```json
 {
-  "bulk_list_id": "123e4567-e89b-12d3-a456-426614174000",
-  "status": "scheduled",
-  "message": "Large campaign calls queued"
+  "call_slots": {
+    "mode": "weekly",
+    "until": "31/10/2026, 18:00",
+    "windows": [{ "days": ["mon", "wed", "fri"], "start": "10:00", "end": "13:00" }]
+  }
 }
 ```
 
-Avoid submitting the same `bulk_list_id` more than once unless a previous attempt clearly failed.
+`concurrency_percentage` (0–100) is this campaign's share of the workspace's concurrent calls while several campaigns are ongoing; campaigns at `0` share what is left equally.
 
-## Next step
+## Response
 
-Monitor progress with [Get all campaigns](/api-reference/endpoint/campaign/get-all-campaigns) and inspect call rows with [Get call history](/api-reference/endpoint/history/get-call-history) filtered by the same `bulk_list_id`.
+```json
+{
+  "message": "Campaign calls scheduled",
+  "bulk_list_id": "123e4567-e89b-12d3-a456-426614174000",
+  "status": "scheduled"
+}
+```
+
+A `402` means the balance does not cover the campaign: it moves to `insufficient_balance`. Add balance, run [Check large campaign balance](/api-reference/endpoint/campaign/check-large-campaign-balance), then send this request again with the same `bulk_list_id`.
+
+Send each `bulk_list_id` once. Follow progress with [Get all campaigns](/api-reference/endpoint/campaign/get-all-campaigns) and the calls with [call history](/api-reference/endpoint/history/get-call-history) filtered by the same `bulk_list_id`.
+
+<RelatedTopics items={[["Monitor a campaign", "/documentation/deploy/campaigns/manage-a-campaign"], ["Run a campaign by API", "/documentation/deploy/campaigns/campaigns-by-api#large-campaign-flow"]]} />

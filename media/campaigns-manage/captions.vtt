@@ -1,0 +1,37 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:06.718
+A completed campaign can export its call report
+
+00:00:06.718 --> 00:00:11.203
+Open Filters and pick a Status
+
+00:00:11.203 --> 00:00:13.640
+Click a campaign to open its details
+
+00:00:13.640 --> 00:00:15.206
+Status, assistant, call time and retries
+
+00:00:15.206 --> 00:00:21.268
+Analytics: this campaign's calls and outcomes
+
+00:00:21.268 --> 00:00:23.547
+Click Manage concurrency
+
+00:00:23.547 --> 00:00:26.314
+Workspace tab: split API calls and campaigns
+
+00:00:26.314 --> 00:00:30.039
+Campaigns tab: a share for each ongoing campaign
+
+00:00:30.039 --> 00:00:32.406
+Click Save (saves the open tab)
+
+00:00:32.406 --> 00:00:37.064
+Terminate stops all future calls, after a confirm
+
+00:00:37.064 --> 00:00:40.224
+Click History to see the campaign's calls in Logs
+
+00:00:40.224 --> 00:00:43.734
+Logs, filtered to this campaign

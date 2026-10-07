@@ -1,0 +1,202 @@
+---
+title: "Billing"
+sidebarTitle: "Billing"
+description: "Manage Ringg AI billing yourself: check your balance and rates, add balance, redeem coupons, pay postpaid invoices, download receipts and buy concurrency."
+"og:title": "Add balance, pay invoices and change concurrency"
+---
+
+The billing page shows what your workspace can spend, what calls, numbers and concurrent lines cost, and every payment you have made. In the dashboard: **Settings → Billing plan**, or the credits chip in the top bar.
+
+## Before you start
+
+<Columns cols={2}>
+  <Card title="Company details (KYC)" icon="building" href="/documentation/manage-account/members#company-details-kyc" horizontal>
+    Required before **Add Balance** or **Pay Dues** opens a checkout.
+  </Card>
+  <Card title="The primary workspace" icon="layout-grid" href="/documentation/manage-account/ringg-spaces/overview" horizontal>
+    In a Ringg Space, payments and concurrency are handled by the primary.
+  </Card>
+</Columns>
+
+## Prepaid and postpaid
+
+Every workspace is on one of two billing types, and the page adapts to it. A new workspace starts prepaid; to switch, contact Ringg.
+
+| | Prepaid | Postpaid |
+|---|---|---|
+| How you pay | Add balance in advance; calls draw it down | Spend up to a credit limit; pay invoices afterwards |
+| Main button | **Add Balance** | **Pay Dues** (opens **Invoices**) |
+| Tabs | **Plan**, **Transactions** | **Plan**, **Invoices**, **Transactions** |
+| Credits chip | Balance, e.g. `₹4520.5` | Used of limit, e.g. `₹12000 / ₹50000` |
+
+## Add balance (prepaid)
+
+<Frame caption="Add Balance, Redeem Coupon, Change concurrency and Transactions">
+  <video alt="Add Balance, Redeem Coupon, Change concurrency and Transactions" aria-label="Add Balance, Redeem Coupon, Change concurrency and Transactions" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/account-billing/poster.webp">
+    <source src="/media/account-billing/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+If company details are missing, **Add Balance** opens a **KYC Pending** dialog instead of the form. Click **Complete KYC**, fill in [Company details](/documentation/manage-account/members#company-details-kyc) and save; the dashboard brings you back here. A link ending in `?add_balance=<amount>` opens the form with that amount filled in.
+
+<Steps>
+  <Step title="Enter an amount">
+    Click **Add Balance** and type the amount, for example `5000`. INR workspaces pay **+ GST (18%)** on top, so the **Total Amount** for `5000` credits is `₹5900`.
+    <Frame caption="Add Balance for an INR workspace">
+      <img src="/media/account-billing/add-balance.webp" alt="Add Balance dialog with ₹5000 entered: Credits ₹5000.00, + GST (18%) ₹900.00, Total Amount ₹5900.00, and a Proceed to Pay button" />
+    </Frame>
+  </Step>
+  <Step title="Pay">
+    Click **Proceed to Pay** and finish in the checkout: Razorpay opens inside the page, Stripe in a new tab.
+  </Step>
+  <Step title="Check it arrived">
+    The payment appears on **Transactions**. While any row is **Processing**, the tab refreshes every 10 seconds.
+    <Check>When the row shows **Success**, **Available balance** and the credits chip include the new credits.</Check>
+  </Step>
+</Steps>
+
+## Redeem a coupon
+
+Click **Redeem Coupon**, enter the code (up to 50 characters, upper-cased as you type) and click **Redeem**. You see "Coupon redeemed" with the amount credited. A link ending in `?coupon=CODE` opens the dialog with the code filled in.
+
+## Pay dues (postpaid)
+
+Click **Pay Dues** on the **Plan** tab, or open **Invoices**. Each invoice with status **Due** has its own **Pay Dues** button. INR invoices pay through Razorpay, other currencies through Stripe. <Tooltip tip="Know your customer: your registered company details, saved under Company details.">KYC</Tooltip> must be complete, as for adding balance.
+
+The **Invoices** table lists **Invoice Number**, **Period**, **Amount**, **Due Date**, **Status** and **Actions**. **Download Invoice** saves a PDF.
+
+## Change concurrency
+
+Concurrency is how many calls your workspace runs at the same time. It sets how fast a [campaign](/documentation/deploy/campaigns/overview#concurrency-and-call-limits) works through its list. A [call limit](/documentation/manage-account/call-limits) is different: it caps calls to one person. To split concurrency between campaigns and API calls, see [Manage concurrency](/documentation/deploy/campaigns/manage-a-campaign#manage-concurrency).
+
+<Steps>
+  <Step title="Open the dialog">
+    On the **Plan** tab, click **Change concurrency**.
+  </Step>
+  <Step title="Pick a value">
+    Drag the **Workspace concurrency** slider. The dialog shows **Free**, **Already unlocked**, **Billable now** and **Estimated cost**.
+    <Frame caption="Raising concurrency from 10 to 15">
+      <img src="/media/account-billing/change-concurrency.webp" alt="Change concurrency dialog with the Workspace concurrency slider at 15 on a 0 to 50 scale: Free 2, Already unlocked 8, Billable now 5, Estimated cost ₹2000.00, and Cancel and Update buttons" />
+    </Frame>
+  </Step>
+  <Step title="Update and confirm">
+    Click **Update**, read the summary (for example "Add 5 concurrent calls for ₹2000.00/mo?") and click **Confirm**.
+    <Check>You see "Concurrency updated to 15."</Check>
+  </Step>
+</Steps>
+
+The slider goes from 0 to 50, or 0 to 1000 on enterprise workspaces. For more, use the dialog's **contact sales** link (admin@ringg.ai).
+
+A billing cycle is a calendar month, India time (IST). Within a cycle:
+
+- You pay only for concurrency above your **free** amount.
+- Raising it to a level you have not unlocked this cycle is charged at once, at the full monthly rate, not prorated. Prepaid workspaces pay from the balance; postpaid workspaces see it on that month's invoice.
+- Raising it back to a level you already unlocked this cycle costs nothing ("No charge — already unlocked this cycle.").
+- Lowering it takes effect at once, with no refund. Until the cycle ends you can raise it back to the cycle's maximum for free, and the next cycle bills the new value.
+
+## The Plan tab
+
+<Frame caption="The Plan tab on a prepaid workspace">
+  <img src="/media/account-billing/plan-tab.webp" alt="Billing plan page on the Plan tab: Available balance with Redeem Coupon and Add Balance buttons, a Concurrency card reading 10 with 2 free and Change concurrency, and a rate card with Call cost, Number rental, Concurrency and Analytics" />
+</Frame>
+
+- **Balance card**: **Available balance**, your plan name and description, and the payment buttons.
+- **Concurrency card**: current concurrency and its monthly cost, for example `10 (₹4000)`. Under it, **free** is what your plan includes at no charge, and **max unlocked (billed this cycle)** is the highest value you set this cycle and how many of those you pay for.
+- **Rate card**: your prices, in your workspace currency (INR or USD).
+
+| Rate | Shown as |
+|---|---|
+| **Call cost** | Per minute (`/min`), or per <Tooltip tip="A fixed block of call time used as the billing unit.">pulse</Tooltip> ("per 30 seconds pulse") |
+| **Number rental** | "/mo per number" for each [phone number](/documentation/inventory/phone-numbers/buy-or-import-a-number) Ringg provides. Numbers imported on your own telephony account have no monthly rental. |
+| **Concurrency** | "/mo per concurrent call" |
+| **Analytics** | What your plan includes |
+
+Web calls, including chats in the [web widget](/documentation/deploy/web-and-apps/web-widget/overview), are charged at the call cost on their duration.
+
+## Transactions and receipts
+
+**Transactions** lists every payment in the workspace, 20 per page, with **ID**, **Description**, **Amount**, **Date**, **Status** and **Actions**. Successful top-ups have **Download Receipt**, which saves a PDF.
+
+| Status | Meaning |
+|---|---|
+| **Pending**, **Initiated**, **Processing** | Started, not confirmed yet |
+| **Success**, **Paid** | Done |
+| **Failed**, **Timeout** | Did not go through; nothing was added |
+| **Cancelled** | Cancelled |
+| **Due** | An invoice waiting for payment (postpaid) |
+
+## When balance runs out
+
+When the balance (or, on postpaid, the credit limit) runs out, new calls stop:
+
+- **A call in progress** is never cut off. It is charged when it ends, so the balance can end up below zero.
+- **A running campaign** is not paused. Its remaining calls wait and resume on their own after a top-up. If the campaign's end time passes first, the calls still waiting fail.
+- **API calls** to [Initiate Individual Call](/api-reference/endpoint/calling/initiate-individual-call) return `402` with "Your current balance is insufficient to initiate this call!".
+
+A [campaign](/documentation/deploy/campaigns/overview#campaign-statuses) that the balance can't cover when its list is checked or when it launches stays at **Insufficient Balance**, with "Top up your balance to schedule this campaign". Its **Add Balance** button brings you here. A top-up does not start it for you: launch it again with **Complete Setup**. For a campaign started by API, re-check with [Check large campaign balance](/api-reference/endpoint/campaign/check-large-campaign-balance), then call [Make large campaign calls async](/api-reference/endpoint/campaign/make-large-campaign-calls-async) again; there is no need to recreate the campaign.
+
+On prepaid, the workspace owner gets an email when the balance runs low and when it runs out. To be warned at your own threshold, set a balance [alert](/documentation/monitor/alerts).
+
+To read the balance from code, call [Get Workspace Info](/api-reference/endpoint/workspace/get-workspace-info) and read `workspace_info.total_available_credits` (prepaid), or `workspace_info.credit_limit` and `workspace_info.utilized_limit` (postpaid). You need an [API key](/documentation/manage-account/api-key).
+
+<CodeGroup>
+```bash cURL
+curl "https://prod-api.ringg.ai/ca/api/v0/workspace" \
+  --header "X-API-KEY: $RINGG_API_KEY"
+```
+
+```javascript JavaScript
+const response = await fetch("https://prod-api.ringg.ai/ca/api/v0/workspace", {
+  headers: { "X-API-KEY": process.env.RINGG_API_KEY },
+});
+const workspace = await response.json();
+console.log(workspace.workspace_info.total_available_credits);
+```
+
+```python Python
+import os
+import requests
+
+response = requests.get(
+    "https://prod-api.ringg.ai/ca/api/v0/workspace",
+    headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+)
+print(response.json()["workspace_info"]["total_available_credits"])
+```
+</CodeGroup>
+
+## In a Ringg Space
+
+Money and capacity belong to the primary workspace of a [Ringg Space](/documentation/manage-account/ringg-spaces/overview) family. Inside a Ringg Space:
+
+- **Add Balance**, **Redeem Coupon** and **Pay Dues** are replaced by "Balance is shared with" (prepaid) or "Billing is handled by" (postpaid) the primary's name, with a **Manage in primary workspace** button.
+- Concurrency reads "Allocated from" the primary's capacity. Any member of the primary can change it.
+- There is no **Transactions** tab.
+
+## If the workspace is locked
+
+Ringg can lock a workspace. Every page then shows a lock screen with a title, the reason and, where there is one, a button for the action that lifts the lock; only the pages the lock allows stay reachable. Complete the action, then refresh the page.
+
+A prepaid workspace that stays out of balance for 60 days is locked as **Account Deactivated**, with an **Activate now** button that opens **Billing plan**. Adding balance lifts this lock automatically. For any other lock, contact Ringg.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="I paid but the balance did not change">
+    Open **Transactions**. A **Processing** payment updates on its own. A **Failed** or **Timeout** payment added nothing; pay again.
+  </Accordion>
+  <Accordion title="I can't find the Invoices tab">
+    **Invoices** exists only on postpaid workspaces. On prepaid, each payment's receipt is on **Transactions**.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Share concurrency between campaigns" icon="megaphone" href="/documentation/deploy/campaigns/manage-a-campaign#manage-concurrency">
+    Split capacity between campaigns and API calls.
+  </Card>
+  <Card title="Fund a Ringg Space" icon="layout-grid" href="/documentation/manage-account/ringg-spaces/overview">
+    Allocate concurrency and credit to teams or clients.
+  </Card>
+</Columns>

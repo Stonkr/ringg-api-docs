@@ -1,0 +1,155 @@
+---
+title: "Create a campaign"
+sidebarTitle: "Create a campaign"
+description: "Create a Ringg AI campaign in the dashboard: upload a calling list, map columns to variables, set the calling window, retries and caller numbers, then go live."
+boost: 4
+"og:title": "Create a campaign in the dashboard or by API"
+---
+
+The dashboard and the API take the same [campaign](/documentation/deploy/campaigns/overview) settings; both are on this page. [Test the agent](/documentation/build-agents/test-and-improve/test-an-agent) with a real call before you launch to a full list.
+
+In the dashboard: **Sidebar → Monitor → Campaigns → Create campaign**.
+
+## Before you start
+
+<Columns cols={3}>
+  <Card title="An outbound agent" icon="bot" href="/documentation/build-agents/agents/create-an-agent">
+    The agent that makes the calls. Note its variables.
+  </Card>
+  <Card title="A number or number pool" icon="hash" href="/documentation/inventory/phone-numbers/buy-or-import-a-number">
+    The caller ID: a bought or imported number, or a [pool](/documentation/inventory/phone-numbers/number-pools#create-a-pool) of them.
+  </Card>
+  <Card title="A calling list (CSV)" icon="file-spreadsheet" href="/documentation/deploy/campaigns/calling-list">
+    One row per contact, with a column for each variable.
+  </Card>
+</Columns>
+
+You also need enough [balance](/documentation/manage-account/billing#add-balance-prepaid), or the campaign stops at Insufficient Balance, and for the API an [API key](/documentation/manage-account/api-key).
+
+## In the dashboard
+
+The page is titled **Campaign Setup** and has two steps: **Upload details** and **Configure campaign**.
+
+<Frame caption="Both steps, from the campaign name to Create campaign">
+  <video alt="Both steps, from the campaign name to Create campaign" aria-label="Both steps, from the campaign name to Create campaign" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/campaigns-create/poster.webp">
+    <source src="/media/campaigns-create/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Upload details">
+    1. In the **Campaign details** card, enter a **Campaign name** that names the audience, month and purpose, for example `October payment reminders`; it is how you find the campaign later in Logs and Analytics filters.
+    2. Leave **Campaign type** on **Assistant**. (**Workflow** runs a multi-step workflow per contact instead: [Workflow campaigns](/documentation/deploy/campaigns/workflow-campaign#workflow-campaigns).)
+    3. In **Select assistant**, search for and pick your [agent](/documentation/build-agents/agents/create-an-agent), for example "Payment reminder".
+    4. In the **Upload calling list** card, drag your CSV onto the box or click **Select File** ([format](/documentation/deploy/campaigns/calling-list)).
+    5. In the **Calling list settings** card that appears, set the [**Country code**](/documentation/deploy/campaigns/calling-list#phone-numbers-and-country-code), map each variable in [**Map variables to CSV columns**](/documentation/deploy/campaigns/calling-list#map-variables-to-columns), and choose [**Remove invalid rows**](/documentation/deploy/campaigns/calling-list#invalid-rows) and [**Transliterate variables**](/documentation/deploy/campaigns/calling-list#transliteration).
+    6. Click **Next**. Ringg uploads and verifies the list ("Processing CSV...", then "CSV verified successfully") and opens step 2. If your balance doesn't cover the campaign, you are sent back to the campaigns list instead ([troubleshooting](#troubleshooting)).
+
+    <Frame caption="Step 1, Upload details, with a CSV chosen">
+      <img src="/media/campaigns-create/upload-details.webp" alt="Campaign Setup step 1: Campaign name October payment reminders, Campaign type Assistant, assistant Payment reminder, payment-reminders.csv uploaded, Calling list settings with Country code +91 India, and a preview of the CSV rows on the right" />
+    </Frame>
+  </Step>
+  <Step title="Configure campaign">
+    1. Under **Select number**, choose **Individual numbers** and pick one or more **Numbers**, or choose **Number pool** and pick a pool. These set the <Tooltip tip="The number the person you call sees on their phone.">caller ID</Tooltip>. No numbers yet? [Buy or import a number](/documentation/inventory/phone-numbers/buy-or-import-a-number) or [create a number pool](/documentation/inventory/phone-numbers/number-pools#create-a-pool).
+    2. Under **Campaign settings**, set the **Timezone**, **Start date & time** and **End date & time**.
+    3. Next to **Calling windows**, click **Edit** to change the hours the campaign may call (see [Calling windows rules](#calling-windows-rules)). The campaign's windows replace the agent's own <Tooltip tip="The hours of the day in which calls may be placed.">calling window</Tooltip> ([Calling window](/documentation/build-agents/customize-agent-behaviour/call-settings#calling-window)) for this campaign's calls.
+    4. Set the **Retry count** and **Cooldown Period** (the <Tooltip tip="The wait before a contact who was not reached is called again.">cooldown</Tooltip> between attempts). More retries reach more people, but every retry counts toward [call limits](/documentation/manage-account/call-limits) and takes a concurrency slot; the connectivity-by-attempt chart in [Analytics](/documentation/monitor/analytics#connectivity) shows whether later attempts still connect.
+    5. In **Email notifications**, pick the workspace members to notify. They get one email when the campaign is set up and its calls are scheduled, and one when it completes, with the totals, credits used and a link to download the report (valid for 7 days). A terminated campaign sends no completion email. To add someone, first [invite them](/documentation/manage-account/members#invite-a-member).
+    6. Click **Create campaign**.
+
+    <Frame caption="Step 2, Configure campaign">
+      <img src="/media/campaigns-create/configure-campaign.webp" alt="Campaign Setup step 2: Number pool Collections – Mumbai with 6 numbers, Timezone IST, start and end date and time, calling windows Mon–Sat 08:00–20:00, Retry count 2 Retries, Cooldown Period 30 Minutes, Email notifications; on the right the upload summary shows 10 total rows, 9 valid contacts and 1 invalid row" />
+    </Frame>
+
+    <Check>
+    You see "Campaign created successfully!" and the campaign appears on the campaigns list.
+    </Check>
+  </Step>
+</Steps>
+
+### Upload details fields
+
+Every field is required unless marked optional.
+
+| Field | Default | Allowed values |
+|---|---|---|
+| **Campaign name** | Empty | Any text |
+| **Campaign type** | **Assistant** | **Assistant**, **Workflow** |
+| **Select assistant** | None | Agents in this workspace |
+| **Upload calling list** | None | One `.csv` file, up to 20 MB |
+| **Country code** | **+91** | One dial code for the whole list |
+| **Map variables to CSV columns** (each variable needs a column) | Auto-mapped where a header equals the variable name | Any column of the file |
+| **Remove invalid rows** (optional) | On | On, off |
+| **Transliterate variables** (optional) | Off | Any variable except `mobile_number` |
+
+The right side previews your file, 15 rows per page.
+
+### Configure campaign fields
+
+| Field | Default | Allowed values |
+|---|---|---|
+| **Select number** | **Individual numbers** | **Individual numbers** (one or more workspace numbers) or **Number pool** (one pool) |
+| **Timezone** | `Asia/Kolkata` | Any IANA timezone. Start, end and calling windows are read in this timezone. |
+| **Start date & time** | 10 minutes from now | A date and time |
+| **End date & time** | 1 day after the default start | A date and time |
+| **Calling windows** | 08:00–20:00, every day | See the rules below |
+| **Retry count** | **3 Retries** | **No Retry**, **1 Retry**, **2 Retries** … **20 Retries** |
+| **Cooldown Period** | **30 Minutes** | **5**, **10**, **15**, **16** or **30 Minutes**; **1**, **2**, **3**, **4** or **6 Hours**. **0 Minutes** only with **No Retry**. |
+| **Email notifications** | You | Members of this workspace. You can't type other addresses. |
+
+The dashboard uses one **Cooldown Period** whether the last attempt was busy, not picked up, or failed. Raising **Retry count** from **No Retry** while the cooldown is **0 Minutes** changes the cooldown to **5 Minutes**.
+
+### Calling windows rules
+
+**Edit** opens the **Calling windows** editor. Choose **Daily** (the same hours every day the campaign runs) or **Weekly** (different hours per weekday), drag on the calendar to add a window, then click **Save**.
+
+<Frame caption="The Calling windows editor in Weekly mode">
+  <img src="/media/campaigns-create/calling-windows.webp" alt="Calling windows dialog in Weekly mode: a calendar with 08:00–20:00 windows Monday to Saturday and none on Sunday, a list of the windows with start and end times on the right, and Cancel and Save buttons" />
+</Frame>
+
+- At least 1 window and at most 25.
+- Each window is at least 30 minutes long, in 15-minute steps.
+- Windows on the same day can't overlap.
+- A window can't cross midnight. For 22:00–02:00, add 22:00–24:00 and 00:00–02:00 as two windows.
+
+If a call limit applies to the agent, a read-only **Call limits** card ("How often this campaign can call one person") appears below the settings. See [Call limits](/documentation/manage-account/call-limits).
+
+## Verify it worked
+
+- The new campaign appears with a status such as **Preparing**, **Scheduled** or **Ongoing**. See [Campaign statuses](/documentation/deploy/campaigns/overview#campaign-statuses).
+- Once the start time passes inside a calling window, calls appear in [Logs](/documentation/monitor/logs). The campaign's **History** button opens them. See [Manage a running campaign](/documentation/deploy/campaigns/manage-a-campaign).
+- By API, [Get all campaigns](/api-reference/endpoint/campaign/get-all-campaigns) lists the campaign and its status.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Next is disabled">
+    **Next** needs a campaign name, an [agent](/documentation/build-agents/agents/create-an-agent), a CSV, a country code and a column for every variable. See [Map variables to columns](/documentation/deploy/campaigns/calling-list#map-variables-to-columns).
+  </Accordion>
+  <Accordion title="After Next, I'm sent back to the campaigns list with Insufficient balance">
+    Your balance doesn't cover the campaign, so it is kept with the status **Insufficient Balance**. Select it and click **Add Balance**, which opens billing with the amount needed. Once the balance covers it, the campaign returns to **Draft**: select it and click **Complete Setup**. You don't need to upload the list again. See [When balance runs out](/documentation/manage-account/billing#when-balance-runs-out).
+  </Accordion>
+  <Accordion title="My number is missing from Numbers">
+    Test numbers can't be used in campaigns and are not listed. If you have no other numbers, the card says "No numbers available." with a **Buy numbers** link. See [Buy or import a number](/documentation/inventory/phone-numbers/buy-or-import-a-number).
+  </Accordion>
+  <Accordion title="A number pool can't be selected">
+    Pools with no numbers are greyed out. Add numbers to the pool first. See [Number pools](/documentation/inventory/phone-numbers/number-pools).
+  </Accordion>
+  <Accordion title="Create campaign is disabled">
+    Pick a number or a pool, set a timezone and both dates, and check that no calling windows overlap. See [Calling windows rules](#calling-windows-rules).
+  </Accordion>
+  <Accordion title="I left the page after Next">
+    The campaign is saved as a **Draft**. On the campaigns list, click its name, or select it and click **Complete Setup**, to return to **Configure campaign**. Settings you already entered in step 2 are kept only in the same browser.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Manage a running campaign" icon="play" href="/documentation/deploy/campaigns/manage-a-campaign">
+    Watch status, split concurrency, terminate and open the campaign's calls.
+  </Card>
+  <Card title="Read call logs" icon="list-checks" href="/documentation/monitor/logs">
+    Open each campaign call's transcript, recording and analysis.
+  </Card>
+</Columns>

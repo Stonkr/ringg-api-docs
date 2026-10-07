@@ -1,0 +1,89 @@
+---
+title: "Tools"
+sidebarTitle: "Overview"
+description: "How Ringg AI agent tools work: the pre-call, on-call and post-call phases, the kinds of tool on each, using on-call tools in the prompt, and managing tools from an AI assistant."
+boost: 4
+"og:title": "Add pre-call, on-call and post-call tools to an agent"
+---
+
+Each tool on an [agent](/documentation/build-agents/agents/agent-types) runs in one of three phases, and the phase decides when it runs and what data it can read.
+
+In the dashboard: Agents (listed under **Assistants** in the sidebar) → open an agent → **Advanced Settings → Tools**. On a [multi-prompt agent](/documentation/build-agents/agents/multi-prompt-agents/overview), pre-call and post-call tools are under [Global Settings](/documentation/build-agents/agents/multi-prompt-agents/global-settings#global-settings) and on-call tools are attached to each Agent node.
+
+## Before you start
+
+<Columns cols={2}>
+  <Card title="An agent" icon="bot" href="/documentation/build-agents/agents/create-an-agent" horizontal>
+    The agent the tools run for.
+  </Card>
+  <Card title="Custom variables" icon="braces" href="/documentation/build-agents/customize-agent-behaviour/custom-variables" horizontal>
+    Optional: per-call values tools can send, such as `mobile_number`.
+  </Card>
+</Columns>
+
+For an API tool you also need the endpoint's URL and any auth header it expects. For an Integration tool, [connect the app](/documentation/inventory/tools-integrations/connect-an-app) on the sidebar **Tools** page first; accounts are connected once per workspace.
+
+## The three phases
+
+The **Tools** page has a tab per phase. Each tab has a side panel listing what you can add.
+
+| Tab | Runs | Use it to |
+|---|---|---|
+| **Pre-call** | Before the call connects | Fetch what the agent needs from its first word: name, dues, order status. The output goes into the prompt. |
+| **On-call** | When the agent decides to call it | Act on what the caller says: check a slot, create a ticket, transfer, hang up. The [prompt](/documentation/build-agents/customize-agent-behaviour/agent-prompt) must say when. |
+| **Post-call** | After the call | Send results to your systems, with the transcript and analysis available. Never talks to the caller. |
+
+| Kind | Phases | What it is |
+|---|---|---|
+| **API** | All | An HTTP request to a URL you configure |
+| **Integration** | All | An action on a connected app account, such as a calendar, a sheet or Slack |
+| **Function** | All | A <Tooltip tip="A small language for filtering and reshaping JSON.">jq</Tooltip> program that computes a result with no network call |
+| **Condition** | Pre-call, post-call | A group of tools that runs only when a rule matches |
+| **Workspace tools** | Per tool | Shared tools from your [workspace library](/documentation/build-agents/customize-agent-behaviour/tools/workspace-tools#workspace-tools) |
+| **System Tools** | On-call | [Built-in actions](/documentation/build-agents/customize-agent-behaviour/tools/system-tools#system-tools) such as transfer and end call |
+
+On pre-call and post-call, the panel also lists **Frequently used integrations**: calendar, sheets and Slack apps you have connected, with a warning icon on an expired account.
+
+## Use on-call tools in the prompt
+
+An on-call tool runs only when the agent decides to call it, so the prompt must say when. Type `@` in the [prompt editor](/documentation/build-agents/customize-agent-behaviour/agent-prompt) and pick the tool; it is inserted as `@||tool_name||`. Pre-call results go in as `@((tool_name.field))`.
+
+```text
+When the caller gives an order ID, use @||check_order_status|| and read out the status.
+If the caller asks for a human, use @||call_transfer||.
+When the caller says goodbye or asks to stop, use @||end_call||.
+```
+
+## Manage tools from an AI assistant
+
+The [Ringg MCP server](/resources/mcp-server/workspace-mcp-server/overview) ([connect it](/resources/mcp-server/workspace-mcp-server/connect-an-assistant)) can list an agent's tools, add or change API and function tools, test them and their jq, and remove them.
+
+## Verify it worked
+
+[Test the agent](/documentation/build-agents/test-and-improve/test-an-agent), then open the call in [Logs](/documentation/monitor/logs#the-call-panel) and read the transcript.
+
+<Check>
+The first message contains the pre-call values, and the transcript shows each on-call tool's **Tool Execution Message** where it ran.
+</Check>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Calls are aborted before they connect">
+    A pre-call tool returned a code listed in **Block call on status codes**. Test the tool with the same input, or remove the code.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Call settings" icon="settings" href="/documentation/build-agents/customize-agent-behaviour/call-settings">
+    Call duration, calling window, voicemail and interruptions.
+  </Card>
+  <Card title="Test the agent" icon="play" href="/documentation/build-agents/test-and-improve/test-an-agent">
+    Place a test call and check the tool calls in Logs.
+  </Card>
+  <Card title="Attach a number" icon="hash" href="/documentation/inventory/phone-numbers/inbound-agent-number">
+    Put the agent on a phone number.
+  </Card>
+</Columns>

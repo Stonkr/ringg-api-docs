@@ -1,0 +1,394 @@
+---
+title: "Call events"
+sidebarTitle: "Call events"
+description: "The JSON your endpoint receives for each Ringg AI call event, from call started to all processing completed, and how to link retries and callbacks to the original call."
+"og:title": "Webhook Request & Response Payloads | Ringg AI"
+related:
+  - "Event Subscription": /documentation/build-agents/customize-agent-behaviour/event-subscription
+  - "Webhook setup and errors": /documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors
+  - "WhatsApp chat events": /documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events
+  - "Webhook field reference": /documentation/build-agents/customize-agent-behaviour/webhooks/field-reference
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Every example below is one event for the same outbound call, for an endpoint subscribed in [Set up webhooks](/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors); WhatsApp's `chat_completed` is in [WhatsApp events](/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events#whatsapp-chat-events).
+
+## Event payloads
+
+### Call started event
+
+Sent when an outbound call is registered and queued for dialling, before it connects, and when a web call starts. Inbound phone calls don't send it. Nothing has been dialled yet, so `call_sid`, `called_on`, `created_at`, `call_cost` and the latency fields are `null`, and the status is `registered` / `QUEUED`. A call that connects very quickly can send a second `call_started` with `ongoing` / `ACCEPTED`; treat it as optional.
+
+```json
+{
+  "event_type": "call_started",
+  "event_id": "7fe697e8-6e38-462b-917a-77bbd367546c",
+  "version": "1.0",
+  "timestamp": "2026-08-04T12:25:26.942668Z",
+  "call_id": "00000000-0000-4000-8000-0000000000c4",
+  "parent_call_id": null,
+  "call_sid": null,
+  "agent_id": "00000000-0000-4000-8000-0000000000a1",
+  "workspace_id": "00000000-0000-4000-8000-0000000000c3",
+  "status": "registered",
+  "sub_status": "QUEUED",
+  "call_type": "outbound",
+  "calling_source": "plivo",
+  "custom_args_values": {
+    "callee_name": "Priya",
+    "emi_amount": "4500",
+    "due_date": "12 August"
+  },
+  "to_number": "+919876543210",
+  "from_number": "+919876540111",
+  "bulk_list_id": null,
+  "called_on": null,
+  "created_at": null,
+  "agent_name": "EMI Reminder",
+  "version_id": "00000000-0000-4000-8000-0000000000c1",
+  "version_slug": "v1",
+  "version_description": "Initial version",
+  "call_cost": null,
+  "overall_latency_seconds": null,
+  "first_utterance_seconds": null,
+  "tool_call_logs": []
+}
+```
+
+### Call ringing and call ongoing events
+
+Sent only for dashboard test calls, together with `call_started`, once the carrier accepts the dial. They don't track real ringing or answering. The payload is smaller than `call_started`: no `event_id`, `timestamp`, `version`, `call_type`, numbers or cost fields. `call_ongoing` is identical apart from `event_type`.
+
+```json
+{
+  "event_type": "call_ringing",
+  "call_id": "00000000-0000-4000-8000-0000000000c4",
+  "agent_id": "00000000-0000-4000-8000-0000000000a1",
+  "workspace_id": "00000000-0000-4000-8000-0000000000c3",
+  "call_sid": "00000000-0000-4000-8000-0000000000c2",
+  "custom_args_values": {
+    "callee_name": "Priya"
+  },
+  "status": "ongoing",
+  "sub_status": "ACCEPTED",
+  "agent_name": "EMI Reminder",
+  "version_id": "00000000-0000-4000-8000-0000000000c1",
+  "version_slug": "v1",
+  "version_description": "Initial version",
+  "tool_call_logs": [],
+  "parent_call_id": null
+}
+```
+
+### Call completed event
+
+Sent when a call attempt finishes, for every outcome: `completed`, `failed`, `error`, `cancelled`, `forwarded`, and the interim `retry`. When the call never connected, `transcript` is empty, `call_duration`, latency and cost are `null`, and `sub_status` carries the reason (see [Status and sub-status reference](/documentation/build-agents/customize-agent-behaviour/webhooks/field-reference#status-and-sub-status-reference)).
+
+```json
+{
+  "event_type": "call_completed",
+  "call_id": "00000000-0000-4000-8000-0000000000c4",
+  "parent_call_id": null,
+  "call_sid": "00000000-0000-4000-8000-0000000000c2",
+  "agent_id": "00000000-0000-4000-8000-0000000000a1",
+  "workspace_id": "00000000-0000-4000-8000-0000000000c3",
+  "status": "completed",
+  "sub_status": "ACCEPTED",
+  "call_type": "outbound",
+  "call_duration": 15.73,
+  "agent_message_count": 3,
+  "user_message_count": 2,
+  "custom_args_values": {
+    "callee_name": "Priya",
+    "emi_amount": "4500",
+    "due_date": "12 August"
+  },
+  "to_number": "+919876543210",
+  "from_number": "+919876540111",
+  "bulk_list_id": null,
+  "called_on": "2026-08-04T12:29:13.310707Z",
+  "created_at": "2026-08-04T12:29:13.315211Z",
+  "agent_name": "EMI Reminder",
+  "version_id": "00000000-0000-4000-8000-0000000000c1",
+  "version_slug": "v1",
+  "version_description": "Initial version",
+  "call_cost": 0.15,
+  "overall_latency_seconds": 0.892345,
+  "first_utterance_seconds": 0.456789,
+  "transcript": [
+    { "bot": "Hi Priya, this is Riya from Acme Lending. Your EMI of 4,500 rupees is due on 12 August." },
+    { "user": "Yes, I know. I'll pay it this week." },
+    { "bot": "Thank you. Have a good day." }
+  ],
+  "retry_count": 0,
+  "attempts": [
+    { "status": "Busy Line", "called_on_time": "2026-08-04T12:25:30.006699Z" },
+    { "status": "ACCEPTED", "called_on_time": "2026-08-04T12:29:13.310707Z" }
+  ],
+  "recording_url": null,
+  "tool_call_logs": []
+}
+```
+
+`attempts` is the dial history; the top-level `sub_status` is the final attempt's reason, lower-cased for failures.
+
+### Recording completed event
+
+Sent when the recording is processed. `recording_url` may expire about a day after the event is sent; download the file if you need to keep it, or fetch a fresh link from [Get Call Details](/api-reference/endpoint/history/get-call-details).
+
+```json
+{
+  "event_type": "recording_completed",
+  "call_id": "00000000-0000-4000-8000-0000000000c4",
+  "parent_call_id": null,
+  "call_sid": "00000000-0000-4000-8000-0000000000c2",
+  "sub_status": "ACCEPTED",
+  "recording_url": "https://recordings.example.com/00000000-0000-4000-8000-0000000000c4.mp3",
+  "recording_duration": 16.28,
+  "custom_args_values": {
+    "callee_name": "Priya",
+    "emi_amount": "4500",
+    "due_date": "12 August"
+  },
+  "bulk_list_id": null,
+  "agent_name": "EMI Reminder",
+  "version_id": "00000000-0000-4000-8000-0000000000c1",
+  "call_cost": 0.15,
+  "overall_latency_seconds": 0.892345,
+  "first_utterance_seconds": 0.456789,
+  "tool_call_logs": []
+}
+```
+
+### Platform analysis event
+
+Sent when Ringg's built-in analysis completes, for every call whatever its outcome, so the top-level `status` and `sub_status` describe the call (for example `failed` / `busy line`), not the analysis. `analysis_data.status` is `analyzed` when analysis ran; a call that never connected has nothing to analyse.
+
+```json
+{
+  "event_type": "platform_analysis_completed",
+  "entity_type": "call",
+  "call_id": "00000000-0000-4000-8000-0000000000c4",
+  "parent_call_id": null,
+  "call_sid": "00000000-0000-4000-8000-0000000000c2",
+  "agent_id": "00000000-0000-4000-8000-0000000000a1",
+  "workspace_id": "00000000-0000-4000-8000-0000000000c3",
+  "status": "completed",
+  "sub_status": "ACCEPTED",
+  "call_type": "outbound",
+  "analysis_data": {
+    "key_points": [
+      "Reminded the customer of the 4,500 rupee EMI due on 12 August.",
+      "The customer said they will pay this week."
+    ],
+    "action_items": [],
+    "summary": "The agent reminded Priya of her EMI due on 12 August. She confirmed she will pay this week.",
+    "classification": "payment_confirmed",
+    "callback_requested": false,
+    "callback_requested_time": null,
+    "status": "analyzed",
+    "call_disconnect_reason": "agent_hangup",
+    "timezone": "Asia/Kolkata"
+  },
+  "custom_args_values": {
+    "callee_name": "Priya",
+    "emi_amount": "4500",
+    "due_date": "12 August"
+  },
+  "to_number": "+919876543210",
+  "from_number": "+919876540111",
+  "bulk_list_id": null,
+  "called_on": "2026-08-04T12:29:13.310707Z",
+  "created_at": "2026-08-04T12:29:13.315211Z",
+  "agent_name": "EMI Reminder",
+  "version_id": "00000000-0000-4000-8000-0000000000c1",
+  "version_slug": "v1",
+  "version_description": "Initial version",
+  "call_cost": 0.15,
+  "overall_latency_seconds": 0.892345,
+  "first_utterance_seconds": 0.456789,
+  "transcript": [
+    { "bot": "Hi Priya, this is Riya from Acme Lending. Your EMI of 4,500 rupees is due on 12 August." },
+    { "user": "Yes, I know. I'll pay it this week." },
+    { "bot": "Thank you. Have a good day." }
+  ],
+  "call_duration": 15.73,
+  "agent_message_count": 3,
+  "user_message_count": 2,
+  "tool_call_logs": []
+}
+```
+
+### Client analysis event
+
+Sent when your [Advanced Analysis](/documentation/build-agents/customize-agent-behaviour/advanced-analysis) completes. `analysis_data` holds the keys you defined; the other fields match the platform analysis event.
+
+```json
+{
+  "event_type": "client_analysis_completed",
+  "entity_type": "call",
+  "call_id": "00000000-0000-4000-8000-0000000000c4",
+  "parent_call_id": null,
+  "call_sid": "00000000-0000-4000-8000-0000000000c2",
+  "agent_id": "00000000-0000-4000-8000-0000000000a1",
+  "workspace_id": "00000000-0000-4000-8000-0000000000c3",
+  "status": "completed",
+  "sub_status": "ACCEPTED",
+  "call_type": "outbound",
+  "analysis_data": {
+    "payment_intent": "will_pay",
+    "promised_date": "this week",
+    "dispute_raised": false
+  },
+  "custom_args_values": {
+    "callee_name": "Priya",
+    "emi_amount": "4500",
+    "due_date": "12 August"
+  },
+  "to_number": "+919876543210",
+  "from_number": "+919876540111",
+  "bulk_list_id": null,
+  "called_on": "2026-08-04T12:29:13.310707Z",
+  "created_at": "2026-08-04T12:29:13.315211Z",
+  "agent_name": "EMI Reminder",
+  "version_id": "00000000-0000-4000-8000-0000000000c1",
+  "version_slug": "v1",
+  "version_description": "Initial version",
+  "call_cost": 0.15,
+  "overall_latency_seconds": 0.892345,
+  "first_utterance_seconds": 0.456789,
+  "transcript": [
+    { "bot": "Hi Priya, this is Riya from Acme Lending. Your EMI of 4,500 rupees is due on 12 August." },
+    { "user": "Yes, I know. I'll pay it this week." },
+    { "bot": "Thank you. Have a good day." }
+  ],
+  "call_duration": 15.73,
+  "agent_message_count": 3,
+  "user_message_count": 2,
+  "tool_call_logs": []
+}
+```
+
+### All processing completed event
+
+Sent once recording, transcript and both analyses are done.
+
+```json
+{
+  "event_type": "all_processing_completed",
+  "call_id": "00000000-0000-4000-8000-0000000000c4",
+  "parent_call_id": null,
+  "call_sid": "00000000-0000-4000-8000-0000000000c2",
+  "agent_id": "00000000-0000-4000-8000-0000000000a1",
+  "workspace_id": "00000000-0000-4000-8000-0000000000c3",
+  "status": "completed",
+  "sub_status": "ACCEPTED",
+  "call_type": "outbound",
+  "call_duration": 15.73,
+  "called_on": "2026-08-04T12:29:13.310707Z",
+  "created_at": "2026-08-04T12:29:13.315211Z",
+  "to_number": "+919876543210",
+  "from_number": "+919876540111",
+  "custom_args_values": {
+    "callee_name": "Priya",
+    "emi_amount": "4500",
+    "due_date": "12 August"
+  },
+  "bulk_list_id": null,
+  "agent_name": "EMI Reminder",
+  "version_id": "00000000-0000-4000-8000-0000000000c1",
+  "version_slug": "v1",
+  "version_description": "Initial version",
+  "call_cost": 0.15,
+  "agent_message_count": 3,
+  "user_message_count": 2,
+  "overall_latency_seconds": 0.892345,
+  "first_utterance_seconds": 0.456789,
+  "transcript": [
+    { "bot": "Hi Priya, this is Riya from Acme Lending. Your EMI of 4,500 rupees is due on 12 August." },
+    { "user": "Yes, I know. I'll pay it this week." },
+    { "bot": "Thank you. Have a good day." }
+  ],
+  "recording_url": "https://recordings.example.com/00000000-0000-4000-8000-0000000000c4.mp3",
+  "platform_analysis": {
+    "key_points": [
+      "Reminded the customer of the 4,500 rupee EMI due on 12 August.",
+      "The customer said they will pay this week."
+    ],
+    "action_items": [],
+    "summary": "The agent reminded Priya of her EMI due on 12 August. She confirmed she will pay this week.",
+    "classification": "payment_confirmed",
+    "callback_requested": false,
+    "callback_requested_time": null,
+    "status": "analyzed",
+    "call_disconnect_reason": "agent_hangup",
+    "timezone": "Asia/Kolkata"
+  },
+  "platform_analysis_status": "success",
+  "client_analysis": {
+    "payment_intent": "will_pay",
+    "promised_date": "this week",
+    "dispute_raised": false
+  },
+  "client_analysis_status": "success",
+  "tool_call_logs": []
+}
+```
+
+## Linking retries and callbacks to the original call
+
+A scheduled callback and a redial after voicemail are each a separate call with their own `call_id` and their own webhooks. Each carries `parent_call_id`, the `call_id` of the call it came from. A retry after an unanswered attempt keeps the call's `call_id`; its dial history is in `attempts`.
+
+```json
+{
+  "event_type": "call_completed",
+  "call_id": "77aa2802-22d3-4d3d-9e9c-44d67c3d89d7",
+  "parent_call_id": "00000000-0000-4000-8000-0000000000c4",
+  "status": "completed",
+  "sub_status": "ACCEPTED"
+}
+```
+
+- `parent_call_id` is on every event type, so a child call is linkable from its `call_started`.
+- It is `null` for a call dialled directly, never absent: `parent_call_id != null` is a complete test for "this call came from another".
+- Scheduled callbacks are flat: every callback points at the original call. Voicemail redials are nested: each attempt points at the one before. To find the original call, follow `parent_call_id` upward until it is `null`, and cap the number of steps.
+- The webhook has no flag to tell a callback from a voicemail redial; the [call history API](/api-reference/endpoint/history/get-call-history) has the category.
+
+## Example handler
+
+A minimal Express receiver that acknowledges first and branches on `event_type`:
+
+```javascript server.js
+const express = require("express");
+const app = express();
+app.use(express.json());
+
+app.post("/webhooks/ringg", (req, res) => {
+  const event = req.body;
+  res.status(200).json({ received: true });
+
+  switch (event.event_type) {
+    case "call_completed":
+      console.log(`Call ${event.call_id}: ${event.status} / ${event.sub_status}`);
+      break;
+    case "recording_completed":
+      console.log(`Recording: ${event.recording_url}`);
+      break;
+    case "all_processing_completed":
+      console.log(`Summary: ${event.platform_analysis?.summary}`);
+      console.log(`Advanced Analysis: ${JSON.stringify(event.client_analysis)}`);
+      break;
+  }
+});
+
+app.listen(3000);
+```
+
+To have an AI coding tool write the production version for your stack:
+
+<Prompt description="Generate a webhook handler for `all_processing_completed`" icon="webhook" actions={["copy", "cursor"]}>
+Write a webhook handler for Ringg AI's `all_processing_completed` event in my project's language and framework. The field reference is at https://docs.ringg.ai/webhooks/payloads.md; read it first. Requirements: respond `200` within 30 seconds before doing any processing; reject requests whose `Authorization` header doesn't match a secret read from an environment variable; deduplicate on `call_id` plus `event_type`, updating the existing record instead of inserting a second one; store `call_id`, `parent_call_id`, `status`, `sub_status`, `call_duration`, `transcript`, `platform_analysis`, `client_analysis`, `platform_analysis_status` and `client_analysis_status`; download `recording_url` to my own storage, because the link may expire. Show the handler, the storage schema and a curl command that posts a sample payload to test it.
+</Prompt>
+
+<RelatedTopics items={[["Event Subscription", "/documentation/build-agents/customize-agent-behaviour/event-subscription"], ["Webhook setup and errors", "/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors"], ["WhatsApp chat events", "/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events"], ["Webhook field reference", "/documentation/build-agents/customize-agent-behaviour/webhooks/field-reference"]]} />

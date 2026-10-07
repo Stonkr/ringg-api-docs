@@ -1,35 +1,21 @@
 ---
 openapi: post /calling/history/download
+description: "Export call history to CSV by email, filtered by date range, agent, status, call type, campaign, number or call ID, with optional post-call analysis columns."
+related:
+  - "Get call history": /api-reference/endpoint/history/get-call-history
 ---
 
-## Download Call History
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-This endpoint queues call history data for download and sends it via email. The export includes comprehensive call records with optional filtering capabilities.
+The response only confirms the export was queued: `{"message": "Call history export has been queued. You will receive an email shortly."}`. The download link arrives by email; large exports take several minutes.
 
-<Warning>
-**Email Delivery**: 
-- Large datasets may take several minutes to process
-- You'll receive an email with the download link once processing is complete
-</Warning>
+## Notes
 
-## Key Features
+- `call_type` is `inbound`, `outbound` or `webcall`. The export covers every call that matches the filters.
+- `include_analysis=true` adds the platform and [Advanced Analysis](/documentation/build-agents/customize-agent-behaviour/advanced-analysis) results.
+- The CSV holds call details, status and timestamps, agent and campaign, transcript and recording links, and custom variables.
+- The emailed link is valid for 7 days and downloads a ZIP with one CSV.
+- Recording links in the export may expire; fetch a fresh link from [Get call details](/api-reference/endpoint/history/get-call-details).
+- `409` means the same export is already running; `429` means too many exports are running, so try again later.
 
-- **Comprehensive Data Export**: Includes call details, transcripts, recordings, and metadata
-- **Flexible Filtering**: Filter by date range, agent, status, and more
-- **Analysis Data**: Optionally include call analysis and insights
-- **Email Delivery**: Secure download link sent to your email
-
-## Export Format
-
-The download contains a CSV file with the following data:
-- Call basic information (ID, numbers, duration, cost)
-- Call status and timestamps
-- Agent and campaign details  
-- Transcript and recording URLs
-- Custom variables and analysis data (when enabled)
-
-## Important Notes
-
-- **Processing Time**: Large exports may take 5-10 minutes to process
-- **File Size**: Very large datasets are automatically compressed
-- **Recording Validity**: Recording URLs in the export are valid for 24 hours after each call. Download any recordings you need to keep within that window.
+<RelatedTopics items={[["Get call history", "/api-reference/endpoint/history/get-call-history"]]} />

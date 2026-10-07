@@ -1,35 +1,23 @@
 ---
 openapi: get /workspace/sub/members
+description: "List everyone with access to your Ringg Space family, whether they inherit access from the primary or were added to one Ringg Space, with permissions."
+related:
+  - "Ringg Spaces API overview": /documentation/manage-account/ringg-spaces/ringg-spaces-by-api#manage-the-family-by-api
 ---
 
-List everyone with access anywhere in the family and where that access comes from. Members of the primary inherit access to every Ringg Space; people added directly to a Ringg Space see only that Ringg Space.
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-## When to use
+Members of the primary (`scope: "primary"`) inherit access to every current and future Ringg Space; people added directly to a Ringg Space (`scope: "sub"`) see only the Ringg Spaces in their `sub_workspace_ids`. Use it for access audits across client or team workspaces, or to show who can reach a Ringg Space in your own admin tool.
 
-- Access audits across all client or team workspaces.
-- Showing who can reach a given Ringg Space in your own admin tool.
+## Notes
 
-## Reading the response
+- `permissions_by_workspace` already includes inherited rows, so render access from it rather than deriving it from `scope`.
+- The endpoint only reads. Add or remove people in the dashboard ([Workspace members](/documentation/manage-account/members)).
 
-- `scope` is `primary` for members of the primary (they have inherited access to every current and future Ringg Space) and `sub` for people added only to Ringg Spaces.
-- `sub_workspace_ids` lists direct Ringg Space memberships only. Inherited access is not repeated there.
-- `permissions_by_workspace` gives the effective permissions per workspace id, inherited rows included, so you can render access without re-deriving it.
-- `invite_status` is `success` or `pending`.
+## Errors
 
-## Integration notes
+- `400`: `Sub-workspaces cannot have their own sub-workspaces.` — the key belongs to a Ringg Space that has Ringg Spaces enabled.
+- `401`: Invalid or missing API key.
+- `403`: `Sub-workspaces are not enabled for this workspace.` — Ringg Spaces are not enabled on the primary, or the key belongs to a Ringg Space.
 
-- Authenticate with the primary workspace's API key.
-- To add or remove people, use the workspace member endpoints against the relevant workspace; this endpoint is read-only.
-
-## Error responses
-
-- **400**: `Sub-workspaces cannot have their own sub-workspaces.` — the key belongs to a Ringg Space.
-- **401**: Invalid or missing API key.
-- **403**: `Sub-workspaces are not enabled for this workspace.`
-
-## Example
-
-```bash
-curl --request GET "https://prod-api.ringg.ai/ca/api/v0/workspace/sub/members" \
-  --header "X-API-KEY: $RINGG_API_KEY"
-```
+<RelatedTopics items={[["Ringg Spaces API overview", "/documentation/manage-account/ringg-spaces/ringg-spaces-by-api#manage-the-family-by-api"]]} />

@@ -1,0 +1,31 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:03.611
+Alerts watch a metric and notify you
+
+00:00:03.611 --> 00:00:06.453
+Recommended starter alerts turn on with Enable
+
+00:00:06.453 --> 00:00:08.894
+Click Create alert
+
+00:00:08.894 --> 00:00:15.580
+Name it and pick the scope
+
+00:00:15.580 --> 00:00:28.273
+Set the trigger
+
+00:00:28.273 --> 00:00:49.409
+Choose who to notify
+
+00:00:49.409 --> 00:00:53.260
+Click Save
+
+00:00:53.260 --> 00:00:55.062
+The new alert is on
+
+00:00:55.062 --> 00:00:57.982
+Agent alerts watch one agent, even its tool calls
+
+00:00:57.982 --> 00:01:01.633
+Turn an alert off or on with its switch

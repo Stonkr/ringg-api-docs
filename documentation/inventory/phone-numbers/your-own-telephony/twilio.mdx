@@ -1,0 +1,63 @@
+---
+title: "Twilio"
+sidebarTitle: "Twilio"
+description: "Connect your Twilio account to Ringg AI with your Account SID and Auth Token, import or buy US and Canada numbers, and use them for inbound and outbound calls."
+"og:title": "Connect Twilio to Ringg AI"
+---
+
+Connect your Twilio account to run Ringg agents on your Twilio numbers; they then call and answer like any other [number](/documentation/inventory/phone-numbers/overview). This is one of the [bring-your-own-telephony](/documentation/inventory/phone-numbers/your-own-telephony/byot-overview) options. Twilio appears in **Add number** only when international calling is enabled for your workspace, because Ringg lists Twilio numbers for the United States and Canada. There are no Ringg-provided Twilio numbers.
+
+## Before you start
+
+<Columns cols={3}>
+  <Card title="A Twilio account" icon="building" href="https://console.twilio.com">
+    Active, with credit for number rental and calls.
+  </Card>
+  <Card title="Your Account SID and Auth Token" icon="key" href="https://console.twilio.com">
+    Both are in the Twilio console.
+  </Card>
+  <Card title="Voice-enabled Twilio numbers" icon="hash" href="/documentation/inventory/phone-numbers/buy-or-import-a-number#buy-a-new-number">
+    Or a plan to buy them once the account is connected.
+  </Card>
+</Columns>
+
+## Connect the account
+
+<Steps>
+  <Step title="Open the Twilio account form">
+    Go to **Numbers → Add number**, select **Twilio**, and open **Configure provider** (the gear). Select **Add**.
+  </Step>
+  <Step title="Fill in the fields and save">
+    | Field | Value |
+    |---|---|
+    | **Name** | Your label, for example `Twilio US` |
+    | **Account SID** | Your Twilio Account SID |
+    | **Auth Token** | Your Twilio Auth Token |
+
+    <Check>"BYOT added successfully." appears and the account is available in the telephony account selector.</Check>
+
+    Saving also creates a Ringg app in your Twilio account.
+  </Step>
+</Steps>
+
+## Add and use numbers
+
+With your Twilio account selected in **Add number**, both **Import your own** and **Buy new** are available. Outbound calls need no setup on the number. For inbound, Ringg links the number to its app when you [attach it to an agent](/documentation/inventory/phone-numbers/inbound-agent-number) and unlinks it when you detach it. Importing, attaching and testing the numbers are the same for every provider: steps 3 and 4 of [How BYOT works](/documentation/inventory/phone-numbers/your-own-telephony/byot-overview#how-byot-works).
+
+## Troubleshooting
+
+The account, import, no-response and audio problems common to every provider are in [BYOT troubleshooting](/documentation/inventory/phone-numbers/your-own-telephony/byot-overview#troubleshooting).
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Import your numbers" icon="hash" href="/documentation/inventory/phone-numbers/buy-or-import-a-number#import-a-number-you-already-own">
+    Bring Twilio numbers into Ringg.
+  </Card>
+  <Card title="Attach a number to an agent" icon="phone-incoming" href="/documentation/inventory/phone-numbers/inbound-agent-number">
+    Answer inbound calls on a Twilio number.
+  </Card>
+  <Card title="Twilio documentation" icon="book" href="https://www.twilio.com/docs/">
+    Twilio's API and console docs.
+  </Card>
+</Columns>

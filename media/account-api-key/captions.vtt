@@ -1,0 +1,22 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:03.903
+Open Settings → API key
+
+00:00:03.903 --> 00:00:06.528
+Click Generate API Key
+
+00:00:06.528 --> 00:00:08.332
+The full key is shown only once
+
+00:00:08.332 --> 00:00:13.167
+Copy it now and store it safely
+
+00:00:13.167 --> 00:00:15.766
+Click Done to close the dialog
+
+00:00:15.766 --> 00:00:20.279
+The page now shows the masked key and date
+
+00:00:20.279 --> 00:00:26.099
+To rotate, Regenerate revokes the old key at once

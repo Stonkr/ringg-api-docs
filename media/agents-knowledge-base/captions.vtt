@@ -1,0 +1,25 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:04.542
+Open Knowledge Base in the editor sidebar
+
+00:00:04.542 --> 00:00:12.047
+Click Select Knowledge Base and tick one or more
+
+00:00:12.047 --> 00:00:16.290
+Add Knowledge Base opens the page to create one
+
+00:00:16.290 --> 00:00:19.511
+Attached knowledge bases are listed under the button
+
+00:00:19.511 --> 00:00:21.968
+Detach one with its bin icon
+
+00:00:21.968 --> 00:00:30.863
+Mention it in the prompt: type @ and pick it
+
+00:00:30.863 --> 00:00:35.154
+Click Save
+
+00:00:35.154 --> 00:00:39.602
+The agent now answers policy questions from it

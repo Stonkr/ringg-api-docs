@@ -1,0 +1,77 @@
+---
+title: "Lesson: Plan the system"
+sidebarTitle: "Plan the system"
+description: "List what Acme Lending's EMI reminder system must do, map each part to a checkpoint you can verify in the dashboard, and tick what parts 2 to 6 left in place."
+related:
+  - "All lessons": /resources/learn/all-lessons
+  - "Making your agent smarter": /resources/learn/making-your-agent-smarter/variables
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 7: Capstone: EMI reminders end to end · Lesson 1 of 4 · 10 minutes**
+
+## Objective
+
+Say what the finished system does, name its six checkpoints, and know which already exist in your workspace.
+
+## The scenario
+
+Acme Lending wants the reminder system live for the 15 October EMI run. Ananya has to call each customer in English or Hindi, answer questions about late fees, know the loan's dues before she dials, record whether the customer promised to pay and when, hand that to the CRM, respect a limit on how often one person is called, and leave the collections lead a report. Parts 2 to 6 built those pieces on the same agent. The capstone checks each on screen, adds the CRM webhook and the call limit, then runs the campaign.
+
+## Hands-on
+
+<Steps>
+  <Step title="Know the checkpoints">
+    A checkpoint is done when its proof is on screen.
+
+    | # | Checkpoint | You are done when | Lesson |
+    |---|---|---|---|
+    | 1 | Agent with knowledge | **Knowledge Base** on `EMI reminder - Hindi` lists the EMI policy knowledge base, and the prompt mentions it | 2 |
+    | 2 | CRM lookup | `crm_lookup` is on the **Pre-call** tab, **Test API** returns the CRM's reply, and the first message reads the dues from it | 2 |
+    | 3 | A number to call from | A test call from one of **Your numbers** reaches your phone and appears in Logs | 2 |
+    | 4 | Webhook to the CRM | A subscription card shows your URL and `all_processing_completed`, and your server logs one request per finished call | 3 |
+    | 5 | Call limit | **Limit how often one person is called** is on and saved | 4 |
+    | 6 | Campaign and report | The campaign is **Completed**, Analytics shows **Goal achieved** for it, and the report is exported | 4 |
+  </Step>
+  <Step title="Gather what you need">
+    From earlier parts: the agent with its variables, the EMI policy knowledge base, the `crm_lookup` tool and `payment_promised` marked as the goal (part 3); a number and the 3-row calling list of your own numbers (part 4).
+
+    New here: an HTTPS endpoint on your server that can receive a POST (lesson 3 says what it must do), a phone you can answer, and balance for a short campaign.
+  </Step>
+  <Step title="Tick what exists">
+    Open `EMI reminder - Hindi` on the **Agents** page, your number on the Numbers page and the part 4 campaign on the **Campaigns** page, and write "exists" or "to do" against each checkpoint. Checkpoints 4 to 6 are "to do" for everyone; 1 to 3 depend on how far you took parts 3 and 4.
+  </Step>
+</Steps>
+
+## Checkpoint
+
+<Check>
+The six checkpoints are written down with "exists" or "to do" against each, and you can open the agent, the number and the old campaign from memory.
+</Check>
+
+## Exercise
+
+Write down what Acme's CRM needs per call to record a promise to pay. Expected result: `loan_account`, the three Advanced Analysis fields (`payment_promised`, `promised_date`, `objection`) and a reference to the call. Lesson 3 shows where each sits in the webhook request.
+
+## What you learned
+
+- The system is six checkpoints across one agent, one number, one subscription, one limit and one campaign; the capstone adds wiring, not features.
+- A checkpoint counts only when its proof is on screen: the attached list, the tool's response, the Logs entry, the subscription card.
+- Checkpoints 4 to 6 are new for everyone; 1 to 3 depend on how far you took parts 3 and 4.
+
+<Quiz
+  question="Which checkpoints are new work for everyone in the capstone, whatever they did in parts 3 and 4?"
+  answers={[
+    { text: "1 to 3: the agent, the CRM lookup and the number", correct: false },
+    { text: "Only 6: the campaign and the report", correct: false },
+    { text: "4 to 6: the CRM webhook, the call limit, and the campaign with its report", correct: true },
+    { text: "None; the capstone only verifies earlier work", correct: false },
+  ]}
+  correctFeedback="Right. Parts 2 to 6 built the agent, its knowledge, the CRM tool and the number. The capstone adds the Event Subscription into the CRM and the call limit, then runs the real campaign and reads the report."
+  incorrectFeedback="Not quite. Checkpoints 1 to 3 may already exist from parts 3 and 4. The webhook, the call limit and the production campaign with its report are what the capstone adds for everyone."
+/>
+
+<RelatedTopics items={[["All lessons", "/resources/learn/all-lessons"], ["Making your agent smarter", "/resources/learn/making-your-agent-smarter/variables"]]} />

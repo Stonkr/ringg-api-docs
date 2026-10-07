@@ -1,0 +1,32 @@
+---
+title: "Integration tools"
+sidebarTitle: "Integration tools"
+description: "Add an integration tool to a Ringg AI agent: run an action on a connected app account, such as a calendar event, a sheet row or a Slack post, and bind its parameters."
+related:
+  - "Connect an app": /documentation/inventory/tools-integrations/connect-an-app
+  - "Connect WhatsApp": /documentation/inventory/tools-integrations/connect-whatsapp
+  - "WhatsApp tools": /documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+## Integration tools
+
+An Integration tool runs an action on an app account connected to your workspace, such as creating a calendar event, appending a sheet row or posting to Slack. Which tools each app offers comes from Ringg. For WhatsApp's send-template and send-text tools, see [WhatsApp on-call tools](/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#on-call).
+
+<Steps>
+  <Step title="Pick the account">
+    Click **Integration** in the side panel. **Select an integration** lists each connected app; expand one and pick the account. An expired account shows **Reconnect** instead until it is re-authorized on the sidebar **Tools** page.
+  </Step>
+  <Step title="Bind the parameters">
+    Pick a tool from the account's list. Each parameter takes a **Static**, **Variable** or **JQ** value, plus **Dynamic** on-call, the same [sources](/documentation/build-agents/customize-agent-behaviour/tools/api-tools#parameter-sources) as an API tool. **Add test value** gives a sample for the run.
+  </Step>
+  <Step title="Run, then import">
+    Click **Run**. **Import** is disabled until the run returns a response, so you always see the real result before the tool goes on the agent.
+    <Check>
+    The tool appears in the phase's list. Its card has a pencil (edit the bindings, **Run** again, then **Save**) and a bin (**Delete integration tool**, with a confirmation).
+    </Check>
+  </Step>
+</Steps>
+
+<RelatedTopics items={[["Connect an app", "/documentation/inventory/tools-integrations/connect-an-app"], ["Connect WhatsApp", "/documentation/inventory/tools-integrations/connect-whatsapp"], ["WhatsApp tools", "/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools"]]} />

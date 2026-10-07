@@ -1,0 +1,80 @@
+---
+title: "Lesson: Inbound, web and WhatsApp"
+sidebarTitle: "Inbound, web and WhatsApp"
+description: "Create an Inbound agent for Acme's callbacks and attach a number to it in Attach Number, then find where Embed & Widgets and WhatsApp agents start."
+related:
+  - "Attach a number to an agent": /documentation/inventory/phone-numbers/inbound-agent-number
+  - "Embed & Widgets": /documentation/deploy/web-and-apps/web-widget/overview
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 4: Taking your agent live · Lesson 4 of 4 · 15 minutes**
+
+## Objective
+
+Give Acme an agent that answers callbacks on its own number, and know where the web widget and WhatsApp agents live.
+
+## The scenario
+
+Customers see Acme's number on their phone and call it back; today nothing answers. An inbound agent answers calls to the one number attached to it, so Acme creates **Acme callbacks** and attaches a number. (An outbound agent with **Inbound Calling** enabled under **Advanced Settings** also answers calls, with a prompt per direction.)
+
+A number attached to an agent can't be in a pool, and Acme's only number is in the **Acme EMI reminders** pool. Buy a second one as in lesson 1, or remove this one from the pool with its row's remove button under **Number Pools**.
+
+## Hands-on
+
+<Frame caption="Attaching an inbound number to an agent">
+  <video alt="Attaching an inbound number to an agent" aria-label="Attaching an inbound number to an agent" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/numbers-attach/poster.webp">
+    <source src="/media/numbers-attach/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Create the inbound agent">
+    Click **Assistants**, then **Create agent**, and choose the **Inbound** tab. Pick a template, set **Agent Name** to `Acme callbacks`, the languages and a voice as in part 2, and click **Next**. Fill in the call context, leave **Select Phone Number** empty, and click **Create Assistant**.
+  </Step>
+  <Step title="Attach the number">
+    Expand **Attach Number** under **Call Settings** in the editor sidebar. Open **Inbound Number** and choose the number: "Number has been attached successfully", with no separate save. The list shows only numbers not attached to another agent that have inbound calling enabled.
+  </Step>
+  <Step title="Call it">
+    Dial the number from your phone. The agent answers, and the call appears at the top of **Logs**. A number on your own provider account also needs provider-side routing to Ringg, such as the `Ringg Inbound` applet in Exotel.
+  </Step>
+  <Step title="Find Embed & Widgets">
+    Open **EMI reminder - Hindi**, then **Advanced Settings → Embed & Widgets**. Every agent except a WhatsApp agent has it. **Install & domains** holds the **Web** and **Flutter** snippets and **Allowed clients**, the sites and apps that may run the agent; **Appearance** sets the widget's look; **Components** builds the cards and forms it can show in a chat.
+  </Step>
+  <Step title="See where a WhatsApp agent starts">
+    A WhatsApp agent has the same prompt, knowledge base, variables and tools, but replies on a WhatsApp Business number connected through Meta: [connect WhatsApp Business](/documentation/inventory/tools-integrations/connect-whatsapp), then **Create agent → WhatsApp**. Its chats land in **Logs → WhatsApp**; Analytics does not cover them. The [WhatsApp overview](/documentation/build-agents/agents/whatsapp-agents/overview) has the setup order.
+  </Step>
+</Steps>
+
+## Checkpoint
+
+<Check>
+On **Numbers → All Numbers**, the number's **Used By** column shows **Acme callbacks** with a **Detach Number** button, and your call sits at the top of Logs.
+</Check>
+
+## Exercise
+
+On Ananya's **Install & domains**, add `https://www.acme-lending.example` under **Allowed clients** and press Enter. Expected result: it appears under **Websites** with "Allowed clients updated successfully.", next to `https://www.ringg.ai`, which is there by default and can't be removed. Click **×** to remove your entry.
+
+## What you learned
+
+- An inbound agent answers calls to the one number attached to it under **Attach Number**; an outbound agent's caller ID is picked per call or campaign instead.
+- One agent has one inbound number and one number serves one agent. A number attached to an agent can't join a pool.
+- **Embed & Widgets** is on every agent except WhatsApp agents; a WhatsApp agent needs a connected WhatsApp Business number and reports to **Logs → WhatsApp**.
+
+<Quiz
+  question="Acme wants customers who call back to reach an agent. What has to exist for the call to be answered?"
+  answers={[
+    { text: "An outbound agent with a number in its pool", correct: false },
+    { text: "An agent that takes inbound calls, with the number attached to it under Attach Number", correct: true },
+    { text: "The web widget installed on Acme's site", correct: false },
+    { text: "A WhatsApp Business number connected through Meta", correct: false },
+  ]}
+  correctFeedback="Right. Inbound calls reach the agent a number is attached to, set in the agent editor under Attach Number; one agent has one inbound number and one number serves one agent. Pools and caller IDs are for outbound calls."
+  incorrectFeedback="Not quite. A pool rotates caller IDs for outbound calls, the widget serves browser calls and WhatsApp serves chats. A phone call to Acme's number is answered only when that number is attached to an agent that takes inbound calls."
+/>
+
+<RelatedTopics items={[["Attach a number to an agent", "/documentation/inventory/phone-numbers/inbound-agent-number"], ["Embed & Widgets", "/documentation/deploy/web-and-apps/web-widget/overview"]]} />

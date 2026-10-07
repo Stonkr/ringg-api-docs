@@ -1,0 +1,216 @@
+---
+title: "Number pools"
+sidebarTitle: "Number pools"
+description: "Create a number pool in Ringg to rotate outbound caller IDs, skip spam-flagged numbers and buy replacements, then use it in campaigns and v2 API calls."
+"og:title": "Number pools: rotate caller IDs and skip spam numbers"
+---
+
+A pool is the answer to one question: does every call need to show the same <Tooltip tip="The number the person you call sees on their phone.">caller ID</Tooltip>? If not, a pool spreads a [campaign](/documentation/deploy/campaigns/create-a-campaign) or high-volume API calling across several [numbers](/documentation/inventory/phone-numbers/overview) and drops any that get [flagged as spam](/documentation/inventory/phone-numbers/overview#spam-flags-and-tags). Campaigns and API calls reference the pool's ID, so you add or swap numbers in one place without touching them.
+
+In the dashboard: **Sidebar → Inventory → Numbers → Number Pools**.
+
+## Before you start
+
+<Columns cols={2}>
+  <Card title="Numbers in your workspace" icon="hash" href="/documentation/inventory/phone-numbers/buy-or-import-a-number" horizontal>
+    Buy or import them.
+  </Card>
+  <Card title="Edit access to Numbers" icon="users" href="/documentation/manage-account/members#roles-and-permissions" horizontal>
+    Your workspace role needs the **Numbers** permission.
+  </Card>
+</Columns>
+
+## Create a pool
+
+<Frame caption="Creating a pool with two numbers and Auto purchase on, then opening its page">
+  <video alt="Creating a pool with two numbers and Auto purchase on, then opening its page" aria-label="Creating a pool with two numbers and Auto purchase on, then opening its page" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/numbers-pools/poster.webp">
+    <source src="/media/numbers-pools/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open Number Pools">
+    Go to **Numbers**, keep the **Phone** tab, and open **Number Pools**. Click **Add pool**.
+  </Step>
+  <Step title="Name the pool">
+    In **Create pool**, enter a **Pool name** (for example `India Outbound`). **Description** is optional (for example `Outbound campaigns`).
+  </Step>
+  <Step title="Add numbers">
+    Open **Add numbers to pool** and tick the numbers. Each row shows the number, its country and its added date. You can also leave the pool empty and add numbers later.
+  </Step>
+  <Step title="Turn on Auto purchase (optional)">
+    Switch on **Auto purchase** ("Auto purchase replacements when spam detected") and choose a **Replacement country**: India, United States or Canada.
+
+    <Frame caption="Create pool with two numbers and Auto purchase on">
+      <img src="/media/numbers-pools/create-pool.webp" alt="Create pool dialog with Pool name Renewals, Description Outbound campaigns, two numbers selected, Auto purchase switched on and Replacement country India" />
+    </Frame>
+  </Step>
+  <Step title="Create">
+    Click **Create pool**.
+
+    <Check>
+    You see "Pool created" and a card for the pool appears.
+    </Check>
+  </Step>
+</Steps>
+
+### Which numbers you can add
+
+| Number | Can join a pool? |
+|---|---|
+| Bought, imported or custom number | Yes |
+| Test number | No. "Test numbers aren't listed. They're for trial calls and can't join a pool." |
+| Number attached to an inbound agent | No. [Detach it](/documentation/inventory/phone-numbers/inbound-agent-number#detach-a-number) first. |
+| Number in a pool with a campaign running | No, until the [campaign](/documentation/deploy/campaigns/manage-a-campaign) ends. |
+| Number in another pool with no campaign running | Yes. It moves out of the old pool. |
+
+## Use a pool in the dashboard
+
+When you [create a campaign](/documentation/deploy/campaigns/create-a-campaign), the **Select number** card has two tabs: **Individual numbers** and **Number pool**. Choose **Number pool** and pick a pool. If you have none, the card shows "No number pools yet." with a **Create a pool** link.
+
+## Use a pool with the API
+
+Send `number_pool_id` to choose caller IDs from a pool. You need an [API key](/documentation/manage-account/api-key), the agent's ID ([Find an agent's ID](/documentation/build-agents/agents/agent-types#find-the-agent-id)) and the pool's ID (**Copy pool ID** on [the pool list](#the-pool-list)).
+
+| Endpoint | Pool field |
+|---|---|
+| [Initiate Individual Call (Number Pool)](/api-reference/endpoint/calling/initiate-individual-call-v2) `POST /calling/v2/outbound/individual` | `number_pool_id`. Send at least one of `number_pool_id`, `from_number_id` or `from_number`; with a pool, the pool is used and the other field is ignored. |
+| [Start Campaign (Number Pool)](/api-reference/endpoint/campaign/start-campaign-v2) `POST /campaign/v2/start` | `number_pool_id`, required with `agent_id` and `list_id`. |
+| [Start Large Campaign Calls](/api-reference/endpoint/campaign/make-large-campaign-calls-async) `POST /campaign/make-call-async` | `number_pool_id` or `from_numbers`, exactly one. Both or neither returns `422`. |
+
+A single call from a pool:
+
+<CodeGroup>
+```bash cURL
+curl -X POST "https://prod-api.ringg.ai/ca/api/v0/calling/v2/outbound/individual" \
+  -H "X-API-KEY: $RINGG_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Priya Sharma",
+    "mobile_number": "+919876543210",
+    "agent_id": "b1972188-038e-4605-916c-3926e9d7bde4",
+    "number_pool_id": "c14cbdac-8928-4a19-8aef-df7f5eb49163"
+  }'
+```
+
+```javascript JavaScript
+const res = await fetch("https://prod-api.ringg.ai/ca/api/v0/calling/v2/outbound/individual", {
+  method: "POST",
+  headers: { "X-API-KEY": process.env.RINGG_API_KEY, "Content-Type": "application/json" },
+  body: JSON.stringify({
+    name: "Priya Sharma",
+    mobile_number: "+919876543210",
+    agent_id: "b1972188-038e-4605-916c-3926e9d7bde4",
+    number_pool_id: "c14cbdac-8928-4a19-8aef-df7f5eb49163",
+  }),
+});
+console.log(await res.json());
+```
+
+```python Python
+import os
+
+import requests
+
+res = requests.post(
+    "https://prod-api.ringg.ai/ca/api/v0/calling/v2/outbound/individual",
+    headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+    json={
+        "name": "Priya Sharma",
+        "mobile_number": "+919876543210",
+        "agent_id": "b1972188-038e-4605-916c-3926e9d7bde4",
+        "number_pool_id": "c14cbdac-8928-4a19-8aef-df7f5eb49163",
+    },
+)
+print(res.json())
+```
+</CodeGroup>
+
+A pool ID that doesn't exist returns `400` "Number pool not found"; a pool with no numbers returns `400` "Number pool has no available numbers". To find which pool a number is in, read `number_pool_id` from [Get Workspace Numbers](/api-reference/endpoint/numbers/get-workspace-numbers).
+
+## How a pool picks the number
+
+Ringg rotates through the pool's numbers in turn (round robin), skipping any number flagged as spam from the moment it is flagged. Each retry of a call picks again, so a contact isn't tied to one number. If every number in the pool is flagged, Ringg still dials, from the number that was flagged longest ago.
+
+## Auto purchase
+
+With **Auto purchase** on, the pool buys one replacement number from Ringg's account when one of its numbers is flagged as spam, and adds it to the same pool. The replacement comes from the flagged number's own country; the **Replacement country** you chose when creating the pool is used only when that country can't be worked out or has no numbers for sale. You can turn the switch on or off later on the pool page.
+
+The flagged number stays in the pool, is skipped, and keeps its rental. The replacement is billed like any Ringg number you buy; the pool itself costs nothing. If your balance is too low, or the country needs international calling that your workspace doesn't have, nothing is bought. Workspace admins get an email when a replacement is bought.
+
+## The pool list
+
+Each pool card shows:
+
+- The pool name, a **Default** badge on the default pool, and an **Active** chip while a campaign is using it.
+- **_n_ Numbers**, **_n_ Active** and **_n_ Spam** counts.
+- The numbers in the pool. Drag a number onto another card to move it.
+- **Copy pool ID** (shown on hover), for `number_pool_id` in the [API](#use-a-pool-with-the-api).
+
+Click a card to open the pool page.
+
+<Frame caption="Pool cards with counts and the Default and Active badges">
+  <img src="/media/numbers-pools/pool-list.webp" alt="Number Pools tab with four pool cards: Default pool with a Default badge, India Outbound with 1 Spam, Sales callbacks with an Active chip and locked numbers, and the new Renewals pool" />
+</Frame>
+
+## The pool page
+
+The pool page (`/numbers/<pool ID>`) shows the name, description, the **Auto purchase** switch, **Add number** and a delete button. Its table has **ID**, **Country**, **Mobile number**, **Provider**, **Added on** and **Tags**, plus a **Spam** chip on flagged numbers.
+
+<Frame caption="The pool page">
+  <img src="/media/numbers-pools/pool-detail.webp" alt="Renewals pool page with description Outbound campaigns, the Auto purchase switch on, Add number and delete buttons, and a table of two numbers with provider, added date and tags" />
+</Frame>
+
+- **Add numbers:** click **Add number**, tick numbers in **Add numbers to _pool_**, then click **Add**.
+- **Remove a number:** use the row's remove button and confirm **Remove**. "The number stays in your workspace and can be added to another pool."
+- **Tags:** edit a number's tags from its row.
+
+## The default pool
+
+Your workspace has one pool marked **Default**, which can't be deleted. Numbers land in it in two cases: when you [detach them from an inbound agent](/documentation/inventory/phone-numbers/inbound-agent-number#detach-a-number), and when their [pool is deleted](#delete-a-pool). New numbers don't; add them to a pool yourself.
+
+## Restrictions while a campaign runs
+
+While a campaign is using a pool, the pool shows **Active** and is frozen ("Campaign in progress — pool is frozen"):
+
+- **Add number**, remove and delete are disabled.
+- You can't drag numbers into or out of it ("Locked — campaign running").
+- The **Auto purchase** switch still works.
+
+## Delete a pool
+
+Open the pool, click the delete button and confirm with **Delete pool**. The pool is archived and its numbers move to your [default pool](#the-default-pool). This can't be undone.
+
+<Check>
+You see "Pool archived" with the number of numbers moved.
+</Check>
+
+You can't delete a pool while a campaign is using it.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="All numbers are in use">
+    The picker hides every number that [can't join a pool](#which-numbers-you-can-add). Detach the number from its agent, wait for the campaign to end, or [buy a number](/documentation/inventory/phone-numbers/buy-or-import-a-number).
+  </Accordion>
+  <Accordion title="No purchased numbers">
+    "Test numbers are for trial calls and can't join a pool. Buy or import a number first." See [Buy or import a number](/documentation/inventory/phone-numbers/buy-or-import-a-number).
+  </Accordion>
+  <Accordion title="I can't add or remove numbers">
+    The pool is **Active**: a campaign is using it ([restrictions](#restrictions-while-a-campaign-runs)). Wait for the [campaign](/documentation/deploy/campaigns/manage-a-campaign) to end.
+  </Accordion>
+  <Accordion title="My pool is greyed out in the campaign form">
+    The pool has no numbers. Add at least one number to it.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Run a campaign" icon="megaphone" href="/documentation/deploy/campaigns/create-a-campaign">
+    Start a campaign that dials from your pool.
+  </Card>
+  <Card title="Call from your backend" icon="code" href="/api-reference/endpoint/calling/initiate-individual-call-v2">
+    Place single calls with a pool by API.
+  </Card>
+</Columns>

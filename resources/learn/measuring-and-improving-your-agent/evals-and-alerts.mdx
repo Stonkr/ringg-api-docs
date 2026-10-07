@@ -1,0 +1,87 @@
+---
+title: "Lesson: Evals and alerts"
+sidebarTitle: "Evals and alerts"
+description: "Write an Evals test case that checks Ananya records a promise to pay, run it as a simulated call, then create an alert on the call failure rate."
+related:
+  - "Evals": /documentation/monitor/evals
+  - "Alerts": /documentation/monitor/alerts
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 6: Measuring and improving your agent · Lesson 3 of 4 · 20 minutes**
+
+## Objective
+
+Make the promise-to-pay path a test Ananya has to pass, and get an email when her calls start failing.
+
+## The scenario
+
+Three transcripts you can read; three thousand you can't. Evals scores every completed call and replays one conversation path as a simulated call; Alerts watch a metric on a schedule. Ringg turns Evals on per agent: if the page says "No agents have evals enabled.", write to admin@ringg.ai with the agent ID and do the alert first.
+
+## Hands-on
+
+<Frame caption="Reviewing an agent's evals">
+  <video alt="Reviewing an agent's evals" aria-label="Reviewing an agent's evals" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/monitor-evals/poster.webp">
+    <source src="/media/monitor-evals/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open Ananya's evals">
+    Open **Monitor → Evals** and pick **EMI reminder - Hindi**. **Metrics** shows an average score per metric for the last 30 days, for the metrics enabled on the agent, such as **Factual accuracy**, **Instruction following**, **Knowledge coverage** and **Tool accuracy**. **Issues** groups the failures, each with **Add as test case**.
+  </Step>
+  <Step title="Write the test case">
+    Click **Create a test case**, choose **Voice**, and on **Write a prompt** fill in:
+
+    - **Name**: `Promise to pay on 15 October`
+    - **Conversation path**: `The customer is Rahul Verma. He confirms it is him, listens to the amount, says he will pay on 15 October, then asks whether there is a late fee if he misses that date.`
+    - **Success criteria**: `The agent states the due amount and due date, confirms 15 October as the payment date, answers the late-fee question from the EMI policy, and ends the call politely.`
+
+    Click **Add test case**. It appears with the status **Never run**.
+  </Step>
+  <Step title="Run it">
+    Click **Run tests**. The case moves from **Queued** to **Running**, then to **Passed**, **Failed** or **Not evaluated**. Open it for the verdict, a reason per criterion, which version ran, and the simulated conversation. **Not evaluated** means the simulation never reached the situation; make the **Conversation path** more specific and **Run again**.
+  </Step>
+  <Step title="Create the alert">
+    <Frame caption="Creating an alert with email and webhook notifications">
+      <video alt="Creating an alert with email and webhook notifications" aria-label="Creating an alert with email and webhook notifications" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/monitor-alerts/poster.webp">
+        <source src="/media/monitor-alerts/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+      </video>
+    </Frame>
+
+    Open **Monitor → Alerts** and click **Create alert**. Set **Alert name** to `EMI reminder call failures` and **Scope** to **Agent**, then pick **EMI reminder - Hindi**. Build the **Trigger**: check every **15 min** for the last **1 hour**, when **Call failure rate** **is above** `20` (rate thresholds are percentages). Under **Notify via**, expand **Email**, type your address and click **Add**. Click **Save**.
+  </Step>
+</Steps>
+
+## Checkpoint
+
+<Check>
+"Alert created", and on the **Agents** tab of Alerts the rule sits under **EMI reminder - Hindi** with its condition, scope and channel, switch on. In Evals, the case shows **Passed**, or **Failed** with the criteria it missed.
+</Check>
+
+## Exercise
+
+On the **Workspace** tab, under **Recommended**, click the pencil icon on **Disconnection rate spike** rather than **Enable**, add your email under **Notify via** and save. Expected result: the alert is on with your address as its recipient, firing when the disconnection rate is above 25% over the last 30 minutes. **Enable** alone adds no recipients.
+
+## What you learned
+
+- Evals scores every completed call; a test case is one conversation path plus success criteria, simulated against the published version.
+- **Not evaluated** is neither a pass nor a failure: the simulation never reached the situation under test.
+- An alert is a sentence: check every *interval* for the last *window*, when *metric* *condition* *threshold*. It needs at least one email, Slack or webhook target.
+
+<Quiz
+  question="You run the Promise to pay test case and it comes back Not evaluated. What does that mean, and what do you do?"
+  answers={[
+    { text: "It failed; rewrite the prompt", correct: false },
+    { text: "The simulated customer never reached the situation under test; make the Conversation path more specific and run again", correct: true },
+    { text: "It passed with warnings; nothing to do", correct: false },
+    { text: "Evals is not enabled for the agent; write to support", correct: false },
+  ]}
+  correctFeedback="Right. Not evaluated is neither a pass nor a failure: the simulation never reached the situation the success criteria describe. A more specific Conversation path steers it there; then Run again."
+  incorrectFeedback="Not quite. A failed case shows Failed with the criteria it missed, and a disabled Evals page says so up front. Not evaluated means the simulated conversation never reached the situation under test, which the Conversation path controls."
+/>
+
+<RelatedTopics items={[["Evals", "/documentation/monitor/evals"], ["Alerts", "/documentation/monitor/alerts"]]} />

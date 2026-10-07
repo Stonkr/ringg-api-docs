@@ -1,15 +1,14 @@
 ---
 openapi: get /analytics/classification-analytics
+description: "Get call counts grouped by the outcome classification from post-call analysis, filtered by date range, agent or campaign, to build outcome reports."
+related:
+  - "Platform analytics": /api-reference/endpoint/analytics/get-platform-analytics
 ---
 
-Return analytics grouped by call classification. Classifications are useful for outcome dashboards such as interested, not interested, payment confirmed, callback requested, or custom categories configured for your assistant.
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-## When to use
+## Notes
 
-- Build outcome funnels.
-- Compare campaign quality by classification.
-- Trigger downstream workflows based on call outcomes.
+- For the classification of one call, read it from [call details](/api-reference/endpoint/history/get-call-details) or the `platform_analysis_completed` [webhook](/documentation/build-agents/customize-agent-behaviour/webhooks/call-events).
 
-## Related data
-
-For per-call classification values, use [Get call history](/api-reference/endpoint/history/get-call-history), [Get call details](/api-reference/endpoint/history/get-call-details), or webhook payloads.
+<RelatedTopics items={[["Platform analytics", "/api-reference/endpoint/analytics/get-platform-analytics"]]} />

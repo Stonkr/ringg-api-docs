@@ -1,0 +1,442 @@
+---
+title: "API quickstart"
+sidebarTitle: "Quickstart"
+description: "Place your first Ringg AI phone call by API in 10 minutes: check your API key, pick an agent and a caller number, ring your own phone, then read the transcript."
+boost: 8
+"og:title": "Make your first AI phone call with the Ringg AI API"
+---
+
+It takes five requests, and they are the path every Ringg build follows: an [agent](/documentation/build-agents/agents/agent-types), a number, a call, then the result in [Logs](/documentation/monitor/logs).
+
+## Before you start
+
+<Columns cols={3}>
+  <Card title="A Ringg workspace" icon="user" href="/get-started/dashboard-tour#sign-in-for-the-first-time">
+    Sign in to the dashboard. Only the workspace owner can generate the API key.
+  </Card>
+  <Card title="Balance" icon="wallet" href="/documentation/manage-account/billing">
+    Calls draw down your workspace balance.
+  </Card>
+  <Card title="A caller number of your own" icon="hash" href="/documentation/inventory/phone-numbers/buy-or-import-a-number">
+    Buy or import one. Ringg's test numbers do not work from the API.
+  </Card>
+</Columns>
+
+You also need a phone you can answer.
+
+No number of your own, or no code? Open an agent in the dashboard, click **Test assistant** and call your phone from a Ringg test number instead: [Test an agent](/documentation/build-agents/test-and-improve/test-an-agent).
+
+All requests go to `https://prod-api.ringg.ai/ca/api/v0` and send your key in the `X-API-KEY` header. The examples read it from the `RINGG_API_KEY` environment variable; JavaScript uses `fetch` (Node.js 18 or later), Python uses `requests`.
+
+<Steps>
+  <Step title="Get an API key and check it">
+    In the dashboard, go to **Settings → API key** and click **Generate API Key**. Copy the key from the dialog: it is shown only once. If the workspace already has a key, ask whoever holds it; **Regenerate API Key** revokes the old key at once. See [API key](/documentation/manage-account/api-key).
+
+    ```bash
+    export RINGG_API_KEY="your-api-key"
+    ```
+
+    Check the key with [Get Workspace Info](/api-reference/endpoint/workspace/get-workspace-info), a read-only request.
+
+    <CodeGroup>
+    ```bash cURL
+    curl "https://prod-api.ringg.ai/ca/api/v0/workspace" \
+      -H "X-API-KEY: $RINGG_API_KEY"
+    ```
+
+    ```javascript JavaScript
+    const res = await fetch("https://prod-api.ringg.ai/ca/api/v0/workspace", {
+      headers: { "X-API-KEY": process.env.RINGG_API_KEY },
+    });
+    console.log(res.status, await res.json());
+    ```
+
+    ```python Python
+    import os
+    import requests
+
+    res = requests.get(
+        "https://prod-api.ringg.ai/ca/api/v0/workspace",
+        headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+    )
+    print(res.status_code, res.json())
+    ```
+    </CodeGroup>
+
+    ```json Response (200)
+    {
+      "workspace_info": {
+        "id": "00000000-0000-4000-8000-000000000112",
+        "name": "Acme Finance's Workspace",
+        "created_at": "2024-12-16T13:03:29.947147+00:00",
+        "credits": 3025,
+        "locked_credits": 0
+      }
+    }
+    ```
+
+    <Check>
+    A `200` with your workspace's `name` means the key works. Check that `credits` is above zero before you place a call.
+    </Check>
+
+    **Likeliest error:** `401` with `"message": "Invalid credentials"`. The key is missing, mistyped or was regenerated. Copy it again, or regenerate it on the API key page.
+  </Step>
+
+  <Step title="Get an outbound agent">
+    The call needs the ID of an outbound or outbound-inbound agent. Use one you have, or create one.
+
+    **In the dashboard:** open **Assistants** in the sidebar. For an existing agent, open it and click the copy button beside its name in the top bar; the ID is also in the URL, `/assistants/<agent_id>`. To create one, click **Create agent**, choose the **Outbound** tab and a template, then follow [Create an agent](/documentation/build-agents/agents/create-an-agent).
+
+    **With the API:** list your agents with [Get Assistants](/api-reference/endpoint/assistant/get-assistants) and pick one whose `agent_type` is `outbound` or `outbound_inbound`:
+
+    ```bash
+    curl "https://prod-api.ringg.ai/ca/api/v0/agent/all" \
+      -H "X-API-KEY: $RINGG_API_KEY"
+    ```
+
+    Or create one with [Create Agent](/api-reference/endpoint/assistant/create-agent). First get a `voice_id` that speaks your language from [Get Assistant Voices](/api-reference/endpoint/assistant/get-assistant-voices) (`GET /agent/voices?language=en-IN`).
+
+    <CodeGroup>
+    ```bash cURL
+    curl -X POST "https://prod-api.ringg.ai/ca/api/v0/public/agent" \
+      -H "X-API-KEY: $RINGG_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "agent_name": "Quickstart agent",
+        "agent_type": "outbound",
+        "primary_language": "en-IN",
+        "voice_id": "00000000-0000-4000-8000-00000000010e",
+        "intro_message": "Hi, this is Asha from Acme Finance. Do you have a minute?",
+        "introduction_and_objective": "You are Asha, a friendly assistant for Acme Finance. This is a test call to show how Ringg works.",
+        "task": "Greet the caller by name, ask how their day is going, answer one question, then say goodbye.",
+        "response_guidelines": "Keep replies short and warm. Never ask for personal or payment details."
+      }'
+    ```
+
+    ```javascript JavaScript
+    const res = await fetch("https://prod-api.ringg.ai/ca/api/v0/public/agent", {
+      method: "POST",
+      headers: {
+        "X-API-KEY": process.env.RINGG_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        agent_name: "Quickstart agent",
+        agent_type: "outbound",
+        primary_language: "en-IN",
+        voice_id: "00000000-0000-4000-8000-00000000010e",
+        intro_message: "Hi, this is Asha from Acme Finance. Do you have a minute?",
+        introduction_and_objective:
+          "You are Asha, a friendly assistant for Acme Finance. This is a test call to show how Ringg works.",
+        task: "Greet the caller by name, ask how their day is going, answer one question, then say goodbye.",
+        response_guidelines: "Keep replies short and warm. Never ask for personal or payment details.",
+      }),
+    });
+    console.log(res.status, await res.json());
+    ```
+
+    ```python Python
+    import os
+    import requests
+
+    res = requests.post(
+        "https://prod-api.ringg.ai/ca/api/v0/public/agent",
+        headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+        json={
+            "agent_name": "Quickstart agent",
+            "agent_type": "outbound",
+            "primary_language": "en-IN",
+            "voice_id": "00000000-0000-4000-8000-00000000010e",
+            "intro_message": "Hi, this is Asha from Acme Finance. Do you have a minute?",
+            "introduction_and_objective": "You are Asha, a friendly assistant for Acme Finance. This is a test call to show how Ringg works.",
+            "task": "Greet the caller by name, ask how their day is going, answer one question, then say goodbye.",
+            "response_guidelines": "Keep replies short and warm. Never ask for personal or payment details.",
+        },
+    )
+    print(res.status_code, res.json())
+    ```
+    </CodeGroup>
+
+    ```json Response (200)
+    {
+      "success": true,
+      "data": {
+        "id": "00000000-0000-4000-8000-000000000104",
+        "version": "v1",
+        "version_id": "00000000-0000-4000-8000-000000000105",
+        "created_at": "2024-12-16T13:03:29.947147+00:00"
+      },
+      "message": "Agent created successfully"
+    }
+    ```
+
+    `data.id` is your `agent_id`. Outbound agents always get the variables `callee_name` and `mobile_number`. An agent created by API gets a calling window of 09:00 to 21:00 in `Asia/Kolkata` unless you set `call_config.call_time`; a call placed outside the window waits until it opens ([calling window](/documentation/build-agents/customize-agent-behaviour/call-settings#calling-window)).
+
+    **Likeliest error:** `400` with code `VOICE_LANGUAGE_MISMATCH`, for example "Voice does not support language 'en-US'". Pick a `voice_id` whose `languages` include your `primary_language`.
+  </Step>
+
+  <Step title="Choose a caller number">
+    The caller number is the number your phone will show. List your workspace's numbers with [Get Workspace Numbers](/api-reference/endpoint/numbers/get-workspace-numbers):
+
+    <CodeGroup>
+    ```bash cURL
+    curl "https://prod-api.ringg.ai/ca/api/v0/workspace/numbers" \
+      -H "X-API-KEY: $RINGG_API_KEY"
+    ```
+
+    ```javascript JavaScript
+    const res = await fetch("https://prod-api.ringg.ai/ca/api/v0/workspace/numbers", {
+      headers: { "X-API-KEY": process.env.RINGG_API_KEY },
+    });
+    const { workspace_numbers } = await res.json();
+    console.log(workspace_numbers.filter((n) => !n.is_test_number));
+    ```
+
+    ```python Python
+    import os
+    import requests
+
+    res = requests.get(
+        "https://prod-api.ringg.ai/ca/api/v0/workspace/numbers",
+        headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+    )
+    print([n for n in res.json()["workspace_numbers"] if not n["is_test_number"]])
+    ```
+    </CodeGroup>
+
+    ```json Response (200, one item, some fields left out)
+    {
+      "workspace_numbers": [
+        {
+          "id": "00000000-0000-4000-8000-000000000109",
+          "number": "+919876540001",
+          "agent": null,
+          "is_test_number": false,
+          "is_spam": false,
+          "provider": "plivo",
+          "display_name": "Sales Line",
+          "number_pool_id": null
+        }
+      ]
+    }
+    ```
+
+    Pick a number with `"is_test_number": false` and `"is_spam": false` and copy its `id`: that is your `from_number_id`. In the dashboard, the same list is on **Numbers**, with a copy button for each ID.
+
+    **Likeliest problem:** the list holds only Ringg's shared [test numbers](/documentation/inventory/phone-numbers/overview#test-numbers) (`"is_test_number": true`), which the dashboard's [test call](/documentation/build-agents/test-and-improve/test-an-agent) can use and the API cannot. [Buy or import a number](/documentation/inventory/phone-numbers/buy-or-import-a-number) first, or run this test from the dashboard instead.
+  </Step>
+
+  <Step title="Place the call to your own phone">
+    Send [Initiate Individual Call](/api-reference/endpoint/calling/initiate-individual-call) with your `agent_id`, your `from_number_id`, and your own number, with country code, as `mobile_number`. `custom_args_values` fills the agent's [variables](/documentation/build-agents/customize-agent-behaviour/custom-variables), such as `@{{callee_name}}` in the prompt.
+
+    <CodeGroup>
+    ```bash cURL
+    curl -X POST "https://prod-api.ringg.ai/ca/api/v0/calling/outbound/individual" \
+      -H "X-API-KEY: $RINGG_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "name": "Priya Sharma",
+        "mobile_number": "+919876543210",
+        "agent_id": "00000000-0000-4000-8000-000000000104",
+        "from_number_id": "00000000-0000-4000-8000-000000000109",
+        "custom_args_values": {
+          "callee_name": "Priya"
+        }
+      }'
+    ```
+
+    ```javascript JavaScript
+    const res = await fetch("https://prod-api.ringg.ai/ca/api/v0/calling/outbound/individual", {
+      method: "POST",
+      headers: {
+        "X-API-KEY": process.env.RINGG_API_KEY,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: "Priya Sharma",
+        mobile_number: "+919876543210",
+        agent_id: "00000000-0000-4000-8000-000000000104",
+        from_number_id: "00000000-0000-4000-8000-000000000109",
+        custom_args_values: { callee_name: "Priya" },
+      }),
+    });
+    const call = await res.json();
+    console.log(res.status, call.data?.call_id);
+    ```
+
+    ```python Python
+    import os
+    import requests
+
+    res = requests.post(
+        "https://prod-api.ringg.ai/ca/api/v0/calling/outbound/individual",
+        headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+        json={
+            "name": "Priya Sharma",
+            "mobile_number": "+919876543210",
+            "agent_id": "00000000-0000-4000-8000-000000000104",
+            "from_number_id": "00000000-0000-4000-8000-000000000109",
+            "custom_args_values": {"callee_name": "Priya"},
+        },
+    )
+    print(res.status_code, res.json()["data"]["call_id"])
+    ```
+    </CodeGroup>
+
+    ```json Response (200)
+    {
+      "status": "success",
+      "data": {
+        "call_id": "00000000-0000-4000-8000-00000000010b",
+        "call_direction": "outbound",
+        "call_status": "ongoing",
+        "initiated_at": "2025-11-24T07:33:49.629642",
+        "agent_id": "00000000-0000-4000-8000-000000000104",
+        "custom_args_values": {
+          "callee_name": "Priya",
+          "mobile_number": "+919876543210"
+        }
+      },
+      "message": "Call initiated successfully"
+    }
+    ```
+
+    Save `data.call_id`. `call_status` starts as `registered` (queued) or `ongoing`. A call that stays `registered` is waiting for the agent's calling window to open, or is held by a [call limit](/documentation/manage-account/call-limits).
+
+    <Check>
+    Your phone rings and shows the caller number you picked. Answer it: the agent speaks its first message. Talk to it, then hang up.
+    </Check>
+
+    **Likeliest errors:**
+
+    - `422` with `"message": "Provide either from_number_id or from_number, not both"`. Send `name`, `mobile_number` and `agent_id`, plus one of `from_number_id` or `from_number`.
+    - `400` with `"message": "Default numbers are for testing only. Please provide a real phone number."`. The caller number is a Ringg test number; pick another one.
+    - `402` with `"message": "Your current balance is insufficient to initiate this call!"`. Add balance ([Billing](/documentation/manage-account/billing)).
+  </Step>
+
+  <Step title="Read the result">
+    After you hang up, fetch the call with [Get Call Details](/api-reference/endpoint/history/get-call-details). Add `send_analysis=true` to include the analysis.
+
+    <CodeGroup>
+    ```bash cURL
+    curl "https://prod-api.ringg.ai/ca/api/v0/calling/call-details?id=00000000-0000-4000-8000-00000000010b&send_analysis=true" \
+      -H "X-API-KEY: $RINGG_API_KEY"
+    ```
+
+    ```javascript JavaScript
+    const callId = "00000000-0000-4000-8000-00000000010b";
+    const res = await fetch(
+      `https://prod-api.ringg.ai/ca/api/v0/calling/call-details?id=${callId}&send_analysis=true`,
+      { headers: { "X-API-KEY": process.env.RINGG_API_KEY } },
+    );
+    const { data } = await res.json();
+    console.log(data.call_status, JSON.parse(data.transcription_url ?? "[]"));
+    ```
+
+    ```python Python
+    import json
+    import os
+    import requests
+
+    res = requests.get(
+        "https://prod-api.ringg.ai/ca/api/v0/calling/call-details",
+        headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+        params={"id": "00000000-0000-4000-8000-00000000010b", "send_analysis": "true"},
+    )
+    data = res.json()["data"]
+    print(data["call_status"], json.loads(data["transcription_url"] or "[]"))
+    ```
+    </CodeGroup>
+
+    ```json Response (200)
+    {
+      "status": "success",
+      "data": {
+        "id": "00000000-0000-4000-8000-00000000010b",
+        "call_direction": "outbound",
+        "call_status": "completed",
+        "call_sub_status": "ACCEPTED",
+        "from_number": "+919876540001",
+        "to_number": "+919876543210",
+        "callee_name": "Priya Sharma",
+        "agent_id": "00000000-0000-4000-8000-000000000104",
+        "initiation_time": "2025-11-24T07:33:49Z",
+        "recording_url": "https://example.com/recordings/call-123.mp3",
+        "transcription_url": "[{\"bot\": \"Hi, this is Asha from Acme Finance. Do you have a minute?\"}, {\"user\": \"Sure, go ahead.\"}]",
+        "platform_analysis": {
+          "summary": "Caller agreed to talk and asked one question.",
+          "key_points": ["Caller agreed to talk"],
+          "action_items": []
+        }
+      }
+    }
+    ```
+
+    | Field | What it holds |
+    |---|---|
+    | `call_status` | `registered`, `ongoing`, `retry`, `completed`, `failed`, `error`, `cancelled` or `forwarded` |
+    | `call_sub_status` | The detail behind the status, for example `USER_DID_NOT_JOIN` or `MAX_CALL_DURATION` |
+    | `transcription_url` | The conversation as a JSON-encoded string: parse it to get one object per turn (`bot` or `user`) |
+    | `recording_url` | The recording. The link may expire; fetch the call again for a fresh link, and download the file if you need to keep it. |
+    | `platform_analysis`, `client_analysis` | Ringg's analysis (summary, key points, action items, classification) and your [Advanced Analysis](/documentation/build-agents/customize-agent-behaviour/advanced-analysis) fields |
+
+    Analysis runs after the call ends. Until it is ready, `platform_analysis` and `client_analysis` are left out of the response, so fetch again.
+
+    The same call is at the top of [Logs](/documentation/monitor/logs) in the dashboard. Click it for **Call details**, the transcript and, if set up, **Advanced analysis**. To find it later, filter Logs by **Call ID**.
+
+    <Check>
+    `call_status` is `completed` and the parsed `transcription_url` shows what you and the agent said.
+    </Check>
+
+    **Likeliest error:** `404` with `"message": "Call not found"`. Check that you passed `data.call_id` from step 4 as `id`, with the same workspace's key.
+  </Step>
+</Steps>
+
+## Hand it to a coding agent
+
+The same five requests make a good first script. Paste this into Claude, Cursor or ChatGPT with your details filled in:
+
+<Prompt description="Write a script that places a Ringg AI call and prints the transcript." actions={["copy", "cursor"]}>
+Read https://docs.ringg.ai/api-reference/quickstart.md. Write a script in [LANGUAGE] that uses the Ringg AI API (base URL https://prod-api.ringg.ai/ca/api/v0, header X-API-KEY read from the RINGG_API_KEY environment variable) to: 1) GET /agent/all and pick the agent named "[AGENT NAME]"; 2) GET /workspace/numbers and pick the first number whose is_test_number and is_spam are both false; 3) POST /calling/outbound/individual with name "[NAME]", mobile_number "[+COUNTRY NUMBER]", that agent_id and from_number_id, and a custom_args_values object whose callee_name is "[FIRST NAME]"; 4) poll GET /calling/call-details with id set to the returned call_id and send_analysis=true every 10 seconds until call_status is completed, failed, error or cancelled; 5) print call_status, call_sub_status, each turn of transcription_url (a JSON-encoded string, so parse it first), and platform_analysis.summary. Exit with a non-zero code on any non-200 response and print the response body.
+</Prompt>
+
+## Get results pushed to you
+
+Polling Get Call Details is fine for a test. In production, subscribe the agent to events with [Event Subscription (webhooks)](/documentation/build-agents/customize-agent-behaviour/event-subscription) and Ringg posts to your server as the call progresses. **All Processing Done** (`all_processing_completed`) carries the transcript, recording and analysis in one request. Endpoint requirements are in [webhook setup](/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors).
+
+## Before you go live
+
+- Keep the API key in a secret manager on your server. See [Security](/resources/security/security).
+- Store `agent_id`, `from_number_id` and each returned `call_id`; the `call_id` joins API responses, webhook events and Logs.
+- Send every `mobile_number` with its country code, for example `+919876543210`.
+- Send a `custom_args_values` key for every variable the prompt uses.
+- Set the calling window for your market in the agent's [call settings](/documentation/build-agents/customize-agent-behaviour/call-settings), and retries per call in `call_config.call_retry_config` or per [campaign](/documentation/deploy/campaigns/create-a-campaign).
+- Dedupe webhook events on `call_id` plus `event_type`, and return `2xx` quickly. See [Idempotency key](/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors#idempotency-key).
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="The call stays registered and my phone never rings">
+    The call is queued because the agent's calling window is closed. Check **Call start time**, **Call end time** and **Timezone** in the agent's [call settings](/documentation/build-agents/customize-agent-behaviour/call-settings#calling-window), or send your own `call_config.call_time` with the call.
+  </Accordion>
+  <Accordion title="The call ended as failed or error">
+    Read `call_sub_status` in Get Call Details; the full list of values is in [Get Call Details](/api-reference/endpoint/history/get-call-details). Also check that the caller number is not a test number and is not flagged as spam on **Numbers**.
+  </Accordion>
+  <Accordion title="The agent does not use my name">
+    The prompt uses a variable you did not send, or sent under a different key. Add it to `custom_args_values`, for example `"callee_name": "Priya"`. See [Variables](/documentation/build-agents/customize-agent-behaviour/custom-variables).
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="API reference" icon="code" href="/api-reference/introduction/api-overview">
+    Agents, calls, campaigns, numbers and results from your backend.
+  </Card>
+  <Card title="Improve the agent's prompt" icon="pen-line" href="/documentation/build-agents/customize-agent-behaviour/agent-prompt">
+    Write the script, FAQs and rules your agent follows.
+  </Card>
+  <Card title="Run a campaign by API" icon="megaphone" href="/documentation/deploy/campaigns/campaigns-by-api#with-the-api">
+    Upload a list and start calls in two requests.
+  </Card>
+</Columns>

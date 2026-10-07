@@ -1,0 +1,38 @@
+---
+title: "Workflow campaign"
+sidebarTitle: "Workflow campaign"
+description: "Run a published Ringg AI workflow over a calling list: create a campaign of type Workflow, pick the workflow, upload the CSV, go live and follow runs in Logs."
+related:
+  - "Workflows": /documentation/build-agents/workflows/overview
+  - "Build a workflow": /documentation/build-agents/workflows/build-a-workflow
+  - "Test and publish a workflow": /documentation/build-agents/workflows/test-and-publish
+  - "Workflow block reference": /documentation/build-agents/workflows/block-reference
+  - "Workflow runs in Logs": /documentation/monitor/logs#workflow-runs
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+## Workflow campaigns
+
+Set **Campaign type** to **Workflow** to start one run of a published [workflow](/documentation/build-agents/workflows/overview) per CSV row instead of one call. You need an **Active** workflow ([publish it](/documentation/build-agents/workflows/test-and-publish#publish-and-versions)) and a [calling list](/documentation/deploy/campaigns/calling-list) with a phone number column. Runs appear in [Logs → Workflows](/documentation/monitor/logs#workflow-runs).
+
+<Steps>
+  <Step title="Start a campaign">
+    Go to **Campaigns → Create campaign**. Enter a **Campaign name** and set **Campaign type** to **Workflow** ("Run a multi-step workflow").
+  </Step>
+  <Step title="Pick the workflow">
+    In **Select workflow**, choose an Active workflow. Others show, for example, "Draft — publish the workflow to use it here". Not active yet? [Publish it](/documentation/build-agents/workflows/test-and-publish#publish-and-versions).
+  </Step>
+  <Step title="Upload the list">
+    Under **How should this workflow start?**, keep **File upload** (**Webhook URL** and **Event trigger** are marked **Coming soon**) and drop a CSV (up to 20 MB, [format](/documentation/deploy/campaigns/calling-list)). Check **Phone number column** (required) and **Name column** (optional), and pick a **Country code**, "Applied to numbers without a + prefix" ([country code rules](/documentation/deploy/campaigns/calling-list#phone-numbers-and-country-code)). Under **Map workflow variables to CSV columns**, columns named like a variable are matched for you.
+  </Step>
+  <Step title="Choose when it starts">
+    Click **Next**. Choose **Start immediately** or **Schedule for later** (timezone, date and time). The **Calling hours & retries** card shows what the Agent blocks will use: those come from the workflow, not the campaign.
+  </Step>
+  <Step title="Go live">
+    Check **Ready to go live**, then click **Go live** (or **Schedule campaign**). Rows without a phone number are skipped.
+    <Check>You see "Workflow campaign is live" with the number of runs started, or "Workflow campaign scheduled". Duplicate phone numbers are skipped, and the toast says how many.</Check>
+  </Step>
+</Steps>
+
+<RelatedTopics items={[["Workflows", "/documentation/build-agents/workflows/overview"], ["Build a workflow", "/documentation/build-agents/workflows/build-a-workflow"], ["Test and publish a workflow", "/documentation/build-agents/workflows/test-and-publish"], ["Workflow block reference", "/documentation/build-agents/workflows/block-reference"], ["Workflow runs in Logs", "/documentation/monitor/logs#workflow-runs"]]} />

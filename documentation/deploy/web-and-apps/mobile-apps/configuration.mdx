@@ -1,0 +1,561 @@
+---
+title: "Mobile widget configuration"
+sidebarTitle: "Configuration"
+description: "Reference for every RinggWidgetConfig option in the Ringg AI React Native and Flutter widgets: identity, panel content, variables, theme, buttons and defaults."
+related:
+  - "Allowed clients": /documentation/deploy/web-and-apps/web-widget/overview#allowed-clients
+  - "Web widget configuration": /documentation/deploy/web-and-apps/web-widget/configuration
+"og:title": "Mobile widget configuration reference"
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import OriginRequirement from "/snippets/widget-origin-requirement.mdx";
+
+`RinggWidgetConfig` controls how the widget looks and starts in your app; the agent's prompt, voice and tools stay in the dashboard. Only `agentId` is required. Every other field falls back to a default generated from one source for all platforms, so the web, React Native and Flutter widgets behave identically when a field is left unset; theme values with no default listed fall back to the packaged Ringg palette. Pick your framework with the switcher next to the table of contents, and [install the package](/documentation/deploy/web-and-apps/mobile-apps/install) first.
+
+<View title="React Native" icon="smartphone">
+  `RinggWidgetConfig` is the object you pass to `<RinggWidget config />` from `@ringg/react-native`.
+
+  ```tsx
+  <RinggWidget
+    config={{
+      agentId: "your-agent-id",
+      authorization: "Bearer your-webcall-public-key",
+      clientOrigin: appOrigin(BUNDLE_ID),
+      title: "Support",
+      defaultTab: "text",
+    }}
+  />
+  ```
+
+  ## Identity and auth
+
+  <Danger>
+  `authorization` and `clientOrigin` ship inside your app and can be extracted from it. Use the agent's webcall public key. The config type also accepts `xApiKey`; never put your workspace [API key](/documentation/manage-account/api-key) there, because it isn't limited to one agent or to your **Allowed clients**.
+  </Danger>
+
+  <ResponseField name="agentId" type="string" required>
+    The agent to load.
+  </ResponseField>
+
+  <ResponseField name="authorization" type="string">
+    `Bearer <webcall-public-key>`, from the agent's embed snippet.
+  </ResponseField>
+
+  <ResponseField name="clientOrigin" type="string">
+    Caller identity sent as `Origin`, built with `appOrigin(BUNDLE_ID)`. Required for real calls; see [Caller identity](/documentation/deploy/web-and-apps/mobile-apps/install#caller-identity).
+  </ResponseField>
+
+  <ResponseField name="mode" type="string" default="prod">
+    Leave it unset.
+  </ResponseField>
+
+  ## Panel content and mode
+
+  <ResponseField name="title" type="string" default="Ringg AI Support">
+    Heading on the start screen and header.
+  </ResponseField>
+
+  <ResponseField name="description" type="string" default="Ringg AI offers 24/7 voice support to handle your business calls efficiently and professionally">
+    Supporting copy on the start screen.
+  </ResponseField>
+
+  <ResponseField name="defaultTab" type='"audio" | "text"' default="audio">
+    Which mode the panel opens in.
+  </ResponseField>
+
+  <ResponseField name="hideTabSelector" type="boolean" default="false">
+    Hides the audio/text switch, pinning the widget to `defaultTab`.
+  </ResponseField>
+
+  <ResponseField name="defaultExpanded" type="boolean" default="false">
+    Mounts the panel already open, with no trigger.
+  </ResponseField>
+
+  <ResponseField name="bypassStartScreen" type="boolean" default="false">
+    A trigger tap starts the conversation in `defaultTab` immediately.
+  </ResponseField>
+
+  <ResponseField name="bypassFeedbackScreen" type="boolean" default="false">
+    Skips the post-call rating screen.
+  </ResponseField>
+
+  <ResponseField name="logoUrl" type="string">
+    Logo shown in the header.
+  </ResponseField>
+
+  <ResponseField name="logoStyles" type="PortableStyles">
+    Sizing and background for the logo.
+  </ResponseField>
+
+  <ResponseField name="typingWords" type="string[]" default="Thinking, Reasoning, Working on it, Almost there">
+    Words cycled in the pending-reply indicator.
+  </ResponseField>
+
+  <ResponseField name="legalDisclaimer" type="{ text, links? }">
+    Replaces the default legal text shown before a conversation. Words in `text` that match a key in `links` link to that URL.
+  </ResponseField>
+
+  ## Variables
+
+  `variables` fill the agent's [variables](/documentation/build-agents/customize-agent-behaviour/custom-variables). Values are sent as given, so strings, numbers, booleans, objects and arrays all work. Set them at controller creation; to change them for a new conversation, create a new controller.
+
+  ```tsx
+  variables: {
+    callee_name: "John",
+    account_id: "ACC-42",
+    is_premium: true,
+    cart: { items: 3, total: 149.5 },
+  }
+  ```
+
+  ## Theme
+
+  Colors take any CSS color string; `primaryColor` and `agentBubbleColor` also accept CSS gradients.
+
+  <ResponseField name="theme.primaryColor" type="string">
+    Accent for buttons, selected states and the trigger.
+  </ResponseField>
+
+  <ResponseField name="theme.primaryTextColor" type="string">
+    Text on primary-colored surfaces.
+  </ResponseField>
+
+  <ResponseField name="theme.backgroundColor" type="string">
+    Panel background.
+  </ResponseField>
+
+  <ResponseField name="theme.surfaceColor" type="string">
+    Cards, inputs and the user message bubble.
+  </ResponseField>
+
+  <ResponseField name="theme.agentBubbleColor" type="string">
+    Agent bubble background. An empty string renders agent replies without a bubble.
+  </ResponseField>
+
+  <ResponseField name="theme.textColor" type="string">
+    Body text.
+  </ResponseField>
+
+  <ResponseField name="theme.mutedTextColor" type="string">
+    Secondary text.
+  </ResponseField>
+
+  <ResponseField name="theme.borderColor" type="string">
+    Borders and dividers.
+  </ResponseField>
+
+  <ResponseField name="theme.errorColor" type="string">
+    Validation and danger states.
+  </ResponseField>
+
+  <ResponseField name="theme.successColor" type="string">
+    Success states.
+  </ResponseField>
+
+  <ResponseField name="theme.buttonStyle" type='"rounded" | "pill" | "square"'>
+    Button corner style.
+  </ResponseField>
+
+  <ResponseField name="theme.borderRadius" type="string">
+    Global corner radius, for example `"12px"`.
+  </ResponseField>
+
+  <ResponseField name="theme.fontFamily" type="string">
+    Font family, resolved against fonts registered in your app. React Native does not fetch web fonts, so load the family through Expo Font or your native font assets first.
+  </ResponseField>
+
+  ## Buttons
+
+  `PortableStyles` is the cross-platform style subset: `height`, `width`, `backgroundColor`, `padding`, `borderRadius`. Arbitrary CSS is not accepted, because these values are applied to native views.
+
+  <ResponseField name="buttons.modalTrigger.styles" type="PortableStyles">
+    The floating trigger.
+  </ResponseField>
+
+  <ResponseField name="buttons.modalTrigger.icon.url" type="string">
+    Custom trigger icon.
+  </ResponseField>
+
+  <ResponseField name="buttons.modalTrigger.icon.size" type="number">
+    Icon size in points.
+  </ResponseField>
+
+  <ResponseField name="buttons.mic.styles" type="PortableStyles">
+    The in-call mute button.
+  </ResponseField>
+
+  <ResponseField name="buttons.call.textBeforeCall" type="string">
+    Label on the start-call button.
+  </ResponseField>
+
+  <ResponseField name="buttons.call.styles" type="PortableStyles">
+    Call button styling.
+  </ResponseField>
+
+  <ResponseField name="buttons.text.textBeforeCall" type="string">
+    Label on the start-chat button.
+  </ResponseField>
+
+  <ResponseField name="buttons.text.styles" type="PortableStyles">
+    Chat button styling.
+  </ResponseField>
+
+  ## Voice call view
+
+  <ResponseField name="voiceCall.showAnimation" type="boolean" default="false">
+    Shows the audio visualizer during a call. If you pass your own `controller`, pass `room` too.
+  </ResponseField>
+
+  <ResponseField name="voiceCall.showTranscript" type="boolean" default="true">
+    Shows the live transcript during a call.
+  </ResponseField>
+
+  ## Feedback screen
+
+  <ResponseField name="feedbackScreen.title" type="string">
+    Heading on the rating screen.
+  </ResponseField>
+
+  <ResponseField name="feedbackScreen.description" type="string">
+    Supporting copy.
+  </ResponseField>
+
+  <ResponseField name="feedbackScreen.starsCount" type="number">
+    Number of stars offered.
+  </ResponseField>
+
+  <ResponseField name="feedbackScreen.starsStyles" type="{ filledColor, emptyColor }">
+    Selected and unselected star colors.
+  </ResponseField>
+
+  <ResponseField name="feedbackScreen.placeholder" type="string">
+    Comment field placeholder.
+  </ResponseField>
+
+  <ResponseField name="feedbackScreen.submitBtnCTA" type="string">
+    Submit button label.
+  </ResponseField>
+
+  <ResponseField name="feedbackScreen.submitBtnStyles" type="PortableStyles">
+    Submit button styling.
+  </ResponseField>
+
+  ## Chat extras
+
+  <ResponseField name="enabledSlashCommands" type="SlashCommand[]">
+    Commands offered in the composer, merged with any the agent returns at call start. Each is `{ tool_type, command, display_name, description }`.
+  </ResponseField>
+
+  <ResponseField name="eventLogs.enabled" type="boolean" default="false">
+    Shows inline pills in the thread when the agent fires a host action.
+  </ResponseField>
+
+  <ResponseField name="eventLogs.showIds" type="boolean">
+    Appends the action id to each pill. Useful while debugging.
+  </ResponseField>
+
+  <ResponseField name="notificationTuneUrl" type="string" default="https://assets.ringg.ai/audios/misc/widget_notification.mp3">
+    Sound played on an incoming reply. On React Native it plays only with a player wired through `ports`; see [notification sound](/documentation/deploy/web-and-apps/mobile-apps/install#notification-sound).
+  </ResponseField>
+
+  ## Web-only options
+
+  `widgetPosition` and `innerWindowProps` exist on the type because the config is shared with the web widget. They are ignored on React Native: the native layout places the trigger and panel, and there is no resizable window to size.
+</View>
+
+<View title="Flutter" icon="smartphone-charging">
+  `RinggWidgetConfig` is the first argument to `RinggWidgetController` in `ringg_flutter`; every field except `agentId` is nullable.
+
+  ```dart
+  final controller = RinggWidgetController(
+    const RinggWidgetConfig(
+      agentId: 'your-agent-id',
+      authorization: 'Bearer your-webcall-public-key',
+      title: 'Support',
+      defaultTab: MediaType.text,
+    ),
+    ControllerPorts(transport: transport.transport),
+  );
+  ```
+
+  ## Identity and auth
+
+  <Danger>
+  `authorization` ships inside your app and can be extracted from it. Use the agent's webcall public key. The config also accepts `xApiKey`; never put your workspace [API key](/documentation/manage-account/api-key) there, because it isn't limited to one agent or to your **Allowed clients**.
+  </Danger>
+
+  <ResponseField name="agentId" type="String" required>
+    The agent to load.
+  </ResponseField>
+
+  <ResponseField name="authorization" type="String?">
+    `Bearer <webcall-public-key>`, from the agent's embed snippet.
+  </ResponseField>
+
+  <ResponseField name="clientOrigin" type="String?">
+    Pins the caller identity sent as `Origin`. Derived from the running app when null; see [Caller identity](#caller-identity).
+  </ResponseField>
+
+  <ResponseField name="mode" type="EnvironmentMode?" default="prod">
+    Leave it null.
+  </ResponseField>
+
+  ## Panel content and mode
+
+  <ResponseField name="title" type="String?" default="Ringg AI Support">
+    Heading on the start screen and header.
+  </ResponseField>
+
+  <ResponseField name="description" type="String?" default="Ringg AI offers 24/7 voice support to handle your business calls efficiently and professionally">
+    Supporting copy on the start screen.
+  </ResponseField>
+
+  <ResponseField name="defaultTab" type="MediaType?" default="MediaType.audio">
+    `MediaType.audio` or `MediaType.text`. Which mode the panel opens in.
+  </ResponseField>
+
+  <ResponseField name="hideTabSelector" type="bool?" default="false">
+    Hides the audio/text switch, pinning the widget to `defaultTab`.
+  </ResponseField>
+
+  <ResponseField name="defaultExpanded" type="bool?" default="false">
+    Mounts the panel already open, with no trigger.
+  </ResponseField>
+
+  <ResponseField name="bypassStartScreen" type="bool?" default="false">
+    A trigger tap starts the conversation in `defaultTab` immediately.
+  </ResponseField>
+
+  <ResponseField name="bypassFeedbackScreen" type="bool?" default="false">
+    Skips the post-call rating screen.
+  </ResponseField>
+
+  <ResponseField name="logoUrl" type="String?">
+    Logo shown in the header.
+  </ResponseField>
+
+  <ResponseField name="logoStyles" type="PortableStyles?">
+    Sizing and background for the logo.
+  </ResponseField>
+
+  <ResponseField name="typingWords" type="List<String>?" default="Thinking, Reasoning, Working on it, Almost there">
+    Words cycled in the pending-reply indicator.
+  </ResponseField>
+
+  <ResponseField name="legalDisclaimer" type="LegalDisclaimerConfig?">
+    Replaces the default legal text shown before a conversation. Words in `text` that match a key in `links` link to that URL.
+  </ResponseField>
+
+  ## Variables
+
+  `variables` fill the agent's [variables](/documentation/build-agents/customize-agent-behaviour/custom-variables). `WidgetVariables` is `Map<String, Object>`, and values are sent as given, so any JSON value works. Set them when you build the controller; to change them for a new conversation, build a new controller.
+
+  ```dart
+  RinggWidgetConfig(
+    agentId: 'your-agent-id',
+    variables: {
+      'callee_name': 'John',
+      'account_id': 'ACC-42',
+      'is_premium': true,
+      'cart': {'items': 3, 'total': 149.5},
+    },
+  )
+  ```
+
+  ## Theme
+
+  `theme` takes a `WidgetTheme`. Colors are CSS color strings, not Dart `Color` objects, so the same values work on web, React Native and Flutter. `primaryColor` and `agentBubbleColor` also accept CSS gradients.
+
+  ```dart
+  theme: const WidgetTheme(
+    primaryColor: '#9AADEC',
+    backgroundColor: '#FFFFFF',
+    buttonStyle: ButtonStyle.pill,
+    borderRadius: '12px',
+  ),
+  ```
+
+  <ResponseField name="theme.primaryColor" type="String?">
+    Accent for buttons, selected states and the trigger.
+  </ResponseField>
+
+  <ResponseField name="theme.primaryTextColor" type="String?">
+    Text on primary-colored surfaces.
+  </ResponseField>
+
+  <ResponseField name="theme.backgroundColor" type="String?">
+    Panel background.
+  </ResponseField>
+
+  <ResponseField name="theme.surfaceColor" type="String?">
+    Cards, inputs and the user message bubble.
+  </ResponseField>
+
+  <ResponseField name="theme.agentBubbleColor" type="String?">
+    Agent bubble background. An empty string renders agent replies without a bubble.
+  </ResponseField>
+
+  <ResponseField name="theme.textColor" type="String?">
+    Body text.
+  </ResponseField>
+
+  <ResponseField name="theme.mutedTextColor" type="String?">
+    Secondary text.
+  </ResponseField>
+
+  <ResponseField name="theme.borderColor" type="String?">
+    Borders and dividers.
+  </ResponseField>
+
+  <ResponseField name="theme.errorColor" type="String?">
+    Validation and danger states.
+  </ResponseField>
+
+  <ResponseField name="theme.successColor" type="String?">
+    Success states.
+  </ResponseField>
+
+  <ResponseField name="theme.buttonStyle" type="ButtonStyle?">
+    `rounded`, `pill` or `square`.
+  </ResponseField>
+
+  <ResponseField name="theme.borderRadius" type="String?">
+    Global corner radius, for example `'12px'`.
+  </ResponseField>
+
+  <ResponseField name="theme.fontFamily" type="String?">
+    Font family. Must be a family declared in your `pubspec.yaml`.
+  </ResponseField>
+
+  ## Buttons
+
+  `PortableStyles` is the cross-platform style subset: `height`, `width`, `backgroundColor`, `padding`, `borderRadius`. Sizes accept a number or a CSS string, so `'48px'` and `48` both work.
+
+  <ResponseField name="buttons.modalTrigger.styles" type="PortableStyles?">
+    The floating trigger.
+  </ResponseField>
+
+  <ResponseField name="buttons.modalTrigger.icon.url" type="String?">
+    Custom trigger icon.
+  </ResponseField>
+
+  <ResponseField name="buttons.modalTrigger.icon.size" type="Object?">
+    Icon size, as a number or a CSS size string.
+  </ResponseField>
+
+  <ResponseField name="buttons.mic.styles" type="PortableStyles?">
+    The in-call mute button.
+  </ResponseField>
+
+  <ResponseField name="buttons.call.textBeforeCall" type="String?">
+    Label on the start-call button.
+  </ResponseField>
+
+  <ResponseField name="buttons.call.styles" type="PortableStyles?">
+    Call button styling.
+  </ResponseField>
+
+  <ResponseField name="buttons.text.textBeforeCall" type="String?">
+    Label on the start-chat button.
+  </ResponseField>
+
+  <ResponseField name="buttons.text.styles" type="PortableStyles?">
+    Chat button styling.
+  </ResponseField>
+
+  ## Voice call view
+
+  <ResponseField name="voiceCall.showAnimation" type="bool?" default="false">
+    Shows the audio visualizer during a call. Needs `transport` passed to `RinggWidget`.
+  </ResponseField>
+
+  <ResponseField name="voiceCall.showTranscript" type="bool?" default="true">
+    Shows the live transcript during a call.
+  </ResponseField>
+
+  ## Feedback screen
+
+  <ResponseField name="feedbackScreen.title" type="String?">
+    Heading on the rating screen.
+  </ResponseField>
+
+  <ResponseField name="feedbackScreen.description" type="String?">
+    Supporting copy.
+  </ResponseField>
+
+  <ResponseField name="feedbackScreen.starsCount" type="int?">
+    Number of stars offered.
+  </ResponseField>
+
+  <ResponseField name="feedbackScreen.starsStyles" type="{ filledColor, emptyColor }">
+    Selected and unselected star colors.
+  </ResponseField>
+
+  <ResponseField name="feedbackScreen.placeholder" type="String?">
+    Comment field placeholder.
+  </ResponseField>
+
+  <ResponseField name="feedbackScreen.submitBtnCTA" type="String?">
+    Submit button label.
+  </ResponseField>
+
+  <ResponseField name="feedbackScreen.submitBtnStyles" type="PortableStyles?">
+    Submit button styling.
+  </ResponseField>
+
+  ## Chat extras
+
+  <ResponseField name="enabledSlashCommands" type="List<SlashCommand>?">
+    Commands offered in the composer, merged with any the agent returns at call start.
+  </ResponseField>
+
+  <ResponseField name="eventLogs.enabled" type="bool?" default="false">
+    Shows inline pills in the thread when the agent fires a host action.
+  </ResponseField>
+
+  <ResponseField name="eventLogs.showIds" type="bool?">
+    Appends the action id to each pill. Useful while debugging.
+  </ResponseField>
+
+  <ResponseField name="notificationTuneUrl" type="String?" default="https://assets.ringg.ai/audios/misc/widget_notification.mp3">
+    Sound played on an incoming reply. Needs a `notification` port with a player; see the [ports reference](/documentation/deploy/web-and-apps/mobile-apps/events#ports-reference).
+  </ResponseField>
+
+  ## Web-only options
+
+  `widgetPosition` and `innerWindowProps` exist on the type because the config is shared with the web widget. They are ignored on Flutter: the Flutter layout places the trigger and panel, and there is no resizable window to size.
+
+  ## Caller identity
+
+  <OriginRequirement />
+
+  On Flutter this is handled for you. The package reads the running app's id through `package_info_plus` and sends `<platform>://<bundleId>`:
+
+  | Platform | `Origin` sent |
+  |---|---|
+  | Android | `android://<applicationId>` |
+  | iOS | `ios://<bundleId>` |
+  | macOS, Windows, Linux | `macos://…`, `windows://…`, `linux://…` |
+
+  Set `clientOrigin` only when you want to pin one value, for example a single canonical string across build flavors. It wins over the derived one.
+
+  ```dart
+  RinggWidgetConfig(
+    agentId: 'your-agent-id',
+    clientOrigin: 'android://com.yourcompany.yourapp',
+  )
+  ```
+
+  Supplying your own `ControllerPorts(httpClient: …)` opts out of the default header. Wrap your client to keep it:
+
+  ```dart
+  ControllerPorts(
+    transport: transport.transport,
+    httpClient: appOriginHttpClient(inner: yourClient),
+  )
+  ```
+</View>
+
+<RelatedTopics items={[["Allowed clients", "/documentation/deploy/web-and-apps/web-widget/overview#allowed-clients"], ["Web widget configuration", "/documentation/deploy/web-and-apps/web-widget/configuration"]]} />

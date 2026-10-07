@@ -1,0 +1,81 @@
+---
+title: "Lesson: Analytics"
+sidebarTitle: "Analytics"
+description: "Filter Analytics to the EMI reminder agent and its dry-run campaign, read Connectivity rate and Goal achieved, judge retries, and drill into Logs."
+related:
+  - "Analytics": /documentation/monitor/analytics
+  - "Advanced Analysis": /documentation/build-agents/customize-agent-behaviour/advanced-analysis
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 6: Measuring and improving your agent · Lesson 2 of 4 · 15 minutes**
+
+## Objective
+
+Read connectivity and goal rate for Ananya's calls, and jump from a figure to the calls behind it.
+
+## The scenario
+
+With three calls the numbers are small, but the reading habit is the same at three thousand: did the calls connect, did Ananya get a promise to pay, and were the retries worth their cost? Analytics answers across all calls.
+
+## Hands-on
+
+<Frame caption="Filtering Analytics and drilling into Logs">
+  <video alt="Filtering Analytics and drilling into Logs" aria-label="Filtering Analytics and drilling into Logs" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/monitor-analytics/poster.webp">
+    <source src="/media/monitor-analytics/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Scope the page">
+    On **Monitor → Campaigns**, click the dry run and then **Analytics**. The page opens scoped to the campaign and the date range drops away: a campaign covers all of its calls whenever they happened. For Ananya across every campaign, open **Monitor → Analytics** instead and tick her under **Filters → Assistants**, which selects all her versions.
+  </Step>
+  <Step title="Read Volume">
+    Eight cards. With a date range, a card can carry a change badge against the previous period of the same length; scoped to a campaign, as here, there is no previous period and no badge. **Total calls**, **Calls connected** and **Connectivity rate** matter most here. Hover **Details** on **Connectivity rate** for **Campaign time exhausted** and **Retry exhausted**: calls stopped by the campaign's end time or its retry count. **Avg handle time** splits by duration on hover; many calls under 10 seconds is the cue to rework the opening.
+  </Step>
+  <Step title="Read Performance">
+    **Goal achieved** is the share of analysed calls where `payment_promised` came back true, because you marked it **Use as goal** in part 3. **Cost per goal** divides the cost of connected calls by those calls. Both appear only with an agent or a campaign selected, and read `-` if the agent has no goal. **Latency** is Ananya's average response time in milliseconds.
+  </Step>
+  <Step title="Judge the retries">
+    The **Connectivity** chart plots cumulative connectivity per attempt: **Attempt 1**, **Attempt 2** and so on. Hover a point for that attempt's attempted and connected counts. A flat line after attempt 2 means later retries reach no one, and **Retry count** should come down.
+  </Step>
+  <Step title="Read the cohorts">
+    Each half-donut under **Cohort analysis** splits connected calls by one Boolean or enum field: `payment_promised` and `objection`. Hover a slice for its connected calls and average handle time. `promised_date` is not charted: only Boolean and enum fields are.
+  </Step>
+  <Step title="Drill into Logs">
+    Click the **Calls connected** value. Logs opens with **Call status** **Completed** and the agent, campaign and date filters carried over. A slice of the `objection` donut does the same for one value, with exactly one agent selected.
+  </Step>
+</Steps>
+
+## Checkpoint
+
+<Check>
+Logs opens filtered to status **Completed** and to the agent or campaign you had selected, listing the connected calls.
+</Check>
+
+## Exercise
+
+Scope the page to one version of Ananya. Under **Filters → Assistants**, untick V2 (from part 5) so only V1 is selected. Expected result: every card recomputes for V1's calls alone; once V2 has taken calls, swapping the ticks shows its figures. **Goal achieved** and **Avg handle time** are the two to compare between versions.
+
+## What you learned
+
+- Analytics is for trends and Logs for one call. Selecting a campaign drops the date range; otherwise the page covers the last month in your browser's timezone.
+- **Goal achieved** needs a Boolean Advanced Analysis variable marked **Use as goal** and an agent or campaign selected.
+- The connectivity-by-attempt chart tells you whether retries pay off, and clickable figures open Logs with the same filters.
+
+<Quiz
+  question="Performance shows Goal achieved as - for Ananya's campaign. Which is the likely cause?"
+  answers={[
+    { text: "Goal achieved needs a Boolean Advanced Analysis variable marked Use as goal, and the agent has none", correct: true },
+    { text: "The date range is too short for the card", correct: false },
+    { text: "Goal achieved only works on inbound calls", correct: false },
+    { text: "The campaign has fewer than 100 calls", correct: false },
+  ]}
+  correctFeedback="Right. Goal achieved is the share of analysed calls where the goal variable came back true. It needs a Boolean marked Use as goal and an agent or campaign selected; without a goal the card reads -."
+  incorrectFeedback="Not quite. Goal achieved and Cost per goal depend on one thing: a Boolean Advanced Analysis variable marked Use as goal on the agent, with an agent or campaign selected. Call volume, direction and date range do not make the card read -."
+/>
+
+<RelatedTopics items={[["Analytics", "/documentation/monitor/analytics"], ["Advanced Analysis", "/documentation/build-agents/customize-agent-behaviour/advanced-analysis"]]} />

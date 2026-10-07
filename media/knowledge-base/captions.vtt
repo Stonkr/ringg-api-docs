@@ -1,0 +1,46 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:04.216
+Open Knowledge base and click Create
+
+00:00:04.216 --> 00:00:06.427
+Name it
+
+00:00:06.427 --> 00:00:10.002
+Upload a file: a CSV opens in a preview
+
+00:00:10.002 --> 00:00:12.442
+Check the CSV's columns and types
+
+00:00:12.442 --> 00:00:19.636
+On Add URLs, crawl your site and click Fetch Links
+
+00:00:19.636 --> 00:00:22.631
+Tick only the pages you want
+
+00:00:22.631 --> 00:00:25.633
+Click a URL to preview the text Ringg extracts
+
+00:00:25.633 --> 00:00:28.324
+Click Save
+
+00:00:28.324 --> 00:00:35.829
+Files show Processing while it trains
+
+00:00:35.829 --> 00:00:39.751
+Indexed: the knowledge base is Ready
+
+00:00:39.751 --> 00:00:46.258
+Ask the test chat a question
+
+00:00:46.258 --> 00:00:48.350
+Each answer lists the files it came from
+
+00:00:48.350 --> 00:00:50.873
+Click the CSV to open its rows
+
+00:00:50.873 --> 00:00:56.378
+Search, add or edit rows without re-uploading
+
+00:00:56.378 --> 00:00:58.882
+The list shows it Ready, with its sources

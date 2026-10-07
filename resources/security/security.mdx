@@ -1,0 +1,103 @@
+---
+title: "Security"
+sidebarTitle: "Security"
+description: "Ringg AI security: SOC 2 Type II, ISO 27001, HIPAA and GDPR status, BAA and DPA requests, data deletion, and how to secure your own integration."
+"og:title": "Ringg AI Security & Compliance: SOC 2 Type II, ISO 27001, HIPAA & GDPR"
+"og:description": "Ringg AI is HIPAA and GDPR compliant, SOC 2 Type II audited, and ISO 27001 certified. Review security controls, agreements, and data erasure."
+"twitter:description": "Ringg AI is HIPAA and GDPR compliant, SOC 2 Type II audited, and ISO 27001 certified. Review security controls, agreements, and data erasure."
+---
+
+What Ringg does to protect your data, and what to do on your side of the integration.
+
+## What Ringg does
+
+### Certifications and compliance
+
+<Columns cols={2}>
+  <Card title="SOC 2 Type II" icon="clipboard-check">
+    Audit of the design and operating effectiveness of Ringg's controls over a defined period.
+  </Card>
+  <Card title="ISO 27001" icon="shield-check">
+    Certified to the international standard for information security management systems.
+  </Card>
+  <Card title="GDPR" icon="scale">
+    Supports data-subject rights and safeguards for cross-border transfers, as described in the [Privacy Policy](https://www.ringg.ai/privacy).
+  </Card>
+  <Card title="HIPAA" icon="stethoscope">
+    Supports appropriately configured voice AI workflows for healthcare organisations.
+  </Card>
+</Columns>
+
+Certificates, reports and the latest audit status are in the [Compliance Trust Center](https://ringg-ai.in.trust.site/).
+
+### Agreements
+
+Regulated data needs the matching agreement in place before it goes through Ringg:
+
+| Agreement | When you need it |
+|---|---|
+| Business Associate Agreement (BAA) | Before protected health information (PHI) passes through Ringg in a covered healthcare workflow. It must be signed first. |
+| Data Processing Addendum (<Tooltip tip="Data processing agreement: the contract covering how Ringg processes personal data for you.">DPA</Tooltip>) | To set out how personal data is processed and what Ringg and you are each responsible for |
+| Standard Contractual Clauses (SCCs) | As a transfer mechanism when personal data moves between countries |
+
+To request any of them, or to check which apply to your use, email [admin@ringg.ai](mailto:admin@ringg.ai).
+
+### Request access to or deletion of personal data
+
+To access, correct or delete personal data about you, email [admin@ringg.ai](mailto:admin@ringg.ai). Include enough to identify the account or data, and nothing more sensitive than that.
+
+Ringg may need to verify your identity first. Some information is kept where the law requires it, or for security, fraud prevention, dispute resolution or contractual reasons.
+
+### Other requests
+
+For compliance reports, certificates, security questionnaires, the subprocessor list or data-protection questions, email [admin@ringg.ai](mailto:admin@ringg.ai).
+
+## What you do
+
+### API key
+
+The [API key](/documentation/manage-account/api-key) authenticates every API request for one workspace.
+
+- Follow [Store it safely](/documentation/manage-account/api-key#store-it-safely): server-side only, from a secret manager, never in a browser page, mobile app, public repository, chat or email.
+- If it may have leaked, [rotate it](/documentation/manage-account/api-key#rotate-the-key) and update every service that uses it.
+- Set a credit balance [alert](/documentation/monitor/alerts) so unexpected spending shows up quickly.
+
+The web widget does not use this key; never put it in an embed. Each webcall agent has its own key in the embed snippet, limited to the sites under **Allowed clients**; rotate it from [Web widget overview](/documentation/deploy/web-and-apps/web-widget/overview#rotate-the-webcall-key). [MCP clients](/resources/mcp-server/workspace-mcp-server/security-and-faq) have their own sign-in and revocation.
+
+### Webhook endpoints
+
+- Accept events only over HTTPS.
+- Put a secret you control in the subscription's `headers`, such as `X-Webhook-Secret`, and reject requests without it. See [Authentication patterns](/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors#authentication-patterns).
+- Dedupe on `call_id` plus `event_type`, so a repeated delivery is not processed twice.
+
+### Dashboard access
+
+- Sign-in is **Continue with Google** or **Continue with Email**, which sends a 6-digit one-time code, so secure that Google or email account with two-step verification.
+- Give members only the access they need. New members start as **View only**, and edit access is granted per area. See [Members](/documentation/manage-account/members#roles-and-permissions).
+- Remove people who leave, and review [Workspace logs](/documentation/manage-account/members#workspace-logs) for changes you don't expect.
+
+### Personal data
+
+- Send only the data the agent needs in `custom_args_values` and CSV columns. Every variable you send is stored with the call.
+- Never put secrets or sensitive data in the widget's `variables`; they are visible in the browser.
+- Recording links in the API and webhooks may expire; fetch a fresh one from [Get Call Details](/api-reference/endpoint/history/get-call-details). Download the recordings you must keep into your own storage, under your own retention policy.
+- To have personal data deleted, follow [Request access to or deletion of personal data](/resources/security/security#request-access-to-or-deletion-of-personal-data).
+
+### Calling rules
+
+You are responsible for how your calls meet the rules where your callees are.
+
+- Tell people they are talking to an AI agent, and that the call is recorded, where the law requires it.
+- Honour opt-outs and do-not-call requests, and use [Call limits](/documentation/manage-account/call-limits) and the agent's [calling window](/documentation/build-agents/customize-agent-behaviour/call-settings#calling-window) to keep contact within your policy.
+- Follow the privacy and industry rules that apply to you, such as GDPR, HIPAA or PCI DSS, and keep a record of the measures you take.
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Secure your integration" icon="lock" href="/resources/security/security">
+    Protect keys, webhooks and call data on your side.
+  </Card>
+  <Card title="Protect your API key" icon="key" href="/documentation/manage-account/api-key#store-it-safely">
+    Store and rotate the workspace key.
+  </Card>
+</Columns>

@@ -1,15 +1,16 @@
 ---
 openapi: get /workspace/users
+description: "List the members of your workspace with their user ID, name, email, role and invite status, for example to pick who gets a campaign completion email."
+related:
+  - "Workspace members": /documentation/manage-account/members
 ---
 
-List users who belong to the current workspace. This is useful for internal admin tooling, audit views, and choosing users for campaign completion notifications.
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-## Query guidance
+Use the `id` values in `email_completion_user_ids` when starting a campaign ([number pool](/api-reference/endpoint/campaign/start-campaign-v2) or [large campaign](/api-reference/endpoint/campaign/make-large-campaign-calls-async)) to email those members when it completes.
 
-- Use `limit` and `offset` for pagination.
-- Keep the API key server-side; do not call this endpoint from browser code.
-- Cache lightly if you show this in dashboards because workspace membership changes infrequently.
+## Notes
 
-## Common follow-up
+- The API only reads members. Invite people and change roles in the dashboard.
 
-Campaign APIs can notify selected users when a campaign completes. Use this endpoint to identify the user IDs available in the workspace.
+<RelatedTopics items={[["Workspace members", "/documentation/manage-account/members"]]} />

@@ -1,60 +1,26 @@
 ---
 title: "Get large campaign upload status (Beta)"
-description: "Poll asynchronous CSV processing status for a beta large campaign."
+description: "Poll the validation status of a large campaign CSV by bulk_list_id until it is draft and ready to start, or fails, has no valid rows or lacks balance."
 openapi: get /campaign/upload-status/{bulk_list_id}
+related:
+  - "Calling list: invalid rows": /documentation/deploy/campaigns/calling-list#invalid-rows
+  - "Run a campaign by API": /documentation/deploy/campaigns/campaigns-by-api#large-campaign-flow
 ---
 
-<Warning>
-This endpoint is beta. Use it only for lists created with [Upload large campaign CSV](/api-reference/endpoint/campaign/upload-large-campaign-csv).
-</Warning>
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-`GET /campaign/upload-status/{bulk_list_id}` returns the processing state for a large campaign CSV upload.
+Poll it every few seconds after [Upload large campaign CSV](/api-reference/endpoint/campaign/upload-large-campaign-csv), until `status` stops changing.
 
-## Endpoint
+## Statuses
 
-```text
-GET /campaign/upload-status/{bulk_list_id}
-```
+| `status` | Meaning | Next |
+|---|---|---|
+| `verifying` | Rows are still being validated | Keep polling |
+| `draft` | The list is valid and ready | [Start calls](/api-reference/endpoint/campaign/make-large-campaign-calls-async) |
+| `no_valid_contacts` | Every row was invalid | Fix the CSV and upload it again |
+| `insufficient_balance` | The workspace balance does not cover the list | Add balance, then [re-check the balance](/api-reference/endpoint/campaign/check-large-campaign-balance) |
+| `failed` | Validation could not finish | Upload again |
 
-## Path parameters
+The response also reports `total_callees`, the valid contacts loaded, and `invalidated_rows_count`, the rows that failed validation. After launch, `status` follows the campaign: `preparing`, `in_db`, `scheduled`, `ongoing`, `completed` or `terminated`.
 
-| Parameter | Required | Description |
-|-----------|----------|-------------|
-| `bulk_list_id` | Yes | Large campaign list ID returned by `POST /campaign/upload-csv` |
-
-## Request
-
-```bash
-curl --request GET "https://prod-api.ringg.ai/ca/api/v0/campaign/upload-status/your-bulk-list-id" \
-  --header "X-API-KEY: $RINGG_API_KEY"
-```
-
-## Status flow
-
-| Status | Meaning | Next action |
-|--------|---------|-------------|
-| `uploaded` | Ringg accepted the CSV and queued processing | Keep polling |
-| `processing` | Rows are being parsed and validated | Keep polling |
-| `completed` | Processing finished and valid rows are ready | Check balance |
-| `failed` | Processing could not complete | Fix the CSV and upload again |
-
-Some beta workspaces may return equivalent status names such as `ready` for a completed upload. Continue only when the response clearly indicates that CSV processing has finished.
-
-## Response guidance
-
-The response includes the upload state and may include row counts or validation details.
-
-```json
-{
-  "bulk_list_id": "123e4567-e89b-12d3-a456-426614174000",
-  "status": "processing",
-  "total_rows": 6200,
-  "processed_rows": 2800,
-  "successful_rows": 2744,
-  "failed_rows": 56
-}
-```
-
-## Next step
-
-When processing is complete, call [Check large campaign balance](/api-reference/endpoint/campaign/check-large-campaign-balance). If the response shows invalid rows, fix and re-upload the CSV unless your workflow intentionally removes invalid rows.
+<RelatedTopics items={[["Calling list: invalid rows", "/documentation/deploy/campaigns/calling-list#invalid-rows"], ["Run a campaign by API", "/documentation/deploy/campaigns/campaigns-by-api#large-campaign-flow"]]} />

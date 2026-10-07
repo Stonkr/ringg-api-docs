@@ -1,0 +1,25 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:03.791
+The Plan tab: balance, concurrency and rates
+
+00:00:03.791 --> 00:00:08.773
+Click Add Balance and enter an amount
+
+00:00:08.773 --> 00:00:11.585
+GST is added; Proceed to Pay opens checkout
+
+00:00:11.585 --> 00:00:19.194
+Redeem a coupon
+
+00:00:19.194 --> 00:00:25.775
+Click Change concurrency and pick a value
+
+00:00:25.775 --> 00:00:31.221
+Click Update, then Confirm
+
+00:00:31.221 --> 00:00:36.203
+Transactions lists every payment
+
+00:00:36.203 --> 00:00:39.855
+A failed payment added nothing; pay again

@@ -1,0 +1,43 @@
+---
+title: Terminate All Calls by Agent ID
+sidebarTitle: "Stop an agent's calls"
+description: "Stop every queued and retry call of one agent across all of its campaigns, for example when the agent is misbehaving and must not make more calls."
+api: "PATCH /campaign/terminate"
+related:
+  - "Edit agent settings": /api-reference/endpoint/assistant/edit-assistant
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+<ParamField header="X-API-KEY" type="string" required>
+  Your Ringg AI API key.
+</ParamField>
+
+<ParamField body="agent_id" type="string" required>
+  The agent's ID ([find it](/documentation/build-agents/agents/agent-types#find-the-agent-id)). Example: `00000000-0000-4000-8000-000000000110`
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl --request PATCH "https://prod-api.ringg.ai/ca/api/v0/campaign/terminate" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{ "agent_id": "00000000-0000-4000-8000-000000000110" }'
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{ "message": "Calls terminated successfully!" }
+```
+</ResponseExample>
+
+Only outbound calls created in the last 7 days are cancelled. In-progress and completed calls are handled as for [by campaign](/api-reference/endpoint/terminate/campaign#what-happens); the agent's campaigns keep their status.
+
+## Errors
+
+- `200` is returned even when no call matched the ID; check the calls in [call history](/api-reference/endpoint/history/get-call-history).
+- `401`: `X-API-KEY` is missing or invalid.
+- `422`: no field, more than one way of choosing calls at once, or a field of the wrong type.
+
+<RelatedTopics items={[["Edit agent settings", "/api-reference/endpoint/assistant/edit-assistant"]]} />

@@ -1,18 +1,20 @@
 ---
 openapi: get /calling/call-details
+description: "Get one call by its call_id: status, numbers, agent, recording link and transcript, plus platform and advanced analysis when you set send_analysis=true."
+related:
+  - "Webhook payloads": /documentation/build-agents/customize-agent-behaviour/webhooks/call-events
 ---
 
-Fetch a detailed record for one call. Use this when a user opens a call detail view or when support needs the full context for a specific `call_id`.
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-## When to use
+Pass the call's ID as `id`, the `call_id` you got when placing the call or from a webhook.
 
-- Show transcript, recording, status, and metadata for one call.
-- Debug a failed or unexpected call.
-- Fetch analysis for a call after receiving a webhook event.
+## Notes
 
-## Integration notes
+- `transcription_url` is the transcript as a JSON-encoded string, not an array: parse it to get one object per turn (`bot` or `user`). It is `null` when there is no transcript and `"[]"` for a call that never connected.
+- `platform_analysis` is Ringg's summary and classification; `client_analysis` is the result of your [Advanced Analysis](/documentation/build-agents/customize-agent-behaviour/advanced-analysis). Analysis runs after the call ends, and each key is left out of the response until it is ready. Leave `send_analysis` off when you only need status or the recording.
+- `call_metrics=true` adds the call's [eval](/documentation/monitor/evals) results in `data.metrics`, one entry per metric with `metric_name`, `score` and `explanation`.
+- `recording_url` may expire. Call this endpoint again for a fresh link, and download the recording if you need to keep it.
+- A `404` means no call with that ID exists in the workspace that owns the API key.
 
-- Pass the unique call ID as the `id` query parameter.
-- Use `send_analysis=true` only when the caller needs analysis data; this keeps lightweight detail views faster.
-- Store the `call_id` returned by call initiation and webhook payloads.
-- The returned recording URL is valid for 24 hours after the call. Download and store the recording within that window if you need to retain it.
+<RelatedTopics items={[["Webhook payloads", "/documentation/build-agents/customize-agent-behaviour/webhooks/call-events"]]} />

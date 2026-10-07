@@ -1,0 +1,81 @@
+---
+title: "Lesson: Fix the prompt"
+sidebarTitle: "Fix the prompt"
+description: "Turn one problem seen in Logs and Evals into a single prompt change on a new version of the EMI reminder agent, hear it, then split traffic and finalize."
+related:
+  - "Write the prompt": /documentation/build-agents/customize-agent-behaviour/agent-prompt
+  - "Drafts and versions": /documentation/build-agents/test-and-improve/drafts-and-versions
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 6: Measuring and improving your agent · Lesson 4 of 4 · 20 minutes**
+
+## Objective
+
+Change one thing in Ananya's prompt because the calls showed it was needed, ship it as a version, and know when to send it all the traffic.
+
+## The scenario
+
+Suppose the dry-run transcripts show Ananya reading `₹4,500` as "four comma five zero zero" and `15 October` as "fifteen ten", and Evals flags it under **Instruction following**. One rule in the prompt fixes it. It goes on a new version so **A/B Analytics** can show whether it helped.
+
+## Hands-on
+
+<Frame caption="Adding a version and splitting traffic in the dashboard">
+  <video alt="Adding a version and splitting traffic in the dashboard" aria-label="Adding a version and splitting traffic in the dashboard" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/agents-versions/poster.webp">
+    <source src="/media/agents-versions/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Pick one problem">
+    Open the transcript in Logs or the issue card in Evals, and choose one thing to change. A version that changes three things at once tells you nothing about which one worked.
+  </Step>
+  <Step title="Choose the fix from the voice rules">
+    The [voice prompt rules](/documentation/build-agents/customize-agent-behaviour/agent-prompt#write-prompts-for-voice) list the usual culprits: long turns, several questions at once, no script for "no" or "call me later", no way to end, numbers read as written. Add this rule: `Say amounts in words, in rupees: ₹4,500 is "four thousand five hundred rupees". Say dates as "15 October", never "15/10".`
+  </Step>
+  <Step title="Add a version for it">
+    Open **EMI reminder - Hindi**. **Create Versions** is on from part 5, so the version bar shows **V1** and **V2**. Click **+** and pick the **Base** version to copy, the one that did better in lesson 2. The new **V3** appears with a red dot: 0% traffic.
+  </Step>
+  <Step title="Edit and save V3">
+    Click **V3** to switch to it, open **Prompt**, and paste the rule into **Response Guidelines**. Click **Save** or press Cmd/Ctrl+S: "Changes saved successfully". Add notes from V3's menu: `Amounts and dates in words`.
+  </Step>
+  <Step title="Hear it before it has traffic">
+    To be sure a call runs V3 while it still has 0% traffic, copy V3's version ID from its menu and pass it as `version_id` on [Initiate Individual Call](/documentation/build-agents/test-and-improve/drafts-and-versions#call-a-specific-version-with-the-api), with `due_amount` `₹4,500` and `due_date` `15 October` in `custom_args_values`. Listen for the amount.
+  </Step>
+  <Step title="Give it traffic">
+    Split the traffic as in [part 5, lesson 3](/resources/learn/designing-multi-step-conversations/versions-and-a-b): 70% on the current winner, 30% on V3. Once V3 is ahead in **A/B Analytics**, click **Finalize** in the sidebar row **A/B Tests Live!**, select V3 and **Confirm & Finalize**: all traffic goes to V3 and A/B testing turns off.
+  </Step>
+</Steps>
+
+## Checkpoint
+
+<Check>
+The version bar shows **V3** with a green dot and its share. New calls in Logs carry a version chip in the **Assistant** column.
+</Check>
+
+## Exercise
+
+In Evals, open the test case from lesson 3 and click **Run again**. Expected result: the new run's detail names which agent version ran and when it was published, so a pass is tied to V3.
+
+## What you learned
+
+- One change per version, so **A/B Analytics** can attribute the difference.
+- The voice rules to reach for first: how to say amounts and dates, short turns, scripted "no" and "call me later", and how to end.
+- **Finalize** is the end of a test: all traffic to the winner, A/B testing off.
+
+<Quiz
+  question="The transcripts show two problems: amounts read as digits and a first message that runs long. You want to know which fix helps. How do you ship them?"
+  answers={[
+    { text: "Both on V3, then split traffic; A/B Analytics attributes each", correct: false },
+    { text: "One change per version: V3 for the number rule, a later version for the opening", correct: true },
+    { text: "Both on V1 directly, since Save goes live at once", correct: false },
+    { text: "Both on V3 with 100% traffic, to see the effect sooner", correct: false },
+  ]}
+  correctFeedback="Right. A version that changes three things at once tells you nothing about which one worked. One change per version, a 70/30 split and A/B Analytics attribute the difference; Finalize once a winner is clear."
+  incorrectFeedback="Not quite. A/B Analytics compares versions, not individual edits, so two changes on one version cannot be told apart. Ship one change per version, give it a share of traffic, and finalize the winner."
+/>
+
+<RelatedTopics items={[["Write the prompt", "/documentation/build-agents/customize-agent-behaviour/agent-prompt"], ["Drafts and versions", "/documentation/build-agents/test-and-improve/drafts-and-versions"]]} />

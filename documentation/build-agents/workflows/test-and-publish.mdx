@@ -1,0 +1,58 @@
+---
+title: "Test and publish a workflow"
+sidebarTitle: "Test and publish"
+description: "Test a Ringg AI workflow with a single run before it goes live, then publish it as a version so workflow campaigns can use it, and update it safely later."
+related:
+  - "Workflows": /documentation/build-agents/workflows/overview
+  - "Build a workflow": /documentation/build-agents/workflows/build-a-workflow
+  - "Workflow block reference": /documentation/build-agents/workflows/block-reference
+  - "Workflow campaign": /documentation/deploy/campaigns/workflow-campaign
+  - "Workflow runs in Logs": /documentation/monitor/logs#workflow-runs
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+## Test a run
+
+<Steps>
+  <Step title="Start the run">
+    Save, then click **Test**. **Start a test run** shows one field per input variable. Fill `callee_name` and `callee_number` (your own number, for example `+91 98765 4xxxx`), then click **Start run**.
+  </Step>
+  <Step title="Watch it">
+    The canvas switches to run view. A banner shows **Running**, then **Completed**, **Failed** or **Cancelled**. Blocks the run has finished show a green check; a failed block shows a red cross. Click **Exit** to return to the editor.
+    <Frame caption="A completed test run">
+      <img src="/media/workflows-build/test-run-completed.webp" alt="Workflow canvas in run view with the banner Run Completed and an Exit button; the Agent, Condition and Action blocks each show a green check" />
+    </Frame>
+    <Check>The banner shows **Completed** and every block on the path has a green check. The run also appears in [**Logs → Workflows**](/documentation/monitor/logs#workflow-runs).</Check>
+  </Step>
+</Steps>
+
+<Warning>
+A test run is not a simulation: it places real calls with the values you typed, charged like any other call. Each call follows its Agent block's call window and retries, so a test started outside the window waits for it to open. A test run may call from a Ringg test number. An Await block in the path holds the run for its full wait.
+</Warning>
+
+## Publish and versions
+
+<Steps>
+  <Step title="Click Publish">
+    The editor checks the graph first. If anything blocks publishing, you see a message such as "3 issues block publishing", the **Issues** panel opens and each affected block shows a red count.
+  </Step>
+  <Step title="Confirm">
+    The dialog reads "Publishing makes the workflow available to run." Click **Publish**.
+    <Frame caption="The publish confirmation">
+      <img src="/media/workflows-build/publish-dialog.webp" alt="Dialog titled Publish “Payment reminder follow-up”? reading Publishing makes the workflow available to run, with Cancel and Publish buttons" />
+    </Frame>
+    <Check>You see "Workflow published" and the status becomes **Active**.</Check>
+  </Step>
+</Steps>
+
+| Issue | Message | Fix |
+| --- | --- | --- |
+| Start not connected | "Connect the Start marker to the first block" | Connect Start to a block. |
+| Orphan block | "'Block' is not reachable from Start" | Connect it or delete it. |
+| Missing setting | For example "'Block': select an assistant", "select at least one caller number", "add at least one rule", "set a wait duration", "add the endpoint to call" | Fill the named setting. |
+| Bad reference | "'Block' references '…', which does not resolve to an upstream block" | Pick a variable from a block that runs earlier. |
+
+Each publish creates a version. The version picker sits next to the name in the breadcrumb, listing each version with **Active** or **Draft**. To change a published workflow, edit it and click **Save**: your edits become a draft version and runs keep using the active one. Click **Publish** again to make the draft active. Older versions open read-only, with a bar saying "A newer version of this workflow exists".
+
+<RelatedTopics items={[["Workflows", "/documentation/build-agents/workflows/overview"], ["Build a workflow", "/documentation/build-agents/workflows/build-a-workflow"], ["Workflow block reference", "/documentation/build-agents/workflows/block-reference"], ["Workflow campaign", "/documentation/deploy/campaigns/workflow-campaign"], ["Workflow runs in Logs", "/documentation/monitor/logs#workflow-runs"]]} />

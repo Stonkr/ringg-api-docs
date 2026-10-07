@@ -1,0 +1,28 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:04.528
+Open Custom Variables in the editor sidebar
+
+00:00:04.528 --> 00:00:08.929
+Type a name: it becomes lowercase snake_case
+
+00:00:08.929 --> 00:00:13.037
+Click Add; the list saves at once
+
+00:00:13.037 --> 00:00:16.811
+Sort the list alphabetically
+
+00:00:16.811 --> 00:00:24.699
+Use it in the prompt: type @ and pick it
+
+00:00:24.699 --> 00:00:28.991
+Click Save
+
+00:00:28.991 --> 00:00:31.753
+Each call fills the chip with that call's value
+
+00:00:31.753 --> 00:00:36.253
+Test assistant shows a field per variable
+
+00:00:36.253 --> 00:00:38.863
+Campaign CSVs and the API fill them for real calls

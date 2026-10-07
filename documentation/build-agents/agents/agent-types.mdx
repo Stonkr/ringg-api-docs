@@ -1,0 +1,151 @@
+---
+title: "Agent types"
+sidebarTitle: "Agent types"
+description: "Pick a Ringg AI agent type: outbound, inbound, outbound-inbound, webcall or WhatsApp, built as a single-prompt or multi-prompt agent, and find the guide for each."
+boost: 8
+"og:title": "Ringg AI agent types and how to build each one"
+---
+
+An agent is the AI that holds the conversation for you on a phone call, a browser call or a WhatsApp chat. Every call or chat in Ringg runs through one, so it is the first thing you build after [signing in](/get-started/dashboard-tour#sign-in-for-the-first-time).
+
+In the dashboard, agents are listed under **Assistants** in the sidebar. The page itself is titled **Agents**, and **Create agent** opens the **Create Assistant** dialog.
+
+You choose two things when you create an agent: the channel it talks on, and how its instructions are built.
+
+## Agent types by channel
+
+The **Create Assistant** dialog has four tabs: **Outbound**, **Inbound**, **Webcall** and **WhatsApp**. The tab decides which templates you see and what the agent can connect to. Outbound-Inbound is not a tab: it is an outbound agent with **Inbound Calling** set to **Enabled**.
+
+| Type | What it does | What it needs to go live |
+|---|---|---|
+| Outbound | Calls people, from a [campaign](/documentation/deploy/campaigns/overview) or an [API call](/api-reference/endpoint/calling/initiate-individual-call) | A <Tooltip tip="The number your callee sees when the agent calls them.">caller ID</Tooltip>: a [number](/documentation/inventory/phone-numbers/buy-or-import-a-number) or a [number pool](/documentation/inventory/phone-numbers/number-pools) |
+| Inbound | Answers calls to your number | A number [attached to the agent](/documentation/inventory/phone-numbers/inbound-agent-number) |
+| Outbound-Inbound | Calls out and also answers calls | A caller ID for its outbound calls |
+| Webcall | Talks to visitors in a browser or app, through the Ringg widget | The widget installed on your site or app |
+| WhatsApp | Chats with customers on WhatsApp, and answers calls customers place to the number from WhatsApp | A WhatsApp Business number, [connected](/documentation/inventory/tools-integrations/connect-whatsapp) and attached |
+
+You can switch **Inbound Calling** on later too: it is under **Advanced Settings** in the editor of any outbound agent. An outbound-inbound agent's editor then shows **Outbound** and **Inbound** tabs, so each direction gets its own prompt.
+
+The widget is not limited to webcall agents. **Embed & Widgets** is on every agent except WhatsApp agents, so a voice agent can also take browser calls.
+
+## Agent types by build style
+
+Every agent is either single-prompt or multi-prompt. The dashboard calls the second kind **Multi Prompt**; the agent list filters it as **Multi-node**.
+
+| | Single-prompt agent | Multi-prompt agent |
+|---|---|---|
+| How it works | One [prompt](/documentation/build-agents/customize-agent-behaviour/agent-prompt), split into sections such as **Objective**, **Conversation Script** and **FAQs**, drives the whole conversation | A canvas of connected nodes. Each node has one job: talk, say a fixed line, route, call an API, collect a value or end |
+| Good for | Reminders, lead qualification, support, surveys | Calls with fixed steps: keypad menus, <Tooltip tip="One-time password: a short code sent to confirm a phone number or sign-in.">OTP</Tooltip> or PIN capture, an API lookup before the next question |
+| Channels | Outbound, inbound, outbound-inbound, webcall, WhatsApp | Voice and web; not WhatsApp |
+| Created from | **Blank Template** or an industry template | The **Multi Prompt** card, or [**Convert to multi-prompt**](/documentation/build-agents/agents/multi-prompt-agents/test-and-convert#convert-a-single-prompt-agent) on a single-prompt agent |
+| By API | [Create Agent](/api-reference/endpoint/assistant/create-agent) (outbound, inbound, outbound-inbound) | Not available |
+
+Start single-prompt. It is faster to write and easier to change, because a fix is one edit in one prompt. Move to multi-prompt when the model keeps skipping or reordering steps that must happen in order, or when a step needs keypad input or an API result before the call can continue.
+
+## Build each type
+
+| You want to… | Build | Then |
+|---|---|---|
+| Call a list of borrowers with an EMI reminder | [Outbound, single-prompt](/documentation/build-agents/agents/create-an-agent) | [Create a campaign](/documentation/deploy/campaigns/create-a-campaign) |
+| Call one customer when an order ships | [Outbound, single-prompt](/documentation/build-agents/agents/create-an-agent) | [Initiate Individual Call](/api-reference/endpoint/calling/initiate-individual-call) |
+| Answer your support line | [Inbound, single-prompt](/documentation/build-agents/agents/create-an-agent) | [Attach a number](/documentation/inventory/phone-numbers/inbound-agent-number) |
+| Call leads and take their callbacks | [Outbound with **Inbound Calling** enabled](/documentation/build-agents/agents/create-an-agent) | Campaign or API |
+| Add a "Talk to us" button to your site or app | [Webcall](/documentation/build-agents/agents/create-an-agent) | [Web widget overview](/documentation/deploy/web-and-apps/web-widget/overview), then the [web](/documentation/deploy/web-and-apps/web-widget/overview) or [mobile](/documentation/deploy/web-and-apps/mobile-apps/install) guide |
+| Reply to customers on WhatsApp | [WhatsApp, single-prompt](/documentation/build-agents/agents/whatsapp-agents/create-an-agent) | [WhatsApp overview](/documentation/build-agents/agents/whatsapp-agents/overview) |
+| Verify identity, collect a PIN, branch on the answer, then transfer | [Multi-prompt](/documentation/build-agents/agents/multi-prompt-agents/overview) | Same as its channel |
+| Chain calls, messages and API steps on a trigger | [Agents inside a workflow](/documentation/build-agents/workflows/overview) | [Launch a workflow campaign](/documentation/deploy/campaigns/workflow-campaign#workflow-campaigns) |
+
+Whatever the type, the order is the same: create the agent, [test it](/documentation/build-agents/test-and-improve/test-an-agent), then connect its channel. Before a phone agent goes live, run through the [go-live checklist](/documentation/build-agents/customize-agent-behaviour/voice-and-language#before-a-voice-agent-goes-live).
+
+## What an agent is made of
+
+These are the sections of the single-prompt editor sidebar. A multi-prompt agent keeps the agent-wide ones in [Global Settings](/documentation/build-agents/agents/multi-prompt-agents/global-settings#global-settings) and the rest on its nodes.
+
+| Part | What it controls | Editor section |
+|---|---|---|
+| [Prompt](/documentation/build-agents/customize-agent-behaviour/agent-prompt) | The first message and the instructions the agent follows | **Prompt** |
+| [Voice and language](/documentation/build-agents/customize-agent-behaviour/voice-and-language) | Languages, voice and speaking speed | **Voice** |
+| [Variables](/documentation/build-agents/customize-agent-behaviour/custom-variables) | Per-call values such as `callee_name`, used in the prompt as `@{{callee_name}}` | **Custom Variables** |
+| [Knowledge base](/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base) | Documents the agent looks up during a conversation | **Knowledge Base** |
+| [Call settings](/documentation/build-agents/customize-agent-behaviour/call-settings) | Call length, silence handling, voicemail, interruptions, chat timeouts | **Call**, **Chat** |
+| [Number](/documentation/inventory/phone-numbers/inbound-agent-number) | The number an inbound or WhatsApp agent answers on | **Attach Number** |
+| [Web widget](/documentation/deploy/web-and-apps/web-widget/overview) | Components, look and install code for the widget | **Embed & Widgets** |
+| [Keywords](/documentation/build-agents/customize-agent-behaviour/voice-and-language#keyword-boosting) | Brand and product names the speech recogniser should catch | **Keyword Boosting** |
+| [Analysis](/documentation/build-agents/customize-agent-behaviour/advanced-analysis) | Fields extracted from every conversation | **Advanced Analysis** |
+| [Tools](/documentation/build-agents/customize-agent-behaviour/tools/overview) | API calls before, during and after a call | **Tools** |
+| [Event Subscription (webhooks)](/documentation/build-agents/customize-agent-behaviour/event-subscription) | Callbacks to your server on call events | **Event Subscription** |
+| [Versions](/documentation/build-agents/test-and-improve/drafts-and-versions) | Several versions of one agent with a traffic split | **Create Versions** |
+
+The outbound caller ID is not stored on the agent. You [pick it](/documentation/inventory/phone-numbers/inbound-agent-number#outbound-choose-the-caller-id) each time you place a call or start a campaign.
+
+## The Agents page
+
+The page lists every agent in the workspace, with **Create agent** at the top right.
+
+- **Channels:** filters the list to **All**, **Voice**, **WhatsApp**, **Browser** (webcall agents) or **Multi-node** (multi-prompt agents).
+- **Search by name or ID** matches any part of a name, ignoring case; an ID has to match in full.
+- Agents are grouped as **Favourites**, then **Edited last week** (changed in the last 7 days), then **Older**, newest first within each group. Empty groups are not shown.
+- The star on a row pins the agent under **Favourites**. Favourites live in your browser, so teammates and your other devices don't see them.
+- Each row shows its channel and direction (**Voice • Outbound**, **Voice • Inbound**, **Voice • Outbound-Inbound**, **Browser**, **WhatsApp** or **Multi-node**) and **Activity**, the agent's call count since it was created ("—" when there is none). It counts phone and web calls, not WhatsApp chats, and can lag by a few minutes. An agent with its own [call limit](/documentation/manage-account/call-limits) shows it as a chip such as `5 calls/1hr`; agents on the workspace limit show no chip.
+
+The row's **⋮** menu:
+
+| Action | What happens |
+|---|---|
+| **Test** | Opens the editor with the test dialog open ([Test an agent](/documentation/build-agents/test-and-improve/test-an-agent)) |
+| **Clone** | Creates a copy at once, with no confirmation; "Agent cloned successfully". The copy is named "[agent name] (Cloned)" and has the active version only (every live version while an A/B test runs). It has no inbound number attached. |
+| **History** | Opens [Logs](/documentation/monitor/logs) filtered to this agent's calls |
+| **Analytics** | Opens [Analytics](/documentation/monitor/analytics) filtered to this agent |
+| **Delete** | Opens **Delete agent**: "Are you sure you want to delete [agent name]? This action cannot be undone." **Delete** removes it; "Agent deleted successfully". Clone it first if you want to keep a copy. |
+
+## Find the agent ID
+
+API calls, campaigns and webhooks identify an agent by its `agent_id`. Find it in any of these places:
+
+- The copy button next to the agent name in the editor's top bar.
+- The editor URL: `/assistants/<agent_id>`.
+- The agent list search (**Search by name or ID**), which matches a full ID exactly.
+
+By API, [List Agents](/api-reference/endpoint/assistant/get-assistants) lists every agent with its ID. Send your [API key](/documentation/manage-account/api-key) in the `X-API-KEY` header ([authentication](/api-reference/introduction/authentication)).
+
+<CodeGroup>
+```bash cURL
+curl "https://prod-api.ringg.ai/ca/api/v0/agent/all?limit=50" \
+  -H "X-API-KEY: $RINGG_API_KEY"
+```
+
+```javascript JavaScript
+const response = await fetch("https://prod-api.ringg.ai/ca/api/v0/agent/all?limit=50", {
+  headers: { "X-API-KEY": process.env.RINGG_API_KEY },
+});
+console.log(await response.json());
+```
+
+```python Python
+import os
+import requests
+
+response = requests.get(
+    "https://prod-api.ringg.ai/ca/api/v0/agent/all",
+    headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+    params={"limit": 50},
+)
+print(response.json())
+```
+</CodeGroup>
+
+Page through the list with `limit` and `offset`; without `limit`, it returns every agent. To read one agent, use [Get Agent](/api-reference/endpoint/assistant/get-assistant-by-id).
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Create an agent" icon="bot" href="/documentation/build-agents/agents/create-an-agent">
+    Outbound, inbound or webcall, from a template or from scratch.
+  </Card>
+  <Card title="Build a multi-prompt agent" icon="workflow" href="/documentation/build-agents/agents/multi-prompt-agents/overview">
+    Lay out a step-by-step flow on the canvas.
+  </Card>
+  <Card title="Create a WhatsApp agent" icon="message-circle" href="/documentation/build-agents/agents/whatsapp-agents/create-an-agent">
+    Connect WhatsApp Business, then build the agent.
+  </Card>
+</Columns>

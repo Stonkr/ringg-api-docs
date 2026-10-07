@@ -1,0 +1,38 @@
+---
+title: "Workspace tools"
+sidebarTitle: "Workspace tools"
+description: "Share a tool across your Ringg AI workspace: browse the library, attach a shared tool to an agent, and share a tool you built so other agents can reuse it."
+---
+
+## Workspace tools
+
+A workspace tool lives in the library on the sidebar **Tools** page and is attached to agents by reference, so one edit in the library reaches every agent that uses it. Build a tool once per workspace when several agents call the same API, and keep per-agent values (a team's calendar, a sheet ID) as overridable parameters.
+
+### The library
+
+The **Tools** page lists library tools grouped as **API**, **Integration** and **Function**, each with its phase chips, how many assistants use it, **Enable** or **Disable**, an edit action and a bin. Only **API** and **Function** tools can be created here; Integration tools reach the library through **Share to workspace**.
+
+- **Disable**: "Attached assistants keep the tool but skip it until it is enabled again." The agent's side panel shows it as **Disabled in library** and does not let you attach it.
+- The usage count opens **Where is &lt;name&gt; used?**, which lists each attached assistant with its overrides, or "Not attached to any assistant yet."
+- Deleting a tool that agents still use shows **&lt;name&gt; is still in use**. **Delete anyway** removes it from every agent as well.
+
+The library editor is the same API or Function editor as on an agent, with two extra sections:
+
+- **Available stages**: the phases the tool may run in, at least one. Removing a stage that an agent uses it in asks **Some assistants use a removed stage** and offers **Detach & save**. Variables are limited to call data, plus platform analysis when Post-call is the only stage, because those exist on every agent.
+- **Overridable parameters**: each entry picks a parameter from **Request**, **Headers**, **Query**, **Path** or **Body**, chooses **Parameter value** (the agent sets the value, type and data type) or **Whole value** (the agent replaces the node as-is), and can be marked required when attaching. **Add override** adds another.
+
+A library tool can't be renamed while attached.
+
+### Attach a workspace tool to an agent
+
+In the agent's side panel, the **Workspace tools** section lists library tools that support the open phase; **Manage workspace tools** opens the library. Click one to open **Attach a workspace tool**, which shows "Used by N assistants" and, if you already attached it here, "already attached N× here" (one tool can be attached more than once with different overrides). Fill any required overrides and click **Attach**. On a multi-prompt agent, the entry is **Workspace tool** in the **Add new tool** menu, on Global Settings or an Agent node.
+
+The attachment card's menu has **Open in library** and **Detach**. Opening the card edits its overrides and an **Alias (optional)**: the name shown on this agent; "Clear it to fall back to the library name." Detaching asks **Detach &lt;name&gt;?**: "This assistant stops using the tool. The workspace copy and other assistants are unaffected."
+
+### Share a tool to the workspace
+
+**Share to workspace** on an agent's API or function tool moves it into the library and keeps it on this agent by reference, so its `tool_output` references keep working. The dialog asks for:
+
+- **Library name**: spaces become underscores, shown as "Saved as …".
+- **Available stages**: the stages are limited by the tool's parameters. A **Dynamic** parameter allows **On-call** only; a **Variable** that reads `platform_analysis` or `client_analysis` allows **Post-call** only; both together leave no stage, so change the parameter first.
+- **Overridable parameters**, as in the library editor.

@@ -1,0 +1,86 @@
+---
+title: "Lesson: Calling lists"
+sidebarTitle: "Calling lists"
+description: "Build a campaign CSV with a column for each of Ananya's variables, map the CRM's headers by hand, read the upload summary and fix an invalid row."
+related:
+  - "Calling list (CSV)": /documentation/deploy/campaigns/calling-list
+  - "Variables": /documentation/build-agents/customize-agent-behaviour/custom-variables
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 4: Taking your agent live · Lesson 3 of 4 · 15 minutes**
+
+## Objective
+
+Produce a CSV that fills every one of Ananya's variables, and find and fix a row Ringg rejects.
+
+## The scenario
+
+Acme's CRM exports the customers due on 15 October with its own headers: `Customer`, `Phone`, `EMI`, `Due` and `Loan A/c`. Nothing matches a variable name, so you map the columns by hand, and one phone number in the export is incomplete. Use your own and your colleagues' numbers.
+
+| Customer | Phone | EMI | Due | Loan A/c |
+|---|---|---|---|---|
+| Rahul Verma | your number | "₹4,500" | 15 October | LN-20481 |
+| Priya Sharma | a colleague's number | "₹1,200" | 15 October | LN-20493 |
+| Ananya Iyer | a number missing its last three digits | "₹8,999" | 15 October | LN-20517 |
+
+Phone numbers are ten digits without `+91`; the amounts sit in double quotes because they contain a comma.
+
+## Hands-on
+
+<Frame caption="Uploading and mapping a calling list">
+  <video alt="Uploading and mapping a calling list" aria-label="Uploading and mapping a calling list" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/campaigns-calling-list/poster.webp">
+    <source src="/media/campaigns-calling-list/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Upload the export">
+    Open **Monitor → Campaigns → Create campaign**. Name it `EMI reminders - 15 October`, pick **EMI reminder - Hindi**, and drop the CSV on **Upload calling list**. The file must be `.csv`, up to 20 MB, with a header row.
+  </Step>
+  <Step title="Map the columns">
+    In **Calling list settings**, keep **Country code** **+91**. Under **Map variables to CSV columns**, every variable reads **Select CSV column**. Pick `Customer` for `callee_name`, `Phone` for `mobile_number`, `EMI` for `due_amount`, `Due` for `due_date` and `Loan A/c` for `loan_account`; **Next** stays disabled until all five are mapped. Leave **Remove invalid rows** on and **Transliterate variables** off: it rewrites values into the agent's primary language, English (India) for Ananya.
+  </Step>
+  <Step title="Read the upload summary">
+    Click **Next**. After "CSV verified successfully", step 2 shows **Total rows** 3, **Valid contacts** 2, **Successful upload** `2/3 uploaded` and **Invalid rows** 1 with **Download invalid rows**.
+  </Step>
+  <Step title="Fix the row">
+    Download the rejected rows (`invalid_entries.csv`), complete the phone number and put the row back. While editing, rename the headers to the variable names so the next upload maps itself; matching is exact, including case.
+  </Step>
+  <Step title="Upload again">
+    Leave the page without launching: the campaign stays in the list as a **Draft**, where you can select it and click **Terminate**. Create a new campaign with the fixed file and click **Next**.
+  </Step>
+</Steps>
+
+## Checkpoint
+
+<Check>
+Every variable is mapped before you touch a dropdown, and the summary reads **Total rows** 3, **Valid contacts** 3, **Successful upload** `3/3 uploaded`, with no **Invalid rows**.
+</Check>
+
+## Exercise
+
+Upload the original export once more with **Remove invalid rows** switched off. Expected result: the upload still loads the two valid rows and sets the bad one aside, and Ringg also emails you the rejected rows. Keep the switch on for real lists to skip that email.
+
+## What you learned
+
+- A list needs one column per agent variable, always including `mobile_number` and `callee_name`. Headers that equal the variable name map themselves; anything else you map by hand.
+- One **Country code** covers the whole list, numbers are national-format digits, and another country means another campaign.
+- Rows Ringg can't call are dropped and returned as `invalid_entries.csv`; with **Remove invalid rows** off, they are also emailed to you. A campaign where every row fails ends as **No Valid Contacts**.
+
+<Quiz
+  question="The CRM export has the headers Customer, Phone, EMI, Due and Loan A/c. What does the campaign form do with them?"
+  answers={[
+    { text: "Rejects the file; headers must equal the variable names", correct: false },
+    { text: "Maps them by position: first column to callee_name, second to mobile_number", correct: false },
+    { text: "Leaves every variable on Select CSV column until you map each one by hand", correct: true },
+    { text: "Maps Customer and Phone automatically and ignores the rest", correct: false },
+  ]}
+  correctFeedback="Right. Headers that equal a variable name map themselves; matching is exact, including case. Anything else waits on Select CSV column, and Next stays disabled until every variable has a column."
+  incorrectFeedback="Not quite. Nothing is rejected and nothing is guessed by position. A header that exactly equals a variable name maps itself; every other variable reads Select CSV column until you map it, and Next is disabled until all are mapped."
+/>
+
+<RelatedTopics items={[["Calling list (CSV)", "/documentation/deploy/campaigns/calling-list"], ["Variables", "/documentation/build-agents/customize-agent-behaviour/custom-variables"]]} />

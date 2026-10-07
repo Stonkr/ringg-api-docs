@@ -1,0 +1,106 @@
+export const Quiz = ({ question, answers, correctFeedback, incorrectFeedback }) => {
+  const [selected, setSelected] = React.useState(null);
+  const [checked, setChecked] = React.useState(false);
+  const quizId = React.useId();
+  const isCorrect = checked && answers[selected]?.correct;
+  const reset = () => {
+    setSelected(null);
+    setChecked(false);
+  };
+  const optionStyle = (answer, i) => {
+    const base = {
+      display: "flex",
+      alignItems: "flex-start",
+      gap: "0.6rem",
+      padding: "0.6rem 0.8rem",
+      marginTop: "0.5rem",
+      borderRadius: "0.6rem",
+      border: "1px solid rgba(128, 128, 128, 0.35)",
+      cursor: checked ? "default" : "pointer",
+      lineHeight: 1.45,
+    };
+    if (checked && answer.correct) {
+      return { ...base, borderColor: "rgba(22, 163, 74, 0.8)", background: "rgba(22, 163, 74, 0.12)" };
+    }
+    if (checked && selected === i && !answer.correct) {
+      return { ...base, borderColor: "rgba(220, 38, 38, 0.8)", background: "rgba(220, 38, 38, 0.1)" };
+    }
+    if (!checked && selected === i) {
+      return { ...base, borderColor: "currentColor", background: "rgba(128, 128, 128, 0.12)" };
+    }
+    return base;
+  };
+  const buttonStyle = (disabled) => ({
+    marginTop: "0.9rem",
+    padding: "0.45rem 0.9rem",
+    borderRadius: "0.5rem",
+    border: "1px solid rgba(128, 128, 128, 0.5)",
+    background: "rgba(128, 128, 128, 0.1)",
+    color: "inherit",
+    font: "inherit",
+    fontSize: "0.9em",
+    cursor: disabled ? "not-allowed" : "pointer",
+    opacity: disabled ? 0.5 : 1,
+  });
+  return (
+    <div
+      style={{
+        marginTop: "1.5rem",
+        padding: "1rem 1.1rem",
+        borderRadius: "0.8rem",
+        border: "1px solid rgba(128, 128, 128, 0.35)",
+      }}
+    >
+      <Badge color="green">Quiz</Badge>
+      <p id={quizId + "-question"} style={{ fontWeight: 600, margin: "0.6rem 0 0.2rem" }}>
+        {question}
+      </p>
+      <div role="radiogroup" aria-labelledby={quizId + "-question"} aria-disabled={checked}>
+        {answers.map((answer, i) => (
+          <label key={i} style={optionStyle(answer, i)}>
+            <input
+              type="radio"
+              name={"quiz-" + quizId}
+              checked={selected === i}
+              onChange={() => !checked && setSelected(i)}
+              disabled={checked}
+              style={{ marginTop: "0.3rem", flexShrink: 0 }}
+            />
+            <span>{answer.text}</span>
+          </label>
+        ))}
+      </div>
+      {checked && (
+        <div
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          style={{
+            marginTop: "0.9rem",
+            padding: "0.7rem 0.9rem",
+            borderRadius: "0.6rem",
+            lineHeight: 1.5,
+            background: isCorrect ? "rgba(22, 163, 74, 0.12)" : "rgba(220, 38, 38, 0.1)",
+          }}
+        >
+          <strong style={{ marginRight: "0.4rem" }}>{isCorrect ? "✓" : "✗"}</strong>
+          {isCorrect ? correctFeedback : incorrectFeedback}
+        </div>
+      )}
+      {!checked ? (
+        <button
+          type="button"
+          onClick={() => selected !== null && setChecked(true)}
+          disabled={selected === null}
+          style={buttonStyle(selected === null)}
+        >
+          Check answer
+        </button>
+      ) : (
+        <button type="button" onClick={reset} style={buttonStyle(false)}>
+          Try again
+        </button>
+      )}
+    </div>
+  );
+};

@@ -1,53 +1,30 @@
 ---
 openapi: patch /external/kb
+description: "Add files, URLs or FAQs to a knowledge base and remove existing ones by ID in one request, keeping its kb_id and the agents it is attached to."
+related:
+  - "Knowledge base": /documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base
 ---
 
-## Edit Knowledge Base
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-Update an existing knowledge base by adding new content or removing existing files, URLs, and FAQs. This endpoint allows you to maintain and refine your knowledge base over time.
+New content is processed in the background, as on creation.
 
-<Warning>
-**Rate Limits**:
-- Maximum 20 requests per hour per workspace
-- File size limit: 2 MB per file, 5 MB total
-</Warning>
+## Add content
 
-## Adding Content
+- `new_files`: 2 MB each, 5 MB in total, with optional `new_files_metadata`
+- `new_faqs`: each FAQ is a `{"question", "answer"}` object
 
-Add new files, URLs, or FAQs to expand your knowledge base:
-- `new_files`: Upload additional documents
-- `new_urls`: Index new web pages
-- `new_faqs`: Add more question-answer pairs
+## Remove content
 
-## Removing Content
+Pass IDs from [Get knowledge base](/api-reference/endpoint/kb/get-knowledge-base-by-id). Removal is permanent.
 
-Remove outdated or incorrect content using IDs:
-- `files_to_remove`: JSON array of file IDs
-- `urls_to_remove`: JSON array of URLs
-- `faqs_to_remove`: JSON array of FAQ IDs
-
-### Example Removal
-```json
-{
-  "files_to_remove": "[\"7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d\"]",
-  "urls_to_remove": "[\"https://example.com/old-page\"]",
-  "faqs_to_remove": "[\"9c0d1e2f-3a4b-5c6d-7e8f-9a0b1c2d3e4f\"]"
-}
+```bash
+curl --request PATCH "https://prod-api.ringg.ai/ca/api/v0/external/kb" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --form 'kb_id="550e8400-e29b-41d4-a716-446655440000"' \
+  --form 'files_to_remove="[\"7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d\"]"' \
+  --form 'urls_to_remove="[\"https://example.com/old-page\"]"' \
+  --form 'new_urls="[\"https://example.com/new-docs\"]"'
 ```
 
-<Note>
-**Get Content IDs**: Use [Get Knowledge Base by ID](/api-reference/endpoint/kb/get-knowledge-base-by-id) to retrieve file IDs, URLs, and FAQ IDs before removing them.
-</Note>
-
-## Response Details
-
-The response includes:
-- `items_removed`: Count of items successfully removed
-- `new_files_queued`: Count of new files being processed
-- `new_files`: Array of newly added files with their IDs and processing status
-
-## Important Notes
-
-- **Atomic Operations**: Additions and removals are processed together
-- **Processing Time**: New content is processed asynchronously
-- **No Rollback**: Removals are permanent - ensure you have the correct IDs
+<RelatedTopics items={[["Knowledge base", "/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base"]]} />

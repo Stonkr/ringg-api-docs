@@ -1,0 +1,31 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:06.345
+Pick an agent to see its evals
+
+00:00:06.345 --> 00:00:08.348
+Overall pass rate for the last 30 days
+
+00:00:08.348 --> 00:00:14.379
+Click a metric to plot its line
+
+00:00:14.379 --> 00:00:17.540
+Review issues with the call snippet
+
+00:00:17.540 --> 00:00:22.439
+Run every test case
+
+00:00:22.439 --> 00:00:27.906
+Open a case to read the verdict
+
+00:00:27.906 --> 00:00:30.350
+Click Create a new testcase
+
+00:00:30.350 --> 00:00:35.455
+Name it, describe the path and success criteria
+
+00:00:35.455 --> 00:00:38.656
+Click Add test case
+
+00:00:38.656 --> 00:00:46.840
+Configure: set how strictly each metric flags calls

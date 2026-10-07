@@ -1,0 +1,196 @@
+---
+title: "Inbound agent number"
+sidebarTitle: "Inbound agent number"
+description: "Attach a phone number to an inbound agent in the Ringg agent editor, and choose the caller ID for outbound calls and campaigns with from_number_id or a pool."
+boost: 4
+"og:title": "Attach a number to an agent and set outbound caller ID"
+---
+
+A number in your workspace does nothing until an agent uses it, and the two directions work differently: inbound is set once and stays; the outbound <Tooltip tip="The number the person you call sees on their phone.">caller ID</Tooltip> is picked every time a call is placed.
+
+In the dashboard: **Sidebar → Assistants → _your agent_ → Attach Number**.
+
+## Before you start
+
+<Columns cols={2}>
+  <Card title="An agent" icon="bot" href="/documentation/build-agents/agents/create-an-agent" horizontal>
+    For inbound, an agent that takes inbound calls ([agent types](/documentation/build-agents/agents/agent-types#agent-types-by-channel)).
+  </Card>
+  <Card title="A number" icon="hash" href="/documentation/inventory/phone-numbers/buy-or-import-a-number" horizontal>
+    Bought or imported into your workspace.
+  </Card>
+</Columns>
+
+## Inbound: attach a number
+
+<Frame caption="Attaching a number to the inbound Support line agent">
+  <video alt="Attaching a number to the inbound Support line agent" aria-label="Attaching a number to the inbound Support line agent" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/numbers-attach/poster.webp">
+    <source src="/media/numbers-attach/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open Attach Number">
+    Open the agent. In a single-prompt agent, expand **Attach Number** under **Call Settings** in the editor sidebar. In a [multi-prompt agent](/documentation/build-agents/agents/multi-prompt-agents/overview), open **Attach number** in the global settings.
+  </Step>
+  <Step title="Filter by telephony (optional)">
+    **Telephony** narrows the list to **Ringg** numbers or to one of your [connected provider accounts](/documentation/inventory/phone-numbers/buy-or-import-a-number#connect-a-provider-account-first).
+  </Step>
+  <Step title="Pick the number">
+    Open **Inbound Number** ("Select a phone number to receive inbound calls") and choose a number, for example `+91 98765 43210`. There is no separate save step.
+
+    <Frame caption="The Inbound Number list">
+      <img src="/media/numbers-attach/number-list.webp" alt="Agent editor for Support line with Attach Number expanded in the sidebar, Telephony set to Ringg and the Inbound Number list open showing two numbers and Add Number" />
+    </Frame>
+    <Check>
+    You see "Number has been attached successfully".
+    </Check>
+    <Frame caption="An attached number">
+      <img src="/media/numbers-attach/attached.webp" alt="Attach Number panel with Telephony Ringg and Inbound Number +919876541209 selected" />
+    </Frame>
+  </Step>
+</Steps>
+
+**Inbound Number** lists only numbers that:
+
+- are not attached to another agent,
+- have inbound calling enabled (on by default; contact Ringg to change it), and
+- match the agent's channel (phone numbers for voice agents, WhatsApp numbers for WhatsApp agents).
+
+If the list is empty, it shows "Buy numbers to attach". The last option, **Add Number**, opens the Numbers page.
+
+One agent has one inbound number, and one number serves one agent; the **Used By** column on [the Numbers page](/documentation/inventory/phone-numbers/overview#the-numbers-page) shows which. Picking a different number replaces the old one, which stays in your workspace with no agent. Attaching takes the number out of its [number pool](/documentation/inventory/phone-numbers/number-pools), and an attached number can't join one; attaching fails while a campaign is scheduled or running on that pool.
+
+**Attach Number** appears on inbound and WhatsApp single-prompt agents and on every multi-prompt agent. An outbound agent's **Inbound Calling** switch changes its type to outbound-inbound but does not add an **Attach Number** panel; to answer calls on a number, use an inbound agent.
+
+### Detach a number
+
+- In the agent editor, clear the **Inbound Number** field. You see "Number has been detached successfully".
+- Or on the Numbers page, click **Detach Number** in the **Used By** column and confirm **Detach**.
+
+The number stays in your workspace and joins your [Default pool](/documentation/inventory/phone-numbers/number-pools#the-default-pool). Detaching fails with "This workspace has no default number pool yet. Please create one." when there is no Default pool, and while a campaign is scheduled or running on the Default pool.
+
+### Provider-side routing
+
+For a number on your own telephony account, the provider must route its calls to Ringg:
+
+- **Plivo, Twilio and Vobiz**: Ringg links the number to its app in your provider account when you attach it. Plivo and Twilio numbers are unlinked again when you detach them.
+- **VoiceLink**: Ringg routes the number when you import or buy it.
+- **Exotel**: attach the number to the `Ringg Inbound` applet in Exotel yourself ([Exotel](/documentation/inventory/phone-numbers/your-own-telephony/exotel)).
+- **Other providers**: set the routing in the provider's console. Ozonetel's URLs are on its [guide](/documentation/inventory/phone-numbers/your-own-telephony/ozonetel); for the rest, contact Ringg.
+
+Ringg-provided numbers need no setup.
+
+### Verify it worked
+
+Call the number from your phone.
+
+<Check>
+The agent answers, and the call appears at the top of [Logs](/documentation/monitor/logs) with call type **Inbound**. Any [Event Subscription](/documentation/build-agents/customize-agent-behaviour/event-subscription) you set up fires for it.
+</Check>
+
+## Outbound: choose the caller ID
+
+| How you call | Where you pick the caller ID |
+|---|---|
+| [Test call](/documentation/build-agents/test-and-improve/test-an-agent) from the agent editor | **Choose a number** ("The number assistant will call from."). It lists **Test numbers**, **Your numbers**, and **In use** numbers (attached to an agent, shown but disabled). |
+| [Campaign](/documentation/deploy/campaigns/create-a-campaign) | The **Select number** card: **Individual numbers** (pick one or more; each shows its provider and a **Spam** chip if flagged) or **Number pool** to rotate across a [pool](/documentation/inventory/phone-numbers/number-pools). Test numbers are not listed. |
+| API call | `from_number_id`, `from_number` or `number_pool_id` (below). |
+
+### Caller ID with the API
+
+You need an [API key](/documentation/manage-account/api-key), the agent's ID ([Find an agent's ID](/documentation/build-agents/agents/agent-types#find-the-agent-id)) and a caller number from your workspace ([Buy or import a number](/documentation/inventory/phone-numbers/buy-or-import-a-number)).
+
+[Initiate Individual Call](/api-reference/endpoint/calling/initiate-individual-call) takes one of:
+
+<ResponseField name="from_number_id" type="string | string[]">
+  A workspace number ID (the **ID** column, or `id` from [Get Workspace Numbers](/api-reference/endpoint/numbers/get-workspace-numbers)), or an array of IDs.
+</ResponseField>
+<ResponseField name="from_number" type="string | string[]">
+  A caller number with country code, for example `+919876500001`, or an array of numbers.
+</ResponseField>
+
+[Initiate Individual Call (Number Pool)](/api-reference/endpoint/calling/initiate-individual-call-v2) also accepts `number_pool_id` (**Copy pool ID** on [the pool list](/documentation/inventory/phone-numbers/number-pools#the-pool-list)). Send at least one of the three; with a pool, the pool is used and the other field is ignored.
+
+When no pool is sent, default outbound numbers set on the agent version take precedence over `from_number_id` and `from_number`.
+
+<CodeGroup>
+```bash cURL
+curl -X POST "https://prod-api.ringg.ai/ca/api/v0/calling/outbound/individual" \
+  -H "X-API-KEY: $RINGG_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Priya Sharma",
+    "mobile_number": "+919876543210",
+    "agent_id": "b1972188-038e-4605-916c-3926e9d7bde4",
+    "from_number_id": "5d7f9a2b-1c3e-4f6a-8b9c-0d1e2f3a4b5c"
+  }'
+```
+
+```javascript JavaScript
+const res = await fetch("https://prod-api.ringg.ai/ca/api/v0/calling/outbound/individual", {
+  method: "POST",
+  headers: { "X-API-KEY": process.env.RINGG_API_KEY, "Content-Type": "application/json" },
+  body: JSON.stringify({
+    name: "Priya Sharma",
+    mobile_number: "+919876543210",
+    agent_id: "b1972188-038e-4605-916c-3926e9d7bde4",
+    from_number_id: "5d7f9a2b-1c3e-4f6a-8b9c-0d1e2f3a4b5c",
+  }),
+});
+console.log(await res.json());
+```
+
+```python Python
+import os
+
+import requests
+
+res = requests.post(
+    "https://prod-api.ringg.ai/ca/api/v0/calling/outbound/individual",
+    headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+    json={
+        "name": "Priya Sharma",
+        "mobile_number": "+919876543210",
+        "agent_id": "b1972188-038e-4605-916c-3926e9d7bde4",
+        "from_number_id": "5d7f9a2b-1c3e-4f6a-8b9c-0d1e2f3a4b5c",
+    },
+)
+print(res.json())
+```
+</CodeGroup>
+
+For campaigns, [Start Campaign](/api-reference/endpoint/campaign/start-campaign) takes `from_numbers` (an array of number IDs, or numbers written exactly as listed in your workspace; each retry dials from the next one) and [Start Campaign (Number Pool)](/api-reference/endpoint/campaign/start-campaign-v2) takes `number_pool_id`.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="My inbound number doesn't reach the agent">
+    Check these in order:
+
+    1. **The number is attached.** On the Numbers page, the **Used By** column should show your agent. If it shows another agent, detach it there and attach it to the right one.
+    2. **The agent takes inbound calls.** An outbound agent has no **Attach Number** panel ([which agents do](#inbound-attach-a-number)).
+    3. **The provider routes the number to Ringg.** For your own telephony, finish the [provider-side routing](#provider-side-routing).
+    4. **Look in Logs.** If the call appears in [Logs](/documentation/monitor/logs), it reached Ringg and the agent's settings are the next place to look. If it doesn't, the call never reached Ringg; check the number with your provider.
+  </Accordion>
+  <Accordion title="My number isn't in the Inbound Number list">
+    Check that **Telephony** is set to the account the number belongs to, and that the number meets the [three conditions](#inbound-attach-a-number) above.
+  </Accordion>
+  <Accordion title="The test call says to use the IN or US test number">
+    Test numbers are region-bound. The Indian test number calls Indian numbers only; the US test number calls numbers outside India. Click **Switch** or pick one of your own numbers. See [Test numbers](/documentation/inventory/phone-numbers/overview#test-numbers).
+  </Accordion>
+  <Accordion title="The API returns an error about the caller number">
+    Send `from_number_id` or `from_number`, not both. Sending neither returns `400` unless the agent version has default outbound numbers. On [Initiate Individual Call (Number Pool)](/api-reference/endpoint/calling/initiate-individual-call-v2), both together or none of the three returns `422`.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Run a campaign" icon="megaphone" href="/documentation/deploy/campaigns/create-a-campaign">
+    Call a contact list from your numbers.
+  </Card>
+  <Card title="Read call logs" icon="list-checks" href="/documentation/monitor/logs">
+    Find the inbound call with its recording and transcript.
+  </Card>
+</Columns>

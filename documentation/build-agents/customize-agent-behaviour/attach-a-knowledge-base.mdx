@@ -1,0 +1,119 @@
+---
+title: "Attach a knowledge base"
+sidebarTitle: "Attach a knowledge base"
+description: "Attach or detach knowledge bases on a Ringg AI agent, mention them in the prompt with @, add query phrases, and test that the agent answers from your data."
+"og:title": "Attach a knowledge base to a Ringg AI agent"
+---
+
+An agent can have several knowledge bases, and one knowledge base can serve many agents.
+
+In the dashboard: Agents (listed under **Assistants** in the sidebar) → open an agent → **Knowledge Base** in the editor sidebar.
+
+## Before you start
+
+<Columns cols={2}>
+  <Card title="A knowledge base" icon="book-open" href="/documentation/inventory/knowledge-base#create-a-knowledge-base" horizontal>
+    Created in the same workspace, with status **Ready**.
+  </Card>
+  <Card title="An agent" icon="bot" href="/documentation/build-agents/agents/create-an-agent" horizontal>
+    The agent that will answer from it.
+  </Card>
+</Columns>
+
+## Attach or detach a knowledge base
+
+<Frame caption="Attaching knowledge bases and mentioning one in the prompt">
+  <video alt="Attaching knowledge bases and mentioning one in the prompt" aria-label="Attaching knowledge bases and mentioning one in the prompt" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/agents-knowledge-base/poster.webp">
+    <source src="/media/agents-knowledge-base/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Pick knowledge bases">
+    In the agent editor, click **Knowledge Base**, then **Select Knowledge Base**, and tick one or more. Each tick attaches it at once: "Knowledge base attached successfully". The button then shows the count.
+
+    <Frame caption="Two knowledge bases attached">
+      <img src="/media/agents-knowledge-base/attached.webp" alt="Knowledge Base panel reading Please select the knowledge base(s), a button showing Knowledge bases selected 2, and EMI payment FAQ and Loan policy 2026 listed below with trash icons" />
+    </Frame>
+  </Step>
+  <Step title="Detach">
+    Click the trash icon on an attached knowledge base, or untick it in the list: "Knowledge base detached successfully".
+
+    <Check>Attached knowledge bases are listed below the button and appear under **Knowledge Bases** when you type `@` in the [prompt](/documentation/build-agents/customize-agent-behaviour/agent-prompt).</Check>
+  </Step>
+</Steps>
+
+**Add Knowledge Base** at the bottom of the list opens the Knowledge base page to create a new one ([Create a knowledge base](/documentation/inventory/knowledge-base#create-a-knowledge-base)). If the button reads **No knowledge bases found**, the workspace has none yet; create one there first.
+
+You can also attach knowledge bases while you [create the agent](/documentation/build-agents/agents/create-an-agent).
+
+Attachments belong to the version you are editing. On an agent with several [versions](/documentation/build-agents/test-and-improve/drafts-and-versions), attach the knowledge base to each version that needs it.
+
+### Multi-prompt agents
+
+A [multi-prompt agent](/documentation/build-agents/agents/multi-prompt-agents/overview) has knowledge bases at two levels:
+
+| Where | Applies to |
+|---|---|
+| **Global settings → Knowledge base** ([Global Settings](/documentation/build-agents/agents/multi-prompt-agents/global-settings#global-settings)) | The whole agent |
+| An **Agent** node's **Knowledge base** section ([node types](/documentation/build-agents/agents/multi-prompt-agents/node-types-and-connections#node-types)) | That node only |
+
+Changes go into the draft, so [publish the agent](/documentation/build-agents/test-and-improve/drafts-and-versions#publish-changes-on-a-multi-prompt-agent) for callers to get them. Once a node has a knowledge base or an on-call tool, it also shows **Query Phrases**: "Phrases the assistant will say before querying a knowledge base or running an on-call tool on this node." Add short fillers such as "Let me check that for you." so the caller does not hear silence during the lookup.
+
+## Mention it in the prompt
+
+Type `@` in the prompt and pick the knowledge base from the **Knowledge Bases** group. Only attached knowledge bases are listed. A mention isn't required: the agent can search every attached knowledge base either way. The mention uses the knowledge base's name and tells the agent which knowledge base covers which questions. For a knowledge base named `loan_faqs`:
+
+```text
+For questions about interest rates, eligibility or documents, answer from @loan_faqs.
+If the answer is not there, say you will check and have an advisor call back.
+```
+
+<Frame caption="Attached knowledge bases in the @ menu">
+  <img src="/media/agents-knowledge-base/kb-in-menu.webp" alt="Mention menu with Custom Variables, then a Knowledge Bases group listing EMI payment FAQ and Loan policy 2026, then Logic" />
+</Frame>
+
+See [Write the prompt](/documentation/build-agents/customize-agent-behaviour/agent-prompt) for how mentions work. If you detach a knowledge base that the prompt still mentions, the mention turns red; remove it or attach the knowledge base again.
+
+## How the agent uses it in a call
+
+During the conversation, the agent searches an attached knowledge base when it decides a question needs it, not on every turn, and answers from what it finds. For CSV columns marked **Exact match** ([column configuration](/documentation/inventory/knowledge-base#structured-data-and-column-configuration)), the lookup matches the exact value, such as an order ID the caller reads out.
+
+## Do this with the API
+
+Call [Edit Assistant](/api-reference/endpoint/assistant/edit-assistant) (`PATCH /agent/v1`) with `operation` set to `attach_kb` or `remove_kb` and the `kb_id`, once per knowledge base. Send your [API key](/documentation/manage-account/api-key) in `X-API-KEY`.
+
+```bash cURL
+curl --request PATCH "https://prod-api.ringg.ai/ca/api/v0/agent/v1" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "operation": "attach_kb",
+    "agent_id": "b1972188-038e-4605-916c-3926e9d7bde4",
+    "kb_id": "550e8400-e29b-41d4-a716-446655440000"
+  }'
+```
+
+Get the `kb_id` from [Get All Knowledge Bases](/api-reference/endpoint/kb/get-all-knowledge-bases), and the `agent_id` from the editor ([Find an agent's ID](/documentation/build-agents/agents/agent-types#find-the-agent-id)). To create knowledge bases by API, see [Create Knowledge Base](/api-reference/endpoint/kb/create-knowledge-base).
+
+## Test it
+
+<Steps>
+  <Step title="Test the knowledge base alone">
+    Ask your questions in the knowledge base's test chat first ([Test it in chat](/documentation/inventory/knowledge-base#test-it-in-chat)). If the answer is wrong there, fix the data before you test the agent.
+  </Step>
+  <Step title="Test the agent">
+    Place a test call or chat ([Test an agent](/documentation/build-agents/test-and-improve/test-an-agent)) and ask the same questions, phrased the way a customer would.
+  </Step>
+  <Step title="Read the transcript">
+    Open the call in [Logs](/documentation/monitor/logs#the-call-panel) and read the **Transcript** tab to see exactly what the agent answered.
+
+    <Check>The agent's answers match the knowledge base's test chat.</Check>
+  </Step>
+</Steps>
+
+## Next steps
+
+<Card title="Add tools" icon="wrench" href="/documentation/build-agents/customize-agent-behaviour/tools/overview" horizontal>
+  Connect the agent to your APIs before, during and after a call.
+</Card>

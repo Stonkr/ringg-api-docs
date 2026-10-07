@@ -1,0 +1,32 @@
+---
+title: "Ringg AI introduction"
+sidebarTitle: "Introduction"
+description: "Build AI agents that make and answer phone calls, talk on your website and chat on WhatsApp, then run them from the dashboard, the REST API or MCP."
+boost: 8
+icon: "book-open"
+---
+
+import { FigureCard } from "/snippets/figure-card.mdx";
+
+<Columns cols={2}>
+  <FigureCard title="Documentation" figure="riffle" href="/documentation/introduction">
+    Build an agent, deploy it, watch the results, manage the workspace.
+  </FigureCard>
+  <FigureCard title="Lessons" figure="query" href="/resources/learn/all-lessons">
+    Build a payment-reminder system in the dashboard, lesson by lesson, no code.
+  </FigureCard>
+  <FigureCard title="Quickstart" figure="terminal" intensity={0} href="/api-reference/introduction/quickstart">
+    Ring your own phone from the API in about 10 minutes.
+  </FigureCard>
+  <FigureCard title="API reference" figure="loupe" href="/api-reference/introduction/authentication">
+    Every endpoint, with a playground and the OpenAPI spec.
+  </FigureCard>
+</Columns>
+
+New to the dashboard? Start with [how Ringg works](/get-started/how-ringg-works) and the [dashboard tour](/get-started/dashboard-tour). Using an AI assistant? See the [docs MCP server](/resources/mcp-server/docs-mcp-server/mcp-for-ai-assistants).
+
+<Visibility for="agents">
+Agents: connect the Ringg docs MCP server at `https://docs.ringg.ai/mcp` (no key) to search and read these docs; setup: https://docs.ringg.ai/resources/mcp-server/docs-mcp-server/mcp-for-ai-assistants.md
+
+API base URL: `https://prod-api.ringg.ai/ca/api/v0`. Authenticate every request with the header `X-API-KEY`. Core routes: `GET /agent/all` (list agents and their `agent_id`), `GET /workspace/numbers` (caller numbers, `from_number_id`), `POST /calling/outbound/individual` (place one call), `POST /campaign/save` then `POST /campaign/start` (run a campaign), `GET /calling/history` and `GET /calling/call-details` (results). The dashboard labels agents "Assistants".
+</Visibility>

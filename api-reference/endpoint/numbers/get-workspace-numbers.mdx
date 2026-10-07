@@ -1,17 +1,46 @@
 ---
 openapi: get /workspace/numbers
+description: "List the phone numbers in your workspace with their IDs, provider, attached agent, spam flag and pool, to choose the caller number for calls and campaigns."
+related:
+  - "Phone numbers": /documentation/inventory/phone-numbers/overview
 ---
 
-List phone numbers available in the workspace. Outbound calls and campaigns use these numbers as caller IDs. Inbound assistants use assigned numbers as the numbers users dial.
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-## When to use
+Each number's `id` is the `from_number_id` that [individual calls](/api-reference/endpoint/calling/initiate-individual-call) take as caller ID.
 
-- Populate a caller-number selector before starting calls.
-- Find the `from_number_id` for `POST /calling/outbound/individual`.
-- Confirm imported BYOT numbers are available after telephony setup.
+Numbers appear here once they are bought or imported in the dashboard ([Buy and import numbers](/documentation/inventory/phone-numbers/buy-or-import-a-number)).
 
-## Integration notes
+The list is not paged: every matching number comes back in one response, newest first. Filter it with `telephony_account_id` (a connected telephony account's ID, or `ringg` for numbers provided by Ringg, including the shared test numbers) and `inbound_enabled` (`true` or `false`).
 
-- Store the selected `from_number_id` alongside your assistant or campaign configuration.
-- Numbers must be provisioned, imported, or assigned in the Ringg workspace before they can be used.
-- For campaigns, pass selected numbers in `from_numbers`.
+## Fields to check
+
+<ResponseField name="agent" type="object">
+  The agent the number is attached to (`id`, `agent_display_name`); inbound calls to the number reach that agent.
+</ResponseField>
+
+<ResponseField name="is_test_number" type="boolean">
+  A shared Ringg [test number](/documentation/inventory/phone-numbers/overview#test-numbers): for testing only, not for live calls or number pools.
+</ResponseField>
+
+<ResponseField name="is_spam" type="boolean">
+  The number has been flagged as spam; `spam_message` says why. Pick another number, or let a [number pool](/documentation/inventory/phone-numbers/number-pools) skip it.
+</ResponseField>
+
+<ResponseField name="number_pool_id" type="string">
+  The [number pool](/documentation/inventory/phone-numbers/number-pools) the number belongs to, if any.
+</ResponseField>
+
+<ResponseField name="provider" type="string">
+  The telephony provider behind the number; `ringg` for numbers on Ringg's own account.
+</ResponseField>
+
+<ResponseField name="owner" type="string">
+  `ringg` for a number on Ringg's account, `customer` for one on your own telephony account.
+</ResponseField>
+
+<ResponseField name="is_relay" type="boolean">
+  `true` for a [WhatsApp Relay](/documentation/deploy/whatsapp/relay-overview) number.
+</ResponseField>
+
+<RelatedTopics items={[["Phone numbers", "/documentation/inventory/phone-numbers/overview"]]} />
