@@ -1,0 +1,311 @@
+---
+title: "Mobile widget events"
+sidebarTitle: "Events"
+description: "Subscribe to Ringg AI React Native and Flutter widget lifecycle events, drive the panel from your code, read widget state and handle actions the agent fires."
+"og:title": "Mobile widget events and controller"
+---
+
+import LifecycleEvents from "/snippets/widget-lifecycle-events.mdx";
+import ComponentTypes from "/snippets/widget-component-types.mdx";
+
+Everything here goes through the controller, your handle on the mounted widget. Pick your framework with the switcher next to the table of contents.
+
+## Before you start
+
+<Card title="A mounted widget" icon="smartphone" href="/documentation/deploy/web-and-apps/mobile-apps/install" horizontal>
+  The controller only exists once the widget is installed and mounted in your app.
+</Card>
+
+<View title="React Native" icon="smartphone">
+  ## Get the controller
+
+  `<RinggWidget config />` builds the controller for you. `onReady` hands it back:
+
+  ```tsx
+  const [controller, setController] = useState<RinggWidgetController | null>(null);
+
+  <RinggWidget config={config} onReady={setController} />;
+  ```
+
+  It fires once, after the widget's first render, and the widget destroys the controller when it unmounts. Everything on this page works off that value. If you built the controller yourself ([own the lifecycle](#own-the-lifecycle-yourself)), you already have it.
+
+  ## Lifecycle events
+
+  <LifecycleEvents />
+
+  `controller.eventBus.on` returns an unsubscribe function.
+
+  ```ts
+  useEffect(() => {
+    const unsubscribe = controller.eventBus.on(
+      "ringg:conversation_status",
+      ({ status, mode, callId }) => {
+        analytics.track(`call_${status}`, { mode, callId });
+      },
+    );
+
+    return unsubscribe;
+  }, [controller]);
+  ```
+
+  Subscribe in an effect and return the unsubscribe function; handlers registered during render accumulate on every re-render and fire several times per event.
+
+  ## Controller methods
+
+  Call these to drive the widget from your own buttons, deep links or navigation events.
+
+  | Method | Effect |
+  |---|---|
+  | `openWidget()` | Opens the panel. |
+  | `minimizeWidget()` | Closes the panel back to the trigger. |
+  | `handleTriggerClick()` | What the built-in trigger does: toggles the panel, or starts the conversation directly when `bypassStartScreen` is set. |
+  | `startCall(mediaType)` | Starts a conversation in `"audio"` or `"text"`. Requests microphone permission for audio. |
+  | `endCall()` | Ends the conversation and releases the microphone. |
+  | `sendMessage(text)` | Sends a chat message as the user. |
+  | `sendSlashCommand(command)` | Runs one of the commands from `enabledSlashCommands`. |
+  | `submitFeedback(rating, comment)` | Submits the post-call feedback. |
+  | `skipFeedback()` | Dismisses the feedback screen. |
+  | `destroy()` | Tears the controller down and releases the microphone. Call on unmount. |
+
+  ```tsx
+  <Pressable onPress={() => controller.openWidget()}>
+    <Text>Talk to support</Text>
+  </Pressable>
+  ```
+
+  The controller also exposes methods for component responses, Block Kit actions and dynamic-data extensions. The bundled widget calls those on itself while rendering interactive components, so a normal integration does not need them.
+
+  ## Reading state
+
+  Each store has a hook that re-renders your component when its snapshot changes. Use these to build your own UI, or to mirror the widget's state elsewhere in your app.
+
+  | Hook | Snapshot |
+  |---|---|
+  | `useRinggSession(controller)` | `phase` (`"idle"`, `"starting"`, `"live-optimistic"`, `"connected"`), `isLoading`, `isSessionLive`, `connectionState` (`"disconnected"`, `"connecting"`, `"connected"`, `"reconnecting"`), `error`. |
+  | `useRinggShell(controller)` | `viewState` (`"closed"`, `"open"`, `"feedback"`), `currentCallId`, `callMode`. |
+  | `useRinggMessages(controller)` | `messages`, the chat thread. |
+  | `useRinggTyping(controller)` | `isTyping`, true while a reply is pending. |
+  | `useRinggComponents(controller)` | `completedFlowIds`, interactive flows the user has finished. |
+  | `useRinggSlashCommands(controller)` | `commands` currently offered in the composer. |
+
+  ```tsx
+  const { isSessionLive, connectionState } = useRinggSession(controller);
+  const { messages } = useRinggMessages(controller);
+
+  return <Badge live={isSessionLive} reconnecting={connectionState === "reconnecting"} />;
+  ```
+
+  Each message carries `name`, `message`, `isSelf`, `timestamp`, an optional `sourceUrl` for retrieved sources, and `componentType` with `componentData` when the message renders a component instead of text.
+
+  ## Interactive components
+
+  <ComponentTypes />
+
+  ## Agent-triggered app actions
+
+  An agent can fire [actions](/documentation/deploy/web-and-apps/web-widget/data#agent-actions) during a conversation, for example to open a screen or focus a field. On the web these become browser events. React Native has no ambient event bus, so you supply the handler through `ports` and receive the same payload.
+
+  ```tsx
+  import { createHostActionDispatcher, RinggWidget } from "@ringg/react-native";
+
+  const onDomAction = createHostActionDispatcher(({ name, payload }) => {
+    if (name === "open_checkout") navigation.navigate("Checkout", payload);
+  });
+
+  <RinggWidget config={config} ports={{ onDomAction }} />;
+  ```
+
+  Set `eventLogs: { enabled: true }` in config to also show each fired action as an inline pill in the chat thread, which makes these easy to watch while building.
+
+  ## Ports reference
+
+  `ports` overrides what the widget wires on its own. Every entry is optional: supply one and yours is used, leave it out and the default applies.
+
+  | Port | Default | Override it to |
+  |---|---|---|
+  | `transport` | A LiveKit connection the widget owns | Bring your own adapter, or a room shared with the rest of your app. |
+  | `urlResolver` | The Ringg endpoints, selected by `config.mode` | Point at a different backend. |
+  | `micPermission` | The native permission prompt | Gate access yourself, or show your own explanation first. |
+  | `notification` | Silent | Play a reply sound, see [notification sound](/documentation/deploy/web-and-apps/mobile-apps/install#notification-sound). |
+  | `onDomAction` | Unset. Actions are acknowledged and dropped | Handle agent-triggered app actions. |
+  | `eventBus` | Created for you | Share one bus with other code. |
+  | `clock` | System clock | Inject time, for tests. |
+
+  <Info>
+  `ports` is read once, when the widget builds the controller. Changing it later has no effect; changing `config` rebuilds the conversation from scratch.
+  </Info>
+
+  ### Own the lifecycle yourself
+
+  When the widget cannot own the transport, build the controller and pass that instead. `defaultUrlResolver` keeps the Ringg endpoints without you naming them:
+
+  ```tsx
+  import { RinggWidget, createLiveKitTransport, createNativeMicPermission, createRinggWidgetController, defaultUrlResolver } from "@ringg/react-native";
+
+  const livekit = createLiveKitTransport();
+  const controller = createRinggWidgetController(config, {
+    transport: livekit.transport,
+    urlResolver: defaultUrlResolver,
+    micPermission: createNativeMicPermission(),
+  });
+
+  <RinggWidget controller={controller} room={livekit.room} />;
+  // Yours to build, yours to release: controller.destroy(); livekit.dispose();
+  ```
+
+  ## Verify your handlers
+
+  - Open and close the panel once, then confirm one `ringg:widget_status` event per action.
+  - Start and end one conversation, then confirm `ringg:conversation_status` carries a `callId`.
+  - Navigate away and back, then confirm listeners are not duplicated.
+  - Submit and skip feedback in separate runs if the feedback screen is enabled.
+  - Unmount the screen during a call and confirm the microphone indicator clears.
+</View>
+
+<View title="Flutter" icon="smartphone-charging">
+  On Flutter the controller is the `RinggWidgetController` you built when you [mounted the widget](/documentation/deploy/web-and-apps/mobile-apps/install).
+
+  ## Lifecycle events
+
+  <LifecycleEvents />
+
+  `_controller.eventBus.on` returns an unsubscribe function; call it in `dispose`.
+
+  ```dart
+  late final Unsubscribe _unsubscribe;
+
+  @override
+  void initState() {
+    super.initState();
+    _unsubscribe = _controller.eventBus.on(
+      'ringg:conversation_status',
+      (payload) {
+        final data = payload as Map<String, Object?>;
+        analytics.track('call_${data['status']}', {'callId': data['callId']});
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _unsubscribe();
+    _controller.destroy();
+    _transport.dispose();
+    super.dispose();
+  }
+  ```
+
+  Payloads arrive as maps keyed by the field names in the table above.
+
+  ## Controller methods
+
+  Call these to drive the widget from your own buttons, routes or deep links.
+
+  | Method | Effect |
+  |---|---|
+  | `openWidget()` | Opens the panel. |
+  | `minimizeWidget()` | Closes the panel back to the trigger. |
+  | `handleTriggerClick()` | What the built-in trigger does: toggles the panel, or starts the conversation directly when `bypassStartScreen` is set. |
+  | `startCall(MediaType)` | Starts a conversation in `MediaType.audio` or `MediaType.text`. |
+  | `endCall()` | Ends the conversation and releases the microphone. |
+  | `sendMessage(String)` | Sends a chat message as the user. |
+  | `sendSlashCommand(SlashCommand)` | Runs one of the commands from `enabledSlashCommands`. |
+  | `submitFeedback(int rating, String comment)` | Submits the post-call feedback. |
+  | `skipFeedback()` | Dismisses the feedback screen. |
+  | `destroy()` | Tears the controller down and releases the microphone. Call from `dispose`. |
+
+  ```dart
+  FilledButton(
+    onPressed: _controller.openWidget,
+    child: const Text('Talk to support'),
+  )
+  ```
+
+  The controller also exposes methods for component responses, Block Kit actions and local components. The bundled widget calls those on itself while rendering interactive components, so a normal integration does not need them.
+
+  ## Reading state
+
+  Each store publishes immutable snapshots. `StoreBuilder` is the subscription primitive: it subscribes on mount, rebuilds on every new snapshot, and unsubscribes on dispose.
+
+  ```dart
+  StoreBuilder(
+    store: _controller.session,
+    builder: (context, snapshot, child) => Badge(
+      live: snapshot.isSessionLive,
+      reconnecting: snapshot.connectionState == TransportConnectionState.reconnecting,
+    ),
+  )
+  ```
+
+  | Store | Snapshot |
+  |---|---|
+  | `controller.session` | `phase` (`idle`, `starting`, `liveOptimistic`, `connected`), `isLoading`, `isSessionLive`, `connectionState` (a `TransportConnectionState`: `disconnected`, `connecting`, `connected`, `reconnecting`), `error`. |
+  | `controller.shell` | `viewState` (`closed`, `open`, `feedback`), `currentCallId`, `callMode`. |
+  | `controller.messages` | The chat thread. |
+  | `controller.typing` | `isTyping`, true while a reply is pending. |
+  | `controller.components` | `completedFlowIds`, interactive flows the user has finished. |
+  | `controller.slashCommands` | Commands currently offered in the composer. |
+
+  Each message carries `name`, `message`, `isSelf`, `timestamp`, an optional `sourceUrl` for retrieved sources, and a component type with its data when the message renders a component instead of text.
+
+  `RinggScope` carries the controller down the tree if you would rather read it from context than pass it explicitly.
+
+  ## Interactive components
+
+  <ComponentTypes />
+
+  ## Agent-triggered app actions
+
+  An agent can fire [actions](/documentation/deploy/web-and-apps/web-widget/data#agent-actions) during a conversation, for example to open a route or prefill a field. On the web these become browser events. Flutter has no ambient event bus, so you supply a handler on the ports and receive the same payload.
+
+  ```dart
+  ControllerPorts(
+    transport: _transport.transport,
+    onDomAction: (action, log) {
+      if (action.eventName == 'open_checkout') {
+        Navigator.of(context).pushNamed('/checkout', arguments: action.defaultPayload);
+      }
+    },
+  )
+  ```
+
+  Leave it unset and actions are acknowledged and dropped. Set `eventLogs: EventLogsConfig(enabled: true)` in config to also show each fired action as an inline pill in the chat thread.
+
+  ## Ports reference
+
+  The second argument to `RinggWidgetController` wires the widget to your app's capabilities. Only `transport` is required.
+
+  | Port | Default | Purpose |
+  |---|---|---|
+  | `transport` | Required | The LiveKit connection, from `createLiveKitTransport()`. |
+  | `urlResolver` | Production endpoints | Override to point at another environment. |
+  | `httpClient` | Origin-stamping client | Supply your own and wrap it with `appOriginHttpClient` to keep the caller identity header. |
+  | `micPermission` | Treated as granted; see below | Your own gate, for example `permission_handler`. |
+  | `notification` | Silent | Reply sound. Supply a player to enable it. |
+  | `onDomAction` | Unset | Handler for agent-triggered app actions. |
+  | `eventBus` | Created for you | Supply your own bus to share it with other code. |
+  | `clock` | System clock | Injectable time source, for tests. |
+
+  The default `micPermission` lets the platform prompt when the audio track is created, so the manifest and `Info.plist` entries in [platform setup](/documentation/deploy/web-and-apps/mobile-apps/install#platform-setup) are what gate voice. Supply your own to request access earlier, or to show your own explanation first.
+
+  ## Verify your handlers
+
+  - Open and close the panel once, then confirm one `ringg:widget_status` event per action.
+  - Start and end one conversation, then confirm `ringg:conversation_status` carries a `callId`.
+  - Confirm every `eventBus.on` subscription is released in `dispose`.
+  - Submit and skip feedback in separate runs if the feedback screen is enabled.
+  - Confirm `destroy()` and `dispose()` run and the microphone indicator clears.
+</View>
+
+To let the agent show forms, cards and slot pickers in the thread, build them in the dashboard: [Components](/documentation/deploy/web-and-apps/web-widget/components).
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Review conversations in Logs" icon="scroll-text" href="/documentation/monitor/logs">
+    Each conversation's transcript and analysis, under call type **Webcall**.
+  </Card>
+  <Card title="Read Analytics" icon="chart-line" href="/documentation/monitor/analytics">
+    Totals and trends across every conversation.
+  </Card>
+</Columns>

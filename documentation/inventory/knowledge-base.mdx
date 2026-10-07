@@ -1,0 +1,267 @@
+---
+title: "Knowledge base"
+sidebarTitle: "Knowledge base"
+description: "Create a Ringg AI knowledge base from files and website URLs, configure CSV columns, test it in chat, track training status, and manage it by API."
+"og:title": "Create and manage a knowledge base for your agents"
+---
+
+A knowledge base is a set of files and web pages that an [agent](/documentation/build-agents/agents/agent-types) looks up during a conversation, so it answers from your data instead of from its prompt alone. Use one for policies, price lists, FAQs or per-customer records such as orders; keep short facts the agent needs on every call in the [prompt](/documentation/build-agents/customize-agent-behaviour/agent-prompt).
+
+In the dashboard: **Sidebar → Inventory → Knowledge base**.
+
+This chapter connects an agent to your data and your systems:
+
+| Page | What you do |
+|---|---|
+| Create a knowledge base (this page) | Build one from files and website URLs, configure CSV columns, test it in chat |
+| [Attach a knowledge base](/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base) | Attach it to an agent, mention it in the prompt, add query phrases |
+| [Tools](/documentation/build-agents/customize-agent-behaviour/tools/overview) | Fetch data before a call, act during it, send results after it ends |
+| [Connect an app](/documentation/inventory/tools-integrations/connect-an-app) | Connect Google Sheets, Slack, calendars and other apps once per workspace for Integration tools |
+
+## Before you start
+
+<Columns cols={2}>
+  <Card title="Knowledge Base permission" icon="shield" href="/documentation/manage-account/members#roles-and-permissions" horizontal>
+    Members need the **Knowledge Base** edit permission to create or change one.
+  </Card>
+  <Card title="An agent to use it" icon="bot" href="/documentation/build-agents/agents/create-an-agent" horizontal>
+    Optional now: you attach the knowledge base to an agent once it is **Ready**.
+  </Card>
+</Columns>
+
+## Create a knowledge base
+
+This short video creates a knowledge base from a CSV and a web page, waits for it to finish training, and asks the test chat a question.
+
+<Frame caption="Creating and testing a knowledge base">
+  <video alt="Creating and testing a knowledge base" aria-label="Creating and testing a knowledge base" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/knowledge-base/poster.webp">
+    <source src="/media/knowledge-base/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Start">
+    Click **Create** (on an empty page, under "Create your first Knowledge base"). The editor opens as **Create knowledge base**.
+  </Step>
+  <Step title="Name it">
+    Enter a **Name**, for example `Loan FAQs`; it is saved as `loan_faqs` ("Saved as lowercase with underscores in place of spaces."). You cannot rename it later.
+  </Step>
+  <Step title="Upload files">
+    On the **Upload files** tab, drag files onto the box or click it to pick them. A CSV, TSV or PDF opens in a preview on the right; other file types upload without a preview.
+    <Frame caption="A staged CSV in the preview, with Column Configuration below">
+      <img src="/media/knowledge-base/csv-preview.webp" alt="Preview of acme-lending-faq.csv with columns question, answer, category and updated_on and eight FAQ rows, above the Column Configuration card showing the question column as String with Exact match off" />
+    </Frame>
+  </Step>
+  <Step title="Add web pages (optional)">
+    On the **Add URLs** tab, add pages in either of two ways:
+    - **Crawl**: enter a site address, such as `https://example.com`, and click **Fetch Links**. Ringg lists the pages under that address (files on the site are skipped), 20 at a time; click **Load more links** for the next batch.
+    - Under **Include Links**, enter one page and click **Add New URL**.
+
+    Fetched pages appear under **New URLs**, each ticked already (up to the 50-URL limit); untick the ones you don't want. Only ticked pages are added. Click a URL to preview the text Ringg extracts from it. An address without `https://` gets it added.
+  </Step>
+  <Step title="Check CSV columns">
+    For a CSV or TSV, review **Column Configuration** under the preview. See [Structured data](#structured-data-and-column-configuration).
+  </Step>
+  <Step title="Save">
+    Click **Save**. You see "Knowledge base creation started" and the editor reloads on the new knowledge base while it trains. **Clear all** removes everything you staged.
+    <Check>
+    In the editor, each file's chip goes from **Processing** to **Indexed**. On the Knowledge Base list, the knowledge base shows **Training**, then **Ready** (see [Statuses](#statuses)). The editor opens on the uploaded file's contents; click the back arrow to reach the [test chat](#test-it-in-chat).
+    </Check>
+  </Step>
+</Steps>
+
+To create one from code instead, see [Do this with the API](#do-this-with-the-api).
+
+## Structured data and column configuration
+
+The upload tab notes: "Structured data (like CSV with clear columns) helps the AI find and match answers faster and more accurately than unstructured text." Put records such as orders, branches or plans in a CSV with one header row, for example `order_id,customer_name,mobile_number,status`.
+
+When you stage a CSV or TSV, **Column Configuration** lists every header ("Columns are imported from your file. To change them, edit the file and re-upload."):
+
+| Field | What you can do |
+|---|---|
+| **Column name** | Read-only, taken from the header row. |
+| **Type** | **String**, **Number**, **True/False** or **Date**. Ringg pre-fills a guess from the column's values; change it before you save. |
+| **Exact match** | "Agent will look up exact keywords. Use this for specific details like Order ID or mobile numbers." Off by default. |
+
+The settings are "Applied when you upload". After upload, **Type** is fixed; only **Exact match** can change. Saving a change shows "Columns updated" and "Re-embedding started — the knowledge base will re-train." (<Tooltip tip="Re-processing the data so the agent can search it again.">Re-embedding</Tooltip> puts it back in **Training**.)
+
+## Test it in chat
+
+Open a **Ready** knowledge base. With no source selected, the right panel is a test chat: "Test results will be based on processed data from uploaded files". Type a question in **Ask a question about your data...** and press Enter (Shift+Enter adds a line). Each answer lists the files it came from. To hear it in a real conversation, attach it and [test the agent](/documentation/build-agents/test-and-improve/test-an-agent). Click a CSV, TSV or PDF file, or an added URL, to see its contents; the back arrow returns to the chat with the conversation kept.
+
+<Frame caption="The test chat answering from the uploaded CSV">
+  <img src="/media/knowledge-base/test-chat.webp" alt="Knowledge base loan_faqs with acme-lending-faq.csv Indexed; the test chat answers What credit score do I need for a personal loan? with a CIBIL score of 700 or above, citing acme-lending-faq.csv row 1" />
+</Frame>
+
+## Statuses
+
+The list shows each knowledge base's **Name** (with "Last trained: 2h ago" or "Not trained yet"), **Sources** and **Status**. Statuses update on their own while training.
+
+<Frame caption="The Knowledge Base list">
+  <img src="/media/knowledge-base/kb-list.webp" alt="Knowledge Base page listing loan_faqs (2 sources, Last trained: just now), branch_locations (1 source) and loan_policies (3 sources), all with status Ready" />
+</Frame>
+
+| Knowledge base status | Meaning |
+|---|---|
+| **Training** | Files are being processed, or it is re-training after a change. You cannot add sources or edit rows yet. |
+| **Ready** | Processed and usable. |
+| **Partial failure** | Some sources failed to process. Check each file's status. |
+| **Failed** | Processing failed. |
+
+| File or URL status | Meaning |
+|---|---|
+| **Pending upload** | Staged in the editor, not saved yet. |
+| **Pending** | Saved, waiting to be processed. |
+| **Processing** | Being processed. |
+| **Indexed** | Processed and searchable. |
+| **Failed** | Could not be processed. Delete it and upload it again. |
+
+## Edit a knowledge base
+
+Click a row to open it. Changes need the **Ready** status; while it trains, **Save** shows "Knowledge base is still training".
+
+- **Add sources**: upload files or add URLs, then **Save** ("Added to knowledge base", "Processing started.").
+- **Replace a file**: upload a file with the same name. "Replace File?" warns that "Replacing will overwrite the content."; the old file is removed when you save.
+- **Download or delete a file**: open the **⋮** menu on its row. Deleting removes "This file and its indexed content". Remove an added URL with its **×**.
+- **Edit rows** (CSV and TSV): select the file to open its rows, 25 per page. **Search** them, **Add row**, click a row to **Edit row**, or select several and **Delete n records**. Values are validated against the column's type.
+
+## Delete a knowledge base
+
+On the list, click the trash icon on its row and confirm. Deleting removes the knowledge base with all its files, rows and column settings, and can't be undone. It is detached from every agent automatically; remove any `@` mentions of it from their prompts ([Attach or detach a knowledge base](/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base#attach-or-detach-a-knowledge-base)).
+
+## Get better answers
+
+- Keep each knowledge base to one topic, such as `loan_faqs` or `branch_locations`. A focused set is easier to test, and you can attach several to one agent.
+- Remove outdated or conflicting documents before you upload. The agent can't tell which version is current.
+- Upload text-based PDFs. A scanned PDF without searchable text gives the agent nothing to read.
+- Ask the [test chat](#test-it-in-chat) the questions your customers actually ask before you attach it.
+
+## Limits
+
+| Limit | Dashboard | API (per request) |
+|---|---|---|
+| File types | `.csv`, `.tsv`, `.pdf`, `.docx`, `.md`, `.txt` | `.pdf`, `.docx`, `.txt`, `.csv` (one chunk per row) and `.json`; anything else is read as plain text, with no column configuration |
+| File size | 20 MB per file | 2 MB per file, 5 MB in total |
+| Files | 8 per knowledge base (URLs don't count) | 10 per request |
+| URLs | 50 per knowledge base | 20 per request |
+| FAQs | Not available | `faqs`: a JSON array of `{ "question", "answer" }` |
+
+The dashboard rejects other file types (including JSON) with "Unsupported file", and larger files with "File too large". A workspace can have up to 100 knowledge bases and upload up to 1 GB a day.
+
+API rate limits per workspace: create 10 per hour, edit 20 per hour, get one or list all 60 per hour, delete 10 per minute.
+
+## Do this with the API
+
+[Create Knowledge Base](/api-reference/endpoint/kb/create-knowledge-base) (`POST /external/kb`) takes `multipart/form-data` with `kb_name` and any of `files`, `urls` (a JSON array string) and `faqs`. You need an [API key](/documentation/manage-account/api-key) ([Authentication](/api-reference/introduction/authentication)).
+
+<CodeGroup>
+```bash cURL
+curl --request POST "https://prod-api.ringg.ai/ca/api/v0/external/kb" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --form "kb_name=loan_faqs" \
+  --form "files=@loan-policy.pdf" \
+  --form 'urls=["https://example.com/loans/faq"]'
+```
+
+```javascript JavaScript
+import { openAsBlob } from "node:fs";
+
+const form = new FormData();
+form.append("kb_name", "loan_faqs");
+form.append("files", await openAsBlob("loan-policy.pdf"), "loan-policy.pdf");
+form.append("urls", JSON.stringify(["https://example.com/loans/faq"]));
+
+const response = await fetch("https://prod-api.ringg.ai/ca/api/v0/external/kb", {
+  method: "POST",
+  headers: { "X-API-KEY": process.env.RINGG_API_KEY },
+  body: form,
+});
+console.log(await response.json());
+```
+
+```python Python
+import json
+import os
+import requests
+
+with open("loan-policy.pdf", "rb") as f:
+    response = requests.post(
+        "https://prod-api.ringg.ai/ca/api/v0/external/kb",
+        headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+        data={
+            "kb_name": "loan_faqs",
+            "urls": json.dumps(["https://example.com/loans/faq"]),
+        },
+        files={"files": ("loan-policy.pdf", f)},
+    )
+print(response.json())
+```
+</CodeGroup>
+
+The response returns:
+
+<ResponseField name="kb_id" type="string">The new knowledge base's ID. Use it to poll, edit or delete.</ResponseField>
+<ResponseField name="processing_status" type="string">`pending` at first.</ResponseField>
+<ResponseField name="files_queued" type="integer">How many files were queued for processing.</ResponseField>
+
+A knowledge base created by API doesn't appear on the Knowledge Base page, but it is listed in the agent editor's knowledge base picker and works on calls. Knowledge bases created in the dashboard do appear in the API.
+
+The other dashboard actions map to these endpoints:
+
+| Dashboard action | Endpoint |
+|---|---|
+| Add or remove sources | [Edit Knowledge Base](/api-reference/endpoint/kb/edit-knowledge-base): `PATCH /external/kb` with `kb_id` and `new_files`, `new_urls`, `new_faqs`, `files_to_remove`, `urls_to_remove` or `faqs_to_remove` (plus optional `new_files_metadata`), as `multipart/form-data` |
+| The list | [Get All Knowledge Bases](/api-reference/endpoint/kb/get-all-knowledge-bases): `GET /external/kb/all` |
+| Open one | [Get Knowledge Base by ID](/api-reference/endpoint/kb/get-knowledge-base-by-id): `GET /external/kb/{kb_id}` |
+| Delete | [Delete Knowledge Base](/api-reference/endpoint/kb/delete-knowledge-base): `DELETE /external/kb/{kb_id}` |
+
+Poll Get Knowledge Base by ID until its `status` shows processing has finished:
+
+<CodeGroup>
+```bash cURL
+curl --request GET "https://prod-api.ringg.ai/ca/api/v0/external/kb/550e8400-e29b-41d4-a716-446655440000" \
+  --header "X-API-KEY: $RINGG_API_KEY"
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://prod-api.ringg.ai/ca/api/v0/external/kb/550e8400-e29b-41d4-a716-446655440000",
+  { headers: { "X-API-KEY": process.env.RINGG_API_KEY } },
+);
+console.log(await response.json());
+```
+
+```python Python
+import os
+import requests
+
+response = requests.get(
+    "https://prod-api.ringg.ai/ca/api/v0/external/kb/550e8400-e29b-41d4-a716-446655440000",
+    headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+)
+print(response.json())
+```
+</CodeGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="The Upload button is disabled">
+    The knowledge base already holds 8 files ("Knowledge base can hold at most 8 files."). Delete a file, or create a second knowledge base and attach both to the agent.
+  </Accordion>
+  <Accordion title='"No links found" after Fetch Links'>
+    The crawler found no pages under that address. Add the pages one by one with **Add New URL**.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Attach it to an agent" icon="bot" href="/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base">
+    Attach it once it is **Ready**, by dashboard or API, and mention it in the prompt.
+  </Card>
+  <Card title="Test the agent" icon="play" href="/documentation/build-agents/test-and-improve/test-an-agent">
+    Ask real questions on a test call.
+  </Card>
+</Columns>

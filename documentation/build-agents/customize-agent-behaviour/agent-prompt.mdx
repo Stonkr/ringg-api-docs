@@ -1,0 +1,237 @@
+---
+title: "Agent prompt"
+sidebarTitle: "Agent prompt"
+description: "Write a Ringg AI agent's first message and prompt sections, insert variables, tools and knowledge with @, add If Condition blocks, and save or edit by API."
+boost: 4
+"og:title": "Write an agent prompt and first message in Ringg AI"
+---
+
+The prompt is the set of instructions an agent follows on every call or chat, and the first message is the line it opens with. This page covers single-prompt agents; in a [multi-prompt agent](/documentation/build-agents/agents/multi-prompt-agents/overview), each Agent node has its own prompt with the same editor.
+
+In the dashboard: **Sidebar → Assistants →** open an agent **→ Prompt**.
+
+This chapter is what the agent says and hears, in three pages:
+
+| Page | What you set |
+|---|---|
+| Write the prompt (this page) | The first message and the prompt sections, with variables, tools and knowledge bases inserted by `@` |
+| [Voice and language](/documentation/build-agents/customize-agent-behaviour/voice-and-language) | The languages it understands and speaks, the voice, and its speed |
+| [Variables](/documentation/build-agents/customize-agent-behaviour/custom-variables) | Values that change per call, filled by API, from a campaign CSV or from tools |
+
+After this chapter, [Inventory](/documentation/inventory/knowledge-base) gives it your data and your APIs.
+
+## Before you start
+
+<Card title="An agent" icon="bot" href="/documentation/build-agents/agents/create-an-agent" horizontal>
+  The template you created it from supplies the sections you edit here.
+</Card>
+
+## What the Prompt section holds
+
+The section is one column of editors, top to bottom:
+
+1. **First message**: what the agent says when the call connects. On a WhatsApp agent, it is the message sent at the start of the conversation.
+2. One editor per **prompt section**, as supplied by the template you [created the agent](/documentation/build-agents/agents/create-an-agent) from.
+
+<Frame caption="The Prompt section of a single-prompt agent">
+  <img src="/media/agents-prompt/prompt-section.webp" alt="Agent editor with Prompt selected in the sidebar, showing the First message editor with the Interruptible switch on, followed by the Persona, Goal and Conversation flow sections with variable chips such as Callee Name, Due Amount and Due Date" />
+</Frame>
+
+Templates usually provide these sections. The editor renames three of them for display:
+
+| Section title stored on the agent | Shown in the editor as | What to put there |
+|---|---|---|
+| `introduction and objective` | **Objective** | Who the agent is, who it speaks for and the goal of the call |
+| `task` | **Conversation Script** | The steps of the conversation, in order |
+| `faq guidelines` | **FAQs** | Questions callers ask, with the answers |
+| Any other title, such as Response Guidelines | Its own title | Tone, length, what never to say |
+
+The editor has no control to add, rename or remove a section. Collapse a section with the arrow next to its title.
+
+### The Interruptible switch
+
+The footer of **First message** has an **Interruptible** switch, on by default.
+
+| Setting | What happens |
+|---|---|
+| On | The caller can talk over the first message and the agent stops to listen |
+| Off | The caller's audio is ignored until the first message finishes |
+
+The switch saves as soon as you flip it; it does not wait for **Save**. Turn it off when the first message carries something the caller must hear in full, such as a recording disclosure.
+
+## Insert variables, tools and knowledge with @
+
+Type `@` in any editor (the footer reminds you: "Type @ to add variables"). A menu opens, grouped by kind. Keep typing to filter it, use the arrow keys to move, and press Enter to insert. Each item becomes a coloured chip in the text.
+
+<Frame caption="The @ menu">
+  <img src="/media/agents-prompt/mention-menu.webp" alt="Mention menu opened by typing @, grouped into Custom Variables (Callee Name, Mobile Number, Due Amount, Due Date), Pre-call API settings (Get Loan Account) and On-call API settings (Check Payment Status), with Knowledge Bases below" />
+</Frame>
+
+| Menu group | What it inserts | Text form |
+|---|---|---|
+| **Custom Variables** | A per-call value, such as the caller's name ([Variables](/documentation/build-agents/customize-agent-behaviour/custom-variables)) | `@{{callee_name}}` |
+| **Pre-Call API Settings** | The output of a [pre-call tool](/documentation/build-agents/customize-agent-behaviour/tools/overview#the-three-phases), or one of its response keys | `@((get_customer))`, `@((get_customer.plan))` |
+| **On-Call API Settings** | A tool the agent can call during the conversation, or one of its response keys ([use on-call tools](/documentation/build-agents/customize-agent-behaviour/tools/overview#use-on-call-tools-in-the-prompt)) | `@\|\|book_slot\|\|`, `@\|\|book_slot.slot_time\|\|` |
+| **Knowledge Bases** | A knowledge base attached to the agent | `@` + the knowledge base name |
+| **Chat Components** | A saved, enabled [chat component](/documentation/deploy/web-and-apps/web-widget/components) the widget shows at that point of the conversation | `@[[family_member_details_form]]` |
+| **WhatsApp Templates** | A template the WhatsApp agent can send mid-chat ([send a template](/documentation/build-agents/agents/whatsapp-agents/create-an-agent#send-a-template-during-a-chat)) | `@\|\|<template tool name>\|\|` |
+| **Logic** | **If Condition**: a conditional block ([below](#if-condition-blocks)) | A <Tooltip tip="A templating language; its if blocks include text only when a condition holds.">Jinja</Tooltip> `{% if %}` block |
+
+Tools with response keys open a **Response Keys** submenu (arrow right). Only enabled pre-call and on-call tools from the **Tools** section are listed; post-call tools are never offered. Only knowledge bases attached to the agent are listed; attach them under **Knowledge Base** in the sidebar.
+
+In a multi-prompt agent the menu also has **Extracted Variables** (`@[{name}]`), filled by routers and Agent nodes ([node types](/documentation/build-agents/agents/multi-prompt-agents/node-types-and-connections#node-types)), and **Action API Settings**.
+
+### Create a variable from the menu
+
+Type `@{{` followed by a new name, for example `@{{due_date`. When nothing matches, the menu offers **Create** `"{{due_date}}"`. Choosing it adds `due_date` to the agent's variables and inserts the chip. See [Variables](/documentation/build-agents/customize-agent-behaviour/custom-variables) for naming.
+
+### If Condition blocks
+
+**Logic → If Condition** inserts a block whose text applies only when a condition holds, for example a payment-plan paragraph only when `@{{plan}}` equals `gold`. Each condition row is a variable, an operator and a value; **Add condition** adds a row, and the **and** / **or** toggle between rows sets how they combine.
+
+| Group | Operators | Value |
+|---|---|---|
+| Comparison | **equals**, **not equals**, **greater than**, **greater or equal**, **less than**, **less or equal**, **between** | One value; **between** takes a **from** and a **to** |
+| String | **contains**, **does not contain**, **starts with**, **ends with** | One value |
+| Array | **is one of**, **is not one of**, **array contains**, **array not contains** | **is one of** / **is not one of** take a comma-separated list (`a, b, c`); the other two take one value |
+| Existence | **is empty**, **is not empty** | None |
+| Size | **size equals**, **size greater than**, **size less than** | A number |
+
+Below the block, **+ else if** adds another branch with its own condition and **+ else** adds the fallback; once an else branch exists, no more branches can be added. The bin icon deletes the whole block.
+
+**Switch to code** shows a branch's condition as Jinja so you can edit it directly, and **Copy Jinja code** copies the whole block. **Switch to builder** goes back only when the code is `variable operator value` rows joined with `and` / `or`; anything more complex stays in code mode ("Cannot switch to builder").
+
+### Unknown tokens
+
+You can type or paste tokens as text. When `@name`, `@{{name}}`, `@((name))`, `@||name||` or `@[[name]]` matches something the agent has, it turns into a chip. When it matches nothing (a misspelling, a deleted variable, a removed tool), it is shown in red with a wavy underline. A chip that points at something since deleted is flagged too. Fix every red token before you save: the agent has nothing to fill it with.
+
+### Other editor tools
+
+Select text to open a toolbar: bold, italic, underline, strikethrough, numbered and bulleted lists, tables, **Find & replace all** (across every section), and **Translate**, which converts the selection into the script of the agent's secondary language. Translate needs a secondary language ([Voice and language](/documentation/build-agents/customize-agent-behaviour/voice-and-language)) and a selection of 10,000 characters or fewer. Pasted Markdown is converted to formatting.
+
+## Save or discard
+
+Prompt edits are held until you save. While you have unsaved edits, **Test assistant** in the top bar is replaced by **Discard** and **Save**. The video edits the first message and a section, inserts a variable with @, and saves.
+
+<Frame caption="Editing and saving a prompt in the dashboard">
+  <video alt="Editing and saving a prompt in the dashboard" aria-label="Editing and saving a prompt in the dashboard" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/agents-prompt/poster.webp">
+    <source src="/media/agents-prompt/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+- **Save**, or Cmd+S (macOS) / Ctrl+S (Windows): "Changes saved successfully". The change is live for new calls on the version you are viewing ([Save changes on a single-prompt agent](/documentation/build-agents/test-and-improve/drafts-and-versions#save-changes-on-a-single-prompt-agent)). "Partial Save" means the prompt and the first message save separately and one of them failed: read the message, fix it and save again.
+- **Discard**: asks "Discard your unsaved prompt changes? This action cannot be undone."
+- Leaving the page, switching sidebar sections, or switching between **Outbound** and **Inbound** on an outbound-inbound agent asks before throwing unsaved edits away.
+
+<Frame caption="A section after saving, with the new variable chip">
+  <img src="/media/agents-prompt/saved-section.webp" alt="Conversation flow section with six numbered steps; the new step 6 reads If they cannot pay by, then a Due Date chip, then offer to call again in two days" />
+</Frame>
+
+<Check>**Test assistant** is back in the top bar. [Place a test call](/documentation/build-agents/test-and-improve/test-an-agent) to hear the new prompt.</Check>
+
+## Write prompts for voice
+
+A voice agent's text is heard, not read, so write for the ear.
+
+- **Keep turns short.** Ask for one sentence or two per turn, and one question at a time. Put it in **Response Guidelines**: "Reply in at most two short sentences. Ask one question at a time."
+- **Write the first message to be interrupted.** Greet, say who you are, and ask a question within about ten seconds: "Hello `@{{callee_name}}`, this is Asha from Acme Finance. Is this a good time to talk?"
+- **Script the steps.** In **Conversation Script**, number the steps and say what to do on each answer, including "no", "call me later" and "wrong person".
+- **Say how to end.** Tell the agent when the call is done and what to say last: "Once the payment date is confirmed, thank them and end the call." If you add the end-call system tool under [Tools](/documentation/build-agents/customize-agent-behaviour/tools/overview), mention it with `@` at that point. Set a hard limit with **Maximum Call Duration** in [Call settings](/documentation/build-agents/customize-agent-behaviour/call-settings).
+- **Spell out how to say numbers.** Tell the agent how to speak amounts, dates and numbers: "Say amounts in words, in rupees: ₹4,500 is 'four thousand five hundred rupees'. Say dates as '15 October', never '15/10'. Read phone numbers digit by digit, in groups."
+- **Write in the language the agent speaks** ([Voice and language](/documentation/build-agents/customize-agent-behaviour/voice-and-language)). For a Hindi agent, write examples in Devanagari or say which script to use. Name the languages in the prompt if callers may switch.
+- **Put facts in FAQs or a knowledge base**, not in the script. Long reference text belongs in a [knowledge base](/documentation/inventory/knowledge-base).
+- **Test after every change.** Place a [test call](/documentation/build-agents/test-and-improve/test-an-agent) with realistic variable values.
+
+## Edit the prompt by API
+
+[Edit Agent Settings](/api-reference/endpoint/assistant/edit-assistant) (`PATCH /agent/v1`) changes one thing per request, named by `operation`. It matches **Save** in the Prompt section.
+
+| Operation | Changes | Field |
+|---|---|---|
+| `edit_prompt` | The prompt sections | `agent_prompt`: a string, or `{"prompt_sections": [{"section_title", "section_content"}]}` |
+| `edit_intro_message` | The first message | `intro_message` |
+| `edit_noise_settings` | The **Interruptible** switch | `mute_during_intro` (`false` is Interruptible on) and `mute_while_bot_speaking`; send both |
+| `edit_custom_vars` | The agent's [variables](/documentation/build-agents/customize-agent-behaviour/custom-variables#variables-by-api) | `custom_variables` |
+| `attach_kb` / `remove_kb` | [Knowledge bases](/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base) | `kb_id` |
+
+Send your [API key](/documentation/manage-account/api-key) in `X-API-KEY`. Find the `agent_id` in the editor ([Find the agent ID](/documentation/build-agents/agents/agent-types#find-the-agent-id)).
+
+`edit_prompt` replaces the whole prompt: send every section you want to keep, because a section left out is deleted. Edits go to the agent's active version; add `version_id` to edit another one.
+
+<CodeGroup>
+```bash cURL
+curl -X PATCH "https://prod-api.ringg.ai/ca/api/v0/agent/v1" \
+  -H "X-API-KEY: $RINGG_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "operation": "edit_prompt",
+    "agent_id": "00000000-0000-4000-8000-0000000000a1",
+    "agent_prompt": {
+      "prompt_sections": [
+        { "section_title": "introduction and objective", "section_content": "You are Asha, a polite collections assistant for Acme Finance. Remind @{{callee_name}} of their EMI of @{{emi_amount}} due on @{{due_date}}." },
+        { "section_title": "task", "section_content": "1. Confirm you are speaking to @{{callee_name}}. 2. State the amount and due date. 3. Ask when they will pay. 4. Thank them and end the call." },
+        { "section_title": "Response Guidelines", "section_content": "Reply in at most two short sentences. Never threaten." }
+      ]
+    }
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch("https://prod-api.ringg.ai/ca/api/v0/agent/v1", {
+  method: "PATCH",
+  headers: {
+    "X-API-KEY": process.env.RINGG_API_KEY,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    operation: "edit_prompt",
+    agent_id: "00000000-0000-4000-8000-0000000000a1",
+    agent_prompt: {
+      prompt_sections: [
+        { section_title: "introduction and objective", section_content: "You are Asha, a polite collections assistant for Acme Finance. Remind @{{callee_name}} of their EMI of @{{emi_amount}} due on @{{due_date}}." },
+        { section_title: "task", section_content: "1. Confirm you are speaking to @{{callee_name}}. 2. State the amount and due date. 3. Ask when they will pay. 4. Thank them and end the call." },
+        { section_title: "Response Guidelines", section_content: "Reply in at most two short sentences. Never threaten." },
+      ],
+    },
+  }),
+});
+console.log(await response.json());
+```
+
+```python Python
+import os
+import requests
+
+response = requests.patch(
+    "https://prod-api.ringg.ai/ca/api/v0/agent/v1",
+    headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+    json={
+        "operation": "edit_prompt",
+        "agent_id": "00000000-0000-4000-8000-0000000000a1",
+        "agent_prompt": {
+            "prompt_sections": [
+                {"section_title": "introduction and objective", "section_content": "You are Asha, a polite collections assistant for Acme Finance. Remind @{{callee_name}} of their EMI of @{{emi_amount}} due on @{{due_date}}."},
+                {"section_title": "task", "section_content": "1. Confirm you are speaking to @{{callee_name}}. 2. State the amount and due date. 3. Ask when they will pay. 4. Thank them and end the call."},
+                {"section_title": "Response Guidelines", "section_content": "Reply in at most two short sentences. Never threaten."},
+            ]
+        },
+    },
+)
+print(response.json())
+```
+</CodeGroup>
+
+<Check>A successful response is `{"message": "Agent updated successfully!", "agent_id": "…"}`.</Check>
+
+When you create an agent by API, the first message and sections come from `intro_message`, `introduction_and_objective`, `task`, `faq` and `response_guidelines` in [Create Agent](/api-reference/endpoint/assistant/create-agent).
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Pick a voice and language" icon="mic" href="/documentation/build-agents/customize-agent-behaviour/voice-and-language">
+    Choose languages, a voice and its speed.
+  </Card>
+  <Card title="Add variables" icon="braces" href="/documentation/build-agents/customize-agent-behaviour/custom-variables">
+    Personalise every call with values you pass in.
+  </Card>
+</Columns>

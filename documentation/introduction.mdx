@@ -1,0 +1,31 @@
+---
+title: "Ringg AI documentation"
+sidebarTitle: "Introduction"
+description: "Build an agent, give it knowledge, tools and numbers, deploy it on campaigns, web and WhatsApp, monitor the results, and manage your workspace."
+icon: "book-open"
+---
+
+import { FigureCard } from "/snippets/figure-card.mdx";
+
+<Columns cols={2}>
+  <FigureCard title="Build agents" figure="exploded" href="/documentation/build-agents/agents/agent-types">
+    Create a voice, web or WhatsApp agent and customize its behaviour.
+  </FigureCard>
+  <FigureCard title="Inventory" figure="cabinet" intensity={0} href="/documentation/inventory/knowledge-base">
+    Knowledge bases, connected apps and phone numbers your agents share.
+  </FigureCard>
+  <FigureCard title="Deploy" figure="branches" intensity={0} href="/documentation/deploy/campaigns/overview">
+    Run campaigns and go live on your website, in apps and on WhatsApp.
+  </FigureCard>
+  <FigureCard title="Monitor" figure="plot" intensity={1} href="/documentation/monitor/logs">
+    Logs, chat history, analytics, evals and alerts.
+  </FigureCard>
+  <FigureCard title="Manage account" figure="padlock" href="/documentation/manage-account/members">
+    Members, API key, billing, call limits and Ringg Spaces.
+  </FigureCard>
+  <FigureCard title="Ringg Labs" figure="phosphor" href="/documentation/ringg-labs/parrot-stt/python-sdk">
+    Parrot <Tooltip tip="Speech-to-text: turning the caller’s audio into text.">STT</Tooltip>, Ringg's speech-to-text model, via the Python SDK or TrueFoundry.
+  </FigureCard>
+</Columns>
+
+Looking for the REST API, the MCP server or what changed recently? [API reference](/api-reference/introduction/quickstart), [MCP server](/resources/mcp-server/workspace-mcp-server/overview), [Changelog](/resources/changelog/changelog).

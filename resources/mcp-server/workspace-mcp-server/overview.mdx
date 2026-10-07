@@ -1,0 +1,98 @@
+---
+title: "Ringg AI MCP server"
+sidebarTitle: "Overview"
+description: "Connect Claude, ChatGPT, Cursor or any MCP client to Ringg AI to place calls, read transcripts and build or edit agents from a chat with your workspace API key."
+boost: 4
+---
+
+Connect the server once with your workspace [API key](/documentation/manage-account/api-key), then ask in plain language, for example "call this number with my appointment agent and tell me what they said": the client places the call, waits for it to end and reads you the transcript.
+
+It is built on the open [Model Context Protocol](https://modelcontextprotocol.io) (MCP), so any client that supports MCP over Streamable HTTP can use it. Everything it does you can also do in the dashboard or the [API](/api-reference/introduction/authentication); MCP is for working from a chat or a coding agent.
+
+## Server URL
+
+```text
+https://mcp.ringg.ai/mcp
+```
+
+Transport: Streamable HTTP. How each client authenticates: [Connect an assistant](/resources/mcp-server/workspace-mcp-server/connect-an-assistant).
+
+### Two servers, two jobs
+
+Ringg has a second MCP server that only searches this documentation. The **MCP** entry in the menu next to **Copy page** on every docs page installs that one, not the workspace server.
+
+| Server | URL | What it does | Needs |
+| --- | --- | --- | --- |
+| Ringg AI MCP server (this chapter) | `https://mcp.ringg.ai/mcp` | Acts on your workspace: places calls, edits agents, reads transcripts | Your workspace API key |
+| [Docs MCP server](/resources/mcp-server/docs-mcp-server/mcp-for-ai-assistants) | `https://docs.ringg.ai/mcp` | Searches and reads these docs as Markdown (`search_ringg_ai`, `query_docs_filesystem_ringg_ai`) | Nothing; public pages only |
+
+Connect both to a coding agent and it can read how a feature works, then do it in your workspace.
+
+## Before you start
+
+<Columns cols={2}>
+  <Card title="A workspace API key" icon="key" href="/documentation/manage-account/api-key" horizontal>
+    The owner generates it under **Settings → API key**.
+  </Card>
+  <Card title="A number for live calls" icon="hash" href="/documentation/inventory/phone-numbers/buy-or-import-a-number" horizontal>
+    Ringg test numbers can't place live calls.
+  </Card>
+</Columns>
+
+## What the client can do
+
+| Area | Tools |
+| --- | --- |
+| Check the workspace | `get_account_overview`: agents, phone numbers, credits, last-30-day metrics and whether you are ready to call |
+| Place and follow calls | `place_call`, `get_call` (can wait until the call ends, then returns transcript, recording and analysis) |
+| Read history and metrics | `list_calls`, `get_call_analytics` |
+| Manage agents | `list_agents`, `get_agent`, `create_agent`, `update_agent`, `list_voices` |
+| Edit prompts | `edit_prompt_section`, `set_agent_prompt` |
+| Manage an agent's tools | `get_agent_tools`, `upsert_api_tool`, `upsert_function_tool`, `remove_agent_tool`, `test_api_tool`, `test_jq` |
+| Build multi-prompt agents | `get_flow_building_guide`, `get_flow`, `create_flow_agent`, `upsert_flow_node`, `upsert_flow_edge`, `delete_flow_node`, `delete_flow_edge`, `publish_flow`, `discard_flow_draft` |
+
+It also offers resources such as `ringg://agents` and ready-made prompts such as `launch_first_call` ([tool reference](/resources/mcp-server/workspace-mcp-server/tool-reference)).
+
+## Quick start
+
+<Steps>
+  <Step title="Add the connector">
+    In Claude or ChatGPT, add `https://mcp.ringg.ai/mcp` as a custom connector and click **Connect**. A Ringg page opens; paste your key once. Claude Code, Cursor and scripts skip the sign-in and send the key as a bearer token. Step by step per client: [Connect an assistant](/resources/mcp-server/workspace-mcp-server/connect-an-assistant).
+  </Step>
+  <Step title="Ask">
+    Start with "What's in my Ringg AI workspace? Am I ready to place calls?"
+    <Check>The client lists your agents, numbers and credits, and suggests a first call.</Check>
+  </Step>
+</Steps>
+
+<Warning>
+`place_call` dials a real phone number and spends credits. Keep your client's confirmation prompt on for it, and check the number and purpose before you approve.
+</Warning>
+
+## Example requests
+
+- "List my voice agents and show me the full configuration of the appointment one."
+- "Create an outbound agent in Hindi that tells customers their order is ready for pickup and asks whether they'll collect it today or tomorrow."
+- "Call +91 98765 43210 with it, callee name Priya, order_id 4821. Wait for the call and summarise what she said."
+- "How did calling go this week? Connection rate, average duration and the most common reasons calls failed."
+
+## Limits
+
+- Calls follow your workspace's usual rules: DND, calling hours, [call limits](/documentation/manage-account/call-limits), credits and caller-ID availability.
+- Connector tokens and registrations expire; see [what Ringg stores](/resources/mcp-server/workspace-mcp-server/security-and-faq#what-ringg-stores).
+- Requests are rate-limited per client.
+- Phone numbers in tool results are masked when your workspace's privacy settings require it.
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Connect an assistant" icon="link" href="/resources/mcp-server/workspace-mcp-server/connect-an-assistant">
+    Claude, ChatGPT, Claude Code, Cursor and other MCP clients.
+  </Card>
+  <Card title="Tool reference" icon="wrench" href="/resources/mcp-server/workspace-mcp-server/tool-reference">
+    Every tool, resource and prompt, with inputs.
+  </Card>
+  <Card title="Security and FAQ" icon="shield-check" href="/resources/mcp-server/workspace-mcp-server/security-and-faq">
+    Sign-in, what is stored and how to revoke access.
+  </Card>
+</Columns>

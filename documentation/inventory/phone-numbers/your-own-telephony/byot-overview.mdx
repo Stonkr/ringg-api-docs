@@ -1,0 +1,89 @@
+---
+title: "Bring your own telephony"
+sidebarTitle: "BYOT overview"
+description: "Connect your own telephony account (Exotel, Plivo, Twilio, Ozonetel, Vobiz, Tata Tele and more) or a SIP trunk to Ringg AI, then import its numbers."
+"og:title": "Bring your own telephony (BYOT) to Ringg AI"
+---
+
+Bring your own telephony (<Tooltip tip="Bring your own telephony: use your existing provider account and numbers with Ringg.">BYOT</Tooltip>) lets your agents call and answer on numbers from your own carrier account instead of numbers bought through Ringg. Use it when you already have numbers, rates or compliance set up with a carrier; if you don't, [buying a Ringg-provided number](/documentation/inventory/phone-numbers/buy-or-import-a-number#buy-a-new-number) from Plivo or Vobiz needs no provider account.
+
+In the dashboard: **Numbers → Add number**, then pick the provider and open **Configure provider** (the gear).
+
+<Frame caption="The Add Numbers dialog: providers on the left, the gear opens Configure provider">
+  <img src="/media/telephony-sip/provider-selection.webp" alt="Add Numbers dialog with a provider list (Exotel, Mcube, Ozonetel, Plivo, Tata Tele, InTalk, Vobiz, VoiceLink, SIP), account, country and region selectors, a gear button, and a Buy new tab listing numbers" />
+</Frame>
+
+## Supported providers
+
+The providers in the **Add number** dialog and where each is documented. Every account form's fields are in [Connect a provider account](/documentation/inventory/phone-numbers/buy-or-import-a-number#connect-a-provider-account-first); which providers and countries your workspace sees is in [Numbers overview](/documentation/inventory/phone-numbers/overview#supported-telephony-providers).
+
+| Provider | Guide |
+|---|---|
+| Exotel | [Connect Exotel](/documentation/inventory/phone-numbers/your-own-telephony/exotel) |
+| Plivo | [Connect Plivo](/documentation/inventory/phone-numbers/your-own-telephony/plivo) |
+| Twilio | [Connect Twilio](/documentation/inventory/phone-numbers/your-own-telephony/twilio) |
+| Ozonetel | [Connect Ozonetel](/documentation/inventory/phone-numbers/your-own-telephony/ozonetel) |
+| <Tooltip tip="Session Initiation Protocol: the standard for connecting voice calls between phone systems.">SIP</Tooltip> | [SIP trunking](/documentation/inventory/phone-numbers/your-own-telephony/sip-trunking) |
+| Ameyo (over SIP, no entry in the dialog; set up with Ringg's team) | [Connect Ameyo](/documentation/inventory/phone-numbers/your-own-telephony/ameyo) |
+| Mcube, Tata Tele, Vobiz, VoiceLink, InTalk (import only), Maqsam | [Connect a provider account](/documentation/inventory/phone-numbers/buy-or-import-a-number#connect-a-provider-account-first) |
+| Custom | Set up by Ringg; shown only when Ringg has created a custom telephony account for your workspace |
+
+If your carrier isn't listed, see [New provider requirements](/documentation/inventory/phone-numbers/your-own-telephony/new-provider-requirements).
+
+## How BYOT works
+
+<Frame caption="The same flow for an Exotel account: connecting it, then importing one of its numbers">
+  <video alt="The same flow for an Exotel account: connecting it, then importing one of its numbers" aria-label="The same flow for an Exotel account: connecting it, then importing one of its numbers" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/numbers-import/poster.webp">
+    <source src="/media/numbers-import/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Prepare the provider side">
+    Get the credentials. For providers that route calls through an app or flow (Exotel, Ozonetel), configure Ringg's URLs there first; each provider guide lists them.
+  </Step>
+  <Step title="Connect the account in Ringg">
+    Open **Configure provider** for the provider, select **Add**, fill the fields and **Save**. See [Connect a provider account](/documentation/inventory/phone-numbers/buy-or-import-a-number#connect-a-provider-account-first).
+  </Step>
+  <Step title="Import the numbers">
+    With the account selected, use **Import your own**, **Buy new** (providers that sell numbers) or **Add custom** (providers that don't share a number list). See [Import a number](/documentation/inventory/phone-numbers/buy-or-import-a-number#import-a-number-you-already-own).
+  </Step>
+  <Step title="Use them">
+    [Attach a number to an inbound agent](/documentation/inventory/phone-numbers/inbound-agent-number), or pick it as caller ID for [calls](/api-reference/endpoint/calling/initiate-individual-call) and [campaigns](/documentation/deploy/campaigns/create-a-campaign).
+
+    <Check>Place a test call in each direction you use. It appears in [Logs](/documentation/monitor/logs).</Check>
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+These apply to every provider account; provider-specific causes are on each provider's page.
+
+<AccordionGroup>
+  <Accordion title="The account won't save">
+    Ringg tests the credentials with most providers when you save. "Invalid credentials for _provider_" means the provider refused them: re-copy them from the provider's console without extra spaces, and check the account isn't suspended and has API access. "Missing required fields for _provider_" names the empty fields.
+  </Accordion>
+  <Accordion title="Numbers don't appear under Import your own">
+    Check the numbers are active and voice-enabled with the provider, and that you selected the right account in **Add number**.
+  </Accordion>
+  <Accordion title="Calls connect but the agent doesn't respond">
+    Check the number is attached to the right agent and the agent is live. Open the call in [Logs](/documentation/monitor/logs) for its status and transcript, and compare it with the provider's call logs.
+  </Accordion>
+  <Accordion title="Poor audio or dropped calls">
+    Test from a second phone and network and check the provider's service status. If it persists, contact Ringg support with the Ringg call ID.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Import your numbers" icon="hash" href="/documentation/inventory/phone-numbers/buy-or-import-a-number#import-a-number-you-already-own">
+    Connect the account and bring its numbers in.
+  </Card>
+  <Card title="Connect a SIP trunk" icon="network" href="/documentation/inventory/phone-numbers/your-own-telephony/sip-trunking">
+    Your own PBX, SBC or contact centre over SIP.
+  </Card>
+  <Card title="Attach a number to an agent" icon="phone-incoming" href="/documentation/inventory/phone-numbers/inbound-agent-number">
+    Route inbound calls to an agent.
+  </Card>
+</Columns>

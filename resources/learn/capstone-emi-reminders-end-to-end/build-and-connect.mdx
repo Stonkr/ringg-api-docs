@@ -1,0 +1,70 @@
+---
+title: "Lesson: Build and connect"
+sidebarTitle: "Build and connect"
+description: "Prove on screen that Ananya has the EMI policy knowledge base attached, a crm_lookup tool that blocks unknown accounts, and a workspace number to call from."
+related:
+  - "Tools": /documentation/build-agents/customize-agent-behaviour/tools/overview
+  - "Attach a number and caller ID": /documentation/inventory/phone-numbers/inbound-agent-number
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 7: Capstone: EMI reminders end to end · Lesson 2 of 4 · 20 minutes**
+
+## Objective
+
+Clear checkpoints 1 to 3: the agent answers from Acme's policies, reads each loan's dues from the CRM before it dials, and calls from a workspace number.
+
+## The scenario
+
+Ananya exists from part 2, and part 3 gave her the knowledge base and the CRM tool. Two things change for production: a loan account the CRM does not know gets no call at all, rather than a call with no amount in it, and calls come from Acme's own number.
+
+## Hands-on
+
+<Steps>
+  <Step title="Checkpoint 1: knowledge attached and mentioned">
+    Click **Assistants** and open `EMI reminder - Hindi` (if it is gone, [create it again](/documentation/build-agents/agents/create-an-agent) and redo part 3). Click [**Knowledge Base**](/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base) in the editor sidebar. The EMI policy knowledge base should be listed below **Select Knowledge Base**; if not, click the button and tick it: "Knowledge base attached successfully". Attachments belong to the version you are editing, so check the version that will take the calls.
+
+    Open **Prompt** and find the `@` mention that tells Ananya to answer late-fee and grace-period questions from the knowledge base. A red mention means it was detached; attaching it again fixes it. No mention: type `@`, pick it under **Knowledge Bases**, and save.
+  </Step>
+  <Step title="Checkpoint 2: CRM lookup that blocks unknown accounts">
+    Open **Advanced Settings → Tools**, then **Pre-call**. Open `crm_lookup` and click **Test API**: the **Response** tab shows the CRM's reply and the response time. Keep only the fields the prompt uses ticked.
+
+    On **Settings**, confirm `404` is still under **Block call on status codes** from part 3; without it, a CRM miss only skips the tool's data and Ananya dials without the dues. Click **Save tool** if you changed anything. In **Prompt**, the first message should read the dues as `@((crm_lookup.<field>))`, with the field names your CRM returns.
+  </Step>
+  <Step title="Checkpoint 3: a workspace number to call from">
+    Click **Test assistant**. Under **Choose a number**, pick the number from part 4, listed under **Your numbers**; **Test numbers** are for testing only. Fill in the variables and call your own phone, as in [part 2, lesson 4](/resources/learn/building-your-first-agent/test-it).
+  </Step>
+</Steps>
+
+## Checkpoint
+
+<Check>
+**Knowledge Base** lists the EMI policy knowledge base and its mention in the prompt is not red. The **Response** tab of `crm_lookup` shows the CRM's reply. Your phone shows your workspace number as the caller, Ananya's first sentence has the amount and date the CRM returned, and the call appears in Logs.
+</Check>
+
+## Exercise
+
+Click the trash icon on the attached knowledge base ("Knowledge base detached successfully"), then open **Prompt**. Expected result: the `@` mention turns red. Tick the knowledge base again under **Select Knowledge Base** and the mention returns to normal.
+
+## What you learned
+
+- A checkpoint is proved, not assumed: the attached list, the **Response** tab and the Logs entry are the proof.
+- **Block call on status codes** turns a CRM miss into no call. Other errors let the call go out without data, the worse outcome for a reminder.
+- The outbound caller ID is chosen per test call and per campaign. **Attach Number** is for agents that answer calls; an outbound single-prompt agent never shows it.
+
+<Quiz
+  question="In production, the CRM has no record for a number on the list. Which outcome do you want, and which setting gives it?"
+  answers={[
+    { text: "No call at all: add 404 under Block call on status codes", correct: true },
+    { text: "A call without the dues: set Retry count to 2", correct: false },
+    { text: "A call that reads the error aloud: tick the error field on Response", correct: false },
+    { text: "A delayed call: raise the request timeout", correct: false },
+  ]}
+  correctFeedback="Right. For a reminder, a call with no amount in it is worse than no call. Block call on status codes aborts the call on 404; any other 4xx or 5xx only skips the tool's data and lets the call go out."
+  incorrectFeedback="Not quite. Retries and timeouts change when the request happens, not whether the call is placed, and nothing reads errors aloud. Block call on status codes with 404 turns a CRM miss into no call, the outcome a reminder needs."
+/>
+
+<RelatedTopics items={[["Tools", "/documentation/build-agents/customize-agent-behaviour/tools/overview"], ["Attach a number and caller ID", "/documentation/inventory/phone-numbers/inbound-agent-number"]]} />

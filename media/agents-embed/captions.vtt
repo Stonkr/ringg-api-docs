@@ -1,0 +1,37 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:04.635
+Open Embed & Widgets
+
+00:00:04.635 --> 00:00:06.060
+Components the agent shows in conversation
+
+00:00:06.060 --> 00:00:10.641
+Click New component to start from a template
+
+00:00:10.641 --> 00:00:15.505
+Shape it in the builder; the preview is live
+
+00:00:15.505 --> 00:00:23.483
+Or describe a change to the AI builder
+
+00:00:23.483 --> 00:00:30.243
+Name it and click Save
+
+00:00:30.243 --> 00:00:31.745
+Mention it in the prompt as @[[callback_request]]
+
+00:00:31.745 --> 00:00:43.317
+Style the widget under Appearance
+
+00:00:43.317 --> 00:00:45.049
+The preview updates as you change it
+
+00:00:45.049 --> 00:00:49.541
+Copy the snippet from Install & domains
+
+00:00:49.541 --> 00:00:54.037
+Flutter apps get their own setup
+
+00:00:54.037 --> 00:01:01.654
+Allow your site under Allowed clients

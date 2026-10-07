@@ -1,106 +1,89 @@
 ---
 openapi: post /public/agent
+description: "Create a single-prompt voice agent from a prompt, language, voice and first message, with optional call settings such as calling window and voicemail."
+related:
+  - "List agents": /api-reference/endpoint/assistant/get-assistants
 ---
 
-Create a new assistant programmatically. This endpoint is best for productized setup flows where your application creates Ringg assistants from templates or customer-provided configuration.
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-## When to use
+Use it when your product sets up agents for its own customers from a template; for a one-off agent, the [dashboard](/documentation/build-agents/agents/create-an-agent) is quicker and also builds multi-prompt agents.
 
-- Onboard customers into a pre-defined assistant template.
-- Create one assistant per team, location, or campaign type.
-- Provision assistants from your own admin backend.
+The response returns the new agent's ID as `data.id`. Store it: calls and campaigns need it as `agent_id`.
+
+## Prompt sections
+
+The prompt fields become the agent's prompt sections, in this order:
+
+| Field | Section in the dashboard |
+|---|---|
+| `introduction_and_objective` | Objective |
+| `response_guidelines` | Response Guidelines |
+| `task` | Conversation Script; `sample_conversations` is added at its end |
+| `faq` | FAQs (empty when `faq` is left out) |
+
+`intro_message` becomes the agent's first message.
+
+`primary_language` and `secondary_language` accept `en-US`, `en-GB`, `en-AU`, `en-IN`, `hi-IN`, `ta-IN`, `te-IN`, `bn-IN`, `mr-IN`, `kn-IN`, `ms-MY`, `zh-CN`, `od-IN`, `pa-IN` and `my-MM`. The voice must support the language, or the request returns `400` with code `VOICE_LANGUAGE_MISMATCH`.
 
 ## Call settings
 
-Pass `call_config` to fix the assistant's call behaviour at creation time instead of following up in the dashboard. Every field is optional — omit the block, or any key in it, to accept the default.
+`call_config` sets how the agent's calls behave. Every key is optional; leave one out to keep its default.
 
-| Field | Purpose | Default |
+| Field | What it controls | Default |
 |---|---|---|
-| `call_time` | Daily window the assistant may place calls in: `call_start_time` and `call_end_time` as `HH:MM` 24-hour, plus the `timezone` they are expressed in. | `09:00`-`21:00` `Asia/Kolkata` |
-| `max_call_length` | Hard cap on call duration, in seconds. | `240` |
-| `idle_timeout_warning` | Seconds of caller silence before the assistant checks in ("Are you still there?"). `0` disables the check-in. | `5` |
-| `idle_timeout_end` | Seconds of caller silence before the call is dropped. | `10` |
-| `noise_filter_config` | Background-noise cancellation on the caller's audio: `filter_noise` to switch it on, `noise_suppression_level` (0-100) for strength. | off, level `80` |
-| `voicemail` | Voicemail handling: `detect` to switch detection on, `action` for what happens next (`end`, `summarise`, `static_message`), `retry` to re-queue the call for a later attempt. | detect and retry on, action `end` |
-| `background_audio_config` | Ambient audio mixed under the assistant's speech: `audio_id` (`office_ambience` is the only track) and `volume` as a `0.0`-`1.0` fraction. Omit the object to keep it off. | off |
-| `mute_during_intro` | When `true`, the caller cannot interrupt the intro message. Set `false` to make the first message interruptible. | `true` |
+| `call_time` | Daily calling window: `call_start_time` and `call_end_time` (`HH:MM`, 24-hour) in `timezone` | `09:00`–`21:00`, `Asia/Kolkata` |
+| `max_call_length` | Hard cap on call length, in seconds (10–3600) | `240` |
+| `idle_timeout_warning` | Seconds of caller silence (0–600) before the agent asks if they are still there; `0` turns the check-in off | `5` |
+| `idle_timeout_end` | Seconds of caller silence (1–600) before the call ends; must be greater than `idle_timeout_warning` | `10` |
+| `noise_filter_config` | Noise cancellation on the caller's audio: `filter_noise` on/off, `noise_suppression_level` 0–100 | off, `80` |
+| `voicemail` | `detect` voicemail, then `action`: `end`, `summarise`, or `static_message` (speaks the `static_message` text); `retry` re-queues the call | detect on, `end`, retry on |
+| `background_audio_config` | Ambient track under the agent's voice: `audio_id` (only `office_ambience`) and `volume` from `0.0` to `1.0` | off |
+| `mute_during_intro` | `true`: the caller cannot interrupt the first message | `true` |
 
 ```json
 {
-  "agent_name": "Support Assistant",
-  "introduction_and_objective": "You are a support agent for Acme Corp.",
-  "response_guidelines": "Be polite, helpful, and concise.",
-  "task": "Help customers with their orders.",
+  "agent_name": "EMI reminder",
+  "introduction_and_objective": "You are Asha, calling Acme Lending customers about an upcoming EMI.",
+  "response_guidelines": "Be polite and brief. Confirm the due date before ending the call.",
+  "task": "Remind the customer of the EMI due date and amount, and note if they want a callback.",
   "primary_language": "en-IN",
   "voice_id": "your-voice-id",
-  "intro_message": "Hello, this is Sarah from Acme Corp.",
+  "intro_message": "Hello, this is Asha from Acme Lending.",
   "call_config": {
-    "call_time": {
-      "call_start_time": "10:00",
-      "call_end_time": "18:30",
-      "timezone": "America/New_York"
-    },
-    "max_call_length": 600,
+    "call_time": { "call_start_time": "10:00", "call_end_time": "18:30", "timezone": "Asia/Kolkata" },
+    "max_call_length": 300,
     "idle_timeout_warning": 8,
     "idle_timeout_end": 20,
-    "noise_filter_config": { "filter_noise": true, "noise_suppression_level": 95 },
     "voicemail": { "detect": true, "action": "end", "retry": true },
-    "background_audio_config": { "audio_id": "office_ambience", "volume": 0.35 },
     "mute_during_intro": false
   }
 }
 ```
 
-### Calling window and timezones
+Get `voice_id` from [List voices](/api-reference/endpoint/assistant/get-assistant-voices).
 
-Outside the window an outbound call is not dialled immediately, and retries are pushed to the next opening. The window is per assistant; a campaign or an individual call can override it.
+### Calling window
 
-**Any IANA timezone is supported** — this is not India-only. `Asia/Kolkata` is merely the default when you omit it.
+Outbound calls placed outside the window wait for the next opening, and so do retries. A campaign or an individual call can set its own window instead. The window may cross midnight: `22:00` to `06:00` is valid.
 
-```json
-{ "call_time": { "call_start_time": "09:00", "call_end_time": "17:30", "timezone": "America/New_York" } }
-{ "call_time": { "call_start_time": "08:00", "call_end_time": "20:00", "timezone": "Europe/London" } }
-{ "call_time": { "call_start_time": "10:00", "call_end_time": "19:00", "timezone": "Asia/Dubai" } }
-{ "call_time": { "call_start_time": "09:00", "call_end_time": "18:00", "timezone": "Australia/Sydney" } }
-{ "call_time": { "call_start_time": "00:00", "call_end_time": "23:59", "timezone": "UTC" } }
-```
-
-A window may cross midnight — `"call_start_time": "22:00"` with `"call_end_time": "06:00"` is a valid overnight window.
+`timezone` accepts any IANA zone, such as `America/New_York`, `Europe/London`, `Asia/Dubai`, `Australia/Sydney` or `UTC`.
 
 <Warning>
-**Always use the full `Region/City` form.** Abbreviations behave in two different, equally unhelpful ways:
-
-- `IST`, `PST` and `CST` are **rejected** — they are not IANA zones.
-- `EST`, `MST`, `HST` and `GMT` are **accepted, and are a trap**. They are fixed-offset zones that never observe daylight saving, so an assistant on `EST` runs an hour behind actual New York time for the ~8 months that `America/New_York` is on EDT. Use `America/New_York`, not `EST`.
-
-Times must be zero-padded 24-hour: send `09:00`, not `9:00` or `9:00 AM`. Both the window and the timezone are validated when you create the assistant, so a bad value fails the create call rather than every call the assistant later tries to place.
+Use the `Region/City` form. `IST`, `PST` and `CST` are rejected. `EST`, `MST`, `HST` and `GMT` are accepted but never change for daylight saving, so an agent on `EST` calls an hour late for most of the year compared with `America/New_York`.
 </Warning>
 
-<Note>
-`scheduled_at` is **not** accepted inside `call_time` here. It schedules one specific call, so on an assistant it would pin every call that assistant ever places to the same timestamp. Pass it per call, on the [individual call](/api-reference/endpoint/calling/initiate-individual-call) endpoint's own `call_config.call_time`.
-</Note>
+### Validation rules
 
-<Warning>
-`idle_timeout_warning` must be **less than** `idle_timeout_end`, otherwise the request is rejected. If the warning fires at or after the hangup, the check-in can never be spoken. Use `0` to disable the check-in and keep only the hangup.
-</Warning>
+The request fails, rather than the agent's later calls, when:
 
-<Note>
-Two easy ones to get backwards:
+- a time is not zero-padded 24-hour (`09:00` works, `9:00` and `9:00 AM` do not);
+- `idle_timeout_warning` is not less than `idle_timeout_end`;
+- `background_audio_config.volume` is outside `0.0`–`1.0` (send `0.5`, not `50`).
 
-- `background_audio_config.volume` is a fraction between `0.0` and `1.0`, not a percentage. `50` is rejected; send `0.5`.
-- `mute_during_intro` reads as the opposite of "interruptible". `true` (the default) means the caller **cannot** cut in over the intro message.
-</Note>
+## Notes
 
-<Note>
-`call_config` is accepted on create only. To change these settings afterwards, use the dashboard — the [edit assistant](/api-reference/endpoint/assistant/edit-assistant) endpoint does not accept them yet, and they are not returned by [get assistant](/api-reference/endpoint/assistant/get-assistant-by-id).
-</Note>
+- To change call settings after creation, use `edit_call_config` on [Edit agent settings](/api-reference/endpoint/assistant/edit-assistant), or [Call settings](/documentation/build-agents/customize-agent-behaviour/call-settings) in the dashboard. `PATCH /public/agent/{agent_id}` (Update Agent) changes the prompt fields, language, voice, first message, type and variables, but not `call_config`.
+- Before running a campaign, check the new agent with one [individual call](/api-reference/endpoint/calling/initiate-individual-call).
 
-## Integration notes
-
-- For most teams, creating the assistant in the dashboard first is simpler.
-- Store the returned `agent_id`; it is required for calls and campaigns.
-- Keep prompts concise and make every variable explicit in `custom_args_values` or campaign CSV mappings.
-
-## After creation
-
-Use [get assistants](/api-reference/endpoint/assistant/get-assistants) to confirm the assistant is visible, then test with one [individual call](/api-reference/endpoint/calling/initiate-individual-call) before using campaigns.
+<RelatedTopics items={[["List agents", "/api-reference/endpoint/assistant/get-assistants"]]} />

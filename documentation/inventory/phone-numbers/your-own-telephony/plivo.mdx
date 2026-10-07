@@ -1,0 +1,62 @@
+---
+title: "Plivo"
+sidebarTitle: "Plivo"
+description: "Connect your own Plivo account to Ringg AI with your Auth ID and Auth Token, import or buy Plivo numbers, and use them for inbound and outbound agent calls."
+"og:title": "Connect Plivo to Ringg AI"
+---
+
+Connect your own Plivo account when you already have Plivo numbers or rates you want to keep; your agents then call and answer on those numbers like any other [number](/documentation/inventory/phone-numbers/overview). This is one of the [bring-your-own-telephony](/documentation/inventory/phone-numbers/your-own-telephony/byot-overview) options. You don't need a Plivo account to use Plivo numbers: in **Add number**, Plivo also offers Ringg-provided numbers you [buy through Ringg](/documentation/inventory/phone-numbers/buy-or-import-a-number#buy-a-new-number).
+
+## Before you start
+
+<Columns cols={3}>
+  <Card title="A Plivo account" icon="building" href="https://console.plivo.com">
+    Active, with credit for number rental and calls.
+  </Card>
+  <Card title="Your Auth ID and Auth Token" icon="key" href="https://console.plivo.com">
+    Both are in the Plivo console.
+  </Card>
+  <Card title="Voice-enabled Plivo numbers" icon="hash" href="/documentation/inventory/phone-numbers/buy-or-import-a-number#international-numbers">
+    Or a plan to buy them: in India and, with international calling enabled for your workspace, the United States.
+  </Card>
+</Columns>
+
+## Connect the account
+
+<Steps>
+  <Step title="Open the Plivo account form">
+    Go to **Numbers → Add number**, select **Plivo**, and open **Configure provider** (the gear). Select **Add**.
+  </Step>
+  <Step title="Fill in the fields and save">
+    | Field | Value |
+    |---|---|
+    | **Name** | Your label, for example `Plivo India` |
+    | **Auth ID** | Your Plivo Auth ID |
+    | **Auth Token** | Your Plivo Auth Token |
+    | **App ID** | Optional. Leave it blank: Ringg creates its own app in your Plivo account when you save. |
+
+    <Check>"BYOT added successfully." appears and the account is available in the telephony account selector.</Check>
+  </Step>
+</Steps>
+
+## Add and use numbers
+
+With your Plivo account selected in **Add number**, both **Import your own** and **Buy new** are available. Outbound calls need no setup on the number. For inbound, Ringg links the number to its app when you [attach it to an agent](/documentation/inventory/phone-numbers/inbound-agent-number) and unlinks it when you detach it. Importing, attaching and testing the numbers are the same for every provider: steps 3 and 4 of [How BYOT works](/documentation/inventory/phone-numbers/your-own-telephony/byot-overview#how-byot-works).
+
+## Troubleshooting
+
+The account, import, no-response and audio problems common to every provider are in [BYOT troubleshooting](/documentation/inventory/phone-numbers/your-own-telephony/byot-overview#troubleshooting).
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Import your numbers" icon="hash" href="/documentation/inventory/phone-numbers/buy-or-import-a-number#import-a-number-you-already-own">
+    Bring Plivo numbers into Ringg.
+  </Card>
+  <Card title="Attach a number to an agent" icon="phone-incoming" href="/documentation/inventory/phone-numbers/inbound-agent-number">
+    Answer inbound calls on a Plivo number.
+  </Card>
+  <Card title="Plivo documentation" icon="book" href="https://www.plivo.com/docs/">
+    Plivo's API and console docs.
+  </Card>
+</Columns>

@@ -1,0 +1,61 @@
+---
+title: "Ringg Spaces by API"
+sidebarTitle: "Ringg Spaces by API"
+description: "Manage a Ringg Space family with the primary workspace's API key: create spaces, read the family, allocate concurrency and reallocate credit limits or balances."
+---
+
+## Manage the family by API
+
+Every family endpoint takes the primary workspace's [API key](/documentation/manage-account/api-key) in `X-API-KEY`; there is no workspace header to set. A Ringg Space's own key works only inside that Ringg Space; family endpoints refuse it, usually with `403 Sub-workspaces are not enabled for this workspace.` If the primary's key gets that `403`, ask Ringg support to enable the feature for your primary workspace.
+
+| Task | Endpoint |
+|---|---|
+| Create a Ringg Space | [Create Ringg Space](/api-reference/endpoint/sub-workspace/create-sub-workspace) |
+| Read the family, allocations and usage | [Get Ringg Spaces](/api-reference/endpoint/sub-workspace/get-sub-workspaces) |
+| List everyone with access | [List Family Members](/api-reference/endpoint/sub-workspace/list-family-members) |
+| Allocate concurrency | [Allocate Concurrency](/api-reference/endpoint/sub-workspace/allocate-concurrency) |
+| Set credit limits (postpaid) | [Reallocate Credit Limits](/api-reference/endpoint/sub-workspace/reallocate-credit-limits) |
+| Set balances (prepaid) | [Reallocate Credit Balances](/api-reference/endpoint/sub-workspace/reallocate-credit-balances) |
+
+Two things to know before you parse responses:
+
+- **Money formats.** The read endpoints and the concurrency endpoint return amounts as JSON numbers (`200000.0`); the two allocation endpoints return decimal strings (`"200000.00"`). Parse both before doing arithmetic. In requests, amounts can be numbers or numeric strings; they are rounded to 2 decimals.
+- **Agents inside a Ringg Space.** There is no family endpoint for this: a Ringg Space is a normal workspace, so call [Create agent](/api-reference/endpoint/assistant/create-agent) with that Ringg Space's own API key. The agent is invisible from the primary and from sibling Ringg Spaces.
+
+To give a Ringg Space 20 concurrent calls (`PATCH /workspace/sub/{sub_workspace_id}/concurrency`):
+
+<CodeGroup>
+```bash cURL
+curl -X PATCH "https://prod-api.ringg.ai/ca/api/v0/workspace/sub/$SUB_WORKSPACE_ID/concurrency" \
+  -H "X-API-KEY: $RINGG_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"concurrency": 20}'
+```
+
+```javascript JavaScript
+const response = await fetch(
+  `https://prod-api.ringg.ai/ca/api/v0/workspace/sub/${process.env.SUB_WORKSPACE_ID}/concurrency`,
+  {
+    method: "PATCH",
+    headers: {
+      "X-API-KEY": process.env.RINGG_API_KEY,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ concurrency: 20 }),
+  }
+);
+console.log(await response.json());
+```
+
+```python Python
+import os
+import requests
+
+response = requests.patch(
+    f"https://prod-api.ringg.ai/ca/api/v0/workspace/sub/{os.environ['SUB_WORKSPACE_ID']}/concurrency",
+    headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+    json={"concurrency": 20},
+)
+print(response.json())
+```
+</CodeGroup>

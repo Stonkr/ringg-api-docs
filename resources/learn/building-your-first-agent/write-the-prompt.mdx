@@ -1,0 +1,90 @@
+---
+title: "Lesson: Write the prompt"
+sidebarTitle: "Write the prompt"
+description: "Rewrite the EMI reminder agent's first message and prompt sections to confirm the customer, state the amount and date, and ask for a payment date, then save."
+related:
+  - "Write the prompt": /documentation/build-agents/customize-agent-behaviour/agent-prompt
+  - "Write prompts for voice": /documentation/build-agents/customize-agent-behaviour/agent-prompt#write-prompts-for-voice
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 2: Building your first agent · Lesson 2 of 4 · 15 minutes**
+
+## Objective
+
+Turn the template's prompt into Ananya's: a first message that greets the customer by name, and a script that confirms who she is speaking to, states the amount and due date, and asks when they will pay.
+
+## The scenario
+
+The template's prompt knows Acme Lending and the purpose of the call, but not how Ananya should open, what to do when Rahul says "call me later", or how to read out ₹4,500. For now the amount and date are written into the script; part 3 turns them into variables.
+
+## Hands-on
+
+<Frame caption="Editing and saving a prompt in the dashboard">
+  <video alt="Editing and saving a prompt in the dashboard" aria-label="Editing and saving a prompt in the dashboard" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/agents-prompt/poster.webp">
+    <source src="/media/agents-prompt/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open the Prompt section">
+    Under **Assistants**, open **EMI reminder - Hindi**, then **Prompt**. The top editor is **First message**; below it is one editor per section the template supplied, typically **Objective**, **Conversation Script**, **FAQs** and a section such as Response Guidelines. Sections cannot be added or renamed.
+  </Step>
+  <Step title="Rewrite the first message">
+    Replace it with a greeting the customer can interrupt, that names Ananya and asks a question within about ten seconds:
+
+    `Hello @{{callee_name}}, this is Ananya from Acme Lending. Is this a good time to talk?`
+
+    To insert the name, type `@` and pick **Callee Name** under **Custom Variables**; it becomes a chip. Keep **Interruptible** on, so a customer who starts talking is heard.
+  </Step>
+  <Step title="Set the objective">
+    In **Objective**, say who Ananya is and the goal: a polite reminder assistant for Acme Lending who confirms the customer's identity, states the EMI, and gets a payment date.
+  </Step>
+  <Step title="Script the conversation">
+    In **Conversation Script**, number the steps and say what to do on each answer:
+
+    1. Confirm you are speaking to `@{{callee_name}}`. If it is the wrong person, apologise and end the call.
+    2. State that the EMI of ₹4,500 is due on 15 October.
+    3. Ask when they will pay. If they say "call me later", ask for a day and time and end the call.
+    4. Once a date is confirmed, thank them and end the call.
+  </Step>
+  <Step title="Say how to speak">
+    In the guidelines section, add length and number rules: "Reply in at most two short sentences. Ask one question at a time. Say amounts in words, in rupees: ₹4,500 is 'four thousand five hundred rupees'. Say dates as '15 October', never '15/10'."
+  </Step>
+  <Step title="Save">
+    While you have unsaved edits, **Test assistant** in the top bar is replaced by **Discard** and **Save**. Click **Save**, or press Cmd+S (macOS) or Ctrl+S (Windows).
+  </Step>
+</Steps>
+
+## Checkpoint
+
+<Check>
+"Changes saved successfully" appears, **Test assistant** is back in the top bar, and no token in any section is red with a wavy underline.
+</Check>
+
+## Exercise
+
+In **Conversation Script**, type `@{{calee_name}}` (one l) by hand. Expected result: the token turns red with a wavy underline, because the agent has no variable of that name. Replace it by typing `@` and picking **Callee Name**, so it becomes a chip, then save.
+
+## What you learned
+
+- The first message is heard, not read: greet, say who you are, and ask a question early.
+- `@` inserts the agent's variables, tools and knowledge bases as chips; a red token is something the agent cannot fill.
+- Edits are held until **Save**; **Test assistant** disappears until you save or discard.
+
+<Quiz
+  question="You type @{{customer_name}} by hand into the Conversation Script and it turns red with a wavy underline. What does that mean, and what fixes it?"
+  answers={[
+    { text: "The variable is too long; shorten the name", correct: false },
+    { text: "The agent has no variable of that name; type @ and pick an existing one, or create it", correct: true },
+    { text: "Hand-typed tokens are never allowed; delete it and use plain text", correct: false },
+    { text: "The prompt has unsaved changes; click Save", correct: false },
+  ]}
+  correctFeedback="Right. A red token names something the agent cannot fill. The @ menu inserts only variables, tools and knowledge bases the agent has, so pick Callee Name from it, or create the variable, and the token becomes a chip."
+  incorrectFeedback="Not quite. Red with a wavy underline means the agent has no variable of that name. Saving does not fix it, and hand-typed tokens are fine once they match a real variable: type @ and pick it, or create it."
+/>
+
+<RelatedTopics items={[["Write the prompt", "/documentation/build-agents/customize-agent-behaviour/agent-prompt"], ["Write prompts for voice", "/documentation/build-agents/customize-agent-behaviour/agent-prompt#write-prompts-for-voice"]]} />

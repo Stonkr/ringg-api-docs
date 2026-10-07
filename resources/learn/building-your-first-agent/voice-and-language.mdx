@@ -1,0 +1,83 @@
+---
+title: "Lesson: Voice and language"
+sidebarTitle: "Voice and language"
+description: "Confirm the EMI reminder agent's languages, compare voices by provider and tag, preview them in English and Hindi, set the speaking speed, and save."
+related:
+  - "Voice and language": /documentation/build-agents/customize-agent-behaviour/voice-and-language
+  - "Write prompts for voice": /documentation/build-agents/customize-agent-behaviour/agent-prompt#write-prompts-for-voice
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 2: Building your first agent · Lesson 3 of 4 · 10 minutes**
+
+## Objective
+
+Compare voices properly, hear Ananya in both of her languages, pick a speaking speed, and confirm Hindi stays her secondary language.
+
+## The scenario
+
+Acme's callers speak English or Hindi, and Ananya reads out an amount and a date on every call. Lesson 1 picked a voice in a hurry; this is where the choice gets made.
+
+## Hands-on
+
+<Frame caption="Changing language, voice and speed in the dashboard">
+  <video alt="Changing language, voice and speed in the dashboard" aria-label="Changing language, voice and speed in the dashboard" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/agents-voice/poster.webp">
+    <source src="/media/agents-voice/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open the Voice section">
+    In the agent editor, click **Voice**. It has three parts, **Language**, **Voice** and **Voice speed**, and one **Save** button at the bottom for all of them.
+  </Step>
+  <Step title="Confirm the languages">
+    **Primary Language** should read English (India) and **Secondary Language** Hindi, as set when you created the agent. Do not change the primary language now: changing it clears the secondary language and the selected voice, and you would have to pick both again.
+
+    Leave **Add more languages** alone. Additional languages are for callers who speak languages the agent does not, and saving them switches the speech-to-text provider; Acme's callers speak English or Hindi, which are already covered.
+  </Step>
+  <Step title="Narrow the grid">
+    The **Voice** part lists voices that speak the primary or secondary language. The tabs along the top are **All** and one tab per voice provider in the list; the tag chips under them narrow it further, and combine, so a voice must have every selected tag. Click **Clear** to reset. Click **See more** if the voice you want is not in the first rows.
+  </Step>
+  <Step title="Compare three voices in both languages">
+    Clicking a voice selects it and plays its preview. Because Ananya has a secondary language, the **Preview language** icon next to the tabs switches the preview between English and Hindi: listen to each candidate in both before deciding. A voice that cannot speak the primary language opens a **Change agent language?** dialog; click **Cancel** and pick another.
+  </Step>
+  <Step title="Set the speed">
+    **Voice speed** has six steps from **0.7x** to **1.2x**, with **1.0x** the default. The play button beside it previews the selected voice at that speed. Ananya reads out an amount and a date, so compare **0.9x** and **1.0x** and keep the one where "four thousand five hundred rupees" is easiest to follow.
+  </Step>
+  <Step title="Save">
+    Click **Save**.
+  </Step>
+</Steps>
+
+## Checkpoint
+
+<Check>
+"Voice settings saved" appears, **Save** is disabled again, and the voice you chose is first in the grid.
+</Check>
+
+## Exercise
+
+Give the speech recogniser the words it is most likely to mishear on Acme's calls. Under **Advanced Settings → Keyword Boosting**, type `Acme Lending, EMI, NACH` and click **Add**. Expected result: "Vocabulary updated successfully" appears and each word shows as a chip below the field; there is no separate **Save** for this list.
+
+## What you learned
+
+- Language, voice and speed are one section with one **Save**; changing the primary language clears the secondary language and the voice.
+- With a secondary language, the **Preview language** icon lets you hear a voice in both languages before you commit.
+- Speed runs from 0.7x to 1.2x, default 1.0x, and the play button previews the selected voice at the chosen speed.
+
+<Quiz
+  question="Acme decides Ananya should speak Marathi as her primary language instead of English (India). What happens when you change Primary Language?"
+  answers={[
+    { text: "Only the voice grid refreshes; everything else stays", correct: false },
+    { text: "The secondary language and the selected voice are cleared, so you pick both again", correct: true },
+    { text: "The speed resets to 1.0x and the voice stays", correct: false },
+    { text: "Nothing changes until you place a test call", correct: false },
+  ]}
+  correctFeedback="Right. Changing the primary language clears the secondary language and the selected voice, because the voice grid lists only voices that speak the agent's languages. Speed is untouched. That is why the lesson keeps the primary language as it was."
+  incorrectFeedback="Not quite. The primary language decides which voices are offered, so changing it clears the secondary language and the selected voice; you choose both again and save. Speed is not affected."
+/>
+
+<RelatedTopics items={[["Voice and language", "/documentation/build-agents/customize-agent-behaviour/voice-and-language"], ["Write prompts for voice", "/documentation/build-agents/customize-agent-behaviour/agent-prompt#write-prompts-for-voice"]]} />

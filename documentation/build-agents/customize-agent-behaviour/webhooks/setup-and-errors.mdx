@@ -1,0 +1,255 @@
+---
+title: "Webhook setup and errors"
+sidebarTitle: "Setup and errors"
+description: "Receive Ringg AI call and chat events on your server: subscribe an endpoint, meet the endpoint requirements, use the idempotency key, and handle retries and errors."
+"og:title": "Real-Time Event Webhooks Setup | Ringg AI Developers"
+boost: 4
+related:
+  - "Event Subscription": /documentation/build-agents/customize-agent-behaviour/event-subscription
+  - "Call events": /documentation/build-agents/customize-agent-behaviour/webhooks/call-events
+  - "WhatsApp chat events": /documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events
+  - "Webhook field reference": /documentation/build-agents/customize-agent-behaviour/webhooks/field-reference
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Webhooks push an [agent's](/documentation/build-agents/agents/agent-types) call events to your backend as they happen, so you don't poll the Ringg API. The dashboard calls a subscription an **Event Subscription**.
+
+## Before you start
+
+<Columns cols={2}>
+  <Card title="An API key" icon="key" href="/documentation/manage-account/api-key" horizontal>
+    To manage subscriptions with the API.
+  </Card>
+  <Card title="An agent ID" icon="bot" href="/documentation/build-agents/agents/agent-types" horizontal>
+    Subscriptions belong to one agent.
+  </Card>
+</Columns>
+
+## Event types
+
+| Event type | Fires when | Offered to |
+|---|---|---|
+| `call_started` | An outbound call or web call begins (not inbound phone calls) | Voice and web agents |
+| `call_ringing` | A dashboard test call is dialled; sent with `call_started` | Voice and web agents |
+| `call_ongoing` | Same moment as `call_ringing` | Voice and web agents |
+| `call_completed` | A call attempt finishes | Voice and web agents |
+| `chat_completed` | A WhatsApp conversation ends | WhatsApp agents |
+| `recording_completed` | The recording is processed and ready | Voice and web agents |
+| `platform_analysis_completed` | Ringg's built-in analysis completes | All agents |
+| `client_analysis_completed` | Your [Advanced Analysis](/documentation/build-agents/customize-agent-behaviour/advanced-analysis) completes | All agents |
+| `all_processing_completed` | All of the above processing is done | All agents |
+
+Subscribing an agent to an event its channel never fires, such as `chat_completed` on a voice agent, is rejected with `400`.
+
+For most integrations, `all_processing_completed` is enough: one request with the transcript, recording and both analyses. Add earlier events only when your product shows live progress. WhatsApp payloads are in [WhatsApp events](/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events#whatsapp-chat-events).
+
+## Configure subscriptions
+
+### In the dashboard
+
+Open the agent's **Event Subscription** tab, add the callback URL, the events and any headers, and save. The full walkthrough, including the rules the form enforces, is in [Event Subscription](/documentation/build-agents/customize-agent-behaviour/event-subscription).
+
+<Frame caption="Adding an event subscription in the dashboard">
+  <video alt="Adding an event subscription in the dashboard" aria-label="Adding an event subscription in the dashboard" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/agents-event-subscription/poster.webp">
+    <source src="/media/agents-event-subscription/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+### With the API
+
+Send [Edit Assistant](/api-reference/endpoint/assistant/edit-assistant) (`PATCH /agent/v1`) with `operation: "edit_event_subscriptions"` and the agent's complete subscription list in `event_subscriptions`.
+
+```bash Subscribe to all_processing_completed
+curl --request PATCH "https://prod-api.ringg.ai/ca/api/v0/agent/v1" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "operation": "edit_event_subscriptions",
+    "agent_id": "00000000-0000-4000-8000-0000000000a1",
+    "event_subscriptions": [
+      {
+        "event_type": ["all_processing_completed"],
+        "callback_url": "https://api.example.com/webhooks/ringg",
+        "method_type": "POST",
+        "headers": {
+          "Authorization": "Bearer your-webhook-receiver-token"
+        }
+      }
+    ]
+  }'
+```
+
+A successful request returns:
+
+```json
+{
+  "message": "Agent updated successfully!",
+  "agent_id": "00000000-0000-4000-8000-0000000000a1"
+}
+```
+
+Each subscription takes:
+
+<ResponseField name="event_type" type="string[]" required>
+  One or more events from the table above, delivered to this URL. Put several in one subscription to get live progress and the final result at the same endpoint, for example `["call_started", "call_completed", "all_processing_completed"]`.
+</ResponseField>
+<ResponseField name="callback_url" type="string" required>
+  Your HTTPS endpoint.
+</ResponseField>
+<ResponseField name="method_type" type="string" required>
+  `GET`, `POST`, `PUT` or `PATCH`. Use `POST` unless your endpoint needs otherwise.
+</ResponseField>
+<ResponseField name="headers" type="object">
+  String keys and values Ringg sends to your endpoint with every event. They don't authenticate your call to Ringg; `X-API-KEY` does that.
+</ResponseField>
+
+Rules for the list:
+
+- The list you send replaces the agent's existing subscriptions. Include every subscription you want to keep; one you leave out is removed. Send `[]` to remove them all.
+- Up to 4 subscriptions per event type on one agent, and no `callback_url` and event type pair twice; either fails with `400` ([limits and duplicates](/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors#subscription-limits-and-duplicates)).
+
+## Endpoint requirements
+
+- Use HTTPS and accept the method you configured.
+- Return a `2xx` status within 30 seconds; see [success criteria](/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors#success-criteria). Store the event first, then process it in your own queue.
+- Handle the same event arriving twice (next section).
+- Log `call_id`, `event_type` and the time you received it, for debugging.
+
+## Idempotency key
+
+Deduplicate on `call_id` plus `event_type` (`chat_id` plus `event_type` for WhatsApp). If a record with that key exists, update it instead of inserting a new one.
+
+```javascript Deduplicate on call_id + event_type
+app.post("/webhooks/ringg", async (req, res) => {
+  const event = req.body;
+  const dedupeKey = `${event.call_id}:${event.event_type}`;
+
+  await saveWebhookEventOnce(dedupeKey, event);
+
+  res.status(200).send();
+});
+```
+
+Voicemail redials and callbacks are separate calls with their own `call_id`. Link them with `parent_call_id`; see [Linking retries and callbacks](/documentation/build-agents/customize-agent-behaviour/webhooks/call-events#linking-retries-and-callbacks-to-the-original-call).
+
+## Authentication patterns
+
+Put a secret you control in the subscription's `headers`, which Ringg sends with every event, and reject requests that don't carry it. For example:
+
+- `Authorization: Bearer your-webhook-receiver-token`
+- `X-Webhook-Secret: your-shared-secret`
+- Authentication at an API gateway in front of your service
+
+## Success criteria
+
+| | Requirement |
+|---|---|
+| Status | Any `2xx` |
+| Response time | Under 30 seconds |
+| Body | Optional; any valid JSON |
+
+Anything else is a failed delivery: another status code, no answer within 30 seconds, a refused connection, an invalid TLS certificate or a DNS failure.
+
+## Retry logic
+
+A `4xx` response other than `429` is final and never retried. Other failures are retried:
+
+| Events | Retries |
+|---|---|
+| `call_started`, `call_ringing`, `call_ongoing` and every WhatsApp chat event | 3 attempts in all, over about 30 seconds. After a `429`, the next attempt waits for your `Retry-After`. |
+| `call_completed`, the analysis events and `all_processing_completed` | One attempt straight away, then more attempts later, spread over a longer period |
+
+So return a `5xx` for a temporary problem, not a `4xx`. Because deliveries are retried:
+
+- **The same event can arrive more than once.** Deduplicate on `call_id` plus `event_type` ([idempotency key](/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors#idempotency-key)).
+- **An event can be lost if your endpoint stays down.** After an outage, fetch the calls you missed with [Get Call History](/api-reference/endpoint/history/get-call-history) and [Get Call Details](/api-reference/endpoint/history/get-call-details).
+
+Keep the handler fast: store the event, return `2xx`, and do the work afterwards.
+
+## Common configuration issues
+
+### Subscription limits and duplicates
+
+| Situation | Result |
+|---|---|
+| Several callback URLs for the same event type | Allowed, up to 4 subscriptions per event type on one agent |
+| A fifth subscription for the same event type | `400` |
+| The same `callback_url` and event type listed twice | `400` |
+
+To send `call_completed` to two URLs, list both in one request:
+
+```bash Two URLs for call_completed
+curl --request PATCH "https://prod-api.ringg.ai/ca/api/v0/agent/v1" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "operation": "edit_event_subscriptions",
+    "agent_id": "00000000-0000-4000-8000-0000000000a1",
+    "event_subscriptions": [
+      {
+        "event_type": ["call_completed"],
+        "callback_url": "https://crm.example.com/webhooks/calls",
+        "method_type": "POST"
+      },
+      {
+        "event_type": ["call_completed"],
+        "callback_url": "https://reports.example.com/webhooks/calls",
+        "method_type": "POST"
+      }
+    ]
+  }'
+```
+
+`event_subscriptions` is the agent's complete list, so a later request that sends only the second subscription removes the first. Keep the full list in your own configuration and send it whole on every change.
+
+When several internal services need the same event, one URL that fans out is simpler than several subscriptions:
+
+```javascript Fan out one delivery
+app.post("/webhooks/unified", async (req, res) => {
+  const event = req.body;
+
+  if (event.event_type === "call_completed") {
+    await enqueue("crm-sync", event);
+    await enqueue("reporting", event);
+  }
+
+  res.status(200).json({ received: true });
+});
+```
+
+### Agent ID errors
+
+A subscription request with a wrong or deleted `agent_id` fails with `404`. List your agents with [Get Assistants](/api-reference/endpoint/assistant/get-assistants) and copy the right `id`:
+
+```bash List agents
+curl "https://prod-api.ringg.ai/ca/api/v0/agent/all" \
+  --header "X-API-KEY: $RINGG_API_KEY"
+```
+
+### Events not arriving
+
+<AccordionGroup>
+  <Accordion title="No requests reach my server">
+    Check that the subscription lists your URL and the event (in the dashboard under the agent's **Event Subscription**, or with [Get Assistant by ID](/api-reference/endpoint/assistant/get-assistant-by-id)). Then confirm the URL is reachable over HTTPS from the public internet with a valid certificate.
+  </Accordion>
+  <Accordion title="recording_completed never arrives">
+    It fires only for a call that has a recording. Calls that never connected have none; check the call's status in [Logs](/documentation/monitor/logs).
+  </Accordion>
+  <Accordion title="My server rejects the requests with 401">
+    The secret in the subscription's `headers` doesn't match what your endpoint expects. Update the header value and save the full list again.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Read the payloads" icon="braces" href="/documentation/build-agents/customize-agent-behaviour/webhooks/call-events">
+    Every field Ringg sends for each event, and a handler prompt.
+  </Card>
+  <Card title="Handle failures" icon="circle-alert" href="/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors">
+    Success criteria, retries and common setup mistakes.
+  </Card>
+</Columns>
+
+<RelatedTopics items={[["Event Subscription", "/documentation/build-agents/customize-agent-behaviour/event-subscription"], ["Call events", "/documentation/build-agents/customize-agent-behaviour/webhooks/call-events"], ["WhatsApp chat events", "/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events"], ["Webhook field reference", "/documentation/build-agents/customize-agent-behaviour/webhooks/field-reference"]]} />

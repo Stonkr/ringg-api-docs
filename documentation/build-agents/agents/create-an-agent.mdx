@@ -1,0 +1,246 @@
+---
+title: "Create an agent"
+sidebarTitle: "Create an agent"
+description: "Create a Ringg AI agent from a blank or industry template in the Create Assistant dialog, or with POST /public/agent, then open it in the editor to test."
+boost: 8
+"og:title": "Create a voice, web or WhatsApp agent in Ringg AI"
+---
+
+For a template, Ringg writes the first prompt from the company and call details you enter; the API creates single-prompt voice agents only. Not sure which type you need? See [Build each type](/documentation/build-agents/agents/agent-types#build-each-type).
+
+## Before you start
+
+<Columns cols={2}>
+  <Card title="A Ringg workspace" icon="log-in" href="/get-started/dashboard-tour#sign-in-for-the-first-time" horizontal>
+    Sign in to the dashboard; agents are created from its **Agents** page.
+  </Card>
+  <Card title="An API key" icon="key" href="/documentation/manage-account/api-key" horizontal>
+    Optional: only for the API path below.
+  </Card>
+</Columns>
+
+## In the dashboard
+
+**Sidebar → Assistants → Create agent**. The video shows the whole flow, from the Agents page to the editor.
+
+<Frame caption="Creating a single-prompt agent in the dashboard">
+  <video alt="Creating a single-prompt agent in the dashboard" aria-label="Creating a single-prompt agent in the dashboard" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/agents-create/poster.webp">
+    <source src="/media/agents-create/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Pick a channel">
+    On the **Agents** page, click **Create agent**. In the **Create Assistant** dialog, choose a tab: **Outbound**, **Inbound**, **Webcall** or **WhatsApp** ([which one?](/documentation/build-agents/agents/agent-types#agent-types-by-channel)). The templates below change with the tab. A WhatsApp agent also needs a connected WhatsApp Business number; follow [Create a WhatsApp agent](/documentation/build-agents/agents/whatsapp-agents/create-an-agent) for that path.
+  </Step>
+  <Step title="Pick a starting point">
+    The left rail has **Blank Template** (selected by default), **Select industry templates** (**Logistics**, **Healthcare**, **Financial**, **Education**, **HR & Recruitment**, **eCommerce**) and **Plugins → Zapier**.
+
+    With **Blank Template** selected, the dialog shows two groups:
+
+    - **Create from scratch**: a general single-prompt template for the chosen channel, and **Multi Prompt** ("Create assistant from scratch for complex workflows."), which is not offered on the **WhatsApp** tab.
+    - **Choose from templates**: ready-made templates for the channel. Some have a **Play Demo** button that plays a sample call.
+
+    Pick an industry to see only its templates, or **Zapier** for the Zapier ones. Click a card to continue.
+
+    <Frame caption="The Create Assistant dialog on the Outbound tab">
+      <img src="/media/agents-create/create-dialog.webp" alt="Create Assistant dialog on the Outbound tab with Blank Template selected: Outbound assistant and Multi Prompt under Create from scratch, and industry templates such as EMI payment reminder below" />
+    </Frame>
+  </Step>
+  <Step title="Fill in Agent basics (single-prompt)">
+    - **Agent basics**: **Agent Name** (required), **Primary Language** (required; starts on the template's language, or `en-IN`) and **Secondary Language** (optional; only languages that pair with the primary are listed, after **None**). A name like `EMI reminder - Hindi` tells your team the use case and language at a glance in the agent list and Logs.
+    - **Set up voice**: pick a voice from the grid. Selecting a voice plays its preview. Filter by provider tab (**All**, then each provider) or click **See more** for the full list. The grid shows only voices for the selected languages; you can change languages and voice later ([Voice and language](/documentation/build-agents/customize-agent-behaviour/voice-and-language)).
+
+    <Frame caption="Step 1: agent basics and voice">
+      <img src="/media/agents-create/agent-basics.webp" alt="Agent basics with Agent Name EMI reminder, Primary Language English (India), Secondary Language Hindi, and the voice Ananya selected in the voice grid" />
+    </Frame>
+
+    Click **Next**. It checks the fields in order and stops with "Agent name is required", "Please select a language" or "Please select a voice"; a voice must be selected, not only previewed.
+  </Step>
+  <Step title="Fill in the call context">
+    The second step holds what the template needs to write your prompt:
+
+    - **Call context**: the template's own fields, such as company details and the purpose of the call. Fields marked `*` are required. Type `@` in a field to insert a variable, or to create one ([Write the prompt](/documentation/build-agents/customize-agent-behaviour/agent-prompt)).
+    - **Custom variables**: values that change per call ([Variables](/documentation/build-agents/customize-agent-behaviour/custom-variables)). Variables that come with the template cannot be removed. Names are lowercased and spaces become `_` as you type.
+    - **Knowledge Base**: attach one or more knowledge bases. Don't have one yet? [Create a knowledge base](/documentation/inventory/knowledge-base#create-a-knowledge-base).
+    - **Inbound Calling** (Outbound only): **Enabled** lets this outbound agent also answer calls (an Outbound-Inbound agent). Default **Disabled**.
+    - **Select Phone Number** (Inbound only) or **Select WhatsApp Number** (WhatsApp only): pick the **Telephony** provider, then the **Number** the agent answers on. Optional: you can [attach it later](/documentation/inventory/phone-numbers/inbound-agent-number). Don't have one yet? [Buy or import a number](/documentation/inventory/phone-numbers/buy-or-import-a-number), or [connect WhatsApp](/documentation/inventory/tools-integrations/connect-whatsapp).
+
+    <Frame caption="Step 2: call context">
+      <img src="/media/agents-create/call-context.webp" alt="Call context step with Company details and Purpose of the call filled in for Acme Lending, and an empty Additional instructions field" />
+    </Frame>
+
+    Click **Create Assistant**. **Back** returns to the first step without losing your entries. "Please fill in all required fields" means a **Call context** field is empty; the page scrolls to it and outlines it in red.
+  </Step>
+  <Step title="Land in the editor">
+    A progress screen shows while Ringg writes the prompt ("This usually takes under a minute").
+
+    <Check>
+    You see **Assistant created** and the agent opens in the single-prompt editor at `/assistants/<agent_id>`, with its name and **Test assistant** in the top bar. On the **Agents** page it is at the top of **Edited last week**, labelled with its channel and direction, for example **Voice • Outbound**.
+    </Check>
+  </Step>
+</Steps>
+
+### Multi-prompt agents
+
+Clicking **Multi Prompt** skips the form: Ringg creates an agent named **Untitled Workflow** and opens the canvas. Rename the agent from its name in the top bar, then build the flow: [Multi-prompt agents](/documentation/build-agents/agents/multi-prompt-agents/overview).
+
+## With the API
+
+Send `POST /public/agent` with your [API key](/documentation/manage-account/api-key) in `X-API-KEY` ([authentication](/api-reference/introduction/authentication)). It creates a single-prompt agent and returns its ID. Get a `voice_id` from [List Voices](/api-reference/endpoint/assistant/get-assistant-voices) first. The API cannot create Webcall, WhatsApp or multi-prompt agents; use the dashboard for those.
+
+<CodeGroup>
+```bash cURL
+curl -X POST "https://prod-api.ringg.ai/ca/api/v0/public/agent" \
+  -H "X-API-KEY: $RINGG_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_name": "Payment reminder",
+    "agent_type": "outbound",
+    "primary_language": "en-IN",
+    "secondary_language": "hi-IN",
+    "voice_id": "857e1b18-0adb-4b3e-b150-ce7896a16bf1",
+    "intro_message": "Hello, this is Asha from Acme Finance. Is this a good time to talk?",
+    "introduction_and_objective": "You are Asha, a polite collections assistant for Acme Finance. Remind the customer of their upcoming EMI and confirm a payment date.",
+    "task": "Confirm identity, state the EMI amount and due date, ask when they will pay, and note the date.",
+    "response_guidelines": "Be brief and respectful. Never threaten. If the customer disputes the amount, offer a callback from the team.",
+    "custom_variables": ["callee_name", "mobile_number", "emi_amount", "due_date"]
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch("https://prod-api.ringg.ai/ca/api/v0/public/agent", {
+  method: "POST",
+  headers: {
+    "X-API-KEY": process.env.RINGG_API_KEY,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    agent_name: "Payment reminder",
+    agent_type: "outbound",
+    primary_language: "en-IN",
+    secondary_language: "hi-IN",
+    voice_id: "857e1b18-0adb-4b3e-b150-ce7896a16bf1",
+    intro_message: "Hello, this is Asha from Acme Finance. Is this a good time to talk?",
+    introduction_and_objective: "You are Asha, a polite collections assistant for Acme Finance. Remind the customer of their upcoming EMI and confirm a payment date.",
+    task: "Confirm identity, state the EMI amount and due date, ask when they will pay, and note the date.",
+    response_guidelines: "Be brief and respectful. Never threaten. If the customer disputes the amount, offer a callback from the team.",
+    custom_variables: ["callee_name", "mobile_number", "emi_amount", "due_date"],
+  }),
+});
+console.log(await response.json());
+```
+
+```python Python
+import os
+import requests
+
+response = requests.post(
+    "https://prod-api.ringg.ai/ca/api/v0/public/agent",
+    headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+    json={
+        "agent_name": "Payment reminder",
+        "agent_type": "outbound",
+        "primary_language": "en-IN",
+        "secondary_language": "hi-IN",
+        "voice_id": "857e1b18-0adb-4b3e-b150-ce7896a16bf1",
+        "intro_message": "Hello, this is Asha from Acme Finance. Is this a good time to talk?",
+        "introduction_and_objective": "You are Asha, a polite collections assistant for Acme Finance. Remind the customer of their upcoming EMI and confirm a payment date.",
+        "task": "Confirm identity, state the EMI amount and due date, ask when they will pay, and note the date.",
+        "response_guidelines": "Be brief and respectful. Never threaten. If the customer disputes the amount, offer a callback from the team.",
+        "custom_variables": ["callee_name", "mobile_number", "emi_amount", "due_date"],
+    },
+)
+print(response.json())
+```
+</CodeGroup>
+
+```json Response (200)
+{
+  "success": true,
+  "data": {
+    "id": "00000000-0000-4000-8000-0000000000a1",
+    "version": "v1",
+    "version_id": "3411d748-1dde-4701-88ad-8d1e8fd5cefe",
+    "created_at": "2024-12-16T13:03:29.947147+00:00"
+  },
+  "message": "Agent created successfully"
+}
+```
+
+<Check>
+`data.id` is the `agent_id` you pass to [calling](/api-reference/endpoint/calling/initiate-individual-call) and [campaign](/api-reference/endpoint/campaign/start-campaign) endpoints. [Get Agent](/api-reference/endpoint/assistant/get-assistant-by-id) returns the new agent, and it is on the **Agents** page in the dashboard.
+</Check>
+
+**Likeliest error:** `400` with code `VOICE_LANGUAGE_MISMATCH`: the voice does not support `primary_language`. Pick a voice from [List Voices](/api-reference/endpoint/assistant/get-assistant-voices) whose `languages` include it.
+
+`intro_message` becomes the agent's **First message**. The other text fields become four prompt sections, shown in the editor as **Objective**, **Response Guidelines**, **Conversation Script** (`task`, with `sample_conversations` appended) and **FAQs**; open the agent in the dashboard to review them ([Write the prompt](/documentation/build-agents/customize-agent-behaviour/agent-prompt)). An AI assistant can also create agents for you through the Ringg [MCP server](/resources/mcp-server/workspace-mcp-server/overview).
+
+### Request fields
+
+The [Create Agent](/api-reference/endpoint/assistant/create-agent) reference lists every field. The essentials:
+
+<ResponseField name="agent_name" type="string" required>
+  Up to 100 characters.
+</ResponseField>
+<ResponseField name="intro_message" type="string" required>
+  First thing the agent says; up to 500 characters.
+</ResponseField>
+<ResponseField name="introduction_and_objective" type="string" required>
+  Up to 2,000 characters.
+</ResponseField>
+<ResponseField name="task" type="string" required>
+  Up to 1,500 characters.
+</ResponseField>
+<ResponseField name="response_guidelines" type="string" required>
+  Up to 3,000 characters.
+</ResponseField>
+<ResponseField name="primary_language" type="string" required>
+  A locale such as `en-IN` or `hi-IN`; see [language codes the API accepts](/documentation/build-agents/customize-agent-behaviour/voice-and-language#language-codes-the-api-accepts).
+</ResponseField>
+<ResponseField name="voice_id" type="string" required>
+  From [List Voices](/api-reference/endpoint/assistant/get-assistant-voices); must support the language.
+</ResponseField>
+<ResponseField name="agent_type" type="string">
+  `outbound` (default), `inbound` or `outbound_inbound`.
+</ResponseField>
+<ResponseField name="custom_variables" type="string[]">
+  Per-call [variables](/documentation/build-agents/customize-agent-behaviour/custom-variables). For outbound agents, `callee_name` and `mobile_number` are always added.
+</ResponseField>
+<ResponseField name="secondary_language" type="string">
+  A second locale the agent can switch to.
+</ResponseField>
+<ResponseField name="faq" type="string">
+  Questions and answers; up to 5,000 characters.
+</ResponseField>
+<ResponseField name="sample_conversations" type="string">
+  Example conversations; up to 5,000 characters. Use `\n` between turns.
+</ResponseField>
+<ResponseField name="call_config" type="object">
+  Call behaviour; every key is optional. See [Call settings](/documentation/build-agents/customize-agent-behaviour/call-settings#do-this-with-the-api) for the keys.
+</ResponseField>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title='"Template not available"'>
+    The general template for that channel could not be loaded. Close the dialog and try again, or start from an industry template.
+  </Accordion>
+  <Accordion title="Do I need a number before I create the agent?">
+    No. Outbound agents never store a number: you pick the caller ID per call or campaign. Inbound and WhatsApp agents can be created without one and have it [attached later](/documentation/inventory/phone-numbers/inbound-agent-number).
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Write the prompt" icon="book-open" href="/documentation/build-agents/customize-agent-behaviour/agent-prompt">
+    Edit the first message and the sections Ringg wrote.
+  </Card>
+  <Card title="Test the agent" icon="play" href="/documentation/build-agents/test-and-improve/test-an-agent">
+    Call yourself, or talk to it in the browser, before going live.
+  </Card>
+  <Card title="Buy or import a number" icon="hash" href="/documentation/inventory/phone-numbers/buy-or-import-a-number">
+    The caller ID for outbound calls, or the line an inbound agent answers.
+  </Card>
+</Columns>

@@ -1,0 +1,46 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:05.615
+Open a multi-prompt agent from Assistants
+
+00:00:05.615 --> 00:00:08.967
+Fit the flow to the screen
+
+00:00:08.967 --> 00:00:11.111
+Each node does one job; edges connect them
+
+00:00:11.111 --> 00:00:13.405
+Click a node's output dot to add a node
+
+00:00:13.405 --> 00:00:18.149
+Blocked node types are greyed out
+
+00:00:18.149 --> 00:00:22.935
+Agent node: a conversation with its own prompt
+
+00:00:22.935 --> 00:00:25.849
+LLM Router: branch on what the caller says
+
+00:00:25.849 --> 00:00:28.303
+It can also extract values from the reply
+
+00:00:28.303 --> 00:00:31.614
+Collect: capture a PIN by voice or keypad
+
+00:00:31.614 --> 00:00:37.163
+Action: call your API in the middle of the call
+
+00:00:37.163 --> 00:00:43.347
+Test the request and pick the response keys to store
+
+00:00:43.347 --> 00:00:46.354
+Logic Router: branch on data, no question asked
+
+00:00:46.354 --> 00:00:50.776
+Speak: a fixed line, with variations per language
+
+00:00:50.776 --> 00:00:54.100
+Keypad Menu: press a key to choose a branch
+
+00:00:54.100 --> 00:00:59.903
+Click empty canvas for Global Settings

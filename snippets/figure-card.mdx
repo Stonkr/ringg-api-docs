@@ -1,0 +1,11 @@
+export const FigureCard = ({ title, figure, intensity, href, children }) => (
+  <a href={href} className="figure-card not-prose">
+    <div className="figure-card-panel" aria-hidden="true">
+      <div data-hairline={figure} data-hairline-intensity={intensity} />
+    </div>
+    <div className="figure-card-text">
+      <div className="figure-card-title">{title}</div>
+      <div className="figure-card-body">{children}</div>
+    </div>
+  </a>
+);

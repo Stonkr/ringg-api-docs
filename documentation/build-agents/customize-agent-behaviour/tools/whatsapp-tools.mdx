@@ -1,0 +1,178 @@
+---
+title: "WhatsApp tools"
+sidebarTitle: "WhatsApp tools"
+description: "Send a WhatsApp template or text from any Ringg AI agent, during a call or chat with an on-call tool, or after it ends with a post-call tool, and see each send in Logs."
+tag: "NEW"
+related:
+  - "WhatsApp agents": /documentation/build-agents/agents/whatsapp-agents/overview
+  - "Connect WhatsApp": /documentation/inventory/tools-integrations/connect-whatsapp
+  - "Create a WhatsApp agent": /documentation/build-agents/agents/whatsapp-agents/create-an-agent
+  - "WhatsApp chat events": /documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events
+  - "Start a conversation": /documentation/deploy/whatsapp/start-a-conversation
+  - "WhatsApp Relay": /documentation/deploy/whatsapp/relay-overview
+  - "WhatsApp Relay integration guide": /documentation/deploy/whatsapp/relay-integration-guide
+  - "WhatsApp Relay troubleshooting": /documentation/deploy/whatsapp/relay-troubleshooting
+  - "WhatsApp chats in Logs": /documentation/monitor/logs#whatsapp-chats
+  - "Connect an app": /documentation/inventory/tools-integrations/connect-an-app
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+**Send WhatsApp Template** and **Send WhatsApp Text** are integration tools for any agent, voice or WhatsApp, once [WhatsApp Business is connected](/documentation/inventory/tools-integrations/connect-whatsapp) with a **Ready** number (and, for templates, a **Ready** template). They work on-call, where the agent sends at the point your prompt names, and post-call, where Ringg sends after the call or chat ends. Each send appears in the call's transcript in [Logs](/documentation/monitor/logs) as a tool call, with the sender, recipient, template and Meta's result.
+
+To send a template in the middle of a WhatsApp chat, don't use these tools: pick the template under **WhatsApp Templates** instead ([how](/documentation/build-agents/agents/whatsapp-agents/create-an-agent#send-a-template-during-a-chat)).
+
+## On-call
+
+### The two tools
+
+| Tool | Sends | Phases |
+|---|---|---|
+| **Send WhatsApp Template** | An approved template with its variables filled. Delivered at any time. | On-call and [post-call](/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#post-call) |
+| **Send WhatsApp Text** | Free-form text. Delivered only within 24 hours of the customer's last WhatsApp message. | On-call only |
+
+Neither runs as a pre-call tool. A customer who has never messaged your number is outside the 24-hour window, so for a first contact use the template tool.
+
+### Add the tool
+
+<Frame caption="Adding Send WhatsApp Template as an on-call and a post-call tool">
+  <video alt="Adding Send WhatsApp Template as an on-call and a post-call tool" aria-label="Adding Send WhatsApp Template as an on-call and a post-call tool" controls muted playsInline className="w-full aspect-video rounded-xl">
+    <source src="/media/whatsapp-tools/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open the On-call tab">
+    In the agent editor, select **Tools** in the left menu, then the **On-call** tab.
+  </Step>
+  <Step title="Pick WhatsApp Business">
+    In the side panel, expand **Integration** and select **WhatsApp Business** (your account name is shown beneath it). The account's **Available Tools** are listed.
+  </Step>
+  <Step title="Choose the sender and recipient">
+    Expand **Send WhatsApp Template** or **Send WhatsApp Text**:
+
+    - **Send from**: a registered number on the account. If the field is empty with **No registered WhatsApp numbers on this account**, [register one](/documentation/inventory/tools-integrations/connect-whatsapp#add-a-number) first.
+    - **Send to**: leave blank to message the customer on the call. To send elsewhere, set it to **Variable** and pick a custom variable, or to **Static** and enter a number such as `+919876543210`.
+  </Step>
+  <Step title="Choose the content">
+    - Template tool: pick the **Template**; its language and variable count show beneath it. Under **Body variables**, set each variable to **Variable** (a custom variable, filled when the call runs) or **Static** (a fixed value).
+    - Text tool: write the **Message text**.
+
+    <Frame caption="Send WhatsApp Template configured with a sender, template and body variables">
+      <img src="/media/whatsapp-tools/template-tool.webp" alt="Send WhatsApp Template configuration: Send from +91 98765 40321, Send to left blank, template emi_due_reminder with language en and 4 variables, body variables mapped to custom variables, and Test message sent above the Run test and Import buttons" />
+    </Frame>
+  </Step>
+  <Step title="Test and import">
+    **Add test value** gives a variable a sample value. **Run test** sends a real message with those values and reports "Test message sent." **Import** stays disabled until the sender, the template and every variable are set; a test run isn't required.
+
+    <Check>The tool appears in the **On-call** list as **Send WhatsApp Template** (or **Send WhatsApp Text**) from your WhatsApp Business account.</Check>
+
+    <Frame caption="The On-call tab after importing the tool">
+      <img src="/media/whatsapp-tools/on-call-list.webp" alt="On-call tools list with check_payment_status, Send WhatsApp Template from Whatsapp Business · Acme Lending, and End Call; the side panel shows Integration expanded with WhatsApp Business" />
+    </Frame>
+  </Step>
+</Steps>
+
+### Tell the agent when to use it
+
+The agent calls an on-call tool only where the prompt says to. In the prompt editor, type `@` and pick the tool under **On-Call API Settings**; it is inserted as `@||tool_name||` with the tool's own name. Next to it, say when to send and what to say afterwards:
+
+```text
+If the customer asks for the brochure, send it on WhatsApp with
+@||Acme Lending_send_template_message|| and tell them it is on its way to their WhatsApp.
+Don't read the link out loud.
+```
+
+The template tool is named `<account name>_send_template_message` and the text tool `<account name>_send_text_message`, where the account name is your WhatsApp Business account's name in Ringg, as shown under **WhatsApp Business**, spaces included. Use the mention the `@` menu inserts.
+
+### Map template variables
+
+Variables are filled from the conversation's [custom variables](/documentation/build-agents/customize-agent-behaviour/custom-variables), so declare them in the agent. They can be passed when the call starts or set by a pre-call tool. For a template `Hi {{1}}, your {{2}} link: {{3}}`:
+
+| Variable row | Type | Value |
+|---|---|---|
+| `{{1}}` | Variable | `name` |
+| `{{2}}` | Static | `renewal` |
+| `{{3}}` | Variable | `renewal_url` |
+
+With named variables (`{{customer_name}}`), the rows are labelled with those names instead of numbers.
+
+### Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Outside the 24-hour customer service window… send an approved template instead">
+    Shown on the tool call in Logs. **Send WhatsApp Text** was used more than 24 hours after the customer's last message. Use **Send WhatsApp Template**.
+  </Accordion>
+  <Accordion title="&quot;template_name&quot; is no longer available. Pick another template.">
+    Shown in the tool editor. The template was deleted or is no longer approved. Pick another and save.
+  </Accordion>
+</AccordionGroup>
+
+## Post-call
+
+### Add the tool
+
+The same video as the on-call page; the post-call part starts at 45 seconds.
+
+<Frame caption="Adding Send WhatsApp Template as an on-call and a post-call tool">
+  <video alt="Adding Send WhatsApp Template as an on-call and a post-call tool" aria-label="Adding Send WhatsApp Template as an on-call and a post-call tool" controls muted playsInline className="w-full aspect-video rounded-xl">
+    <source src="/media/whatsapp-tools/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open the Post-call tab and pick WhatsApp Business">
+    In the agent editor, select **Tools**, then the **Post-call** tab, and expand **Integration** → **WhatsApp Business** in the side panel, as for the [on-call tool](/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#on-call).
+  </Step>
+  <Step title="Configure the message">
+    | Field | What to enter |
+    |---|---|
+    | **Send from** | A registered number on the account. |
+    | **Send to** | Blank sends to the customer: the number on a voice call, their WhatsApp number on a chat. Or set a **Variable** or **Static** number. |
+    | **Template** | An approved template. |
+    | **Body variables** | One row per variable, each **Variable** (a custom variable of the conversation) or **Static**. |
+
+    <Frame caption="The post-call Send WhatsApp Template configuration">
+      <img src="/media/whatsapp-tools/post-call-tool.webp" alt="Post-call Send WhatsApp Template configuration: Send from +91 98765 40321, Send to blank, template payment_receipt with language en and 3 variables, and the customer_name row mapped to the customer_name variable" />
+    </Frame>
+  </Step>
+  <Step title="Test and import">
+    **Add test value**, **Run test** and **Import** work as on the [on-call tool](/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#on-call).
+
+    <Check>The tool is listed on the **Post-call** tab, and the template is sent after every conversation this agent handles.</Check>
+  </Step>
+</Steps>
+
+### Common set-ups
+
+<AccordionGroup>
+  <Accordion title="Follow up on WhatsApp after a voice call">
+    Add the tool to a voice agent's post-call tools with a Utility template such as:
+
+    ```text
+    Hi {{1}}, thanks for speaking with us about {{2}}. Reply here if you have any
+    questions and we'll pick up where we left off.
+    ```
+
+    Map `{{1}}` to the `name` custom variable and `{{2}}` to a static product name. Leave **Send to** blank so it goes to the number that was called.
+  </Accordion>
+  <Accordion title="Send a summary when a WhatsApp chat closes">
+    Add the tool to the WhatsApp agent itself. It runs when the chat closes, which for a customer who stops replying is after the agent's idle timeout (3 hours by default). See [when a chat opens and closes](/documentation/build-agents/agents/whatsapp-agents/create-an-agent#when-a-chat-opens-and-closes).
+  </Accordion>
+  <Accordion title="Notify your team instead of the customer">
+    Set **Send to** to **Static** with a team member's number, and use a template whose variables carry the details you need.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Call settings" icon="settings" href="/documentation/build-agents/customize-agent-behaviour/call-settings">
+    Calling window, voicemail, interruptions and call length.
+  </Card>
+  <Card title="Test the agent" icon="phone" href="/documentation/build-agents/test-and-improve/test-an-agent">
+    Call yourself and check the send in Logs.
+  </Card>
+</Columns>
+
+<RelatedTopics items={[["WhatsApp agents", "/documentation/build-agents/agents/whatsapp-agents/overview"], ["Connect WhatsApp", "/documentation/inventory/tools-integrations/connect-whatsapp"], ["Create a WhatsApp agent", "/documentation/build-agents/agents/whatsapp-agents/create-an-agent"], ["WhatsApp chat events", "/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events"], ["Start a conversation", "/documentation/deploy/whatsapp/start-a-conversation"], ["WhatsApp Relay", "/documentation/deploy/whatsapp/relay-overview"], ["WhatsApp Relay integration guide", "/documentation/deploy/whatsapp/relay-integration-guide"], ["WhatsApp Relay troubleshooting", "/documentation/deploy/whatsapp/relay-troubleshooting"], ["WhatsApp chats in Logs", "/documentation/monitor/logs#whatsapp-chats"], ["Connect an app", "/documentation/inventory/tools-integrations/connect-an-app"]]} />

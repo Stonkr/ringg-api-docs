@@ -1,0 +1,28 @@
+WEBVTT
+
+00:00:01.501 --> 00:00:04.346
+Open the WhatsApp agent's Event Subscription
+
+00:00:04.346 --> 00:00:05.348
+The New subscription form is open
+
+00:00:05.348 --> 00:00:13.295
+Set the method and your callback URL
+
+00:00:13.295 --> 00:00:17.450
+A WhatsApp agent offers the four chat events only
+
+00:00:17.450 --> 00:00:20.627
+Tick the events you want
+
+00:00:20.627 --> 00:00:27.741
+Add a header, such as an Authorization token
+
+00:00:27.741 --> 00:00:30.724
+Click Create Subscription
+
+00:00:30.724 --> 00:00:32.402
+The subscription lists its URL, events and headers
+
+00:00:32.402 --> 00:00:35.406
+Close a test chat with @||end_chat|| to receive chat_completed

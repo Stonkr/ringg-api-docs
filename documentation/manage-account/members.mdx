@@ -1,0 +1,176 @@
+---
+title: "Members"
+sidebarTitle: "Members"
+description: "Invite teammates to a Ringg AI workspace, grant edit access per area, track invite status, remove members, and keep company details and workspace logs current."
+"og:title": "Invite workspace members and set their permissions"
+---
+
+Workspace members are the people who can sign in to your Ringg AI workspace. Every member can view the whole workspace, and you grant edit access area by area, so a teammate can run campaigns without being able to change agents. In the dashboard: **Settings → Workspace members**.
+
+## Roles and permissions
+
+| Role | Who | Access |
+|---|---|---|
+| Owner | The person who created the workspace | Everything, including the [API key](/documentation/manage-account/api-key). Only owners invite members, change their permissions and remove them. |
+| Member | Everyone you invite | Views the whole workspace and edits the areas you grant |
+
+A member starts as **View only**. You grant edit access from the **Authorize edit access** list in the **Permissions** picker:
+
+| Permission | Lets the member edit |
+|---|---|
+| **Assistants** | [Agents](/documentation/build-agents/agents/agent-types) |
+| **Campaigns** | [Campaigns](/documentation/deploy/campaigns/overview) |
+| **Knowledge Base** | [Knowledge bases](/documentation/inventory/knowledge-base) |
+| **Numbers** | [Phone numbers](/documentation/inventory/phone-numbers/overview) |
+| **API Key** | The API key |
+
+The picker reads **View only** with nothing ticked and **View & edit** once any area is ticked. Even with **API Key** ticked, only the owner can generate or regenerate the key in the dashboard.
+
+The dashboard has no ownership transfer. Ringg can make an accepted member the owner; ask through **Contact us** at the bottom of the Settings menu (admin@ringg.ai).
+
+## Invite a member
+
+<Frame caption="Sending an invite: email, permissions and the new Pending row">
+  <video alt="Sending an invite: email, permissions and the new Pending row" aria-label="Sending an invite: email, permissions and the new Pending row" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/account-members/poster.webp">
+    <source src="/media/account-members/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Enter the email">
+    On **Members**, click **Invite Member** and type the teammate's address in **Email**, for example `priya@acme-lending.example`. An address outside your company's email domain shows "Outside @… You can still invite them." as a warning only.
+  </Step>
+  <Step title="Choose permissions">
+    Open **Permissions** and tick the areas they may edit. Leave it empty for **View only**.
+    <Frame caption="The invite dialog with edit access granted">
+      <img src="/media/account-members/invite-dialog.webp" alt="Invite member dialog with an email address filled in and the Permissions picker reading View & edit, next to the Cancel and Invite Member buttons" />
+    </Frame>
+  </Step>
+  <Step title="Send">
+    Click **Invite Member**.
+    <Check>A confirmation appears and the new row shows status **Pending**.</Check>
+  </Step>
+</Steps>
+
+To change someone's access later, open **Permissions** on their row, tick or untick areas and close the picker; the change saves when it closes.
+
+## Accept an invitation
+
+An invitee accepts on the **Join workspace** page, which asks for the 6-digit invite code; an invite link that carries the code fills it in. They must be signed in with the invited email address; any other account gets "No invite associated to this email!". They click **Join**, see "You have joined the workspace", and the dashboard switches to the new workspace and opens **Assistants**. Their row on **Members** changes from **Pending** to **Accepted**.
+
+## Remove a member
+
+On their row, click **Remove member** under **Actions**, then **Remove** in the **Remove member?** dialog. You see "Member removed" and the row disappears.
+
+If the workspace has [Ringg Spaces](/documentation/manage-account/ringg-spaces/overview), removing someone also ends the access they had to every Ringg Space through it. A direct membership they hold in a Ringg Space stays.
+
+## The members table
+
+| Column | What it shows |
+|---|---|
+| **ID** | A copy button for the member's ID |
+| **Name** | Name, with an **Owner** chip for the owner |
+| **Email** | Email address |
+| **Access** | Ringg Spaces only: **Direct** or **Inherited** |
+| **Permissions** | The permission picker (not for the owner) |
+| **Status** | **Accepted** (joined) or **Pending** (invited, not yet accepted) |
+| **Actions** | **Remove member** (not for the owner) |
+
+Invites don't expire. To cancel one, remove it. Inviting the same address again sends a new code and replaces the old one.
+
+To list members from code, call [List Workspace Users](/api-reference/endpoint/workspace/list-workspace-users). Each entry in `workspace_users` has `id`, `username`, `email`, `role` and `invite_status` (an accepted invite is `success`). Invite and remove members in the dashboard.
+
+<CodeGroup>
+```bash cURL
+curl "https://prod-api.ringg.ai/ca/api/v0/workspace/users?limit=20&offset=0" \
+  --header "X-API-KEY: $RINGG_API_KEY"
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://prod-api.ringg.ai/ca/api/v0/workspace/users?limit=20&offset=0",
+  { headers: { "X-API-KEY": process.env.RINGG_API_KEY } }
+);
+const { workspace_users } = await response.json();
+console.log(workspace_users);
+```
+
+```python Python
+import os
+import requests
+
+response = requests.get(
+    "https://prod-api.ringg.ai/ca/api/v0/workspace/users",
+    params={"limit": 20, "offset": 0},
+    headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+)
+print(response.json()["workspace_users"])
+```
+</CodeGroup>
+
+## Members in Ringg Spaces: Direct and Inherited
+
+In a [Ringg Space](/documentation/manage-account/ringg-spaces/overview) family, access comes from two places:
+
+- **Inherited**: members of the primary workspace reach it and every Ringg Space beneath it, including ones created later. Hover the **Inherited** chip to see where it comes from. Inherited rows are locked ("Managed in" the primary's name); change them in the primary.
+- **Direct**: people invited inside the Ringg Space. They reach that Ringg Space only, not the primary.
+
+The invite dialog states the reach before you send. On a primary with Ringg Spaces it reads "This invitation gives access to" the workspace "and all of its Ringg Spaces."
+
+## Company details (KYC)
+
+**Company details** (page heading **KYC**, Know Your Customer) holds your registered company details for billing and invoices. In the dashboard: **Settings → Company details**. Saving it unlocks three things:
+
+- **Payments.** Until <Tooltip tip="Know your customer: your registered company details.">KYC</Tooltip> is done, **Add Balance** and **Pay Dues** on the [billing page](/documentation/manage-account/billing#add-balance-prepaid) open a **KYC Pending** dialog instead of a checkout.
+- **Test calls to any number.** Before KYC, a phone test call goes only to a number you verify with a one-time code. After KYC (or on an enterprise workspace) you can [test an agent](/documentation/build-agents/test-and-improve/test-an-agent#test-numbers-and-verification) on any number.
+- **Larger calling lists.** A campaign [calling list](/documentation/deploy/campaigns/calling-list) can hold up to 5,000 contacts instead of 100. For more, contact Ringg.
+
+| Section | Fields | Rules |
+|---|---|---|
+| **Basic Info** | **Are you a business?**, **GST Identification Number**, **Entity Type**, **Company Name**, **PAN Card Number** | **Company Name** is required. GST and **Entity Type** appear when **Are you a business?** is ticked, and **Entity Type** is then required. GST and PAN appear only on INR workspaces, where GST is required for a business. |
+| **Billing Address** | **Address**, **City**, **State**, **Country**, **Pincode** | All required |
+| **Point of Contact** | **First Name**, **Last Name**, **Email** | Optional |
+
+**Entity Type** options: Private Limited, Public Limited, LLP, Partnership, Sole Proprietorship, Others.
+
+<Frame caption="Company details, filled in for a business">
+  <img src="/media/account-members/company-details.webp" alt="KYC page with Are you a business? ticked, GST Identification Number, Entity Type Private Limited, Company Name, PAN Card Number, and the Billing Address fields filled in" />
+</Frame>
+
+Type a valid 15-character <Tooltip tip="GST Identification Number, India's tax registration number.">GSTIN</Tooltip> and Ringg fills in the company name, PAN and address it finds ("Details autofilled from GST"). Filled fields lock until you edit the GSTIN again. Click **Save**.
+
+<Check>**Add Balance** and **Pay Dues** no longer open the **KYC Pending** dialog.</Check>
+
+## Workspace logs
+
+**Workspace logs** is the audit trail of changes in the workspace: who changed what, and when. For call records, use [Logs](/documentation/monitor/logs). In the dashboard: **Settings → Workspace logs**.
+
+| Column | What it shows |
+|---|---|
+| **ID** | A copy button for the entry's ID |
+| **Operation** | The action and resource type, for example "Edited workspace user". Hover it for **More Info**, the full details of the change. |
+| **Resource** | Name and ID of the item that changed |
+| **User** | Who made the change, with their user ID |
+| **Time** | Date and time |
+
+<Frame caption="Workspace logs, with More Info open on one entry">
+  <img src="/media/account-members/workspace-logs.webp" alt="Workspace Logs table with Operation, Resource, User and Time columns; a More Info tooltip shows the JSON details of an Edited workspace user entry, and Export sits below the table" />
+</Frame>
+
+The table shows 20 entries per page. **Export**, below the table, emails you the full log as a ZIP with one CSV, newest entry first ("The workspace logs will be emailed to you shortly"). Any member can export it.
+
+The log records changes to agents, knowledge bases, members, the API key, numbers and telephony accounts, campaign starts and terminations, and call or chat history exports. Changes made with the API key are logged under the workspace owner. Workflows, alerts, tools, settings and individual calls are not logged.
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Get your API key" icon="key" href="/documentation/manage-account/api-key">
+    Generate the key your backend uses.
+  </Card>
+  <Card title="Add balance" icon="wallet" href="/documentation/manage-account/billing">
+    Top up, redeem a coupon or change concurrency.
+  </Card>
+  <Card title="Run several teams or clients" icon="layout-grid" href="/documentation/manage-account/ringg-spaces/overview">
+    Give each one its own Ringg Space and members.
+  </Card>
+</Columns>

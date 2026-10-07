@@ -1,0 +1,39 @@
+---
+title: "Changelog"
+description: "What changed in the Ringg AI platform and its documentation, newest first: new features, API additions and new guides, with links to the pages that cover them."
+rss: true
+icon: "list"
+---
+
+Subscribe with the RSS button above, or filter by tag on the right.
+
+<Update label="29 September 2026" description="API keys" tags={["Account"]}>
+  New workspace [API keys](/documentation/manage-account/api-key) start with `rg_live_` and show a masked form in the dashboard so you can tell keys apart. Keys generated earlier (`ringg_live_` or a plain UUID) keep working until you regenerate them.
+</Update>
+
+<Update label="28 September 2026" description="WhatsApp agents" tags={["WhatsApp", "API"]}>
+  - A WhatsApp chat now ends by the agent's idle timeout or maximum length, which you set per agent under session timeouts; see [Create a WhatsApp agent](/documentation/build-agents/agents/whatsapp-agents/create-an-agent).
+  - New **End the chat** on-call tool for chat (End Call stays voice-only), and agents can reply to earlier messages in the thread.
+  - New API: [start a WhatsApp conversation](/documentation/deploy/whatsapp/start-a-conversation) from your backend.
+</Update>
+
+<Update label="24 September 2026" description="WhatsApp" tags={["WhatsApp"]}>
+  WhatsApp agents documented end to end: [overview](/documentation/build-agents/agents/whatsapp-agents/overview), Meta Embedded Signup [onboarding](/documentation/inventory/tools-integrations/connect-whatsapp) with numbers and templates, [on-call](/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#on-call) and [post-call](/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#post-call) tools, [creating an agent](/documentation/build-agents/agents/whatsapp-agents/create-an-agent) and attaching a number, [chat events](/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events#whatsapp-chat-events), and [chat history](/documentation/monitor/logs#whatsapp-chats) with CSV export.
+</Update>
+
+<Update label="21 September 2026" description="Mobile widgets and Parrot STT" tags={["Widgets", "Parrot STT"]}>
+  - `@ringg/react-native` and `ringg_flutter` put the voice and chat widget into native apps: [install](/documentation/deploy/web-and-apps/mobile-apps/install), [configuration](/documentation/deploy/web-and-apps/mobile-apps/configuration) and [events](/documentation/deploy/web-and-apps/mobile-apps/events).
+  - Parrot <Tooltip tip="Speech-to-text: turning the caller’s audio into text.">STT</Tooltip> (beta): a [Python SDK](/documentation/ringg-labs/parrot-stt/python-sdk) for sync and async streaming transcription.
+</Update>
+
+<Update label="18 September 2026" description="Ringg Spaces API" tags={["Account", "API"]}>
+  Manage a workspace family by API: [create a Ringg Space](/api-reference/endpoint/sub-workspace/create-sub-workspace), list the family, allocate concurrency and reallocate credit limits or balances. See the [Ringg Spaces overview](/documentation/manage-account/ringg-spaces/ringg-spaces-by-api#manage-the-family-by-api) and the [dashboard guide](/documentation/manage-account/ringg-spaces/overview).
+</Update>
+
+<Update label="15 September 2026" description="MCP server" tags={["Integrate"]}>
+  The Ringg AI MCP server at `https://mcp.ringg.ai/mcp` lets Claude, ChatGPT, Cursor or your own agent place calls, read transcripts and edit agents from a chat: [overview](/resources/mcp-server/workspace-mcp-server/overview), [connect a client](/resources/mcp-server/workspace-mcp-server/connect-an-assistant), [tool reference](/resources/mcp-server/workspace-mcp-server/tool-reference).
+</Update>
+
+<Update label="10 September 2026" description="Agent call config" tags={["API"]}>
+  [Create agent](/api-reference/endpoint/assistant/create-agent) accepts call configuration at creation, so an agent can be created with its call settings in one request.
+</Update>

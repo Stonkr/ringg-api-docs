@@ -1,0 +1,207 @@
+---
+title: "Web widget"
+sidebarTitle: "Overview"
+description: "Put a Ringg AI agent on any web page: allow your domains, set the widget's look, copy the loadAgent snippet, pin a CDN version and test a call before launch."
+"og:title": "Embed a Ringg AI Voice and Chat Widget on Your Website"
+boost: 4
+---
+
+The web widget puts an [agent](/documentation/build-agents/agents/agent-types) on your site as a floating button that opens a voice call or a text chat in the visitor's browser. For a native app, use the [React Native or Flutter package](/documentation/deploy/web-and-apps/mobile-apps/install) instead.
+
+In the dashboard: **Assistants → your agent → Embed & Widgets**. Its **Install & domains** and **Appearance** tabs are covered here; **Components** has [its own page](/documentation/deploy/web-and-apps/web-widget/components).
+
+## What this chapter covers
+
+| Page | Read it when |
+|---|---|
+| This page | You are installing the widget for the first time. |
+| [Configuration](/documentation/deploy/web-and-apps/web-widget/configuration) | You want to change what the panel says, how it looks, or where it sits. |
+| [Events](/documentation/deploy/web-and-apps/web-widget/events) | Your analytics or page should react when a conversation starts or ends. |
+| [Chat mode](/documentation/deploy/web-and-apps/web-widget/chat-mode) | Visitors should type instead of talk. |
+| [Components](/documentation/deploy/web-and-apps/web-widget/components), [Data](/documentation/deploy/web-and-apps/web-widget/data), [Recipes](/documentation/deploy/web-and-apps/web-widget/recipes) | The agent should show forms, cards and slot pickers in the chat. |
+| [Styling](/documentation/deploy/web-and-apps/web-widget/styling) | You need CSS or JavaScript hooks the options don't cover. |
+| [Launch checklist](/documentation/deploy/web-and-apps/web-widget/launch-checklist) | You are about to go to production. |
+
+## Before you start
+
+<Columns cols={2}>
+  <Card title="An agent" icon="bot" href="/documentation/build-agents/agents/create-an-agent" horizontal>
+    A **Webcall** agent, or any voice agent. WhatsApp agents can't be embedded.
+  </Card>
+  <Card title="Access to the page HTML" icon="code" horizontal>
+    Or your tag manager.
+  </Card>
+</Columns>
+
+<Danger>
+Every visitor can read the snippet. It authenticates with the agent's webcall public key (`authorization: "Bearer <key>"`), which works only for that agent and only from the origins under **Allowed clients**. Every agent has a webcall key. If the page could not load it, the generated snippet shows `xApiKey: "YOUR_API_KEY"` instead; reload the page to get the key. Never fill that in with your workspace [API key](/documentation/manage-account/api-key): it is not limited to one agent or to your domains, and anyone could copy it from the page.
+</Danger>
+
+<Frame caption="Components, Appearance and Install & domains">
+  <video alt="Components, Appearance and Install & domains" aria-label="Components, Appearance and Install & domains" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/agents-embed/poster.webp">
+    <source src="/media/agents-embed/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+## Install the widget
+
+<Steps>
+  <Step title="Allow your domains">
+    In **Install & domains**, add each site under [**Allowed clients**](#allowed-clients), for example `www.acme-lending.example` and `staging.acme-lending.example`. Separate several entries with commas. A page whose origin is not on the list cannot start a conversation, which is the usual reason an embed works on staging and fails in production.
+  </Step>
+
+  <Step title="Pick a CDN version">
+    The version selector on the snippet lists every published version, newest first, and starts on the newest.
+
+    | Version | What you get |
+    |---|---|
+    | `1.0.x` (the npm `latest` tag) | Voice and chat, theme, buttons, positioning, feedback screen, lifecycle events. |
+    | `2.0.0-beta.x` | Everything in 1.0, plus [Components](/documentation/deploy/web-and-apps/web-widget/components), [agent actions](/documentation/deploy/web-and-apps/web-widget/data#agent-actions), [`data-ringg` attributes](/documentation/deploy/web-and-apps/web-widget/styling), `typingWords`, `agentBubbleColor` and `eventLogs`. Beta builds can change between releases. |
+
+    `loadAgentsCdn("latest", …)` resolves to the 1.0 line. Use it only while exploring, and ship an exact version you have tested.
+  </Step>
+
+  <Step title="Copy the snippet">
+    Click **Copy** and paste the code before the closing `</body>` tag. The snippet already contains your `agentId`, the webcall key, the agent's [variables](/documentation/build-agents/customize-agent-behaviour/custom-variables) and any **Appearance** settings. It follows this pattern:
+
+    ```html Widget snippet
+    <script>
+      function loadAgentsCdn(version, done) {
+        const stylesheet = document.createElement("link");
+        stylesheet.rel = "stylesheet";
+        stylesheet.href = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/style.css`;
+
+        const script = document.createElement("script");
+        script.onload = done;
+        script.src = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/dv-agent.es.js`;
+
+        document.head.appendChild(stylesheet);
+        document.head.appendChild(script);
+      }
+
+      loadAgentsCdn("1.0.21", function () {
+        loadAgent({
+          agentId: "your-agent-id",
+          authorization: "Bearer your-webcall-public-key",
+          variables: { callee_name: "Priya", loan_id: "AL-1042" },
+        });
+      });
+    </script>
+    ```
+
+    <Warning>
+    The snippet loads `dv-agent.es.js` as a plain `<script>`, which can overwrite page globals such as jQuery's `$`. On a non-module page use `dv-agent.umd.js` ([CDN bundles](/documentation/deploy/web-and-apps/web-widget/configuration#cdn-bundles)).
+    </Warning>
+
+    If no trigger button appears, check that the script and stylesheet loaded without console errors and that `loadAgent` runs inside the `loadAgentsCdn` callback.
+  </Step>
+
+  <Step title="Allow the CDN in your CSP">
+    If your site sends a Content Security Policy, allow `https://cdn.jsdelivr.net` in `script-src` and `style-src`; to pin exact files, see [CSP setup](/documentation/deploy/web-and-apps/web-widget/launch-checklist#csp-setup).
+  </Step>
+</Steps>
+
+<Check>The trigger button appears at the bottom right. Clicking it opens the start screen; starting a call asks for microphone permission, then connects to the agent. The call appears in [Logs](/documentation/monitor/logs) with call type **Webcall**.</Check>
+
+<Prompt description="Hand the install to Claude, Cursor or ChatGPT. Fill in the two placeholders first." actions={["copy", "cursor"]}>
+Add the Ringg AI web widget to this site. Before the closing body tag, load https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@1.0.21/dist/style.css as a stylesheet and https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@1.0.21/dist/dv-agent.umd.js as a script; use dv-agent.es.js instead only if the page is a module script or goes through a bundler. In the script's onload callback, call loadAgent with an object that has agentId: "AGENT_ID", authorization: "Bearer WEBCALL_PUBLIC_KEY" and defaultTab: "audio". If the site sends a Content-Security-Policy, add https://cdn.jsdelivr.net to script-src and style-src. Do not add any other key to the snippet. Tell me which files you changed.
+</Prompt>
+
+Building a Flutter app? Choose **Flutter** above the snippet instead of **Web**, add the `ringg_flutter` package ([mobile guide](/documentation/deploy/web-and-apps/mobile-apps/install), Flutter view), then create the controller where your app starts. Replace `clientOrigin` with your real application ID and add the same string to **Allowed clients** (use `ios://` for the iOS build).
+
+## Allowed clients
+
+"Only these websites and apps can run your agent." Each entry is an <Tooltip tip="The scheme and host a page or app presents, such as https://example.com.">origin</Tooltip>. Type an entry and press Enter or **Add**. Separate several entries with commas.
+
+| Entry | Example | Shown under |
+|---|---|---|
+| A website | `https://www.example.com` or `example.com` | **Websites** |
+| An app, by application ID | `android://com.example.app`, `ios://com.example.app` | **Mobile apps** |
+
+- `https://www.ringg.ai` is listed by default (tagged **default**) and cannot be removed.
+- `capacitor://localhost`, `ionic://localhost` and `file://` are tagged **shared**: every app built on that runtime presents the same origin, so allowing one admits all of them.
+- A bare host is saved as `https://<host>`, so `example.com` becomes `https://example.com`. `www.example.com` and `example.com` are different origins; add both if your site answers on both.
+- Ports, `localhost` and IP addresses are allowed, for example `http://localhost:3000`. Wildcards (`*.example.com`) and paths are not.
+- Ringg checks each entry when you save. A rejected entry stays in the field with the reason underneath.
+- Each change saves immediately ("Allowed clients updated successfully."). Click **×** on an entry to remove it.
+
+For <Tooltip tip="Content Security Policy: the header that controls which scripts and styles your site may load.">CSP</Tooltip> and staging tips, see [Production QA and security](/documentation/deploy/web-and-apps/web-widget/launch-checklist#allowed-clients).
+
+## Appearance
+
+Set the widget's theme, size and branding before you copy the snippet. A live preview sits beside the settings on single-prompt agents. To style the widget further in code, see [Configuration](/documentation/deploy/web-and-apps/web-widget/configuration#theme) and [Customization](/documentation/deploy/web-and-apps/web-widget/styling).
+
+| Setting | Options | Default |
+|---|---|---|
+| **Theme** | **Light**, **Purple**, **Blue**, **Green**, or **Custom colors…** (**Primary**, **Background**, **Surface**, **Text**, **Border**, as hex) | Dark grey primary on an off-white background |
+| **Size**: **Width** | 280–600 px, steps of 10 | 400 px |
+| **Size**: **Height** | 300–700 px, steps of 10 | 456 px |
+| **Size**: **Radius** | 0–40 px | 16 px |
+| **Branding** | **Title**, **Description**, **Logo URL** (logo needs widget v1.0.10 or later) | Empty |
+| **Feedback screen** | **Title**, **Description**, **Placeholder**, **Submit Button Text**, **Stars count** (3–5), star colours **Filled** and **Empty** | 5 stars, `#FBBF24` filled, `#D1D5DB` empty |
+
+<Frame caption="Appearance with the live preview">
+  <img src="/media/agents-embed/appearance.webp" alt="Widget appearance with the Blue theme selected, size 400 by 456 px, radius 16, branding title Acme Lending Help, and a live preview of the chat widget" />
+</Frame>
+
+<Warning>
+Appearance settings are not saved on the agent. They are written into the **Web** snippet on **Install & domains**, so copy the snippet before you leave the section and keep it in your own code. The Flutter snippet does not include them.
+</Warning>
+
+## Common options
+
+Pass these in the `loadAgent` object. The full list is in the [configuration reference](/documentation/deploy/web-and-apps/web-widget/configuration).
+
+| Option | Use it for |
+|---|---|
+| `variables` | Values the agent's prompt reads, such as `callee_name`. Visible to anyone who views the page source. |
+| `defaultTab` | `"audio"` opens on voice (default), `"text"` opens on chat. |
+| `hideTabSelector` | `true` shows only the `defaultTab` mode. |
+| `title`, `description`, `logoUrl` | Start-screen copy and logo. |
+| `theme`, `buttons`, `widgetPosition` | Colors, the trigger button and placement. |
+
+## Rotate the webcall key
+
+Click **Rotate key** above the snippet and confirm **Rotate**. The old key stops working immediately, so every live embed fails until you copy the new snippet and redeploy. Rotate when the key has been used from somewhere it shouldn't have been, and schedule the redeploy for the same window.
+
+## With the API
+
+[Edit Assistant](/api-reference/endpoint/assistant/edit-assistant) sets **Allowed clients** with `operation: "edit_agent_whitelisted_domains"` and the list of origins in `whitelisted_domains`. The list replaces the saved one, so send every origin each time. It must still include `https://www.ringg.ai`, or the request fails with `400` "Ringg.ai domain cannot be removed!" You need an [API key](/documentation/manage-account/api-key) and the [agent ID](/documentation/build-agents/agents/agent-types#find-the-agent-id).
+
+```bash cURL
+curl -X PATCH "https://prod-api.ringg.ai/ca/api/v0/agent/v1" \
+  -H "X-API-KEY: $RINGG_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "agent_id": "00000000-0000-4000-8000-0000000000a1",
+    "operation": "edit_agent_whitelisted_domains",
+    "whitelisted_domains": ["https://www.ringg.ai", "https://www.example.com", "android://com.example.app"]
+  }'
+```
+
+Set components, appearance and the webcall key in the dashboard.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="The widget loads but will not connect">
+    The page's origin is not in **Allowed clients**, and the start request fails with `403`: `Client '<origin>' is not allowed to initiate webcall! Please add it to the agent's allowed clients first`. Add the exact origin, including staging sites. In a Flutter or React Native app, `clientOrigin` must match an entry exactly.
+  </Accordion>
+  <Accordion title='"Please enter a website or app"'>
+    The field was empty when you clicked **Add**.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Configure the widget" icon="sliders-horizontal" href="/documentation/deploy/web-and-apps/web-widget/configuration">
+    Panel copy, theme, trigger button, position and window size.
+  </Card>
+  <Card title="Listen for events" icon="radio" href="/documentation/deploy/web-and-apps/web-widget/events">
+    Send conversation starts, ends and ratings to your analytics.
+  </Card>
+  <Card title="Prepare for launch" icon="shield-check" href="/documentation/deploy/web-and-apps/web-widget/launch-checklist">
+    Domains, CSP, version pinning and browser QA before production.
+  </Card>
+</Columns>

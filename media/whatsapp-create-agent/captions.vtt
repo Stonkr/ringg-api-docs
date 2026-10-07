@@ -1,0 +1,55 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:04.236
+Click Create agent
+
+00:00:04.236 --> 00:00:07.966
+Choose the WhatsApp tab
+
+00:00:07.966 --> 00:00:11.918
+Pick the single-prompt WhatsApp template
+
+00:00:11.918 --> 00:00:16.477
+Name the agent and pick a voice
+
+00:00:16.477 --> 00:00:18.911
+Click Next
+
+00:00:18.911 --> 00:00:29.104
+Describe the business and the goal of the chat
+
+00:00:29.104 --> 00:00:33.244
+Add the custom variables the agent needs
+
+00:00:33.244 --> 00:00:37.935
+Select the registered WhatsApp number
+
+00:00:37.935 --> 00:00:41.272
+Click Create Assistant
+
+00:00:41.272 --> 00:00:44.590
+The agent opens in the editor
+
+00:00:44.590 --> 00:00:50.716
+WhatsApp Templates: pick what the agent may send
+
+00:00:50.716 --> 00:01:02.802
+Fill each variable: Variable, Static or Dynamic
+
+00:01:02.802 --> 00:01:05.635
+Click Save template
+
+00:01:05.635 --> 00:01:06.938
+Tag it in the prompt as @||send_payment_receipt||
+
+00:01:06.938 --> 00:01:09.554
+Attach Number shows the number this agent answers on
+
+00:01:09.554 --> 00:01:12.073
+Chat → Settings: the WhatsApp session timeouts
+
+00:01:12.073 --> 00:01:16.264
+End idle chats sooner to get results earlier
+
+00:01:16.264 --> 00:01:20.669
+Test assistant: scan the QR code from your phone

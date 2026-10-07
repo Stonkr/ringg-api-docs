@@ -1,0 +1,87 @@
+---
+title: "Lesson: Multi-prompt agents"
+sidebarTitle: "Multi-prompt agents"
+description: "Learn when a multi-prompt agent beats a single prompt, build a flow of Agent, LLM Router and End nodes on the canvas, publish it, and read the connection rules."
+related:
+  - "Multi-prompt agents": /documentation/build-agents/agents/multi-prompt-agents/overview
+  - "Publish changes": /documentation/build-agents/test-and-improve/drafts-and-versions#publish-changes-on-a-multi-prompt-agent
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 5: Designing multi-step conversations · Lesson 1 of 3 · 15 minutes**
+
+## Objective
+
+Know when a multi-prompt agent beats a single prompt, and read a flow of nodes and routers.
+
+## The scenario
+
+Ananya does fine with one prompt. Acme's loan application line has strict steps: confirm identity, capture a PIN code, check eligibility in an API, branch on the result. That is a multi-prompt agent, a graph of nodes where each does one job. A single prompt is simpler to build and maintain; choose multi-prompt for keypad menus, <Tooltip tip="One-time password: a short code sent to confirm a phone number or sign-in.">OTP</Tooltip> capture or an API lookup before the next question.
+
+Ananya stays single-prompt; this lesson builds a small flow beside her as a sandbox. If her editor offers **Convert to multi-prompt** under **More** (only for a prompt Ringg judges large enough), that works too: it creates a separate agent and leaves her unchanged.
+
+## Hands-on
+
+<Frame caption="Working on the multi-prompt canvas">
+  <video alt="Working on the multi-prompt canvas" aria-label="Working on the multi-prompt canvas" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/agents-multi-prompt/poster.webp">
+    <source src="/media/agents-multi-prompt/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Create it">
+    Click **Assistants**, then **Create agent**. On the **Outbound** tab, under **Create from scratch**, click **Multi Prompt**. There is no form: the canvas opens on **Untitled Workflow** with a **Start** node and the variables `callee_name` and `mobile_number`.
+  </Step>
+  <Step title="Add an Agent node">
+    Click the dot on **Start**'s output. The picker lists the node types; those the connection rules block are greyed out, and hovering explains why. Pick **Agent**. In the panel on the right, write an **Objective** ("Greet the caller and confirm you are speaking to the loan applicant") and an **Intro Message**. Click **Save**.
+  </Step>
+  <Step title="Add a router">
+    From the Agent node's output, pick **Router**, then **LLM Router**. Write two **Conditions** in plain language: "When the caller confirms their identity" and "When it is the wrong person". The Agent node before it makes the routing decision, so this router shows no **Retry behavior** or **Fallback**.
+  </Step>
+  <Step title="End both branches">
+    From each router branch, add **End**. Click **Organize nodes** to lay the flow out left to right.
+  </Step>
+  <Step title="Read Global Settings">
+    Click empty canvas. The right panel shows **Global Settings**: voice, custom variables, knowledge base, Advanced Analysis, pre-call and post-call tools. On-call tools attach per Agent node.
+  </Step>
+  <Step title="Publish">
+    The banner above the canvas reads **This workflow has not yet been published**. Click **Publish** and confirm. If the banner turns red, click **Review issues**, fix each one and publish again.
+  </Step>
+</Steps>
+
+<Frame caption="The node picker, opened from a router branch">
+  <img src="/media/agents-multi-prompt/node-picker.webp" alt="Node picker listing Agent, Speak, Router, Action, Keypad Menu, Collect, Widget (greyed out) and End, each with a one-line description, with the Router submenu offering LLM Router and Logic Router" />
+</Frame>
+
+## Checkpoint
+
+<Check>
+The canvas shows **Start → Agent → LLM Router**, with each branch ending in **End**. After the publish, the banner is gone and **Test assistant** is back in the top bar. On the Agents page, the agent sits under the **Multi-node** filter.
+</Check>
+
+## Exercise
+
+From the **Start** node, try to add an **End** node directly. Expected result: **End** is greyed out in the picker, and hovering it gives the reason: Start connects only to Agent, Speak, Logic Router or Action. Keep the agent as a sandbox; Ananya is unaffected.
+
+## What you learned
+
+- A multi-prompt agent is a graph: Agent nodes talk, Speak says a fixed line, routers branch (LLM Router on what the caller says, Logic Router on data), Action calls an API, Collect captures a value.
+- Edits go into a draft and reach callers when you publish; a single-prompt agent goes live on **Save**.
+- The picker enforces the connection rules: an Agent node hands off only to an LLM Router or End.
+
+<Quiz
+  question="Acme's loan application line must confirm identity, capture a 6-digit PIN, check eligibility in an API and branch on the result. Which agent type fits, and why?"
+  answers={[
+    { text: "Single-prompt; one prompt can describe all four steps", correct: false },
+    { text: "Multi-prompt; each node does one job and the connection rules keep the steps in order", correct: true },
+    { text: "A workflow; it chains the steps across calls", correct: false },
+    { text: "Either; the only difference is the editor", correct: false },
+  ]}
+  correctFeedback="Right. Strict steps, keypad or PIN capture and an API lookup before the next question are what a multi-prompt agent is for: Agent nodes talk, Collect captures a value, Action calls an API and routers branch. A single prompt is simpler to build and maintain when the conversation has no such stages."
+  incorrectFeedback="Not quite. A single prompt can describe steps but cannot enforce them, and a workflow runs a journey across calls, not stages within one call. Strict in-call steps with a PIN and an API check are the case for a multi-prompt agent."
+/>
+
+<RelatedTopics items={[["Multi-prompt agents", "/documentation/build-agents/agents/multi-prompt-agents/overview"], ["Publish changes", "/documentation/build-agents/test-and-improve/drafts-and-versions#publish-changes-on-a-multi-prompt-agent"]]} />

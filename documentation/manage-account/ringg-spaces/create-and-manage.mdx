@@ -1,0 +1,140 @@
+---
+title: "Create and manage Ringg Spaces"
+sidebarTitle: "Create and manage"
+description: "Create a Ringg Space, read the Ringg Spaces page, allocate concurrency and credits, manage members, and act on low credit warnings in the dashboard."
+---
+
+## Create a Ringg Space
+
+### In the dashboard
+
+<Frame caption="Creating a Ringg Space and allocating concurrency to it">
+  <video alt="Creating a Ringg Space and allocating concurrency to it" aria-label="Creating a Ringg Space and allocating concurrency to it" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/account-sub-workspaces/poster.webp">
+    <source src="/media/account-sub-workspaces/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Name it">
+    On **Sub-workspaces**, click **New sub-workspace** and enter a **Name** of up to 60 characters, for example `Collections`. It must differ from every other workspace in the family.
+    <Frame caption="The Create Ringg Space dialog">
+      <img src="/media/account-sub-workspaces/create-dialog.webp" alt="Create Ringg Space dialog with Name set to Acme Retail, a note that it starts with no concurrency, credits or API keys, and Cancel and Create Ringg Space buttons" />
+    </Frame>
+  </Step>
+  <Step title="Create">
+    Click **Create sub-workspace**. It starts with no concurrency, credits or API key; its currency and account type match the primary's.
+    <Check>The new Ringg Space appears on the **Workspaces** tab.</Check>
+  </Step>
+  <Step title="Set it up">
+    Click **Manage** on its row to allocate concurrency, set its credit and invite members ([Manage a Ringg Space](#manage-a-ringg-space)). Then switch to it, generate its [API key](/documentation/manage-account/api-key), and [build agents](/documentation/build-agents/agents/create-an-agent) there.
+  </Step>
+</Steps>
+
+### With the API
+
+Call [Create Ringg Space](/api-reference/endpoint/sub-workspace/create-sub-workspace) (`POST /workspace/sub`, required field `name`) with the primary workspace's API key.
+
+<CodeGroup>
+```bash cURL
+curl -X POST "https://prod-api.ringg.ai/ca/api/v0/workspace/sub" \
+  -H "X-API-KEY: $RINGG_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Collections"}'
+```
+
+```javascript JavaScript
+const response = await fetch("https://prod-api.ringg.ai/ca/api/v0/workspace/sub", {
+  method: "POST",
+  headers: {
+    "X-API-KEY": process.env.RINGG_API_KEY,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ name: "Collections" }),
+});
+console.log(await response.json());
+```
+
+```python Python
+import os
+import requests
+
+response = requests.post(
+    "https://prod-api.ringg.ai/ca/api/v0/workspace/sub",
+    headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+    json={"name": "Collections"},
+)
+print(response.json())
+```
+</CodeGroup>
+
+The new Ringg Space has no API key; generate one in the dashboard, since keys cannot be created over the API.
+
+## The Ringg Spaces page
+
+<Frame caption="The Ringg Spaces page on a primary workspace">
+  <img src="/media/account-sub-workspaces/sub-workspaces.webp" alt="Ringg Spaces page with Billing (Prepaid, ₹12,500 available), Concurrency capacity (25 concurrent calls, 18 allocated, 7 available) and Usage cards, and a Workspaces table listing Collections and Customer Support with Manage buttons and an Allocated to Ringg Spaces row reading 18 of 25" />
+</Frame>
+
+Three cards sit at the top:
+
+- **Billing**: on prepaid, the available balance; on postpaid, the family credit limit and how much remains.
+- **Concurrency capacity**: total concurrent calls, how many are allocated and how many are free.
+- **Usage**: spend across all workspaces this month.
+
+Below them are two tabs.
+
+**Workspaces** lists each Ringg Space with **Members** (total, and how many are inherited), **Concurrency**, **Credit limit** with the amount used (postpaid families with per-workspace limits only) and **Manage**. The last row, **Allocated to sub-workspaces**, totals the allocations against the family's capacity, for example `18 of 25`. A total over capacity shows in red.
+
+**People** lists everyone with access anywhere in the family: **Name**, **Email**, **Access** and **Invitation**. **Access** reads **Primary + all sub-workspaces** for members of the primary, or names the Ringg Spaces a person was invited to directly.
+
+## Manage a Ringg Space
+
+Click **Manage** on a row to open its panel, with up to three tabs.
+
+### Concurrency
+
+Under **Reserve concurrency**, enter **Set minimum concurrency for this sub-workspace** and click **Save concurrency**. The meter shows **Allocated across sub-workspaces** against the family's capacity. You cannot allocate more than the family has; lower another Ringg Space first.
+
+What the number does depends on the family's [billing mode](/documentation/manage-account/ringg-spaces/overview#how-a-family-works):
+
+- **Individual billing**: it is a ceiling reserved for this Ringg Space. Capacity you leave unallocated is not lent to any Ringg Space.
+- **Common billing**: every Ringg Space can use up to the family's total, shared equally among the Ringg Spaces with calls waiting. The number only has to be at least 1.
+
+In both modes, 0 stops the Ringg Space from dialling; its calls stay queued. When a Ringg Space's share is full, its new calls queue.
+
+<Frame caption="Reserving 5 concurrent calls for a new Ringg Space">
+  <img src="/media/account-sub-workspaces/allocate-concurrency.webp" alt="Concurrency tab of the Manage panel: Reserve concurrency, Set minimum concurrency for this Ringg Space set to 5, a meter reading 23 of 25 allocated across Ringg Spaces with 2 left to allocate, and Save concurrency and Reset buttons" />
+</Frame>
+
+To raise the family's capacity, change concurrency on the primary's [Billing](/documentation/manage-account/billing#change-concurrency) page.
+
+### Billing
+
+The **Billing** tab appears when the family's money is managed per workspace. What it controls depends on the billing type:
+
+- Postpaid: a credit limit for each Ringg Space. It cannot be set below what the Ringg Space has already used. Click **Save credit limits**.
+- Prepaid: a balance for each Ringg Space. Raising one takes that amount from the primary's balance; lowering it returns the difference. Click **Save balances**.
+
+If the allocations use up everything, the panel warns that the primary "cannot place calls or buy credits until you lower one".
+
+When one balance or credit limit is shared by the whole family (common billing), there is no **Billing** tab and no **Credit limit** column. See [billing modes](/documentation/manage-account/ringg-spaces/overview#how-a-family-works).
+
+### Members
+
+- **Invite** adds someone to this Ringg Space only, as **View only**. Grant edit access afterwards with the permission picker on their row, using the same areas as [Workspace members](/documentation/manage-account/members#roles-and-permissions).
+- **Direct members** were invited here. Only owners of the primary can invite or remove them from this panel; other members see "Managed by the owners of" the primary.
+- **Inherited members** come from the primary and are managed there. See [Direct and Inherited](/documentation/manage-account/members#members-in-ringg-spaces-direct-and-inherited).
+
+## Low credit warnings
+
+Warnings appear before money runs out, on different pages for each side of the family. In the primary, on **Billing plan** and **Sub-workspaces**:
+
+- Postpaid: "Collections is running low on credit" when 20% or less of that Ringg Space's limit is left, then "Collections has reached the credit limit".
+- Prepaid: the primary "is running low on balance", then "has no balance left". The low-balance warning compares the balance with the family's spend this month. With common billing, every Ringg Space draws from that balance, so all of them stop until it is topped up. With individual billing, each Ringg Space stops when its own balance runs out.
+
+A call in progress when money runs out is never cut off; it finishes and is charged afterwards.
+
+In a Ringg Space, on **Agents** and **Billing plan**:
+
+- Postpaid: "This workspace is running low on credit", then "This workspace has reached its credit limit"; its calls stop until a member of the primary raises the limit.
+- Prepaid: no warning inside the Ringg Space.

@@ -1,8 +1,8 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "maple",
+  "theme": "mint",
   "name": "Ringg AI",
-  "description": "Developer docs for Ringg AI",
+  "description": "Build AI agents that make and answer phone calls, talk on your website and chat on WhatsApp, then run them from the Ringg AI dashboard or REST API.",
   "colors": {
     "primary": "#0A0A0B",
     "light": "#FFFFFF",
@@ -19,295 +19,490 @@
     "library": "lucide"
   },
   "navigation": {
-    "groups": [
+    "tabs": [
       {
-        "group": "Get Started",
-        "tag": "NEW",
+        "tab": "Get started",
         "pages": [
+          "get-started/introduction",
+          "get-started/how-ringg-works",
+          "get-started/dashboard-tour"
+        ]
+      },
+      {
+        "tab": "Documentation",
+        "pages": [
+          "documentation/introduction",
           {
-            "group": "Overview",
-            "pages": [
-              "get-started/overview/ringg-ai",
-              "get-started/overview/platform",
-              "get-started/overview/dashboard"
-            ]
-          },
-          {
-            "group": "Key Concepts",
-            "pages": [
-              "get-started/key-concepts/assistants",
-              "get-started/key-concepts/campaigns",
-              "get-started/key-concepts/knowledge-base",
-              "get-started/key-concepts/numbers"
-            ]
-          },
-          {
-            "group": "Dashboard Guides",
-            "pages": [
-              "get-started/guides/create-assistant",
-              "get-started/guides/configure-assistant",
-              "get-started/guides/create-campaign",
-              "get-started/guides/create-knowledge-base",
-              "get-started/guides/manage-numbers",
-              "get-started/guides/view-call-history",
-              "get-started/guides/analytics",
-              "get-started/guides/workspace-settings"
-            ]
-          },
-          {
-            "group": "Widgets",
+            "group": "Build agents",
             "pages": [
               {
-                "group": "Web",
-                "icon": "globe",
+                "group": "Agents",
                 "pages": [
-                  "get-started/guides/embedding-widget",
-                  "get-started/guides/embedding-widget-configuration",
-                  "get-started/guides/embedding-widget-events",
+                  "documentation/build-agents/agents/agent-types",
+                  "documentation/build-agents/agents/create-an-agent",
                   {
-                    "group": "Chat",
-                    "icon": "messages-square",
+                    "group": "Multi-prompt agents",
                     "pages": [
-                      "get-started/guides/embedding-widget-chat-widgets",
-                      "get-started/guides/embedding-widget-components",
-                      "get-started/guides/embedding-widget-components-data",
-                      "get-started/guides/embedding-widget-components-use-cases"
+                      "documentation/build-agents/agents/multi-prompt-agents/overview",
+                      "documentation/build-agents/agents/multi-prompt-agents/node-types-and-connections",
+                      "documentation/build-agents/agents/multi-prompt-agents/global-settings",
+                      "documentation/build-agents/agents/multi-prompt-agents/test-and-convert"
                     ]
                   },
-                  "get-started/guides/embedding-widget-customization",
-                  "get-started/guides/embedding-widget-production-qa-security"
+                  {
+                    "group": "WhatsApp agents",
+                    "pages": [
+                      "documentation/build-agents/agents/whatsapp-agents/overview",
+                      "documentation/build-agents/agents/whatsapp-agents/create-an-agent"
+                    ],
+                    "tag": "NEW"
+                  }
                 ]
               },
               {
-                "group": "React Native",
-                "icon": "smartphone",
+                "group": "Customize agent behaviour",
                 "pages": [
-                  "get-started/guides/widget-react-native",
-                  "get-started/guides/widget-react-native-configuration",
-                  "get-started/guides/widget-react-native-events"
+                  "documentation/build-agents/customize-agent-behaviour/agent-prompt",
+                  "documentation/build-agents/customize-agent-behaviour/voice-and-language",
+                  "documentation/build-agents/customize-agent-behaviour/custom-variables",
+                  "documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base",
+                  {
+                    "group": "Tools",
+                    "pages": [
+                      "documentation/build-agents/customize-agent-behaviour/tools/overview",
+                      "documentation/build-agents/customize-agent-behaviour/tools/api-tools",
+                      "documentation/build-agents/customize-agent-behaviour/tools/integration-tools",
+                      "documentation/build-agents/customize-agent-behaviour/tools/system-tools",
+                      "documentation/build-agents/customize-agent-behaviour/tools/function-tools-and-conditions",
+                      "documentation/build-agents/customize-agent-behaviour/tools/post-call-tools",
+                      "documentation/build-agents/customize-agent-behaviour/tools/workspace-tools",
+                      "documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools"
+                    ]
+                  },
+                  "documentation/build-agents/customize-agent-behaviour/call-settings",
+                  "documentation/build-agents/customize-agent-behaviour/advanced-analysis",
+                  "documentation/build-agents/customize-agent-behaviour/event-subscription",
+                  {
+                    "group": "Webhooks",
+                    "pages": [
+                      "documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors",
+                      "documentation/build-agents/customize-agent-behaviour/webhooks/call-events",
+                      "documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events",
+                      "documentation/build-agents/customize-agent-behaviour/webhooks/field-reference"
+                    ]
+                  }
                 ]
               },
               {
-                "group": "Flutter",
-                "icon": "smartphone-charging",
+                "group": "Test and improve",
                 "pages": [
-                  "get-started/guides/widget-flutter",
-                  "get-started/guides/widget-flutter-configuration",
-                  "get-started/guides/widget-flutter-events"
+                  "documentation/build-agents/test-and-improve/test-an-agent",
+                  "documentation/build-agents/test-and-improve/drafts-and-versions"
+                ]
+              },
+              {
+                "group": "Workflows",
+                "pages": [
+                  "documentation/build-agents/workflows/overview",
+                  "documentation/build-agents/workflows/build-a-workflow",
+                  "documentation/build-agents/workflows/test-and-publish",
+                  "documentation/build-agents/workflows/block-reference"
+                ]
+              }
+            ],
+            "icon": "bot"
+          },
+          {
+            "group": "Inventory",
+            "icon": "package",
+            "pages": [
+              "documentation/inventory/knowledge-base",
+              {
+                "group": "Tools (integrations)",
+                "pages": [
+                  "documentation/inventory/tools-integrations/connect-an-app",
+                  "documentation/inventory/tools-integrations/connect-whatsapp"
+                ]
+              },
+              {
+                "group": "Phone numbers",
+                "pages": [
+                  "documentation/inventory/phone-numbers/overview",
+                  "documentation/inventory/phone-numbers/buy-or-import-a-number",
+                  {
+                    "group": "Your own telephony",
+                    "pages": [
+                      "documentation/inventory/phone-numbers/your-own-telephony/byot-overview",
+                      "documentation/inventory/phone-numbers/your-own-telephony/sip-trunking",
+                      "documentation/inventory/phone-numbers/your-own-telephony/plivo",
+                      "documentation/inventory/phone-numbers/your-own-telephony/exotel",
+                      "documentation/inventory/phone-numbers/your-own-telephony/twilio",
+                      "documentation/inventory/phone-numbers/your-own-telephony/ameyo",
+                      "documentation/inventory/phone-numbers/your-own-telephony/ozonetel",
+                      "documentation/inventory/phone-numbers/your-own-telephony/new-provider-requirements"
+                    ]
+                  },
+                  "documentation/inventory/phone-numbers/number-pools",
+                  "documentation/inventory/phone-numbers/inbound-agent-number"
                 ]
               }
             ]
           },
           {
-            "group": "Best Practices",
+            "group": "Deploy",
             "pages": [
-              "get-started/best-practices/voice-call-optimization",
-              "get-started/best-practices/web-call-integration",
-              "get-started/best-practices/security-guidelines"
-            ]
+              {
+                "group": "Campaigns",
+                "pages": [
+                  "documentation/deploy/campaigns/overview",
+                  "documentation/deploy/campaigns/create-a-campaign",
+                  "documentation/deploy/campaigns/workflow-campaign",
+                  "documentation/deploy/campaigns/campaigns-by-api",
+                  "documentation/deploy/campaigns/calling-list",
+                  "documentation/deploy/campaigns/manage-a-campaign"
+                ]
+              },
+              {
+                "group": "Web and apps",
+                "pages": [
+                  {
+                    "group": "Web widget",
+                    "pages": [
+                      "documentation/deploy/web-and-apps/web-widget/overview",
+                      "documentation/deploy/web-and-apps/web-widget/configuration",
+                      "documentation/deploy/web-and-apps/web-widget/events",
+                      "documentation/deploy/web-and-apps/web-widget/chat-mode",
+                      "documentation/deploy/web-and-apps/web-widget/components",
+                      "documentation/deploy/web-and-apps/web-widget/data",
+                      "documentation/deploy/web-and-apps/web-widget/recipes",
+                      "documentation/deploy/web-and-apps/web-widget/styling",
+                      "documentation/deploy/web-and-apps/web-widget/launch-checklist"
+                    ]
+                  },
+                  {
+                    "group": "Mobile apps",
+                    "pages": [
+                      "documentation/deploy/web-and-apps/mobile-apps/install",
+                      "documentation/deploy/web-and-apps/mobile-apps/configuration",
+                      "documentation/deploy/web-and-apps/mobile-apps/events"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "WhatsApp",
+                "pages": [
+                  "documentation/deploy/whatsapp/start-a-conversation",
+                  "documentation/deploy/whatsapp/relay-overview",
+                  "documentation/deploy/whatsapp/relay-integration-guide",
+                  "documentation/deploy/whatsapp/relay-troubleshooting"
+                ],
+                "tag": "NEW"
+              }
+            ],
+            "icon": "rocket"
+          },
+          {
+            "group": "Monitor",
+            "pages": [
+              "documentation/monitor/logs",
+              "documentation/monitor/analytics",
+              "documentation/monitor/evals",
+              "documentation/monitor/alerts"
+            ],
+            "icon": "chart-line"
+          },
+          {
+            "group": "Manage account",
+            "pages": [
+              "documentation/manage-account/members",
+              "documentation/manage-account/api-key",
+              "documentation/manage-account/billing",
+              "documentation/manage-account/call-limits",
+              {
+                "group": "Ringg Spaces",
+                "pages": [
+                  "documentation/manage-account/ringg-spaces/overview",
+                  "documentation/manage-account/ringg-spaces/create-and-manage",
+                  "documentation/manage-account/ringg-spaces/ringg-spaces-by-api"
+                ]
+              }
+            ],
+            "icon": "settings"
+          },
+          {
+            "group": "Ringg Labs",
+            "pages": [
+              {
+                "group": "Parrot STT",
+                "pages": [
+                  "documentation/ringg-labs/parrot-stt/python-sdk",
+                  "documentation/ringg-labs/parrot-stt/truefoundry"
+                ]
+              }
+            ],
+            "icon": "flask-conical"
           }
         ]
       },
       {
-        "group": "WhatsApp",
-        "tag": "NEW",
-        "pages": [
-          "whatsapp/overview",
+        "tab": "API reference",
+        "groups": [
           {
-            "group": "Onboarding",
-            "icon": "plug",
+            "group": "Introduction",
             "pages": [
-              "whatsapp/onboarding",
-              "whatsapp/on-call-tools",
-              "whatsapp/post-call-tools"
-            ]
-          },
-          "whatsapp/create-agent",
-          "whatsapp/start-conversation-api",
-          "whatsapp/events",
-          "whatsapp/chat-history",
-          {
-            "group": "WhatsApp Relay",
-            "icon": "repeat",
-            "pages": [
-              "whatsapp/relay/overview",
-              "whatsapp/relay/supported",
-              "whatsapp/relay/client-requirements",
-              "whatsapp/relay/ringg-provides",
-              "whatsapp/relay/integration-guide",
-              "whatsapp/relay/handover",
-              "whatsapp/relay/troubleshooting",
-              "whatsapp/relay/faq"
-            ]
-          }
-        ]
-      },
-      {
-        "group": "API Reference",
-        "pages": [
-          {
-            "group": "Quick Start",
-            "icon": "rocket",
-            "pages": [
-              "api-reference/quick-start/guide",
-              "api-reference/quick-start/authentication",
-              "api-reference/quick-start/api-overview"
-            ]
+              "api-reference/introduction/quickstart",
+              "api-reference/introduction/authentication",
+              "api-reference/introduction/api-overview"
+            ],
+            "icon": "book-open"
           },
           {
-            "group": "Tutorials",
-            "icon": "graduation-cap",
+            "group": "Agents",
             "pages": [
-              "api-reference/tutorials/voice-calling",
-              "api-reference/tutorials/making-your-first-call",
-              "api-reference/tutorials/setting-up-bulk-calls"
-            ]
-          },
-          {
-            "group": "Workspace",
-            "pages": [
-              "api-reference/endpoint/workspace/get-workspace-info",
-              "api-reference/endpoint/workspace/list-workspace-users",
-              "api-reference/endpoint/workspace/get-all-user-workspaces"
-            ]
-          },
-          {
-            "group": "Ringg Spaces",
-            "pages": [
-              "api-reference/endpoint/sub-workspace/overview",
-              "api-reference/endpoint/sub-workspace/create-sub-workspace",
-              "api-reference/endpoint/sub-workspace/get-sub-workspaces",
-              "api-reference/endpoint/sub-workspace/list-family-members",
-              "api-reference/endpoint/sub-workspace/allocate-concurrency",
-              "api-reference/endpoint/sub-workspace/reallocate-credit-limits",
-              "api-reference/endpoint/sub-workspace/reallocate-credit-balances"
-            ]
-          },
-          {
-            "group": "Assistant",
-            "pages": [
-              "api-reference/endpoint/assistant/get-assistant-voices",
               "api-reference/endpoint/assistant/get-assistants",
               "api-reference/endpoint/assistant/get-assistant-by-id",
+              "api-reference/endpoint/assistant/create-agent",
               "api-reference/endpoint/assistant/edit-assistant",
-              "api-reference/endpoint/assistant/create-agent"
-            ]
+              "api-reference/endpoint/assistant/get-assistant-voices"
+            ],
+            "icon": "bot"
           },
           {
-            "group": "Knowledge Base",
+            "group": "Inventory",
+            "icon": "package",
             "pages": [
-              "api-reference/endpoint/kb/create-knowledge-base",
-              "api-reference/endpoint/kb/edit-knowledge-base",
-              "api-reference/endpoint/kb/get-all-knowledge-bases",
-              "api-reference/endpoint/kb/get-knowledge-base-by-id",
-              "api-reference/endpoint/kb/delete-knowledge-base"
-            ]
-          },
-          {
-            "group": "Numbers",
-            "pages": [
-              "api-reference/endpoint/numbers/get-workspace-numbers"
+              {
+                "group": "Knowledge bases",
+                "pages": [
+                  "api-reference/endpoint/kb/create-knowledge-base",
+                  "api-reference/endpoint/kb/get-all-knowledge-bases",
+                  "api-reference/endpoint/kb/get-knowledge-base-by-id",
+                  "api-reference/endpoint/kb/edit-knowledge-base",
+                  "api-reference/endpoint/kb/delete-knowledge-base"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "Numbers",
+                "pages": [
+                  "api-reference/endpoint/numbers/get-workspace-numbers"
+                ],
+                "expanded": true
+              }
             ]
           },
           {
             "group": "Calling",
             "pages": [
-              "api-reference/endpoint/calling/initiate-individual-call",
-              "api-reference/endpoint/calling/initiate-individual-call-v2"
-            ]
+              {
+                "group": "Individual calls",
+                "pages": [
+                  "api-reference/endpoint/calling/initiate-individual-call",
+                  "api-reference/endpoint/calling/initiate-individual-call-v2",
+                  "api-reference/endpoint/terminate/call-ids",
+                  "api-reference/endpoint/terminate/numbers",
+                  "api-reference/endpoint/terminate/agent"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "Campaigns",
+                "pages": [
+                  "api-reference/endpoint/campaign/upload-campaign-contact-list",
+                  "api-reference/endpoint/campaign/start-campaign",
+                  "api-reference/endpoint/campaign/start-campaign-v2",
+                  "api-reference/endpoint/campaign/get-all-campaigns",
+                  "api-reference/endpoint/terminate/campaign",
+                  "api-reference/endpoint/terminate/campaign-numbers"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "Large campaigns",
+                "tag": "BETA",
+                "pages": [
+                  "api-reference/endpoint/campaign/upload-large-campaign-csv",
+                  "api-reference/endpoint/campaign/get-large-campaign-upload-status",
+                  "api-reference/endpoint/campaign/check-large-campaign-balance",
+                  "api-reference/endpoint/campaign/make-large-campaign-calls-async"
+                ],
+                "expanded": true
+              }
+            ],
+            "icon": "phone"
           },
           {
-            "group": "Campaign",
+            "group": "Monitoring",
             "pages": [
-              "api-reference/endpoint/campaign/upload-campaign-contact-list",
-              "api-reference/endpoint/campaign/start-campaign",
-              "api-reference/endpoint/campaign/start-campaign-v2",
-              "api-reference/endpoint/campaign/get-all-campaigns",
-              "api-reference/endpoint/campaign/upload-large-campaign-csv",
-              "api-reference/endpoint/campaign/get-large-campaign-upload-status",
-              "api-reference/endpoint/campaign/check-large-campaign-balance",
-              "api-reference/endpoint/campaign/make-large-campaign-calls-async"
-            ]
+              {
+                "group": "Call history",
+                "pages": [
+                  "api-reference/endpoint/history/get-call-history",
+                  "api-reference/endpoint/history/get-call-details",
+                  "api-reference/endpoint/history/download-call-history"
+                ],
+                "expanded": true
+              },
+              {
+                "group": "Analytics",
+                "pages": [
+                  "api-reference/endpoint/analytics/get-platform-analytics",
+                  "api-reference/endpoint/analytics/get-drill-down-analytics",
+                  "api-reference/endpoint/analytics/get-number-analytics",
+                  "api-reference/endpoint/analytics/get-duration-distribution",
+                  "api-reference/endpoint/analytics/get-classification-analytics"
+                ],
+                "expanded": true
+              }
+            ],
+            "icon": "chart-column"
           },
           {
-            "group": "History",
+            "group": "Account",
             "pages": [
-              "api-reference/endpoint/history/get-call-history",
-              "api-reference/endpoint/history/download-call-history",
-              "api-reference/endpoint/history/get-call-details"
-            ]
-          },
-          {
-            "group": "Termination",
-            "pages": [
-              "api-reference/terminate/agent",
-              "api-reference/terminate/call-ids",
-              "api-reference/terminate/campaign",
-              "api-reference/terminate/campaign-numbers",
-              "api-reference/terminate/numbers"
-            ]
-          },
-          {
-            "group": "Analytics",
-            "pages": [
-              "api-reference/endpoint/analytics/get-platform-analytics",
-              "api-reference/endpoint/analytics/get-drill-down-analytics",
-              "api-reference/endpoint/analytics/get-number-analytics",
-              "api-reference/endpoint/analytics/get-duration-distribution",
-              "api-reference/endpoint/analytics/get-classification-analytics"
-            ]
+              "api-reference/endpoint/workspace/get-workspace-info",
+              "api-reference/endpoint/workspace/list-workspace-users",
+              "api-reference/endpoint/workspace/get-all-user-workspaces",
+              {
+                "group": "Ringg Spaces",
+                "pages": [
+                  "api-reference/endpoint/sub-workspace/create-sub-workspace",
+                  "api-reference/endpoint/sub-workspace/get-sub-workspaces",
+                  "api-reference/endpoint/sub-workspace/list-family-members",
+                  "api-reference/endpoint/sub-workspace/allocate-concurrency",
+                  "api-reference/endpoint/sub-workspace/reallocate-credit-limits",
+                  "api-reference/endpoint/sub-workspace/reallocate-credit-balances"
+                ],
+                "expanded": true
+              }
+            ],
+            "icon": "settings"
           }
         ]
       },
       {
-        "group": "Webhooks Setup",
-        "pages": [
-          "webhooks/initial-setup",
-          "webhooks/payloads",
-          "webhooks/error-handling"
-        ]
-      },
-      {
-        "group": "Telephony Integration",
-        "pages": [
-          "telephony/byot-overview",
-          "telephony/new-provider-requirements",
-          "telephony/sip-integration",
-          "telephony/plivo-integration",
-          "telephony/exotel-integration",
-          "telephony/twilio-integration",
-          "telephony/ameyo-integration",
-          "telephony/ozonetel-integration",
-          "telephony/number-management"
-        ]
-      },
-      {
-        "group": "MCP Server",
-        "tag": "NEW",
-        "pages": [
-          "mcp/overview",
-          "mcp/connect",
-          "mcp/tools",
-          "mcp/security"
-        ]
-      },
-      {
-        "group": "Parrot STT",
-        "tag": "BETA",
-        "pages": [
-          "parrot-stt/python-sdk"
-        ]
-      },
-      {
-        "group": "External Integrations",
-        "pages": [
-          "external-integrations/truefoundry-integration"
-        ]
-      },
-      {
-        "group": "Privacy and Compliance",
-        "pages": [
-          "privacy-and-compliance/security-overview"
+        "tab": "Resources",
+        "menu": [
+          {
+            "item": "MCP server",
+            "description": "Let Claude, ChatGPT or Cursor work in your workspace, or search these docs",
+            "groups": [
+              {
+                "group": "Docs MCP server",
+                "pages": [
+                  "resources/mcp-server/docs-mcp-server/mcp-for-ai-assistants"
+                ],
+                "icon": "book-open"
+              },
+              {
+                "group": "Workspace MCP server",
+                "pages": [
+                  "resources/mcp-server/workspace-mcp-server/overview",
+                  "resources/mcp-server/workspace-mcp-server/connect-an-assistant",
+                  "resources/mcp-server/workspace-mcp-server/tool-reference",
+                  "resources/mcp-server/workspace-mcp-server/security-and-faq"
+                ],
+                "icon": "plug"
+              }
+            ]
+          },
+          {
+            "item": "Learn",
+            "description": "Lessons that build a payment-reminder system end to end",
+            "pages": [
+              "resources/learn/all-lessons",
+              {
+                "group": "Getting to know Ringg AI",
+                "pages": [
+                  "resources/learn/getting-to-know-ringg-ai/what-ringg-is",
+                  "resources/learn/getting-to-know-ringg-ai/how-a-call-flows",
+                  "resources/learn/getting-to-know-ringg-ai/the-dashboard"
+                ],
+                "boost": 0.5,
+                "icon": "flag"
+              },
+              {
+                "group": "Building your first agent",
+                "pages": [
+                  "resources/learn/building-your-first-agent/create-the-agent",
+                  "resources/learn/building-your-first-agent/write-the-prompt",
+                  "resources/learn/building-your-first-agent/voice-and-language",
+                  "resources/learn/building-your-first-agent/test-it"
+                ],
+                "boost": 0.5,
+                "icon": "bot"
+              },
+              {
+                "group": "Making your agent smarter",
+                "pages": [
+                  "resources/learn/making-your-agent-smarter/variables",
+                  "resources/learn/making-your-agent-smarter/knowledge-base",
+                  "resources/learn/making-your-agent-smarter/tools",
+                  "resources/learn/making-your-agent-smarter/advanced-analysis"
+                ],
+                "boost": 0.5,
+                "icon": "brain"
+              },
+              {
+                "group": "Taking your agent live",
+                "pages": [
+                  "resources/learn/taking-your-agent-live/numbers",
+                  "resources/learn/taking-your-agent-live/run-a-campaign",
+                  "resources/learn/taking-your-agent-live/calling-lists",
+                  "resources/learn/taking-your-agent-live/inbound-web-and-whatsapp"
+                ],
+                "boost": 0.5,
+                "icon": "rocket"
+              },
+              {
+                "group": "Designing multi-step conversations",
+                "pages": [
+                  "resources/learn/designing-multi-step-conversations/multi-prompt-agents",
+                  "resources/learn/designing-multi-step-conversations/workflows",
+                  "resources/learn/designing-multi-step-conversations/versions-and-a-b"
+                ],
+                "boost": 0.5,
+                "icon": "workflow"
+              },
+              {
+                "group": "Measuring and improving your agent",
+                "pages": [
+                  "resources/learn/measuring-and-improving-your-agent/logs",
+                  "resources/learn/measuring-and-improving-your-agent/analytics",
+                  "resources/learn/measuring-and-improving-your-agent/evals-and-alerts",
+                  "resources/learn/measuring-and-improving-your-agent/fix-the-prompt"
+                ],
+                "boost": 0.5,
+                "icon": "chart-line"
+              },
+              {
+                "group": "Capstone: EMI reminders end to end",
+                "pages": [
+                  "resources/learn/capstone-emi-reminders-end-to-end/plan-the-system",
+                  "resources/learn/capstone-emi-reminders-end-to-end/build-and-connect",
+                  "resources/learn/capstone-emi-reminders-end-to-end/hand-results-to-your-crm",
+                  "resources/learn/capstone-emi-reminders-end-to-end/launch-and-report"
+                ],
+                "boost": 0.5,
+                "icon": "trophy"
+              }
+            ]
+          },
+          {
+            "item": "Security",
+            "description": "How Ringg protects your data, and what to do on your side",
+            "pages": [
+              "resources/security/security"
+            ]
+          },
+          {
+            "item": "Changelog",
+            "description": "New features, API changes and new guides",
+            "pages": [
+              "resources/changelog/changelog"
+            ]
+          }
         ]
       }
     ]
@@ -315,35 +510,35 @@
   "redirects": [
     {
       "source": "/get-started/overview",
-      "destination": "/get-started/overview/ringg-ai"
+      "destination": "/get-started/introduction"
     },
     {
       "source": "/get-started/quick-start/quick-start-guide",
-      "destination": "/api-reference/quick-start/guide"
+      "destination": "/api-reference/introduction/quickstart"
     },
     {
       "source": "/get-started/quick-start/authentication",
-      "destination": "/api-reference/quick-start/authentication"
+      "destination": "/api-reference/introduction/authentication"
     },
     {
       "source": "/get-started/quick-start/api-overview",
-      "destination": "/api-reference/quick-start/api-overview"
+      "destination": "/api-reference/introduction/api-overview"
     },
     {
       "source": "/get-started/tutorials/voice-calling",
-      "destination": "/api-reference/tutorials/voice-calling"
+      "destination": "/get-started/how-ringg-works"
     },
     {
       "source": "/get-started/tutorials/making-your-first-call",
-      "destination": "/api-reference/tutorials/making-your-first-call"
+      "destination": "/api-reference/introduction/quickstart"
     },
     {
       "source": "/get-started/tutorials/setting-up-bulk-calls",
-      "destination": "/api-reference/tutorials/setting-up-bulk-calls"
+      "destination": "/documentation/deploy/campaigns/campaigns-by-api#with-the-api"
     },
     {
       "source": "/api-reference/tutorials/managing-contacts",
-      "destination": "/api-reference/tutorials/setting-up-bulk-calls"
+      "destination": "/documentation/deploy/campaigns/campaigns-by-api#with-the-api"
     },
     {
       "source": "/api-reference/endpoint/contact/get-contact-list",
@@ -351,68 +546,1566 @@
     },
     {
       "source": "/api-reference/endpoint/contact/delete-contact-list",
-      "destination": "/api-reference/tutorials/setting-up-bulk-calls"
+      "destination": "/documentation/deploy/campaigns/campaigns-by-api#with-the-api"
     },
     {
       "source": "/get-started/tutorials/embedding-web-call-assistant",
-      "destination": "/get-started/guides/embedding-widget"
+      "destination": "/documentation/deploy/web-and-apps/web-widget/overview"
     },
     {
       "source": "/get-started/guides/embedding-widget-agent-actions",
-      "destination": "/get-started/guides/embedding-widget-components-data"
+      "destination": "/documentation/deploy/web-and-apps/web-widget/data"
     },
     {
       "source": "/get-started/telephony/byot-overview",
-      "destination": "/telephony/byot-overview"
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/byot-overview"
     },
     {
       "source": "/get-started/telephony/plivo-integration",
-      "destination": "/telephony/plivo-integration"
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/plivo"
     },
     {
       "source": "/get-started/telephony/exotel-integration",
-      "destination": "/telephony/exotel-integration"
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/exotel"
     },
     {
       "source": "/get-started/telephony/twilio-integration",
-      "destination": "/telephony/twilio-integration"
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/twilio"
     },
     {
       "source": "/get-started/telephony/number-management",
-      "destination": "/telephony/number-management"
+      "destination": "/documentation/inventory/phone-numbers/buy-or-import-a-number"
     },
     {
       "source": "/get-started/webhooks/setup",
-      "destination": "/webhooks/initial-setup"
+      "destination": "/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors"
     },
     {
       "source": "/get-started/webhooks/payloads",
-      "destination": "/webhooks/payloads"
+      "destination": "/documentation/build-agents/customize-agent-behaviour/webhooks/call-events"
     },
     {
       "source": "/get-started/webhooks/error-handling",
-      "destination": "/webhooks/error-handling"
+      "destination": "/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors"
     },
     {
       "source": "/get-started/overview/platform-overview",
-      "destination": "/get-started/overview/platform"
+      "destination": "/get-started/how-ringg-works"
     },
     {
       "source": "/get-started/overview/dashboard-overview",
-      "destination": "/get-started/overview/dashboard"
+      "destination": "/get-started/dashboard-tour"
     },
     {
       "source": "/get-started/overview/ringg-overview",
-      "destination": "/get-started/overview/ringg-ai"
+      "destination": "/get-started/introduction"
     },
     {
       "source": "/get-started/guides/view-history",
-      "destination": "/get-started/guides/view-call-history"
+      "destination": "/documentation/monitor/logs"
+    },
+    {
+      "source": "/get-started/guides/create-assistant",
+      "destination": "/documentation/build-agents/agents/create-an-agent"
+    },
+    {
+      "source": "/get-started/guides/create-campaign",
+      "destination": "/documentation/deploy/campaigns/create-a-campaign"
+    },
+    {
+      "source": "/get-started/guides/manage-numbers",
+      "destination": "/documentation/inventory/phone-numbers/buy-or-import-a-number"
+    },
+    {
+      "source": "/get-started/key-concepts/assistants",
+      "destination": "/documentation/build-agents/agents/agent-types"
+    },
+    {
+      "source": "/get-started/key-concepts/campaigns",
+      "destination": "/documentation/deploy/campaigns/overview"
+    },
+    {
+      "source": "/get-started/key-concepts/numbers",
+      "destination": "/documentation/inventory/phone-numbers/overview"
+    },
+    {
+      "source": "/get-started/guides/configure-assistant",
+      "destination": "/documentation/build-agents/agents/agent-types"
+    },
+    {
+      "source": "/get-started/guides/create-knowledge-base",
+      "destination": "/documentation/inventory/knowledge-base"
+    },
+    {
+      "source": "/get-started/guides/view-call-history",
+      "destination": "/documentation/monitor/logs"
+    },
+    {
+      "source": "/get-started/guides/analytics",
+      "destination": "/documentation/monitor/analytics"
+    },
+    {
+      "source": "/get-started/guides/workspace-settings",
+      "destination": "/documentation/manage-account/members"
+    },
+    {
+      "source": "/get-started/key-concepts/knowledge-base",
+      "destination": "/documentation/inventory/knowledge-base"
+    },
+    {
+      "source": "/api-reference/tutorials/making-your-first-call",
+      "destination": "/api-reference/introduction/quickstart"
+    },
+    {
+      "source": "/api-reference/quick-start/guide",
+      "destination": "/api-reference/introduction/quickstart"
+    },
+    {
+      "source": "/get-started/guides/embedding-widget",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/overview"
+    },
+    {
+      "source": "/get-started/guides/embedding-widget-configuration",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/configuration"
+    },
+    {
+      "source": "/get-started/guides/embedding-widget-events",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/events"
+    },
+    {
+      "source": "/get-started/guides/embedding-widget-chat-widgets",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/chat-mode"
+    },
+    {
+      "source": "/get-started/guides/embedding-widget-components",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/components"
+    },
+    {
+      "source": "/get-started/guides/embedding-widget-components-data",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/data"
+    },
+    {
+      "source": "/get-started/guides/embedding-widget-components-use-cases",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/recipes"
+    },
+    {
+      "source": "/get-started/guides/embedding-widget-customization",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/styling"
+    },
+    {
+      "source": "/get-started/guides/embedding-widget-production-qa-security",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/launch-checklist"
+    },
+    {
+      "source": "/get-started/best-practices/web-call-integration",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/launch-checklist#set-it-up-well"
+    },
+    {
+      "source": "/get-started/guides/widget-react-native",
+      "destination": "/documentation/deploy/web-and-apps/mobile-apps/install"
+    },
+    {
+      "source": "/get-started/guides/widget-react-native-configuration",
+      "destination": "/documentation/deploy/web-and-apps/mobile-apps/configuration"
+    },
+    {
+      "source": "/get-started/guides/widget-react-native-events",
+      "destination": "/documentation/deploy/web-and-apps/mobile-apps/events"
+    },
+    {
+      "source": "/get-started/guides/widget-flutter",
+      "destination": "/documentation/deploy/web-and-apps/mobile-apps/install"
+    },
+    {
+      "source": "/get-started/guides/widget-flutter-configuration",
+      "destination": "/documentation/deploy/web-and-apps/mobile-apps/configuration"
+    },
+    {
+      "source": "/get-started/guides/widget-flutter-events",
+      "destination": "/documentation/deploy/web-and-apps/mobile-apps/events"
+    },
+    {
+      "source": "/get-started/best-practices/voice-call-optimization",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/voice-and-language#before-a-voice-agent-goes-live"
+    },
+    {
+      "source": "/get-started/best-practices/security-guidelines",
+      "destination": "/resources/security/security"
+    },
+    {
+      "source": "/privacy-and-compliance/security-overview",
+      "destination": "/resources/security/security"
+    },
+    {
+      "source": "/external-integrations/truefoundry-integration",
+      "destination": "/documentation/ringg-labs/parrot-stt/truefoundry"
+    },
+    {
+      "source": "/telephony/number-management",
+      "destination": "/documentation/inventory/phone-numbers/buy-or-import-a-number"
+    },
+    {
+      "source": "/mobile/react-native",
+      "destination": "/documentation/deploy/web-and-apps/mobile-apps/install"
+    },
+    {
+      "source": "/mobile/flutter",
+      "destination": "/documentation/deploy/web-and-apps/mobile-apps/install"
+    },
+    {
+      "source": "/mobile/react-native-configuration",
+      "destination": "/documentation/deploy/web-and-apps/mobile-apps/configuration"
+    },
+    {
+      "source": "/mobile/flutter-configuration",
+      "destination": "/documentation/deploy/web-and-apps/mobile-apps/configuration"
+    },
+    {
+      "source": "/mobile/react-native-events",
+      "destination": "/documentation/deploy/web-and-apps/mobile-apps/events"
+    },
+    {
+      "source": "/mobile/flutter-events",
+      "destination": "/documentation/deploy/web-and-apps/mobile-apps/events"
+    },
+    {
+      "source": "/web-widget/best-practices",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/launch-checklist#set-it-up-well"
+    },
+    {
+      "source": "/api-reference/endpoint/sub-workspace/overview",
+      "destination": "/documentation/manage-account/ringg-spaces/ringg-spaces-by-api#manage-the-family-by-api"
+    },
+    {
+      "source": "/api-reference/tutorials/setting-up-bulk-calls",
+      "destination": "/documentation/deploy/campaigns/campaigns-by-api#with-the-api"
+    },
+    {
+      "source": "/api-reference/tutorials/voice-calling",
+      "destination": "/get-started/how-ringg-works"
+    },
+    {
+      "source": "/get-started/quickstart",
+      "destination": "/api-reference/introduction/quickstart"
+    },
+    {
+      "source": "/get-started/choose-your-path",
+      "destination": "/get-started/introduction"
+    },
+    {
+      "source": "/get-started/overview/ringg-ai",
+      "destination": "/get-started/introduction"
+    },
+    {
+      "source": "/get-started/overview/platform",
+      "destination": "/get-started/how-ringg-works"
+    },
+    {
+      "source": "/get-started/overview/dashboard",
+      "destination": "/get-started/dashboard-tour"
+    },
+    {
+      "source": "/api-reference/quick-start/authentication",
+      "destination": "/api-reference/introduction/authentication"
+    },
+    {
+      "source": "/api-reference/quick-start/api-overview",
+      "destination": "/api-reference/introduction/api-overview"
+    },
+    {
+      "source": "/api-reference/terminate/call-ids",
+      "destination": "/api-reference/endpoint/terminate/call-ids"
+    },
+    {
+      "source": "/api-reference/terminate/numbers",
+      "destination": "/api-reference/endpoint/terminate/numbers"
+    },
+    {
+      "source": "/api-reference/terminate/agent",
+      "destination": "/api-reference/endpoint/terminate/agent"
+    },
+    {
+      "source": "/api-reference/terminate/campaign",
+      "destination": "/api-reference/endpoint/terminate/campaign"
+    },
+    {
+      "source": "/api-reference/terminate/campaign-numbers",
+      "destination": "/api-reference/endpoint/terminate/campaign-numbers"
+    },
+    {
+      "source": "/resources/learn/start/how-a-call-flows",
+      "destination": "/resources/learn/getting-to-know-ringg-ai/how-a-call-flows"
+    },
+    {
+      "source": "/resources/learn/start/dashboard",
+      "destination": "/resources/learn/getting-to-know-ringg-ai/the-dashboard"
+    },
+    {
+      "source": "/resources/learn/start/what-ringg-is",
+      "destination": "/resources/learn/getting-to-know-ringg-ai/what-ringg-is"
+    },
+    {
+      "source": "/resources/learn/make-it-useful/tools",
+      "destination": "/resources/learn/making-your-agent-smarter/tools"
+    },
+    {
+      "source": "/resources/learn/make-it-useful/variables",
+      "destination": "/resources/learn/making-your-agent-smarter/variables"
+    },
+    {
+      "source": "/resources/learn/make-it-useful/advanced-analysis",
+      "destination": "/resources/learn/making-your-agent-smarter/advanced-analysis"
+    },
+    {
+      "source": "/resources/learn/make-it-useful/knowledge-base",
+      "destination": "/resources/learn/making-your-agent-smarter/knowledge-base"
+    },
+    {
+      "source": "/resources/learn/put-it-to-work/numbers",
+      "destination": "/resources/learn/taking-your-agent-live/numbers"
+    },
+    {
+      "source": "/resources/learn/put-it-to-work/calling-list",
+      "destination": "/resources/learn/taking-your-agent-live/calling-lists"
+    },
+    {
+      "source": "/resources/learn/put-it-to-work/campaign",
+      "destination": "/resources/learn/taking-your-agent-live/run-a-campaign"
+    },
+    {
+      "source": "/resources/learn/put-it-to-work/other-channels",
+      "destination": "/resources/learn/taking-your-agent-live/inbound-web-and-whatsapp"
+    },
+    {
+      "source": "/resources/learn/beyond-one-prompt/multi-prompt",
+      "destination": "/resources/learn/designing-multi-step-conversations/multi-prompt-agents"
+    },
+    {
+      "source": "/resources/learn/beyond-one-prompt/workflows",
+      "destination": "/resources/learn/designing-multi-step-conversations/workflows"
+    },
+    {
+      "source": "/resources/learn/beyond-one-prompt/versions",
+      "destination": "/resources/learn/designing-multi-step-conversations/versions-and-a-b"
+    },
+    {
+      "source": "/resources/learn/watch-and-improve/logs",
+      "destination": "/resources/learn/measuring-and-improving-your-agent/logs"
+    },
+    {
+      "source": "/resources/learn/watch-and-improve/evals-and-alerts",
+      "destination": "/resources/learn/measuring-and-improving-your-agent/evals-and-alerts"
+    },
+    {
+      "source": "/resources/learn/watch-and-improve/fix-the-prompt",
+      "destination": "/resources/learn/measuring-and-improving-your-agent/fix-the-prompt"
+    },
+    {
+      "source": "/resources/learn/watch-and-improve/analytics",
+      "destination": "/resources/learn/measuring-and-improving-your-agent/analytics"
+    },
+    {
+      "source": "/get-started/ringg-ai",
+      "destination": "/get-started/introduction"
+    },
+    {
+      "source": "/get-started/platform",
+      "destination": "/get-started/how-ringg-works"
+    },
+    {
+      "source": "/get-started/dashboard",
+      "destination": "/get-started/dashboard-tour"
+    },
+    {
+      "source": "/resources/learn/overview",
+      "destination": "/resources/learn/all-lessons"
+    },
+    {
+      "source": "/resources/learn/getting-to-know-ringg/dashboard",
+      "destination": "/resources/learn/getting-to-know-ringg-ai/the-dashboard"
+    },
+    {
+      "source": "/resources/learn/first-agent/create",
+      "destination": "/resources/learn/building-your-first-agent/create-the-agent"
+    },
+    {
+      "source": "/resources/learn/first-agent/prompt",
+      "destination": "/resources/learn/building-your-first-agent/write-the-prompt"
+    },
+    {
+      "source": "/resources/learn/first-agent/test",
+      "destination": "/resources/learn/building-your-first-agent/test-it"
+    },
+    {
+      "source": "/resources/learn/going-live/campaign",
+      "destination": "/resources/learn/taking-your-agent-live/run-a-campaign"
+    },
+    {
+      "source": "/resources/learn/going-live/calling-list",
+      "destination": "/resources/learn/taking-your-agent-live/calling-lists"
+    },
+    {
+      "source": "/resources/learn/going-live/other-channels",
+      "destination": "/resources/learn/taking-your-agent-live/inbound-web-and-whatsapp"
+    },
+    {
+      "source": "/resources/learn/multi-step/multi-prompt",
+      "destination": "/resources/learn/designing-multi-step-conversations/multi-prompt-agents"
+    },
+    {
+      "source": "/resources/learn/multi-step/versions",
+      "destination": "/resources/learn/designing-multi-step-conversations/versions-and-a-b"
+    },
+    {
+      "source": "/resources/learn/capstone/plan",
+      "destination": "/resources/learn/capstone-emi-reminders-end-to-end/plan-the-system"
+    },
+    {
+      "source": "/resources/learn/capstone/build",
+      "destination": "/resources/learn/capstone-emi-reminders-end-to-end/build-and-connect"
+    },
+    {
+      "source": "/resources/learn/capstone/webhook",
+      "destination": "/resources/learn/capstone-emi-reminders-end-to-end/hand-results-to-your-crm"
+    },
+    {
+      "source": "/agents/create",
+      "destination": "/documentation/build-agents/agents/create-an-agent"
+    },
+    {
+      "source": "/agents/multi-prompt",
+      "destination": "/documentation/build-agents/agents/multi-prompt-agents/overview"
+    },
+    {
+      "source": "/whatsapp/onboarding",
+      "destination": "/documentation/inventory/tools-integrations/connect-whatsapp"
+    },
+    {
+      "source": "/whatsapp/create-agent",
+      "destination": "/documentation/build-agents/agents/whatsapp-agents/create-an-agent"
+    },
+    {
+      "source": "/agents/prompt",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/agent-prompt"
+    },
+    {
+      "source": "/knowledge-base/overview",
+      "destination": "/documentation/inventory/knowledge-base"
+    },
+    {
+      "source": "/agents/knowledge-base",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base"
+    },
+    {
+      "source": "/agents/test",
+      "destination": "/documentation/build-agents/test-and-improve/test-an-agent"
+    },
+    {
+      "source": "/agents/versions",
+      "destination": "/documentation/build-agents/test-and-improve/drafts-and-versions"
+    },
+    {
+      "source": "/agents/voice-call-best-practices",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/voice-and-language#before-a-voice-agent-goes-live"
+    },
+    {
+      "source": "/workflows/build",
+      "destination": "/documentation/build-agents/workflows/build-a-workflow"
+    },
+    {
+      "source": "/numbers/buy-and-import",
+      "destination": "/documentation/inventory/phone-numbers/buy-or-import-a-number"
+    },
+    {
+      "source": "/telephony/sip-integration",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/sip-trunking"
+    },
+    {
+      "source": "/telephony/plivo-integration",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/plivo"
+    },
+    {
+      "source": "/telephony/exotel-integration",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/exotel"
+    },
+    {
+      "source": "/telephony/twilio-integration",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/twilio"
+    },
+    {
+      "source": "/telephony/ameyo-integration",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/ameyo"
+    },
+    {
+      "source": "/telephony/ozonetel-integration",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/ozonetel"
+    },
+    {
+      "source": "/numbers/pools",
+      "destination": "/documentation/inventory/phone-numbers/number-pools"
+    },
+    {
+      "source": "/numbers/attach-to-agent",
+      "destination": "/documentation/inventory/phone-numbers/inbound-agent-number"
+    },
+    {
+      "source": "/campaigns/create",
+      "destination": "/documentation/deploy/campaigns/create-a-campaign"
+    },
+    {
+      "source": "/campaigns/manage",
+      "destination": "/documentation/deploy/campaigns/manage-a-campaign"
+    },
+    {
+      "source": "/web-widget/components-data",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/data"
+    },
+    {
+      "source": "/web-widget/components-use-cases",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/recipes"
+    },
+    {
+      "source": "/web-widget/customization",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/styling"
+    },
+    {
+      "source": "/web-widget/production-checklist",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/launch-checklist"
+    },
+    {
+      "source": "/whatsapp/start-conversation-api",
+      "destination": "/documentation/deploy/whatsapp/start-a-conversation"
+    },
+    {
+      "source": "/whatsapp/relay/supported",
+      "destination": "/documentation/deploy/whatsapp/relay-overview#supported-features"
+    },
+    {
+      "source": "/whatsapp/relay/client-requirements",
+      "destination": "/documentation/deploy/whatsapp/relay-overview#what-you-set-up"
+    },
+    {
+      "source": "/whatsapp/relay/ringg-provides",
+      "destination": "/documentation/deploy/whatsapp/relay-overview#what-ringg-provides"
+    },
+    {
+      "source": "/account/sub-workspaces",
+      "destination": "/documentation/manage-account/ringg-spaces/overview"
+    },
+    {
+      "source": "/resources/mcp/docs-server",
+      "destination": "/resources/mcp-server/docs-mcp-server/mcp-for-ai-assistants"
+    },
+    {
+      "source": "/resources/mcp/connect",
+      "destination": "/resources/mcp-server/workspace-mcp-server/connect-an-assistant"
+    },
+    {
+      "source": "/resources/mcp/tools",
+      "destination": "/resources/mcp-server/workspace-mcp-server/tool-reference"
+    },
+    {
+      "source": "/resources/mcp/security",
+      "destination": "/resources/mcp-server/workspace-mcp-server/security-and-faq"
+    },
+    {
+      "source": "/mcp/overview",
+      "destination": "/resources/mcp-server/workspace-mcp-server/overview"
+    },
+    {
+      "source": "/mcp/connect",
+      "destination": "/resources/mcp-server/workspace-mcp-server/connect-an-assistant"
+    },
+    {
+      "source": "/mcp/tools",
+      "destination": "/resources/mcp-server/workspace-mcp-server/tool-reference"
+    },
+    {
+      "source": "/mcp/security",
+      "destination": "/resources/mcp-server/workspace-mcp-server/security-and-faq"
+    },
+    {
+      "source": "/changelog",
+      "destination": "/resources/changelog/changelog"
+    },
+    {
+      "source": "/mcp/docs-server",
+      "destination": "/resources/mcp-server/docs-mcp-server/mcp-for-ai-assistants"
+    },
+    {
+      "source": "/resources/learn/getting-to-know-ringg/what-ringg-is",
+      "destination": "/resources/learn/getting-to-know-ringg-ai/what-ringg-is"
+    },
+    {
+      "source": "/resources/learn/getting-to-know-ringg/how-a-call-flows",
+      "destination": "/resources/learn/getting-to-know-ringg-ai/how-a-call-flows"
+    },
+    {
+      "source": "/resources/learn/getting-to-know-ringg/the-dashboard",
+      "destination": "/resources/learn/getting-to-know-ringg-ai/the-dashboard"
+    },
+    {
+      "source": "/resources/learn/first-agent/create-the-agent",
+      "destination": "/resources/learn/building-your-first-agent/create-the-agent"
+    },
+    {
+      "source": "/resources/learn/first-agent/write-the-prompt",
+      "destination": "/resources/learn/building-your-first-agent/write-the-prompt"
+    },
+    {
+      "source": "/resources/learn/first-agent/voice-and-language",
+      "destination": "/resources/learn/building-your-first-agent/voice-and-language"
+    },
+    {
+      "source": "/resources/learn/first-agent/test-it",
+      "destination": "/resources/learn/building-your-first-agent/test-it"
+    },
+    {
+      "source": "/resources/learn/smarter-agent/variables",
+      "destination": "/resources/learn/making-your-agent-smarter/variables"
+    },
+    {
+      "source": "/resources/learn/smarter-agent/knowledge-base",
+      "destination": "/resources/learn/making-your-agent-smarter/knowledge-base"
+    },
+    {
+      "source": "/resources/learn/smarter-agent/tools",
+      "destination": "/resources/learn/making-your-agent-smarter/tools"
+    },
+    {
+      "source": "/resources/learn/smarter-agent/advanced-analysis",
+      "destination": "/resources/learn/making-your-agent-smarter/advanced-analysis"
+    },
+    {
+      "source": "/resources/learn/going-live/numbers",
+      "destination": "/resources/learn/taking-your-agent-live/numbers"
+    },
+    {
+      "source": "/resources/learn/going-live/run-a-campaign",
+      "destination": "/resources/learn/taking-your-agent-live/run-a-campaign"
+    },
+    {
+      "source": "/resources/learn/going-live/calling-lists",
+      "destination": "/resources/learn/taking-your-agent-live/calling-lists"
+    },
+    {
+      "source": "/resources/learn/going-live/inbound-web-and-whatsapp",
+      "destination": "/resources/learn/taking-your-agent-live/inbound-web-and-whatsapp"
+    },
+    {
+      "source": "/resources/learn/multi-step/multi-prompt-agents",
+      "destination": "/resources/learn/designing-multi-step-conversations/multi-prompt-agents"
+    },
+    {
+      "source": "/resources/learn/multi-step/workflows",
+      "destination": "/resources/learn/designing-multi-step-conversations/workflows"
+    },
+    {
+      "source": "/resources/learn/multi-step/versions-and-a-b",
+      "destination": "/resources/learn/designing-multi-step-conversations/versions-and-a-b"
+    },
+    {
+      "source": "/resources/learn/measure-and-improve/logs",
+      "destination": "/resources/learn/measuring-and-improving-your-agent/logs"
+    },
+    {
+      "source": "/resources/learn/measure-and-improve/analytics",
+      "destination": "/resources/learn/measuring-and-improving-your-agent/analytics"
+    },
+    {
+      "source": "/resources/learn/measure-and-improve/evals-and-alerts",
+      "destination": "/resources/learn/measuring-and-improving-your-agent/evals-and-alerts"
+    },
+    {
+      "source": "/resources/learn/measure-and-improve/fix-the-prompt",
+      "destination": "/resources/learn/measuring-and-improving-your-agent/fix-the-prompt"
+    },
+    {
+      "source": "/resources/learn/capstone/plan-the-system",
+      "destination": "/resources/learn/capstone-emi-reminders-end-to-end/plan-the-system"
+    },
+    {
+      "source": "/resources/learn/capstone/build-and-connect",
+      "destination": "/resources/learn/capstone-emi-reminders-end-to-end/build-and-connect"
+    },
+    {
+      "source": "/resources/learn/capstone/hand-results-to-your-crm",
+      "destination": "/resources/learn/capstone-emi-reminders-end-to-end/hand-results-to-your-crm"
+    },
+    {
+      "source": "/resources/learn/capstone/launch-and-report",
+      "destination": "/resources/learn/capstone-emi-reminders-end-to-end/launch-and-report"
+    },
+    {
+      "source": "/agents/overview",
+      "destination": "/documentation/build-agents/agents/agent-types"
+    },
+    {
+      "source": "/agents/create-an-agent",
+      "destination": "/documentation/build-agents/agents/create-an-agent"
+    },
+    {
+      "source": "/agents/multi-prompt-agents",
+      "destination": "/documentation/build-agents/agents/multi-prompt-agents/overview"
+    },
+    {
+      "source": "/whatsapp/overview",
+      "destination": "/documentation/build-agents/agents/whatsapp-agents/overview"
+    },
+    {
+      "source": "/whatsapp/connect-whatsapp",
+      "destination": "/documentation/inventory/tools-integrations/connect-whatsapp"
+    },
+    {
+      "source": "/whatsapp/create-an-agent",
+      "destination": "/documentation/build-agents/agents/whatsapp-agents/create-an-agent"
+    },
+    {
+      "source": "/whatsapp/on-call-tools",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#on-call"
+    },
+    {
+      "source": "/whatsapp/post-call-tools",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#post-call"
+    },
+    {
+      "source": "/agents/write-the-prompt",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/agent-prompt"
+    },
+    {
+      "source": "/agents/voice-and-language",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/voice-and-language"
+    },
+    {
+      "source": "/agents/variables",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/custom-variables"
+    },
+    {
+      "source": "/knowledge-base/create-a-knowledge-base",
+      "destination": "/documentation/inventory/knowledge-base"
+    },
+    {
+      "source": "/agents/attach-a-knowledge-base",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base"
+    },
+    {
+      "source": "/agents/tools",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/overview"
+    },
+    {
+      "source": "/integrations/connect-an-app",
+      "destination": "/documentation/inventory/tools-integrations/connect-an-app"
+    },
+    {
+      "source": "/agents/call-settings",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/call-settings"
+    },
+    {
+      "source": "/agents/advanced-analysis",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/advanced-analysis"
+    },
+    {
+      "source": "/agents/event-subscription",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/event-subscription"
+    },
+    {
+      "source": "/webhooks/initial-setup",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors"
+    },
+    {
+      "source": "/webhooks/payloads",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/webhooks/call-events"
+    },
+    {
+      "source": "/webhooks/error-handling",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors"
+    },
+    {
+      "source": "/whatsapp/events",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events#whatsapp-chat-events"
+    },
+    {
+      "source": "/agents/test-an-agent",
+      "destination": "/documentation/build-agents/test-and-improve/test-an-agent"
+    },
+    {
+      "source": "/agents/drafts-and-versions",
+      "destination": "/documentation/build-agents/test-and-improve/drafts-and-versions"
+    },
+    {
+      "source": "/agents/voice-calls",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/voice-and-language#before-a-voice-agent-goes-live"
+    },
+    {
+      "source": "/workflows/overview",
+      "destination": "/documentation/build-agents/workflows/overview"
+    },
+    {
+      "source": "/workflows/build-and-run",
+      "destination": "/documentation/build-agents/workflows/build-a-workflow"
+    },
+    {
+      "source": "/numbers/overview",
+      "destination": "/documentation/inventory/phone-numbers/overview"
+    },
+    {
+      "source": "/numbers/buy-or-import-a-number",
+      "destination": "/documentation/inventory/phone-numbers/buy-or-import-a-number"
+    },
+    {
+      "source": "/telephony/byot-overview",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/byot-overview"
+    },
+    {
+      "source": "/telephony/sip-trunking",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/sip-trunking"
+    },
+    {
+      "source": "/telephony/plivo",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/plivo"
+    },
+    {
+      "source": "/telephony/exotel",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/exotel"
+    },
+    {
+      "source": "/telephony/twilio",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/twilio"
+    },
+    {
+      "source": "/telephony/ameyo",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/ameyo"
+    },
+    {
+      "source": "/telephony/ozonetel",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/ozonetel"
+    },
+    {
+      "source": "/telephony/new-provider-requirements",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/new-provider-requirements"
+    },
+    {
+      "source": "/numbers/number-pools",
+      "destination": "/documentation/inventory/phone-numbers/number-pools"
+    },
+    {
+      "source": "/numbers/attach-to-an-agent",
+      "destination": "/documentation/inventory/phone-numbers/inbound-agent-number"
+    },
+    {
+      "source": "/campaigns/overview",
+      "destination": "/documentation/deploy/campaigns/overview"
+    },
+    {
+      "source": "/campaigns/create-a-campaign",
+      "destination": "/documentation/deploy/campaigns/create-a-campaign"
+    },
+    {
+      "source": "/campaigns/calling-list",
+      "destination": "/documentation/deploy/campaigns/calling-list"
+    },
+    {
+      "source": "/campaigns/workflow-campaign",
+      "destination": "/documentation/deploy/campaigns/workflow-campaign#workflow-campaigns"
+    },
+    {
+      "source": "/campaigns/manage-a-campaign",
+      "destination": "/documentation/deploy/campaigns/manage-a-campaign"
+    },
+    {
+      "source": "/web-widget/overview",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/overview"
+    },
+    {
+      "source": "/agents/embed-and-widgets",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/overview"
+    },
+    {
+      "source": "/web-widget/configuration",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/configuration"
+    },
+    {
+      "source": "/web-widget/events",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/events"
+    },
+    {
+      "source": "/web-widget/chat-mode",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/chat-mode"
+    },
+    {
+      "source": "/web-widget/components",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/components"
+    },
+    {
+      "source": "/web-widget/data",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/data"
+    },
+    {
+      "source": "/web-widget/recipes",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/recipes"
+    },
+    {
+      "source": "/web-widget/styling",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/styling"
+    },
+    {
+      "source": "/web-widget/launch-checklist",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/launch-checklist"
+    },
+    {
+      "source": "/mobile/install",
+      "destination": "/documentation/deploy/web-and-apps/mobile-apps/install"
+    },
+    {
+      "source": "/mobile/configuration",
+      "destination": "/documentation/deploy/web-and-apps/mobile-apps/configuration"
+    },
+    {
+      "source": "/mobile/events",
+      "destination": "/documentation/deploy/web-and-apps/mobile-apps/events"
+    },
+    {
+      "source": "/whatsapp/start-a-conversation",
+      "destination": "/documentation/deploy/whatsapp/start-a-conversation"
+    },
+    {
+      "source": "/whatsapp/relay/overview",
+      "destination": "/documentation/deploy/whatsapp/relay-overview"
+    },
+    {
+      "source": "/whatsapp/relay/whats-supported",
+      "destination": "/documentation/deploy/whatsapp/relay-overview#supported-features"
+    },
+    {
+      "source": "/whatsapp/relay/what-we-need-from-you",
+      "destination": "/documentation/deploy/whatsapp/relay-overview#what-you-set-up"
+    },
+    {
+      "source": "/whatsapp/relay/what-ringg-provides",
+      "destination": "/documentation/deploy/whatsapp/relay-overview#what-ringg-provides"
+    },
+    {
+      "source": "/whatsapp/relay/integration-guide",
+      "destination": "/documentation/deploy/whatsapp/relay-integration-guide"
+    },
+    {
+      "source": "/whatsapp/relay/handover",
+      "destination": "/documentation/deploy/whatsapp/relay-integration-guide#handover-from-a-human-agent"
+    },
+    {
+      "source": "/whatsapp/relay/troubleshooting",
+      "destination": "/documentation/deploy/whatsapp/relay-troubleshooting"
+    },
+    {
+      "source": "/whatsapp/relay/faq",
+      "destination": "/documentation/deploy/whatsapp/relay-overview#faq"
+    },
+    {
+      "source": "/monitor/logs",
+      "destination": "/documentation/monitor/logs"
+    },
+    {
+      "source": "/whatsapp/chat-history",
+      "destination": "/documentation/monitor/logs"
+    },
+    {
+      "source": "/monitor/analytics",
+      "destination": "/documentation/monitor/analytics"
+    },
+    {
+      "source": "/monitor/evals",
+      "destination": "/documentation/monitor/evals"
+    },
+    {
+      "source": "/monitor/alerts",
+      "destination": "/documentation/monitor/alerts"
+    },
+    {
+      "source": "/account/members",
+      "destination": "/documentation/manage-account/members"
+    },
+    {
+      "source": "/account/api-key",
+      "destination": "/documentation/manage-account/api-key"
+    },
+    {
+      "source": "/account/billing",
+      "destination": "/documentation/manage-account/billing"
+    },
+    {
+      "source": "/account/call-limits",
+      "destination": "/documentation/manage-account/call-limits"
+    },
+    {
+      "source": "/account/ringg-spaces",
+      "destination": "/documentation/manage-account/ringg-spaces/overview"
+    },
+    {
+      "source": "/account/security-and-compliance",
+      "destination": "/resources/security/security"
+    },
+    {
+      "source": "/account/security-guidelines",
+      "destination": "/resources/security/security"
+    },
+    {
+      "source": "/parrot-stt/python-sdk",
+      "destination": "/documentation/ringg-labs/parrot-stt/python-sdk"
+    },
+    {
+      "source": "/parrot-stt/truefoundry",
+      "destination": "/documentation/ringg-labs/parrot-stt/truefoundry"
+    },
+    {
+      "source": "/api-reference/quickstart",
+      "destination": "/api-reference/introduction/quickstart"
+    },
+    {
+      "source": "/api-reference/authentication",
+      "destination": "/api-reference/introduction/authentication"
+    },
+    {
+      "source": "/api-reference/overview",
+      "destination": "/api-reference/introduction/api-overview"
+    },
+    {
+      "source": "/resources/mcp/mcp-for-ai-assistants",
+      "destination": "/resources/mcp-server/docs-mcp-server/mcp-for-ai-assistants"
+    },
+    {
+      "source": "/resources/mcp/overview",
+      "destination": "/resources/mcp-server/workspace-mcp-server/overview"
+    },
+    {
+      "source": "/resources/mcp/connect-an-assistant",
+      "destination": "/resources/mcp-server/workspace-mcp-server/connect-an-assistant"
+    },
+    {
+      "source": "/resources/mcp/tool-reference",
+      "destination": "/resources/mcp-server/workspace-mcp-server/tool-reference"
+    },
+    {
+      "source": "/resources/mcp/security-and-faq",
+      "destination": "/resources/mcp-server/workspace-mcp-server/security-and-faq"
+    },
+    {
+      "source": "/resources/changelog",
+      "destination": "/resources/changelog/changelog"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/knowledge-and-tools/create-a-knowledge-base",
+      "destination": "/documentation/inventory/knowledge-base"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/knowledge-and-tools/attach-a-knowledge-base",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/knowledge-and-tools/tools",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/overview"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/knowledge-and-tools/connect-an-app",
+      "destination": "/documentation/inventory/tools-integrations/connect-an-app"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/phone-numbers/attach-to-an-agent",
+      "destination": "/documentation/inventory/phone-numbers/inbound-agent-number"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/prompt-and-voice/variables",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/custom-variables"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/inventory/attach-a-knowledge-base",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/inventory/tools-apis",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/overview"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/settings-and-results/call-settings",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/call-settings"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/settings-and-results/advanced-analysis",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/advanced-analysis"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/settings-and-results/event-subscription",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/event-subscription"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/settings-and-results/initial-setup",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/settings-and-results/payloads",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/webhooks/call-events"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/settings-and-results/error-handling",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/settings-and-results/events",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events#whatsapp-chat-events"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/inventory/knowledge-base",
+      "destination": "/documentation/inventory/knowledge-base"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/inventory/tools-integrations",
+      "destination": "/documentation/inventory/tools-integrations/connect-an-app"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/phone-numbers/overview",
+      "destination": "/documentation/inventory/phone-numbers/overview"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/phone-numbers/buy-or-import-a-number",
+      "destination": "/documentation/inventory/phone-numbers/buy-or-import-a-number"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/phone-numbers/your-own-telephony/byot-overview",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/byot-overview"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/phone-numbers/your-own-telephony/sip-trunking",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/sip-trunking"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/phone-numbers/your-own-telephony/plivo",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/plivo"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/phone-numbers/your-own-telephony/exotel",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/exotel"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/phone-numbers/your-own-telephony/twilio",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/twilio"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/phone-numbers/your-own-telephony/ameyo",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/ameyo"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/phone-numbers/your-own-telephony/ozonetel",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/ozonetel"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/phone-numbers/your-own-telephony/new-provider-requirements",
+      "destination": "/documentation/inventory/phone-numbers/your-own-telephony/new-provider-requirements"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/phone-numbers/number-pools",
+      "destination": "/documentation/inventory/phone-numbers/number-pools"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/inventory/inbound-agent-number",
+      "destination": "/documentation/inventory/phone-numbers/inbound-agent-number"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/prompt-and-voice/write-the-prompt",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/agent-prompt"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/prompt-and-voice/voice-and-language",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/voice-and-language"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/prompt-and-voice/custom-variables",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/custom-variables"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/prompt-and-voice/attach-a-knowledge-base",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/prompt-and-voice/tools-apis",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/overview"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/prompt-and-voice/call-settings",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/call-settings"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/prompt-and-voice/advanced-analysis",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/advanced-analysis"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/prompt-and-voice/event-subscription",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/event-subscription"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/campaigns/overview",
+      "destination": "/documentation/deploy/campaigns/overview"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/campaigns/create-a-campaign",
+      "destination": "/documentation/deploy/campaigns/create-a-campaign"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/campaigns/calling-list",
+      "destination": "/documentation/deploy/campaigns/calling-list"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/campaigns/workflow-campaign",
+      "destination": "/documentation/deploy/campaigns/workflow-campaign#workflow-campaigns"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/campaigns/manage-a-campaign",
+      "destination": "/documentation/deploy/campaigns/manage-a-campaign"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/web-and-apps/web-widget/overview",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/overview"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/web-and-apps/web-widget/embed-and-widgets",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/overview"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/web-and-apps/web-widget/configuration",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/configuration"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/web-and-apps/web-widget/events",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/events"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/web-and-apps/web-widget/chat-mode",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/chat-mode"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/web-and-apps/web-widget/components",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/components"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/web-and-apps/web-widget/data",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/data"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/web-and-apps/web-widget/recipes",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/recipes"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/web-and-apps/web-widget/styling",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/styling"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/web-and-apps/web-widget/launch-checklist",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/launch-checklist"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/web-and-apps/mobile-apps/install",
+      "destination": "/documentation/deploy/web-and-apps/mobile-apps/install"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/web-and-apps/mobile-apps/configuration",
+      "destination": "/documentation/deploy/web-and-apps/mobile-apps/configuration"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/web-and-apps/mobile-apps/events",
+      "destination": "/documentation/deploy/web-and-apps/mobile-apps/events"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/whatsapp/start-a-conversation",
+      "destination": "/documentation/deploy/whatsapp/start-a-conversation"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/whatsapp/whatsapp-relay/overview",
+      "destination": "/documentation/deploy/whatsapp/relay-overview"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/whatsapp/whatsapp-relay/whats-supported",
+      "destination": "/documentation/deploy/whatsapp/relay-overview#supported-features"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/whatsapp/whatsapp-relay/what-we-need-from-you",
+      "destination": "/documentation/deploy/whatsapp/relay-overview#what-you-set-up"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/whatsapp/whatsapp-relay/what-ringg-provides",
+      "destination": "/documentation/deploy/whatsapp/relay-overview#what-ringg-provides"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/whatsapp/whatsapp-relay/integration-guide",
+      "destination": "/documentation/deploy/whatsapp/relay-integration-guide"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/whatsapp/whatsapp-relay/handover",
+      "destination": "/documentation/deploy/whatsapp/relay-integration-guide#handover-from-a-human-agent"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/whatsapp/whatsapp-relay/troubleshooting",
+      "destination": "/documentation/deploy/whatsapp/relay-troubleshooting"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/whatsapp/whatsapp-relay/faq",
+      "destination": "/documentation/deploy/whatsapp/relay-overview#faq"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/monitor/logs",
+      "destination": "/documentation/monitor/logs"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/monitor/chat-history",
+      "destination": "/documentation/monitor/logs"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/monitor/analytics",
+      "destination": "/documentation/monitor/analytics"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/monitor/evals",
+      "destination": "/documentation/monitor/evals"
+    },
+    {
+      "source": "/documentation/deploy-and-monitor/monitor/alerts",
+      "destination": "/documentation/monitor/alerts"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/write-the-prompt",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/agent-prompt"
+    },
+    {
+      "source": "/documentation/build-agents/test-and-improve/voice-calls",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/voice-and-language#before-a-voice-agent-goes-live"
+    },
+    {
+      "source": "/documentation/monitor/chat-history",
+      "destination": "/documentation/monitor/logs"
+    },
+    {
+      "source": "/documentation/manage-account/security/security-and-compliance",
+      "destination": "/resources/security/security"
+    },
+    {
+      "source": "/documentation/manage-account/security/security-guidelines",
+      "destination": "/resources/security/security"
+    },
+    {
+      "source": "/api-reference/inventory/inbound-agent-number",
+      "destination": "/documentation/inventory/phone-numbers/inbound-agent-number"
+    },
+    {
+      "source": "/documentation/manage-account/workspace-settings/members",
+      "destination": "/documentation/manage-account/members"
+    },
+    {
+      "source": "/documentation/manage-account/workspace-settings/api-key",
+      "destination": "/documentation/manage-account/api-key"
+    },
+    {
+      "source": "/documentation/manage-account/workspace-settings/billing",
+      "destination": "/documentation/manage-account/billing"
+    },
+    {
+      "source": "/documentation/manage-account/workspace-settings/call-limits",
+      "destination": "/documentation/manage-account/call-limits"
+    },
+    {
+      "source": "/documentation/manage-account/workspace-settings/ringg-spaces",
+      "destination": "/documentation/manage-account/ringg-spaces/overview"
+    },
+    {
+      "source": "/documentation/monitor/logs/whatsapp-logs",
+      "destination": "/documentation/monitor/logs"
+    },
+    {
+      "source": "/documentation/monitor/logs/overview",
+      "destination": "/documentation/monitor/logs"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/webhooks/error-handling",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/webhooks/events",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events#whatsapp-chat-events"
+    },
+    {
+      "source": "/documentation/build-agents/create-an-agent/overview",
+      "destination": "/documentation/build-agents/agents/agent-types"
+    },
+    {
+      "source": "/documentation/build-agents/create-an-agent/create-an-agent",
+      "destination": "/documentation/build-agents/agents/create-an-agent"
+    },
+    {
+      "source": "/documentation/build-agents/create-an-agent/multi-prompt-agents",
+      "destination": "/documentation/build-agents/agents/multi-prompt-agents/overview"
+    },
+    {
+      "source": "/documentation/build-agents/create-an-agent/whatsapp-agents/overview",
+      "destination": "/documentation/build-agents/agents/whatsapp-agents/overview"
+    },
+    {
+      "source": "/documentation/build-agents/create-an-agent/whatsapp-agents/connect-whatsapp",
+      "destination": "/documentation/inventory/tools-integrations/connect-whatsapp"
+    },
+    {
+      "source": "/documentation/build-agents/create-an-agent/whatsapp-agents/create-an-agent",
+      "destination": "/documentation/build-agents/agents/whatsapp-agents/create-an-agent"
+    },
+    {
+      "source": "/documentation/build-agents/create-an-agent/whatsapp-agents/on-call-tools",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#on-call"
+    },
+    {
+      "source": "/documentation/build-agents/create-an-agent/whatsapp-agents/post-call-tools",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#post-call"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/webhooks/initial-setup",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/webhooks/payloads",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/webhooks/call-events"
+    },
+    {
+      "source": "/documentation/deploy/web-and-apps/web-widget/embed-and-widgets",
+      "destination": "/documentation/deploy/web-and-apps/web-widget/overview"
+    },
+    {
+      "source": "/documentation/deploy/whatsapp/whatsapp-relay/whats-supported",
+      "destination": "/documentation/deploy/whatsapp/relay-overview#supported-features"
+    },
+    {
+      "source": "/documentation/deploy/whatsapp/whatsapp-relay/what-we-need-from-you",
+      "destination": "/documentation/deploy/whatsapp/relay-overview#what-you-set-up"
+    },
+    {
+      "source": "/documentation/deploy/whatsapp/whatsapp-relay/what-ringg-provides",
+      "destination": "/documentation/deploy/whatsapp/relay-overview#what-ringg-provides"
+    },
+    {
+      "source": "/documentation/deploy/whatsapp/whatsapp-relay/faq",
+      "destination": "/documentation/deploy/whatsapp/relay-overview#faq"
+    },
+    {
+      "source": "/documentation/deploy/whatsapp/whatsapp-relay/handover",
+      "destination": "/documentation/deploy/whatsapp/relay-integration-guide#handover-from-a-human-agent"
+    },
+    {
+      "source": "/documentation/deploy/whatsapp/whatsapp-relay/overview",
+      "destination": "/documentation/deploy/whatsapp/relay-overview"
+    },
+    {
+      "source": "/documentation/deploy/whatsapp/whatsapp-relay/integration-guide",
+      "destination": "/documentation/deploy/whatsapp/relay-integration-guide"
+    },
+    {
+      "source": "/documentation/deploy/whatsapp/whatsapp-relay/troubleshooting",
+      "destination": "/documentation/deploy/whatsapp/relay-troubleshooting"
+    },
+    {
+      "source": "/resources/security/security-and-compliance",
+      "destination": "/resources/security/security"
+    },
+    {
+      "source": "/resources/security/security-guidelines",
+      "destination": "/resources/security/security"
+    },
+    {
+      "source": "/documentation/build-agents/agents/whatsapp-agents/on-call-tools",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#on-call"
+    },
+    {
+      "source": "/documentation/build-agents/agents/whatsapp-agents/post-call-tools",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#post-call"
+    },
+    {
+      "source": "/documentation/build-agents/agents/whatsapp-agents/connect-whatsapp",
+      "destination": "/documentation/inventory/tools-integrations/connect-whatsapp"
+    },
+    {
+      "source": "/documentation/inventory/tools-integrations",
+      "destination": "/documentation/inventory/tools-integrations/connect-an-app"
+    },
+    {
+      "source": "/documentation/inventory/connect-whatsapp",
+      "destination": "/documentation/inventory/tools-integrations/connect-whatsapp"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/tools-apis",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/overview"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/add-tools",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/overview"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/whatsapp-tools",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools"
+    },
+    {
+      "source": "/documentation/build-agents/workflows/build-and-run",
+      "destination": "/documentation/build-agents/workflows/build-a-workflow"
+    },
+    {
+      "source": "/documentation/build-agents/agents/multi-prompt-agents",
+      "destination": "/documentation/build-agents/agents/multi-prompt-agents/overview"
+    },
+    {
+      "source": "/documentation/manage-account/ringg-spaces",
+      "destination": "/documentation/manage-account/ringg-spaces/overview"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/tools-apis/add-tools",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/overview"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/tools-apis/overview",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/overview"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/tools-apis/api-tools",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/api-tools"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/tools-apis/integration-tools",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/integration-tools"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/tools-apis/system-tools",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/system-tools"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/tools-apis/function-tools-and-conditions",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/function-tools-and-conditions"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/tools-apis/post-call-tools",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/post-call-tools"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/tools-apis/workspace-tools",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/workspace-tools"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/tools-apis/whatsapp-tools",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/webhook-payloads",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/webhooks/call-events"
+    },
+    {
+      "source": "/documentation/build-agents/customize-agent-behaviour/webhooks",
+      "destination": "/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors"
     }
   ],
   "seo": {
     "metatags": {
-      "canonical": "https://docs.ringg.ai"
+      "canonical": "https://docs.ringg.ai",
+      "og:site_name": "Ringg AI Docs",
+      "twitter:site": "@ringg_ai"
     },
     "organization": {
       "id": "https://www.ringg.ai/#organization",
@@ -437,22 +2130,33 @@
     "playground": {
       "display": "interactive"
     },
+    "examples": {
+      "languages": [
+        "curl",
+        "python",
+        "javascript"
+      ]
+    },
     "mdx": {
-      "server": "https://prod-api.ringg.ai/ca/api/v0"
+      "server": "https://prod-api.ringg.ai/ca/api/v0",
+      "auth": {
+        "method": "key",
+        "name": "X-API-KEY"
+      }
     }
   },
   "appearance": {
-    "default": "light"
+    "default": "dark"
   },
   "navbar": {
     "links": [
       {
-        "label": "Contact Us",
-        "href": "mailto:admin@ringg.ai"
+        "label": "Learn",
+        "href": "/resources/learn/all-lessons"
       },
       {
-        "label": "Skills",
-        "href": "https://docs.ringg.ai/skill.md"
+        "label": "Contact us",
+        "href": "mailto:admin@ringg.ai"
       }
     ],
     "primary": {
@@ -467,19 +2171,59 @@
       "linkedin": "https://www.linkedin.com/company/ringg",
       "youtube": "https://www.youtube.com/@RinggAI",
       "instagram": "https://www.instagram.com/ringg_ai",
-      "discord": "https://discord.gg/YuEnb8Vsca",
-      "github": "https://github.com/Stonkr/ringg-api-docs"
-    }
+      "discord": "https://discord.gg/YuEnb8Vsca"
+    },
+    "links": [
+      {
+        "header": "For AI agents",
+        "items": [
+          {
+            "label": "llms.txt",
+            "href": "https://docs.ringg.ai/llms.txt"
+          },
+          {
+            "label": "skill.md",
+            "href": "https://docs.ringg.ai/skill.md"
+          },
+          {
+            "label": "OpenAPI spec",
+            "href": "https://docs.ringg.ai/api-reference/openapi.json"
+          },
+          {
+            "label": "MCP server",
+            "href": "/resources/mcp-server/docs-mcp-server/mcp-for-ai-assistants"
+          }
+        ]
+      }
+    ]
   },
   "search": {
-    "prompt": "Search or ask AI"
+    "prompt": "Search the docs"
   },
   "contextual": {
     "options": [
       "copy",
       "view",
       "chatgpt",
-      "claude"
+      "claude",
+      "mcp",
+      "download-spec"
     ]
+  },
+  "markdown": {
+    "instructions": [
+      "To search or read these docs, connect the Ringg docs MCP server at https://docs.ringg.ai/mcp (no key needed; tools search_ringg_ai and query_docs_filesystem_ringg_ai) instead of browsing pages one by one. Setup for each client: https://docs.ringg.ai/resources/mcp-server/docs-mcp-server/mcp-for-ai-assistants.md",
+      "The dashboard labels agents \"Assistants\"; these docs say \"agent\". Both mean the same object, identified by agent_id.",
+      "API base URL: https://prod-api.ringg.ai/ca/api/v0. Send the workspace API key in the X-API-KEY header, from server-side code only.",
+      "Placing a call dials a real phone number and spends credits. Confirm the number with the user before calling.",
+      "To act on a Ringg workspace (place calls, edit agents, read transcripts), use the separate Ringg workspace MCP server at https://mcp.ringg.ai/mcp: https://docs.ringg.ai/resources/mcp-server/workspace-mcp-server/overview.md"
+    ]
+  },
+  "errors": {
+    "404": {
+      "redirect": false,
+      "title": "This page doesn't exist",
+      "description": "It may have moved in the docs rebuild. The suggestions below usually have it; otherwise start from [the introduction](/get-started/ringg-ai) or search above."
+    }
   }
 }

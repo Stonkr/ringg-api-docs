@@ -1,0 +1,98 @@
+---
+title: "Lesson: Launch and report"
+sidebarTitle: "Launch and report"
+description: "Set a workspace call limit of 3 calls in 24 hours, run the October EMI reminder campaign with Ananya over your own list, then read goal rate in Analytics."
+related:
+  - "Create a campaign": /documentation/deploy/campaigns/create-a-campaign
+  - "Analytics": /documentation/monitor/analytics
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 7: Capstone: EMI reminders end to end · Lesson 4 of 4 · 20 minutes**
+
+## Objective
+
+Run the reminder campaign under a call limit, then read connectivity, promises to pay and the exported report.
+
+## The scenario
+
+The October run goes to every customer with an EMI due on 15 October, under two rules from compliance: nobody is called more than three times in a day, retries included, and the collections lead gets a report. You run it over the part 4 list.
+
+## Hands-on
+
+<Frame caption="Creating a campaign in the dashboard">
+  <video alt="Creating a campaign in the dashboard" aria-label="Creating a campaign in the dashboard" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/campaigns-create/poster.webp">
+    <source src="/media/campaigns-create/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Checkpoint 5: set the call limit">
+    Open **Settings → [Call limits](/documentation/manage-account/call-limits)** and switch on **Limit how often one person is called**. Set **Maximum calls to one person** to `3` and **Rolling window** to 24 hours; **Projected impact** shows what those values would have held back. Click **Save**, then **Save limit** in the **This affects calls already queued** dialog.
+
+    The limit counts every agent's calls to the same person, retries included, never test or inbound calls. A campaign call over it waits as **Waiting for limit** in Logs; if no slot opens before the campaign's end time, it is cancelled instead and shows **Cancelled by limit**.
+  </Step>
+  <Step title="Upload details">
+    Open **Monitor → Campaigns → Create campaign**. Name it `October EMI reminders`, pick `EMI reminder - Hindi` under **Select assistant**, upload the part 4 CSV, check the mapping for `due_amount`, `due_date` and `loan_account`, and click **Next**: "CSV verified successfully".
+  </Step>
+  <Step title="Configure campaign">
+    Under **Select number**, pick the part 4 pool under **Number pool**. Keep the default **Start date & time**, 10 minutes from now, and set **End date & time** to later today. **Calling windows** default to 08:00–20:00 in the campaign's **Timezone**; click **Edit** if you are outside them now.
+
+    Set **Retry count** to **2 Retries**: with the first attempt, that is three dials per row, which fits the limit; with the default **3 Retries**, the limit would hold back or cancel a fourth. Set **Cooldown Period** to **5 Minutes**. The read-only **Call limits** card confirms the limit applies. Click **Create campaign**: "Campaign created successfully!". Every attempt is a real call.
+  </Step>
+  <Step title="Watch it run">
+    Answer when Ananya calls, and let one row ring out to see its retry 5 minutes later. Click the campaign's row, then [**History**](/documentation/deploy/campaigns/manage-a-campaign#find-campaign-calls-in-logs): Logs opens filtered to this campaign, whatever the date range.
+  </Step>
+  <Step title="Checkpoint 6: read the report">
+    In the detail panel click **Analytics**; the page is scoped to the campaign. Read **Calls connected** and **Connectivity rate**; **Goal achieved**, the share of analysed calls where `payment_promised` was true; and the **Connectivity** chart by attempt, which decides next month's retry count.
+
+    Once the status is **Completed**, the panel shows **Export report**. Click **Download** ("Download a ZIP of the call report"). The dashboard offers it for 60 days after the campaign's end time.
+  </Step>
+</Steps>
+
+## Checkpoint
+
+<Check>
+**Call limits** shows the switch on with 3 calls in 24 hours. `October EMI reminders` is **Completed**, **History** lists every row's calls, Analytics shows **Goal achieved** as a percentage rather than "Pick an agent to see goal metrics", and the ZIP is in your downloads.
+</Check>
+
+## Exercise
+
+In Analytics for the campaign, click the **Calls connected** value. Expected result: Logs opens filtered to status **Completed** and this campaign: only the calls you answered.
+
+## What you learned
+
+- The call limit is a workspace rule counted across agents and retries; a campaign's retry count has to fit inside it, or the extra attempts wait or are cancelled.
+- Results live in Logs per call (**History**), Analytics for the rates, and the ZIP (**Export report**), offered for 60 days after the campaign ends.
+- **Goal achieved** says whether the reminder worked; it exists because part 3 marked a Boolean as the goal.
+
+<Quiz
+  question="The call limit is 3 calls per person in 24 hours and the campaign is set to 3 Retries. What happens to a row that never answers?"
+  answers={[
+    { text: "All four dials go out; the limit applies only across campaigns", correct: false },
+    { text: "Three dials go out; the fourth waits for a free slot, or is cancelled by the limit if none opens before the campaign ends", correct: true },
+    { text: "The campaign is rejected until the retry count is lowered", correct: false },
+    { text: "The row is marked invalid and skipped", correct: false },
+  ]}
+  correctFeedback="Right. The limit counts every agent's calls to the same person, retries included. A first attempt plus three retries is four dials, so the fourth shows Waiting for limit until the oldest counted call leaves the 24-hour window. If that comes after the campaign's end time, it is cancelled by the limit instead. Setting 2 Retries keeps the campaign inside the limit."
+  incorrectFeedback="Not quite. The campaign is not rejected and the row is not marked invalid. The workspace limit counts retries too, so a first attempt plus 3 Retries exceeds 3 calls in 24 hours; the extra attempt waits for the window to free up, or is cancelled by the limit if that is after the campaign ends."
+/>
+
+## Where to go next
+
+<Columns cols={3}>
+  <Card title="API quick start" icon="code" href="/api-reference/introduction/api-overview">
+    Place calls, run campaigns and read results from your backend.
+  </Card>
+  <Card title="MCP server" icon="plug" href="/resources/mcp-server/workspace-mcp-server/overview">
+    Let an AI assistant work in your workspace from a chat.
+  </Card>
+  <Card title="Workflows" icon="workflow" href="/documentation/build-agents/workflows/overview">
+    Chain the call, a wait and a WhatsApp nudge per contact.
+  </Card>
+</Columns>
+
+<RelatedTopics items={[["Create a campaign", "/documentation/deploy/campaigns/create-a-campaign"], ["Analytics", "/documentation/monitor/analytics"]]} />

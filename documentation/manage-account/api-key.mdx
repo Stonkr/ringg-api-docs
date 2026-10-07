@@ -1,0 +1,147 @@
+---
+title: "API key"
+sidebarTitle: "API key"
+description: "Generate your Ringg AI workspace API key in the dashboard, copy it from the one-time reveal, send it as X-API-KEY, and rotate it without breaking integrations."
+boost: 4
+"og:title": "Generate, store and rotate your Ringg AI API key"
+---
+
+The API key is the secret your backend sends with every Ringg API request. It identifies the workspace the request acts for, and each workspace has one key.
+
+In the dashboard: **Settings → API key**. For the request format and error codes, see [Authentication](/api-reference/introduction/authentication); to go from a new key to a real call, follow the [quickstart](/api-reference/introduction/quickstart).
+
+## Who can generate the key
+
+In the dashboard, only the workspace **owner** can generate or regenerate it. Other members see the button disabled, with "Only the workspace owner can generate API keys. Please contact them to proceed." The owner is marked with an **Owner** chip on [Workspace members](/documentation/manage-account/members#roles-and-permissions).
+
+Each [Ringg Space](/documentation/manage-account/ringg-spaces/overview) has its own key. A new Ringg Space starts without one: switch to it and generate the key on this page.
+
+## Generate the key
+
+<Frame caption="Generating an API key, from Generate API Key to the masked key (the key shown is a demo value)">
+  <video alt="Generating an API key, from Generate API Key to the masked key (the key shown is a demo value)" aria-label="Generating an API key, from Generate API Key to the masked key (the key shown is a demo value)" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/account-api-key/poster.webp">
+    <source src="/media/account-api-key/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+Have your secret manager open before you start: you get one chance to copy the key.
+
+<Steps>
+  <Step title="Generate the key">
+    On **Settings → API key**, click **Generate API Key**. A dialog opens with the full key.
+  </Step>
+  <Step title="Copy it now">
+    Click **Copy** (it changes to **Copied**) and paste the key into your secret manager. If copying fails, select the key in the field and copy it by hand.
+    <Frame caption="The one-time reveal (demo key)">
+      <img src="/media/account-api-key/key-reveal.webp" alt="Generate API Key dialog showing a fake demo key in a read-only field, a Copied button, the warning to copy and store the key now, and a Done button" />
+    </Frame>
+  </Step>
+  <Step title="Close the dialog">
+    Click **Done**.
+    <Check>The page shows **Generated key** (masked) and **Created on**.</Check>
+    <Frame caption="The masked key after the dialog closes">
+      <img src="/media/account-api-key/key-masked.webp" alt="API Key page showing Generated key as a prefix, dots and the last four characters, Created on 1 October 2026, and a Regenerate API Key button" />
+    </Frame>
+  </Step>
+</Steps>
+
+From then on the page shows:
+
+| Field | What it is |
+|---|---|
+| **Generated key** | The key's prefix and last four characters, for example `rg_live_••••••••2e63` |
+| **Created on** | The date the current key was generated |
+
+New keys start with `rg_live_`. A key generated earlier can start with `ringg_live_` or be a plain UUID, and show no masked form; it keeps working until you regenerate it.
+
+## Use the key
+
+Send the key in the `X-API-KEY` header to `https://prod-api.ringg.ai/ca/api/v0`. [Get Workspace Info](/api-reference/endpoint/workspace/get-workspace-info) (`GET /workspace`) is a quick check that it works:
+
+<CodeGroup>
+```bash cURL
+curl "https://prod-api.ringg.ai/ca/api/v0/workspace" \
+  -H "X-API-KEY: $RINGG_API_KEY"
+```
+
+```javascript JavaScript
+const response = await fetch("https://prod-api.ringg.ai/ca/api/v0/workspace", {
+  headers: { "X-API-KEY": process.env.RINGG_API_KEY },
+});
+console.log(response.status, await response.json());
+```
+
+```python Python
+import os
+import requests
+
+response = requests.get(
+    "https://prod-api.ringg.ai/ca/api/v0/workspace",
+    headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
+)
+print(response.status_code, response.json())
+```
+</CodeGroup>
+
+<Check>A `200` response with your workspace's details in `workspace_info` means the key works. A `401` with `{"message": "Invalid credentials"}` means it is missing, mistyped or was regenerated.</Check>
+
+The key acts for the whole workspace. It can [create agents](/api-reference/endpoint/assistant/create-agent), [start campaigns](/api-reference/endpoint/campaign/start-campaign) and [place calls](/api-reference/endpoint/calling/initiate-individual-call) that spend your [balance](/documentation/manage-account/billing).
+
+## Store it safely
+
+- Keep it in a secret manager or a server-side environment variable such as `RINGG_API_KEY`.
+- Call the Ringg API from your backend only. The key must never reach browser JavaScript, a mobile app, a public repository, a screenshot or a support ticket. The [web widget](/documentation/deploy/web-and-apps/web-widget/overview) has its own public key in the embed code; don't swap this one in.
+- Hand it to developers through your company's secret-sharing tool, not email or chat.
+- Don't log request headers.
+
+## Rotate the key
+
+Regenerating replaces the key at once, with no overlap: the old key stops working the moment the new one exists.
+
+<Steps>
+  <Step title="List what uses the key">
+    Backend services, scripts, Zapier, [MCP clients](/resources/mcp-server/workspace-mcp-server/overview), CRMs. Agree a switch-over time with their owners.
+  </Step>
+  <Step title="Regenerate">
+    Click **Regenerate API Key**, then **Regenerate** in the confirmation dialog.
+  </Step>
+  <Step title="Copy the new key">
+    The **New API Key** dialog shows it once. Click **Copy**, then **Done**.
+  </Step>
+  <Step title="Update every service">
+    Replace the secret everywhere and redeploy. Until a service has the new key, its requests fail with `401`.
+  </Step>
+</Steps>
+
+If the key has leaked, or might have, rotate it straight away. Keys cannot be created or rotated through the API.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="The Generate API Key button is disabled">
+    You are not the workspace owner; ask them ([who can generate the key](#who-can-generate-the-key)).
+  </Accordion>
+  <Accordion title="I closed the dialog without copying the key">
+    It cannot be shown again. Click **Regenerate API Key** to get a new one; this revokes the key you didn't copy.
+  </Accordion>
+  <Accordion title="Requests return 401 after someone regenerated the key">
+    Services still sending the old key are rejected. Compare the last four characters of **Generated key** with each service's key and update the ones that differ.
+  </Accordion>
+  <Accordion title="The page says Could not load your API key">
+    Click **Try again**. The page won't offer **Generate API Key** until it knows whether a key exists, so it can't replace one by accident.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Authenticate API requests" icon="code" href="/api-reference/introduction/authentication">
+    Header format, error codes and a first request.
+  </Card>
+  <Card title="Receive call results" icon="webhook" href="/documentation/build-agents/customize-agent-behaviour/event-subscription">
+    Have Ringg post call events to your server.
+  </Card>
+  <Card title="Connect an AI assistant" icon="plug" href="/resources/mcp-server/workspace-mcp-server/overview">
+    Use the key with Claude, ChatGPT or Cursor over MCP.
+  </Card>
+</Columns>

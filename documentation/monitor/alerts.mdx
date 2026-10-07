@@ -1,0 +1,233 @@
+---
+title: "Alerts"
+sidebarTitle: "Alerts"
+description: "Create Ringg AI alerts that watch a call, tool or Advanced Analysis metric for your workspace or chosen agents, and notify you by email, Slack or webhook."
+"og:title": "Set up call alerts by email, Slack or webhook"
+---
+
+An alert watches one metric, such as the share of calls customers hang up on, and notifies you when it crosses a threshold, so you hear about a spike without watching [Analytics](/documentation/monitor/analytics).
+
+In the dashboard: **Sidebar → Monitor → Alerts**.
+
+## Before you start
+
+<Columns cols={2}>
+  <Card title="Somewhere to send it" icon="bell" href="/documentation/build-agents/customize-agent-behaviour/tools/workspace-tools#workspace-tools" horizontal>
+    An email address, a webhook URL, or a connected Slack channel.
+  </Card>
+  <Card title="Advanced Analysis fields" icon="list-checks" href="/documentation/build-agents/customize-agent-behaviour/advanced-analysis" horizontal>
+    Optional: only to alert on a field your agent extracts.
+  </Card>
+</Columns>
+
+## Workspace and agent alerts
+
+The page has two tabs, each with a count:
+
+| Tab | Shows |
+|---|---|
+| **Workspace** | Alerts that watch every agent in the workspace, then the **Recommended** starter alerts you have not turned on yet |
+| **Agents** | Alerts limited to chosen agents, grouped under each agent's name. An alert for several agents appears under each one. |
+
+Some metrics only make sense at one level. Tool failure alerts work only per agent ("Tool failure alerts aren't available here — they only work per agent."). A credit balance alert works only for the workspace.
+
+## Recommended starter alerts
+
+Two starter alerts are listed under **Recommended** ("Starter alerts for common call-quality issues."):
+
+| Alert | Fires when | Window |
+|---|---|---|
+| **Disconnection rate spike** | Disconnection rate is above 25% | Last 30 minutes |
+| **Customer hangup spike** | Customer hangup rate is above 25% | Last 30 minutes |
+
+**Enable** turns one on as is, checked every 15 minutes, with no email, Slack or webhook targets ("Alert enabled"). Nobody is notified until you edit it and add a target. To set the threshold, window and recipients first, click the pencil icon instead.
+
+<Frame caption="The Workspace tab with a recommended alert">
+  <img src="/media/monitor-alerts/alerts-list.webp" alt="Alerts page, Workspace tab: two configured alerts with switches and edit icons, and the Recommended group with Customer hangup spike and an Enable button" />
+</Frame>
+
+## Create an alert
+
+<Frame caption="The alert list and recommended alerts, then a workspace alert that emails the team and calls a webhook">
+  <video alt="The alert list and recommended alerts, then a workspace alert that emails the team and calls a webhook" aria-label="The alert list and recommended alerts, then a workspace alert that emails the team and calls a webhook" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/monitor-alerts/poster.webp">
+    <source src="/media/monitor-alerts/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open the form">
+    Click **Create alert**. The dialog reads "Choose what to watch and where to send the notification."
+  </Step>
+  <Step title="Name it and pick the scope">
+    Enter an **Alert name**, for example "Payment failure rate spike". Under **Scope**, choose **Workspace** ("Monitors every agent in this workspace.") or **Agent** ("Monitors only the agents you select."). For **Agent**, pick one or more agents in **Agents**. Don't have one yet? [Create an agent](/documentation/build-agents/agents/create-an-agent).
+  </Step>
+  <Step title="Set the trigger">
+    Build the sentence under **Trigger**: **Check every** *interval* **for the last** <Tooltip tip="The period of recent calls the metric is computed over.">*window*</Tooltip>, **when** *metric* *condition* *threshold*. For example: check every 5 min for the last 30 min, when customer hangup rate is above 25%.
+  </Step>
+  <Step title="Add filters (optional)">
+    Click **Add filter** to count only some calls, such as `outbound` calls or calls on one carrier.
+  </Step>
+  <Step title="Choose who to notify and save">
+    Under **Notify via**, expand **Email**, **Slack** or **Webhook** and add a target ([Notification channels](#notification-channels)), then click **Save**.
+
+    <Frame caption="Trigger and notification targets">
+      <img src="/media/monitor-alerts/create-alert-dialog.webp" alt="Create alert dialog: check every 5 min for the last 1 hour when Call failure rate is above 20%, an email address and a webhook URL added under Notify via, and Save" />
+    </Frame>
+
+    <Check>You see "Alert created", and the alert is on.</Check>
+  </Step>
+</Steps>
+
+## The parts of a rule
+
+| Part | Options | Default |
+|---|---|---|
+| **Check every** | 5 min, 10 min, 15 min, 30 min, 1 hour | 5 min |
+| **for the last** (window) | 15 min, 30 min, 1 hour, 6 hours, 24 hours | 30 min |
+| Metric | Ringg's metric catalog, plus the selected agents' Advanced Analysis fields | None |
+| Condition | **is above**, **is below**, **equals** | **is above** |
+| Threshold | A number. Rate metrics take a percentage (enter `25` for 25%). | Metric's suggested value, if any |
+
+The metric list comes from Ringg and shows a description under each metric. A balance is read at check time, so it has no window and no filters.
+
+| Metrics | Scope |
+|---|---|
+| Number of Calls, Connection rate, Disconnection rate (webcall), Customer hangup rate, Avg call duration, Goal completion rate, Negative sentiment share, Positive sentiment share, Response latency p50 and p95, Avg user turns | Workspace or agent |
+| Tool failure rate, Tool failure count | Agent only |
+| Advanced Analysis fields ([below](#alert-on-an-advanced-analysis-field)) | Agent only |
+| Available credits ([Billing](/documentation/manage-account/billing)) | Workspace only |
+
+### Alert on an Advanced Analysis field
+
+When agents are selected, their [Advanced Analysis](/documentation/build-agents/customize-agent-behaviour/advanced-analysis) fields appear in the metric list, marked **Custom analysis** or **Custom analysis · numeric**. After you pick one, a second dropdown sets how it is measured:
+
+| Field type | Measure options | Also asks for |
+|---|---|---|
+| Boolean | **percentage**, **count** | Nothing: counts calls where the field is true |
+| Enum or text | **percentage**, **count** | **where** *field* **is** a value |
+| Number | **average**, **total** | Nothing |
+
+For example: when **percentage** of `payment_promised` is below 40.
+
+### Filters
+
+Each filter narrows the calls the metric counts. You can add each field once, and only the fields the chosen metric supports are offered.
+
+| Filter | Values |
+|---|---|
+| **Call type** | `inbound`, `outbound`, `webcall` |
+| **Status** | `registered`, `ongoing`, `retry`, `error`, `completed`, `failed`, `cancelled`, `forwarded` ([call statuses](/documentation/monitor/logs#call-statuses)) |
+| **Calling source** | The carrier or transport that placed the call, such as `plivo`, `exotel`, `twilio`, `ozonetel`, `whatsapp`, `livekit` (see [telephony providers](/documentation/inventory/phone-numbers/your-own-telephony/byot-overview)). You can also type a value. |
+| **Tool name** | A [tool](/documentation/build-agents/customize-agent-behaviour/tools/overview) of the agent (tool metrics). With exactly one agent selected you pick from its tools; otherwise you type the name. |
+
+## Notification channels
+
+The **Create alert** and edit forms need at least one target ("Add at least one notification target.").
+
+| Channel | How to add |
+|---|---|
+| **Email** | Type an address and click **Add**. Add as many as you need. |
+| **Slack** | Pick channels in **Slack channels**. Connect Slack on the [**Tools**](/documentation/build-agents/customize-agent-behaviour/tools/workspace-tools#workspace-tools) page first ("Connect Slack from the Tools page to send alerts to a Slack channel."). |
+| **Webhook** | Enter a URL (`http://` or `https://`) and click **Add**. Ringg sends a `POST` with a JSON body. |
+
+### Webhook test, headers and payload
+
+- **Test** sends a test request to the URL in the field. You see "Webhook test delivered" or "Webhook test failed" with the error.
+- Open **Advanced webhook settings** to add **Custom headers (optional)**, such as `Authorization`. Add headers before clicking **Add** for the URL. Header values are stored encrypted and are never shown again. When you edit an alert, leave the header rows empty to keep the saved headers.
+
+Under **Advanced webhook settings**, the dashboard shows this sample as the "JSON body Ringg sends on each alert":
+
+```json
+{
+  "type": "alert.fired",
+  "workspace_id": "...",
+  "rule": { "name": "...", "metric_id": "...", "threshold": 0.25, "condition_type": "gt" },
+  "event": { "metric_value": 0.31, "sample_size": 142 },
+  "message": { "title": "...", "summary": "..." }
+}
+```
+
+<ResponseField name="type" type="string">
+  `alert.fired`, `alert.still_firing` or `alert.resolved` ([when each is sent](#when-notifications-are-sent)); `alert.test` for a **Test** send.
+</ResponseField>
+<ResponseField name="sent_at" type="string">
+  When the notification was sent.
+</ResponseField>
+<ResponseField name="workspace_id" type="string">
+  The workspace the alert belongs to.
+</ResponseField>
+<ResponseField name="rule" type="object">
+  The alert that fired.
+  <Expandable title="properties">
+    <ResponseField name="id" type="string">The alert's ID.</ResponseField>
+    <ResponseField name="name" type="string">The **Alert name**.</ResponseField>
+    <ResponseField name="metric_id" type="string">The watched metric.</ResponseField>
+    <ResponseField name="severity" type="string">The alert's severity.</ResponseField>
+    <ResponseField name="threshold" type="number">The threshold; a fraction for rate metrics (`0.25` is 25%).</ResponseField>
+    <ResponseField name="condition_type" type="string">`gt` (is above), `lt` (is below) or `eq` (equals).</ResponseField>
+    <ResponseField name="window_minutes" type="number">The window, in minutes.</ResponseField>
+    <ResponseField name="agent_ids" type="string[] | null">The selected agents; `null` for a workspace alert.</ResponseField>
+    <ResponseField name="filters" type="object">The alert's filters.</ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="event" type="object | null">
+  What the check measured.
+  <Expandable title="properties">
+    <ResponseField name="id" type="string">The ID of this firing.</ResponseField>
+    <ResponseField name="metric_value" type="number">The measured value; a fraction for rate metrics.</ResponseField>
+    <ResponseField name="sample_size" type="number">How many calls the value was computed from.</ResponseField>
+  </Expandable>
+</ResponseField>
+<ResponseField name="message" type="object">
+  Human-readable text.
+  <Expandable title="properties">
+    <ResponseField name="title" type="string">Short title.</ResponseField>
+    <ResponseField name="summary" type="string">One-line summary.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+### When notifications are sent
+
+- **Fired**: once, when a check first crosses the threshold.
+- **Still firing**: again on every check while the condition holds, with no cooldown. A Recommended alert that stays above its threshold notifies every 15 minutes.
+- **Resolved**: once, when a check finds the condition no longer holds. A window with no qualifying calls can't be measured, so it neither fires nor resolves.
+
+Every target gets each notification. A webhook attempt waits up to 20 seconds. A `429`, a `5xx` or a network error is retried, for 3 attempts in all, a few seconds apart; any status below `400` counts as delivered. A notification that still fails is not sent again.
+
+## Manage alerts
+
+- **Turn off or on:** use the switch on the alert's row. The row also shows the condition (for example `Customer hangup rate > 25%`), the scope and the channels.
+- **Edit:** click the pencil icon. The dialog reads "Update the condition, filters, and who gets notified." Scope can't be changed after creation; change the **Agents** list instead. You see "Alert updated".
+- **Delete:** open the alert, click **Delete**, then **Confirm delete** (or **Keep**). You see "Alert deleted".
+
+## With the API
+
+Alerts have no public API endpoints; manage them in the dashboard.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="I can't find a tool failure metric">
+    Tool failure alerts are agent-only. Set **Scope** to **Agent** and pick at least one agent.
+  </Accordion>
+  <Accordion title="My Advanced Analysis field is not in the metric list">
+    Fields appear only after you select agents, and only fields those agents define in [Advanced Analysis](/documentation/build-agents/customize-agent-behaviour/advanced-analysis).
+  </Accordion>
+  <Accordion title="The Slack option has no channels">
+    Connect Slack on the [**Tools**](/documentation/build-agents/customize-agent-behaviour/tools/workspace-tools#workspace-tools) page, then reopen the alert.
+  </Accordion>
+  <Accordion title="Webhook test failed">
+    Check that the URL is reachable from the internet, accepts `POST` with a JSON body, and that any required auth header is set under **Advanced webhook settings**.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Improve the prompt" icon="book-open" href="/documentation/build-agents/customize-agent-behaviour/agent-prompt">
+    Fix the instructions behind the metric that fired.
+  </Card>
+  <Card title="Publish a new version" icon="git-branch" href="/documentation/build-agents/test-and-improve/drafts-and-versions">
+    Ship the fix and watch the alert go quiet.
+  </Card>
+</Columns>

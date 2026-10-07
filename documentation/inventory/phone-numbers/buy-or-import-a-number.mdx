@@ -1,0 +1,194 @@
+---
+title: "Buy or import a number"
+sidebarTitle: "Buy or import a number"
+description: "Buy a Ringg-provided number, connect Exotel, Twilio, Plivo or another provider, then import or add your own numbers from the Add number dialog in Numbers."
+boost: 4
+"og:title": "Buy, import or add a phone number in Ringg"
+---
+
+A Ringg-provided number is the quickest start; connect your own provider account when you already have numbers or a carrier contract ([compare the two](/documentation/inventory/phone-numbers/overview#ringg-provided-numbers-vs-your-own-telephony)).
+
+In the dashboard: **Sidebar → Inventory → Numbers → All Numbers → Add number**.
+
+## Before you start
+
+<Columns cols={2}>
+  <Card title="Edit access to Numbers" icon="users" href="/documentation/manage-account/members#roles-and-permissions" horizontal>
+    Your workspace role needs the **Numbers** permission.
+  </Card>
+  <Card title="A provider account" icon="plug" href="/documentation/inventory/phone-numbers/your-own-telephony/byot-overview" horizontal>
+    Optional: only to import or buy on your own telephony.
+  </Card>
+</Columns>
+
+## How the Add number dialog works
+
+The dialog, titled **Add Numbers**, has three parts:
+
+1. **Provider list** (left): the [supported providers](/documentation/inventory/phone-numbers/overview#supported-telephony-providers), with Plivo selected when the dialog opens.
+2. **Selectors** (top): the telephony account, then country and region (region starts at **All**). The gear, **Configure provider**, opens the provider's account settings.
+3. **Tabs**, which depend on the account you pick:
+
+| Tab | Shown when | What it does |
+|---|---|---|
+| **Buy new** | Any account that can list numbers for sale | Lists numbers you can buy in the chosen country and region. |
+| **Import your own** | The selected account is your own provider account | Lists numbers already on your provider account so you can bring them into Ringg. |
+| **Add custom** | The provider does not share its number list (<Tooltip tip="Session Initiation Protocol: the standard for connecting voice calls between phone systems.">SIP</Tooltip>, Custom, and some accounts) | Lets you type numbers in. Replaces the other two tabs. |
+
+## Connect a provider account first
+
+Skip this if you buy a Ringg-provided number from Plivo or Vobiz. For anything else, Ringg needs your provider credentials. If the provider has no account yet, the form opens as soon as you select the provider.
+
+<Frame caption="Connecting a second Exotel account, then importing a number from it">
+  <video alt="Connecting a second Exotel account, then importing a number from it" aria-label="Connecting a second Exotel account, then importing a number from it" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/numbers-import/poster.webp">
+    <source src="/media/numbers-import/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open the provider settings">
+    In **Add Numbers**, select the provider on the left, then click the gear (**Configure provider**). The panel lists the accounts you already connected for that provider.
+  </Step>
+  <Step title="Add the account">
+    Click **Add**. Enter a **Name** (for example `Exotel Pune`) and the provider's fields from the table below. Secret fields have a show/hide toggle.
+
+    <Frame caption="The Exotel account form">
+      <img src="/media/numbers-import/provider-form.webp" alt="Configure Exotel Accounts form in the Add Numbers dialog with Name, SID, API Key, API Token, App ID and Subdomain filled in" />
+    </Frame>
+  </Step>
+  <Step title="Save">
+    <Check>
+    You see "BYOT added successfully." and the account appears in the telephony account selector.
+    </Check>
+
+    For Plivo, Twilio, Exotel, Vobiz, Tata Tele, Maqsam and VoiceLink, Ringg tests the credentials with the provider before saving. Wrong ones show "Invalid credentials for _provider_" and nothing is saved.
+  </Step>
+</Steps>
+
+Every field is required unless marked optional. Provider-side setup is in each provider's guide under [Bring your own telephony](/documentation/inventory/phone-numbers/your-own-telephony/byot-overview).
+
+| Provider | Fields |
+|---|---|
+| [Exotel](/documentation/inventory/phone-numbers/your-own-telephony/exotel) | SID, API Key, API Token, App ID, Subdomain (for example `api.exotel.com`) |
+| Mcube | Auth Token |
+| [Ozonetel](/documentation/inventory/phone-numbers/your-own-telephony/ozonetel) | Campaign Name, User Name, API Key, SIP Number |
+| [Plivo](/documentation/inventory/phone-numbers/your-own-telephony/plivo) | Auth ID, Auth Token, App ID (optional; leave it blank, Ringg creates its own app) |
+| Tata Tele | API Key, Auth Token |
+| InTalk | Account Name (the `acme` in `acme.apps.intalk.cc`), Base URL (the `apps.intalk.cc` part), API Token. Import only: no **Buy new** tab. |
+| Maqsam | Base URL (your account host, for example `mycompany.maqsam.com`), Access Key ID, Access Secret, Campaign ID |
+| [Twilio](/documentation/inventory/phone-numbers/your-own-telephony/twilio) | Account SID, Auth Token |
+| Vobiz | Account ID, Auth ID, Auth Secret |
+| VoiceLink | Username, Password, Client ID |
+| [SIP](/documentation/inventory/phone-numbers/your-own-telephony/sip-trunking) | The **Configure SIP Trunks** form: name, direction (Inbound, Outbound, Both), inbound sources, outbound target, transport and optional authentication |
+
+To delete a provider account, open **Configure provider** and use **Delete Account** on its row.
+
+## Buy a new number
+
+<Frame caption="Buying a Ringg-provided Plivo number in Karnataka">
+  <video alt="Buying a Ringg-provided Plivo number in Karnataka" aria-label="Buying a Ringg-provided Plivo number in Karnataka" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/numbers-buy/poster.webp">
+    <source src="/media/numbers-buy/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Pick the provider and account">
+    Select the provider. In the telephony account selector, choose **Ringg** for a Ringg-provided number (Plivo and Vobiz only), or one of your connected accounts.
+  </Step>
+  <Step title="Pick the country and region">
+    Choose the country, then a region or **All**. Each provider sells in fixed countries ([provider table](/documentation/inventory/phone-numbers/overview#supported-telephony-providers)).
+  </Step>
+  <Step title="Buy">
+    On the **Buy new** tab, pick a number from the list (20 per page). With the **Ringg** account, each row also shows its **Rental Rate** per billing period, for example `₹499 / 1 Month` (the **Number rental** rate on [Billing](/documentation/manage-account/billing)). Click **Buy Number** and confirm with **Buy Number**.
+
+    <Frame caption="Buy new with the Ringg account">
+      <img src="/media/numbers-buy/buy-new.webp" alt="Add Numbers dialog with Plivo selected, telephony account Ringg, country India, region Karnataka, and two numbers listed at ₹499 / 1 Month with Buy Number buttons" />
+    </Frame>
+
+    <Check>
+    You see "Purchase has been completed successfully." and the number appears in **All Numbers**.
+    </Check>
+
+    A new number joins no [number pool](/documentation/inventory/phone-numbers/number-pools); add it to one yourself. The same goes for imported and hand-added numbers.
+  </Step>
+</Steps>
+
+## Import a number you already own
+
+<Steps>
+  <Step title="Select your account">
+    Select the provider and your connected account in the telephony account selector. The **Import your own** tab appears.
+  </Step>
+  <Step title="Import">
+    Open **Import your own**. It lists the numbers on your provider account; those already in Ringg show **Already Imported**. Click **Import** on a row and confirm with **Import**.
+
+    <Frame caption="Import your own for an Exotel account">
+      <img src="/media/numbers-import/import-your-own.webp" alt="Import your own tab for the Exotel Mumbai account: two numbers marked Already Imported and three numbers with Import buttons" />
+    </Frame>
+  </Step>
+</Steps>
+
+You import one number at a time. For an Exotel number that will take inbound calls, attach it to the `Ringg Inbound` applet in Exotel first ([Exotel](/documentation/inventory/phone-numbers/your-own-telephony/exotel)).
+
+## Add a number by hand
+
+1. Type a number with its country (for example `+91 98765 43210`) and click **Add**. Repeat for more numbers; each appears as a chip under **Numbers:**. For Maqsam, the field accepts Saudi Arabia and UAE numbers only.
+2. Click **Save**.
+
+<Check>
+You see "Numbers have been added successfully." A number already in the workspace is refused with "Phone number already exists."
+</Check>
+
+## International numbers
+
+India is always available. Canada, the United States, Saudi Arabia and the United Arab Emirates appear only when international calling is enabled for your workspace; without it, the country list shows India only, and Twilio and Maqsam are hidden. The same setting allows calls to numbers outside India. The dashboard has no switch for it: it turns on after your first successful payment, or contact Ringg support.
+
+## Remove, detach and tag numbers
+
+All three actions are on the number's row in **All Numbers**.
+
+| Action | Button | What happens |
+|---|---|---|
+| Remove | **Remove Number** (trash) → **Remove** | The number leaves your Ringg workspace. A number on your own provider account stays registered with your provider. |
+| Detach | **Detach Number** in **Used By** → **Detach** | The number is unlinked from its [inbound agent](/documentation/inventory/phone-numbers/inbound-agent-number#detach-a-number), stays in the workspace and joins your Default pool. |
+| Tag | **Add Tags** (pencil) → **Manage Tags** | Type a tag in **Enter tag** and click **Add**. Click a tag chip to remove it. |
+
+Detach a number from its agent and take it out of running campaigns before you remove it. Test numbers can't be removed or tagged.
+
+## With the API
+
+Numbers are bought, imported and added in the dashboard only. [Get Workspace Numbers](/api-reference/endpoint/numbers/get-workspace-numbers) reads the list (example in [List numbers by API](/documentation/inventory/phone-numbers/overview#list-numbers-by-api)); pass a number's `id` as `from_number_id` when you [place a call](/documentation/inventory/phone-numbers/inbound-agent-number#outbound-choose-the-caller-id).
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="The country I need isn't in the list">
+    Each provider sells in fixed countries ([provider table](/documentation/inventory/phone-numbers/overview#supported-telephony-providers)), and countries other than India need [international calling](#international-numbers) on your workspace.
+  </Accordion>
+  <Accordion title="I don't see the Import your own tab">
+    The tab shows only when the selected account is your own provider account. It does not show for the **Ringg** account or for accounts that use **Add custom**.
+  </Accordion>
+  <Accordion title="No numbers available">
+    **Buy new** shows "No new numbers available." when the provider has none for that country and region. Set the region to **All** or try another region.
+  </Accordion>
+  <Accordion title="The SIP provider is missing">
+    SIP appears only for enterprise workspaces and is not offered on the Saudi Arabia or UAE regional dashboards.
+  </Accordion>
+  <Accordion title="Do I need to buy a number before I can test an agent?">
+    No. Every workspace has [test numbers](/documentation/inventory/phone-numbers/overview#test-numbers) for [test calls](/documentation/build-agents/test-and-improve/test-an-agent). You need your own number for calls to customers, campaigns and inbound agents.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Answer inbound calls" icon="phone" href="/documentation/inventory/phone-numbers/inbound-agent-number">
+    Attach your new number to an inbound agent.
+  </Card>
+  <Card title="Rotate caller IDs" icon="list-checks" href="/documentation/inventory/phone-numbers/number-pools">
+    Put numbers in a pool for campaigns and API calls.
+  </Card>
+  <Card title="Run a campaign" icon="megaphone" href="/documentation/deploy/campaigns/create-a-campaign">
+    Call a contact list from your new number.
+  </Card>
+</Columns>

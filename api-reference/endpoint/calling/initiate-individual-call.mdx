@@ -1,27 +1,15 @@
 ---
 openapi: post /calling/outbound/individual
+description: "Place one outbound call with an agent to one phone number, passing a caller number, the variables the prompt uses, and optional retry and timing settings."
+related:
+  - "Initiate individual call (number pool)": /api-reference/endpoint/calling/initiate-individual-call-v2
 ---
 
-<Warning>
-**Deprecated.** This endpoint requires you to pass and manage caller numbers yourself via `from_number_id` or `from_number`. New integrations should use [Initiate Individual Call (Pool)](/api-reference/endpoint/calling/initiate-individual-call-v2), which can resolve numbers automatically from a managed pool (rotation, spam skipping, and auto-purchase).
-</Warning>
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-Start one outbound call with a configured assistant. Use this endpoint for transactional calls, test calls before campaigns, and product workflows where one user action should trigger one phone call.
+Use it for calls triggered by an event in your product, such as a missed EMI or a new lead, and to [test an agent](/documentation/build-agents/test-and-improve/test-an-agent) before a campaign. To have Ringg choose the caller number from a [number pool](/documentation/inventory/phone-numbers/number-pools) (rotation and spam skipping), use the [number-pool variant](/api-reference/endpoint/calling/initiate-individual-call-v2).
 
-## Required inputs
-
-| Field | Purpose |
-|---|---|
-| `name` | Recipient name. Ringg also uses this as `callee_name` if you do not provide one in `custom_args_values`. |
-| `mobile_number` | Recipient phone number in E.164 format, for example `+919876543210`. |
-| `agent_id` | Assistant that will handle the conversation. Get it from `GET /agent/all`. |
-| `from_number_id` or `from_number` | Caller ID to use. **Exactly one is required.** Use `from_number_id` when possible because it is stable across number formatting changes. |
-
-<Warning>
-**Provide either `from_number_id` or `from_number`, not both.** Phone numbers passed as `from_number` must include country code.
-</Warning>
-
-## Minimal request
+`agent_id` comes from [List agents](/api-reference/endpoint/assistant/get-assistants) and `from_number_id` from [List workspace numbers](/api-reference/endpoint/numbers/get-workspace-numbers). Send `from_number_id` or `from_number`, not both. When the agent version has its own outbound numbers, those are used instead, and both fields may be left out. `name` is used as `callee_name` when `custom_args_values` does not set one.
 
 ```json
 {
@@ -36,84 +24,77 @@ Start one outbound call with a configured assistant. Use this endpoint for trans
 }
 ```
 
-## Custom variables
+The response's `data.call_id` identifies the call in [call details](/api-reference/endpoint/history/get-call-details), [call history](/api-reference/endpoint/history/get-call-history) and [webhook payloads](/documentation/build-agents/customize-agent-behaviour/webhooks/call-events). Store it with your own record.
 
-Use `custom_args_values` to pass dynamic data to your assistant.
+## Call settings for this call
 
-- Reference variables in prompts with `@{{variable_name}}`.
-- Keep keys stable across your code, prompts, CSV mappings, and analytics.
-- Common keys include `callee_name`, `mobile_number`, `company_name`, `appointment_date`, and your product-specific IDs.
+`call_config` overrides the agent's settings for this call only:
 
-## Scheduled calls
-
-Add `call_config.call_time.scheduled_at` when the call should be queued for a specific date and time.
+- `max_call_length` (seconds), `idle_timeout_warning` and `idle_timeout_end` (seconds of silence);
+- `call_time`: `call_start_time`, `call_end_time` (`HH:MM`) and `timezone`, the window the call may be placed in, and `scheduled_at` to place the call later;
+- `call_retry_config`: `retry_count`, and the wait in minutes before retrying a busy (`retry_busy`), unanswered (`retry_not_picked`) or failed (`retry_failed`) call.
 
 ```json
 {
   "call_config": {
-    "call_time": {
-      "call_start_time": "09:00",
-      "call_end_time": "18:00",
-      "timezone": "Asia/Kolkata",
-      "scheduled_at": "2026-10-18T10:30:00"
-    }
+    "call_time": { "call_start_time": "09:00", "call_end_time": "18:00", "timezone": "Asia/Kolkata" },
+    "call_retry_config": { "retry_count": 1, "retry_busy": 30, "retry_not_picked": 30, "retry_failed": 30 }
   }
 }
 ```
 
-`call_start_time` and `call_end_time` still act as the allowed calling window in the specified timezone.
+## Schedule the call
 
-## Retry configuration
-
-Use retry settings when a recipient is busy, does not answer, or the provider fails the call.
+`call_config.call_time.scheduled_at` places the call later. Write it as a local time without an offset, `YYYY-MM-DDTHH:MM:SS`, in `call_time.timezone` (the agent's timezone when that is not sent). It must be in the future; a time outside the calling window moves to the next opening.
 
 ```json
 {
   "call_config": {
-    "call_retry_config": {
-      "retry_count": 1,
-      "retry_busy": 30,
-      "retry_not_picked": 30,
-      "retry_failed": 30
-    }
+    "call_time": { "scheduled_at": "2026-10-18T15:30:00", "timezone": "Asia/Kolkata" }
   }
 }
 ```
 
-The retry delay values are in minutes.
+The response says "Call has been scheduled successfully for …" and returns `data.scheduled_at`, `data.scheduled_timezone` and `data.scheduled_time_utc`.
 
-## Smart formatter
+## Call limits and deadlines
 
-`smart_formatter` can normalize callee names before the call.
+The workspace and agent [call limits](/documentation/manage-account/call-limits) apply to calls placed by API. The request is still accepted with `200`; the limit is checked just before dialling.
+
+- `call_validity_hours` and `call_deadline` give the call a deadline. A call held by a limit waits until then (`call_status` `registered`, `call_sub_status` `FREQUENCY_DEFERRED`), and is cancelled with `DEADLINE_PASSED` if it has not been placed by the deadline. `call_validity_hours` counts from when the call is created, or from `scheduled_at`; when both are sent, the earlier deadline applies.
+- A call with no deadline is cancelled as soon as a limit blocks it (`cancelled`, `FREQUENCY_CAPPED`).
+- `purpose: "transactional"` marks a transactional call; the call limits do not apply to it.
+
+```json
+{
+  "call_validity_hours": 6,
+  "purpose": "transactional"
+}
+```
+
+## Name formatting
+
+`smart_formatter` cleans `callee_name` before the call. `extract_first_name` drops titles and keeps the first name (`Mr Rajesh Kumar` becomes `Rajesh`). `transliteration` also converts the name to `transliteration_language.target` (default `hi`) and turns on first-name extraction. The original name stays available as `original_callee_name` in `custom_args_values`.
 
 ```json
 {
   "smart_formatter": {
     "extract_first_name": true,
     "transliteration": true,
-    "transliteration_language": {
-      "source": "en",
-      "target": "hi"
-    }
+    "transliteration_language": { "source": "en", "target": "hi" }
   }
 }
 ```
 
-For example, `Mr Rajesh Kumar` can become `Rajesh` or a transliterated value in `callee_name`. The original name is preserved as `original_callee_name` in `custom_args_values`.
-
-## Result handling
-
-Store the returned call ID. Use it to:
-
-- Match webhook events to your internal record.
-- Fetch details with [Get call details](/api-reference/endpoint/history/get-call-details).
-- Reconcile rows from [Get call history](/api-reference/endpoint/history/get-call-history).
-
-## Common failure checks
+## Troubleshooting
 
 | Symptom | Check |
 |---|---|
-| `401 Unauthorized` | Missing or invalid `X-API-KEY`. |
-| Validation error | Missing required field, both `from_number_id` and `from_number` provided, or invalid phone number. |
-| Call remains queued | Calling window, scheduled time, workspace credits, or provider health. |
-| Assistant says wrong data | Prompt placeholders do not match `custom_args_values` keys. |
+| `401` | `X-API-KEY` is missing or the key was regenerated. |
+| `400` | No caller number and no outbound numbers on the agent version, a Ringg test number as the caller number, or a missing variable in `custom_args_values`. |
+| `402` | The balance, or the available credit limit, does not cover the call. |
+| `422` | A required field is missing or has the wrong type, or both `from_number_id` and `from_number` are set. |
+| The call stays `registered` | The current time is outside `call_time`, or a call limit is holding it (`call_sub_status` `FREQUENCY_DEFERRED`). |
+| The agent says the wrong name or value | A `custom_args_values` key does not match the variable name in the prompt. |
+
+<RelatedTopics items={[["Initiate individual call (number pool)", "/api-reference/endpoint/calling/initiate-individual-call-v2"]]} />

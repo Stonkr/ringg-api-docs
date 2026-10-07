@@ -1,0 +1,79 @@
+---
+title: "Lesson: What Ringg is"
+sidebarTitle: "What Ringg is"
+description: "Learn what a Ringg AI agent is, which channel it talks on (outbound, inbound, webcall or WhatsApp), and why Acme Lending's EMI reminder is an outbound agent."
+related:
+  - "Ringg AI": /get-started/introduction
+  - "How Ringg works": /get-started/how-ringg-works
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 1: Getting to know Ringg AI · Lesson 1 of 3 · 10 minutes**
+
+## Objective
+
+Say what Ringg does, name the channels an agent can talk on, and pick the one Acme Lending needs.
+
+## The scenario
+
+Acme Lending offers personal and two-wheeler loans across Maharashtra. Every month its staff phone customers whose EMI is about to fall due, confirm the amount, and ask when they will pay. These lessons replace those calls with an agent called Ananya.
+
+## Hands-on
+
+<Steps>
+  <Step title="Know what an agent does">
+    An agent makes and answers phone calls, talks to visitors in a web widget, and chats with customers on WhatsApp. Teams use them for EMI and payment reminders, lead qualification, appointment reminders, delivery updates and inbound support. You build one in the dashboard or by API, give it a number, and put it to work one call at a time, over a CSV list as a campaign, or as a step in a workflow.
+  </Step>
+  <Step title="Learn the channels">
+    An agent's channel decides how conversations reach it. Four channels, and one that combines two of them:
+
+    | Channel | The agent… |
+    |---|---|
+    | Outbound | Calls people, one at a time or from a list |
+    | Inbound | Answers calls to a number attached to it |
+    | Outbound-Inbound | Calls people and also answers callbacks on its number |
+    | Webcall | Talks to visitors in a browser, through the widget |
+    | WhatsApp | Chats with customers on your WhatsApp Business number |
+
+    Most agents are single-prompt: one prompt drives the whole conversation. A multi-prompt agent is a canvas of nodes, for flows with strict steps such as identity checks or keypad menus. Ananya is single-prompt.
+  </Step>
+  <Step title="Pick Acme's channel">
+    Acme places the reminder call; the customer does not ring Acme. So Ananya is an **Outbound** agent, and her calls come from a list of customers: a campaign, with a number to call from and Logs to read afterwards.
+  </Step>
+  <Step title="Find the four sections">
+    Sign in to the dashboard and find the four sections these lessons use: **Assistants** at the top of the sidebar, then **Monitor → Logs**, **Monitor → Campaigns** and **Inventory → Numbers** in the groups below. Lesson 3 walks through each.
+  </Step>
+</Steps>
+
+## Checkpoint
+
+<Check>
+Without the docs open, you can point to **Assistants**, **Monitor → Logs**, **Monitor → Campaigns** and **Inventory → Numbers** in the sidebar, and say that Ananya is an outbound agent who calls a list.
+</Check>
+
+## Exercise
+
+Pick a second use case from the list in step 1 and name the channel it needs. Expected result: inbound support is an **Inbound** agent, because the customer places the call; a payment reminder, lead qualification, appointment reminder or delivery update is **Outbound**, because your business does.
+
+## What you learned
+
+- An agent is what talks. Its channel decides whether it calls, answers, talks in a browser or chats on WhatsApp.
+- Ananya is an outbound, single-prompt agent, and Acme will run her over a list as a campaign.
+- Agents live under **Assistants**; calls, campaigns and numbers live under **Monitor** and **Inventory**.
+
+<Quiz
+  question="A clinic wants an agent that patients can phone to reschedule appointments. Which channel does that agent need?"
+  answers={[
+    { text: "Outbound, because the clinic owns the agent", correct: false },
+    { text: "Webcall, because patients use the clinic's website", correct: false },
+    { text: "Inbound, because the patient places the call", correct: true },
+    { text: "WhatsApp, because patients prefer chat", correct: false },
+  ]}
+  correctFeedback="Right. The channel follows who starts the conversation: the patient dials the clinic, so the agent answers calls to a number attached to it. Acme's reminder is the reverse, Acme calls the customer, which makes Ananya Outbound."
+  incorrectFeedback="Not quite. Ask who starts the conversation. When the customer dials your number, the agent is Inbound. Outbound agents place calls from a list, Webcall agents talk in a browser, and WhatsApp agents reply in chat."
+/>
+
+<RelatedTopics items={[["Ringg AI", "/get-started/introduction"], ["How Ringg works", "/get-started/how-ringg-works"]]} />

@@ -1,0 +1,87 @@
+---
+title: "Lesson: Advanced Analysis"
+sidebarTitle: "Advanced Analysis"
+description: "Define payment_promised, promised_date and objection as Advanced Analysis variables on the EMI reminder agent, mark the goal, and test them on a past call."
+related:
+  - "Advanced Analysis": /documentation/build-agents/customize-agent-behaviour/advanced-analysis
+  - "Logs": /documentation/monitor/logs#custom-variables-and-advanced-analysis
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 3: Making your agent smarter · Lesson 4 of 4 · 15 minutes**
+
+## Objective
+
+Define the three facts Acme wants from every reminder call as typed Advanced Analysis variables, mark the goal, and test them on a call you already made.
+
+## The scenario
+
+After the call, Acme's collections team needs three things: did the customer promise to pay, by which date, and if not, why. Status, duration and transcript are already in Logs; these three are extracted from the transcript by Advanced Analysis after every conversation. `payment_promised` is the goal, so Analytics can report a success rate in part 6.
+
+## Hands-on
+
+<Frame caption="Adding a Boolean goal variable and testing it on a past call">
+  <video alt="Adding a Boolean goal variable and testing it on a past call" aria-label="Adding a Boolean goal variable and testing it on a past call" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/agents-advanced-analysis/poster.webp">
+    <source src="/media/agents-advanced-analysis/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open Advanced Analysis">
+    In Ananya's editor, open **Advanced Settings → Advanced Analysis** and click **Add a new variable**. The **Add variables** dialog opens.
+  </Step>
+  <Step title="Add the goal">
+    Set **Variable name** to `payment_promised` and keep **Type** on **Boolean**. For **Description**, write the instruction "True if the customer agreed to pay by a specific date." Set **Default value** to `false` and switch on **Use as goal**.
+  </Step>
+  <Step title="Add the other two">
+    Click **Add new variable** inside the dialog for each:
+
+    - `promised_date`, type **Date**, description "The date the customer promised to pay, if any."
+    - `objection`, type **Enum**, with the options `already_paid`, `no_money`, `dispute` and `none` (type each and press Enter), description "The customer's main reason for not paying.", default value `none`.
+
+    The button at the bottom now reads **Add 3**. Click it.
+  </Step>
+  <Step title="Add context and tool logs">
+    Below the table, write in **Context** what counts as a promise: "A promise means the customer named a date, or said they would pay today." Click **Save**: "Context saved". Switch on **Log tool calls** so the analysis also sees what `crm_lookup` returned.
+  </Step>
+  <Step title="Test on your part 2 call">
+    Click **Test**. In **Test advanced analysis**, pick the test call from part 2 under **Or select from recent call log**; picking it runs the test straight away. **Analysis result** appears next to **Call transcript**.
+  </Step>
+</Steps>
+
+<Frame caption="Variables after saving">
+  <img src="/media/agents-advanced-analysis/variables.webp" alt="Advanced analysis table listing promised_date (Date), objection (Enum, default none), payment_promised (Boolean, default false) with a Goal chip, and amount_promised (Number)" />
+</Frame>
+
+## Checkpoint
+
+<Check>
+The table lists the three variables with their **Type** and **Default value**, and `payment_promised` carries a **Goal** chip. In the test, **Analysis result** shows a value for each that matches what you said on the call: if you named a date, `payment_promised` is true and `promised_date` holds it.
+</Check>
+
+## Exercise
+
+Add `amount_promised` as a **Number** with the description "The amount in rupees the customer said they would pay." and the default value `0`, then click **Test** on the same call. Expected result: a fourth row in the table and a fourth line in **Analysis result**, reading `0` if you named no amount on the call.
+
+## What you learned
+
+- Advanced Analysis variables are filled from the transcript after the call; custom variables are filled before it. They are separate lists.
+- Only a Boolean can be the goal, and an agent has one at a time. Analytics' **Goal achieved** comes from it.
+- Results appear in the call's **Advanced analysis** tab in Logs, in Logs filters, Analytics cohorts, post-call tools, alerts and the `client_analysis_completed` webhook, which the capstone uses to hand them to the CRM.
+
+<Quiz
+  question="Acme wants Analytics to report a success rate, so you mark promised_date (type Date) as the goal. What happens?"
+  answers={[
+    { text: "It works; any variable can be the goal", correct: false },
+    { text: "It cannot be the goal: only a Boolean can, and an agent has one at a time", correct: true },
+    { text: "It works, but only after Log tool calls is on", correct: false },
+    { text: "It becomes the goal and payment_promised is deleted", correct: false },
+  ]}
+  correctFeedback="Right. Only a Boolean can be the goal, and an agent has one goal at a time. Analytics' Goal achieved is the share of analysed calls where that Boolean came back true, which is why payment_promised carries the Goal chip."
+  incorrectFeedback="Not quite. The goal must be a Boolean, and there is one per agent. Goal achieved in Analytics is computed from it. A Date, Enum or Number can be extracted and filtered on, but not marked as the goal."
+/>
+
+<RelatedTopics items={[["Advanced Analysis", "/documentation/build-agents/customize-agent-behaviour/advanced-analysis"], ["Logs", "/documentation/monitor/logs#custom-variables-and-advanced-analysis"]]} />
