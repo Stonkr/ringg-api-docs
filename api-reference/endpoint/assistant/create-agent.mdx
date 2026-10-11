@@ -18,8 +18,8 @@ Pass `call_config` to fix the assistant's call behaviour at creation time instea
 |---|---|---|
 | `call_time` | Daily window the assistant may place calls in: `call_start_time` and `call_end_time` as `HH:MM` 24-hour, plus the `timezone` they are expressed in. | `09:00`-`21:00` `Asia/Kolkata` |
 | `max_call_length` | Hard cap on call duration, in seconds. | `240` |
-| `idle_timeout_warning` | Seconds of caller silence before the assistant checks in ("Are you still there?"). `0` disables the check-in. | `5` |
-| `idle_timeout_end` | Seconds of caller silence before the call is dropped. | `10` |
+| `idle_timeout_warning` | Seconds of caller silence before the assistant checks in ("Are you still there?"). `0` disables the check-in. | `10` |
+| `idle_timeout_end` | Seconds of caller silence before the call is dropped. | `20` |
 | `noise_filter_config` | Background-noise cancellation on the caller's audio: `filter_noise` to switch it on, `noise_suppression_level` (0-100) for strength. | off, level `80` |
 | `voicemail` | Voicemail handling: `detect` to switch detection on, `action` for what happens next (`end`, `summarise`, `static_message`), `retry` to re-queue the call for a later attempt. | detect and retry on, action `end` |
 | `background_audio_config` | Ambient audio mixed under the assistant's speech: `audio_id` (`office_ambience` is the only track) and `volume` as a `0.0`-`1.0` fraction. Omit the object to keep it off. | off |
