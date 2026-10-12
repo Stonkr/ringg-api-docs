@@ -1,0 +1,89 @@
+---
+title: "Lesson: Workflows"
+sidebarTitle: "Workflows"
+description: "Build the Payment reminder follow-up workflow: call with the EMI reminder agent, branch on payment_promised, update the CRM or wait a day and nudge on WhatsApp."
+related:
+  - "Workflows": /documentation/build-agents/workflows/overview
+  - "Build and run": /documentation/build-agents/workflows/build-a-workflow
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 5: Designing multi-step conversations · Lesson 2 of 3 · 20 minutes**
+
+## Objective
+
+Build and publish a workflow that branches on what Ananya's call found out, so one contact gets a journey instead of a single call.
+
+## The scenario
+
+One call is not the whole journey. If Rahul promised to pay, the CRM should know; if not, Acme waits a day and nudges him on WhatsApp. A workflow runs that sequence once per contact, with logic between conversations.
+
+The call block dials from the number you bought in part 4. The chat step needs [WhatsApp Business connected](/documentation/inventory/tools-integrations/connect-whatsapp), a message template and a [WhatsApp agent](/documentation/build-agents/agents/whatsapp-agents/create-an-agent) on that number.
+
+## Hands-on
+
+<Frame caption="Building, publishing and testing a workflow">
+  <video alt="Building, publishing and testing a workflow" aria-label="Building, publishing and testing a workflow" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/workflows-build/poster.webp">
+    <source src="/media/workflows-build/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open a blank canvas">
+    Click **Workflows**, then **Create workflow**. Click the name in the breadcrumb, type `Payment reminder follow-up` and press Enter.
+  </Step>
+  <Step title="The call">
+    Click the **+** connector on **Start** and pick **Agent** in **Call** mode. Choose `EMI reminder - Hindi`, then click **Variables** to open **Map variables**, one row per variable Ananya uses: `callee_name` from the menu, the rest as literals such as `₹12,450`. Under **From**, pick your workspace number. Keep the default **Call window** and **Retries**.
+  </Step>
+  <Step title="The branch">
+    Add a **Conditional** after the call with one rule: source **Custom analysis**, the call block, field `payment_promised`, comparison **is**, value `true`.
+  </Step>
+  <Step title="Match: log it in the CRM">
+    From **Match**, add an **Action**: method **POST**, URL `https://crm.acme-lending.example/api/promises`, and a JSON body with the callee's number and the promised date from the `{}` menu.
+  </Step>
+  <Step title="No match: wait, then nudge">
+    From **No match**, add an **Await** in **Duration** mode and pick the **1d** preset. After it, add an **Agent** block switched to **Chat**: **Channel** **WhatsApp**, **Template** `emi_due_reminder` (or one of yours), **Chat assistant** your WhatsApp agent, **From** your WhatsApp phone number ID. A WhatsApp message needs both the template and the chat agent.
+  </Step>
+  <Step title="Save and publish">
+    Click **Save** ("Workflow saved"); there is no autosave, and the first save creates a **Draft**. Click **Publish** and confirm: "Workflow published". If the editor reports issues instead, the **Issues** panel names the missing setting, such as "select at least one caller number"; fix it and publish again.
+
+    Leave **Test** alone: a test run is real, calls the number you type, spends credits and holds the **No match** branch for a full day.
+  </Step>
+</Steps>
+
+<Frame caption="A call, a branch, then a CRM update or a wait and a WhatsApp nudge">
+  <img src="/media/workflows-build/workflow-canvas.webp" alt="Workflow editor canvas: Start leads to an Agent block (Payment reminder agent, calling from +91 98765 40300, Variables 2/2), then a Condition “Promised to pay?” with the rule Custom analysis · Payment reminder · Payment promised is true. Match leads to the Action “Log promise in CRM” (POST to a CRM URL); No match leads to the Await “Wait a day” (1 day), then an Agent block in Chat mode, “WhatsApp nudge” (WhatsApp, WhatsApp concierge, template emi_due_reminder)" />
+</Frame>
+
+## Checkpoint
+
+<Check>
+The canvas matches the screenshot: the call, then the **Condition** with **Match** into the Action and **No match** into the Await and the chat. The **Workflows** list shows **Payment reminder follow-up** under **Active**.
+</Check>
+
+## Exercise
+
+Add a second rule to the Condition: source **Call duration**, comparison **is over**, value `30`, and set the rules to **All**. Expected result: the card shows both rules under **All**, so a two-second call never counts as a promise. On an Active workflow, **Save** makes the edit a draft version; runs keep using `v1` until you publish again.
+
+## What you learned
+
+- An agent holds one conversation, a multi-prompt agent holds stages within one call, and a workflow runs a journey across calls, messages and waits.
+- A Condition reads earlier steps: call status, duration, Advanced Analysis fields and Action responses. Part 3's fields are what the branch runs on.
+- **Save** creates a draft and **Publish** makes it **Active**; only Active workflows can run as a campaign, and each publish is a version.
+
+<Quiz
+  question="Rahul's call ends with payment_promised false. In the Payment reminder follow-up workflow, what happens next?"
+  answers={[
+    { text: "The Action logs the promise in the CRM", correct: false },
+    { text: "The run ends, because a No match stops the workflow", correct: false },
+    { text: "The Await holds the run for a day, then the chat block sends the WhatsApp template", correct: true },
+    { text: "Ananya calls him again immediately", correct: false },
+  ]}
+  correctFeedback="Right. The Condition reads the call's Advanced Analysis field; false takes the No match branch into the Await (1d) and then the Agent block in Chat mode, which sends the emi_due_reminder template on WhatsApp. Match is the CRM Action."
+  incorrectFeedback="Not quite. The Condition branches on payment_promised: Match goes to the CRM Action, No match to the Await and then the WhatsApp chat block. A workflow runs a journey across calls and messages; nothing redials on its own."
+/>
+
+<RelatedTopics items={[["Workflows", "/documentation/build-agents/workflows/overview"], ["Build and run", "/documentation/build-agents/workflows/build-a-workflow"]]} />

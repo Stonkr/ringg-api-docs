@@ -1,0 +1,94 @@
+---
+title: "Lesson: The dashboard"
+sidebarTitle: "The dashboard"
+description: "Walk the Ringg AI dashboard's sidebar, top bar and Settings, open the command palette, and find where to copy the agent, number, campaign and call IDs."
+related:
+  - "Dashboard tour": /get-started/dashboard-tour
+  - "Find an agent's ID": /documentation/build-agents/agents/agent-types#find-the-agent-id
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 1: Getting to know Ringg AI · Lesson 3 of 3 · 15 minutes**
+
+## Objective
+
+Find every section of the dashboard, and know where to copy the IDs your developers will ask for.
+
+## The scenario
+
+Acme's team will share the dashboard: you build Ananya, a colleague uploads the calling list, and a developer wires the results into the CRM. Each needs a different section, and the developer needs IDs. This lesson walks the screen once so later lessons can say "open **Monitor → Logs**".
+
+## Hands-on
+
+<Frame caption="A tour of the dashboard sections">
+  <video alt="A tour of the dashboard sections" aria-label="A tour of the dashboard sections" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/dashboard-tour/poster.webp">
+    <source src="/media/dashboard-tour/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Read the sidebar">
+    The sidebar groups its items under **Monitor**, **Inventory** and **Labs**, with **Assistants** and **Workflows** above the groups. Collapse or expand it with <kbd>⌘</kbd> + <kbd>.</kbd> (<kbd>Ctrl</kbd> + <kbd>.</kbd> on Windows and Linux).
+
+    <Frame caption="The dashboard: sidebar, top bar and the Agents page">
+      <img src="/media/dashboard-tour/dashboard-shell.webp" alt="Ringg AI dashboard with the sidebar (Assistants, Workflows, Monitor, Inventory and Labs groups, Report a bug, Settings), the top bar with the Acme Lending workspace switcher and Search, and the Agents page listing six agents" />
+    </Frame>
+
+    If your sidebar shows only **Logs**, **Analytics**, **Alerts** and **Settings**, you are in a primary workspace: switch to a Ringg Space with the workspace switcher to build agents.
+  </Step>
+  <Step title="Open each Monitor item">
+    Click through **Logs**, **Campaigns**, **Analytics**, **Evals** and **Alerts**. Logs has three tabs, **Phone**, **WhatsApp** and **Workflows**; Ananya's calls land under **Phone**. Campaigns is where the calling list goes in part 4.
+  </Step>
+  <Step title="Open each Inventory item">
+    **Knowledge base** holds the files and web pages agents look up. **Numbers** has a **Phone** tab, with **All Numbers** and **Number Pools**, and a **WhatsApp** tab. **Tools** holds tools you set up once and reuse in any agent; its URL is `/integrations`.
+  </Step>
+  <Step title="Use the top bar">
+    The first crumb is the workspace switcher; **Copy workspace ID** sits beside each workspace in its menu. **Search** opens the command palette (<kbd>⌘</kbd> + <kbd>K</kbd> or <kbd>Ctrl</kbd> + <kbd>K</kbd>). The credits figure shows your balance (prepaid) or used / limit (postpaid); click it to open **Billing plan**.
+  </Step>
+  <Step title="Look at Settings">
+    **Settings**, at the bottom of the sidebar, has its own menu under **Workspace**, **Access** and **Billing**. Two items matter for these lessons: **Company details** (<Tooltip tip="Know your customer: the business verification Ringg needs before some calls.">KYC</Tooltip>), needed for some test calls, and **API key**, which the developer needs for the capstone.
+  </Step>
+  <Step title="Note where the IDs are">
+    Each object has a copy button next to its ID:
+
+    - Agent: beside the agent name in the top bar of the editor, or from the URL `/assistants/<agent_id>`.
+    - Number: the **ID** column on **Numbers**.
+    - Campaign: beside the ID in the campaign's detail panel.
+    - Call: beside the call ID in the call panel in **Logs**.
+
+    The API key is shown once, when generated under **Settings → API key**. Share it through a secret manager.
+  </Step>
+</Steps>
+
+## Checkpoint
+
+<Check>
+You can open every item under **Monitor** and **Inventory** from memory, the command palette opens with <kbd>⌘</kbd> + <kbd>K</kbd>, and you know which button or column holds each ID.
+</Check>
+
+## Exercise
+
+Press <kbd>⌘</kbd> + <kbd>K</kbd> (or <kbd>Ctrl</kbd> + <kbd>K</kbd>) and type `Billing`. Expected result: the palette offers the **Billing plan** settings page; opening it shows your balance, concurrency, transactions and invoices.
+
+## What you learned
+
+- **Assistants** and **Workflows** sit at the top of the sidebar; the rest is under **Monitor**, **Inventory** and **Labs**, with **Settings** at the bottom.
+- The command palette finds any section or settings page by name, and shortcuts open an agent, log or campaign by ID.
+- Every ID a developer needs has a copy button on its own page, and the API key is shown only once.
+
+<Quiz
+  question="A developer asks you for the agent ID of EMI reminder - Hindi and the workspace ID. Where do you get them?"
+  answers={[
+    { text: "Both from the command palette, which lists every ID", correct: false },
+    { text: "Both under Settings → API key, next to the key", correct: false },
+    { text: "The agent ID beside the agent name in the editor's top bar (or its URL), the workspace ID from the workspace switcher's menu", correct: true },
+    { text: "Both from the Monitor → Logs call panel", correct: false },
+  ]}
+  correctFeedback="Right. Every object carries its own copy button: the agent ID sits beside the name in the editor top bar and in the /assistants/<agent_id> URL, and Copy workspace ID is in the workspace switcher's menu. The API key page holds only the key, shown once."
+  incorrectFeedback="Not quite. IDs are copied where the object lives: the agent ID in the agent editor's top bar or URL, the workspace ID from the workspace switcher's menu. The palette opens objects by ID but does not list IDs, and the API key page shows only the key."
+/>
+
+<RelatedTopics items={[["Dashboard tour", "/get-started/dashboard-tour"], ["Find an agent's ID", "/documentation/build-agents/agents/agent-types#find-the-agent-id"]]} />

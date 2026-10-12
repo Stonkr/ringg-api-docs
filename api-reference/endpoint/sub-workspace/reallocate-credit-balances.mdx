@@ -1,58 +1,37 @@
 ---
 openapi: patch /workspace/sub/credit-balances
+description: "Set every Ringg Space's wallet to an absolute balance, moving the difference to or from the primary, for prepaid families in individual billing mode."
+related:
+  - "Ringg Spaces API overview": /documentation/manage-account/ringg-spaces/ringg-spaces-by-api#manage-the-family-by-api
 ---
 
-Set every Ringg Space's wallet to an absolute balance. The net difference moves from or to the primary's unallocated pot. Prepaid families in **individual** billing mode only.
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-## When to use
-
-- Distributing a top-up made on the primary across clients or teams.
-- Pulling unused balance back from one Ringg Space to fund another.
-
-## Request parameters
-
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `allocations` | object | Yes | Map of `sub_workspace_id` to its **new absolute balance**, not a delta. Must include **every active Ringg Space exactly once**. Values are `0` or more, two decimals. |
+Use it to distribute a top-up made on the primary across clients or teams, or to pull unused balance back from one Ringg Space to fund another.
 
 ## Rules
 
 - The net amount moving out of the primary's pot cannot exceed what the pot holds. Top up on the primary first, then allocate.
 - A Ringg Space with a `0` balance cannot place calls; Ringg Spaces have no overdraft.
 - Every move is recorded in the workspace ledgers as a transfer, never as a charge.
+- In a common-billing family the wallet is shared on the primary and Ringg Spaces hold nothing, so this endpoint returns `400`. Allocate [concurrency](/api-reference/endpoint/sub-workspace/allocate-concurrency) instead.
 
-## Integration notes
+## Notes
 
-- Authenticate with the primary workspace's API key.
 - Read the current wallets and `family.available_pot` from [Get Ringg Spaces](/api-reference/endpoint/sub-workspace/get-sub-workspaces) first, then send the full map.
-- Amounts in the response are **decimal strings** (`"5000.00"`), unlike the read endpoints.
+- Amounts in the request can be JSON numbers (`200000`) or numeric strings (`"200000.00"`); they are rounded to two decimals.
+- Amounts in the response are decimal strings (`"5000.00"`), unlike the read endpoints.
 
-<Note>
-In a **common-billing** family the wallet is shared on the primary and Ringg Spaces hold nothing. This endpoint returns `400 This family uses a shared balance; per-sub wallets do not exist.` Allocate [concurrency](/api-reference/endpoint/sub-workspace/allocate-concurrency) instead.
-</Note>
+## Errors
 
-## Error responses
+- `400`: `Balance allocation applies to prepaid families only.`
+- `400`: `This family uses a shared balance; per-sub wallets do not exist.`
+- `400`: `allocations name workspaces that are not active sub-workspaces of this family: [...]`
+- `400`: `allocations must cover every active sub-workspace; missing: [...]`
+- `400`: `These allocations need 9000.00 from the primary's pot, which only holds 4000.00. Lower the allocations or add balance to the primary workspace first.`
+- `401`: Invalid or missing API key.
+- `403`: `Sub-workspaces are not enabled for this workspace.` — Ringg Spaces are not enabled on the primary, or the key belongs to a Ringg Space.
+- `404`: `Workspace is not a sub-workspace family parent.` — the primary has no Ringg Spaces yet.
+- `422`: Empty map, negative value, or a key that is not a UUID.
 
-- **400**: `Balance allocation applies to prepaid families only.`
-- **400**: `This family uses a shared balance; per-sub wallets do not exist.`
-- **400**: `allocations name workspaces that are not active sub-workspaces of this family: [...]`
-- **400**: `allocations must cover every active sub-workspace; missing: [...]`
-- **400**: `These allocations need 9000.00 from the primary's pot, which only holds 4000.00. Lower the allocations or add balance to the primary workspace first.`
-- **401**: Invalid or missing API key.
-- **403**: `Sub-workspaces are not enabled for this workspace.`
-- **404**: `Workspace is not a sub-workspace family parent.` — the primary has no Ringg Spaces yet.
-- **422**: Empty map, negative value, or a key that is not a UUID.
-
-## Example
-
-```bash
-curl --request PATCH "https://prod-api.ringg.ai/ca/api/v0/workspace/sub/credit-balances" \
-  --header "X-API-KEY: $RINGG_API_KEY" \
-  --header "Content-Type: application/json" \
-  --data '{
-    "allocations": {
-      "b7c1f0e2-4d3a-4a91-9f2e-8c1d5a6b7e30": 5000.00,
-      "d21e8c55-9a0f-4c3b-86de-1f4b7a2c9e88": 3000.00
-    }
-  }'
-```
+<RelatedTopics items={[["Ringg Spaces API overview", "/documentation/manage-account/ringg-spaces/ringg-spaces-by-api#manage-the-family-by-api"]]} />

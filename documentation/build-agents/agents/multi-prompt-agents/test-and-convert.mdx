@@ -1,0 +1,48 @@
+---
+title: "Test and convert multi-prompt agents"
+sidebarTitle: "Test and convert"
+description: "Test a Ringg AI multi-prompt agent, convert a single-prompt agent into a flow, and build or edit flows from an AI assistant through the MCP server."
+---
+
+## Test a multi-prompt agent
+
+<Steps>
+  <Step title="Publish or discard pending changes">
+    While the agent has unpublished changes, the top bar shows **Discard** and **Publish** instead of **Test assistant**. Publish them first. See [Publish changes on a multi-prompt agent](/documentation/build-agents/test-and-improve/drafts-and-versions#publish-changes-on-a-multi-prompt-agent).
+  </Step>
+  <Step title="Choose a test mode">
+    Click **Test assistant** and pick **Phone call**, **Web call** or **Live chat** ([test options](/documentation/build-agents/test-and-improve/test-an-agent#test-options)). Phone call opens a dialog; web call and live chat run in the right panel so the canvas stays visible.
+  </Step>
+  <Step title="Watch the flow">
+    During the test, the canvas highlights the node the conversation is on and marks the path taken so far. Extracted values appear on the nodes as they are captured.
+  </Step>
+  <Step title="Review the run">
+    When the call ends, the path stays on the canvas with a **Test call ended** pill. Click **View summary** to see the **Path** and **Extracted variables**.
+
+    <Check>The path on the canvas matches the branch you expected, and the extracted values are correct. The call is also in [Logs](/documentation/monitor/logs).</Check>
+  </Step>
+</Steps>
+
+A test runs the version shown in the editor. For test modes and caller variables, see [Test an agent](/documentation/build-agents/test-and-improve/test-an-agent).
+
+## Convert a single-prompt agent
+
+Where conversion is available, a single-prompt agent shows **Convert to multi-prompt** under **More** in its editor sidebar; its tooltip shows the prompt's token count. It isn't offered to every workspace: if you don't see it, contact Ringg.
+
+<Steps>
+  <Step title="Open the dialog">
+    Click **Convert to multi-prompt**. The dialog **Convert to multi-node agent** explains that your current agent will remain unchanged.
+  </Step>
+  <Step title="Start the conversion">
+    Click **Upgrade**. Progress streams in: plan generated, start and end nodes created, then each Agent, Speak and Router node and its connections. You can close the dialog; the conversion keeps running.
+  </Step>
+  <Step title="Open the result">
+    When the dialog title changes to **Multi-node agent is ready**, click **Open new agent**. The conversion creates a separate multi-prompt agent. Review its nodes, then test it before you route real calls to it.
+
+    <Check>The new multi-prompt agent opens on the canvas. Your original single-prompt agent is unchanged.</Check>
+  </Step>
+</Steps>
+
+## Build flows with AI tools
+
+The Ringg [MCP server](/resources/mcp-server/workspace-mcp-server/overview) can create multi-prompt agents and edit their nodes and connections as a draft, then publish them, so an AI assistant that supports MCP can build or change a flow for you. See [connect the MCP server](/resources/mcp-server/workspace-mcp-server/connect-an-assistant) and its [tools](/resources/mcp-server/workspace-mcp-server/tool-reference).

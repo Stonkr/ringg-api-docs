@@ -1,0 +1,182 @@
+---
+title: "MCP tool reference"
+sidebarTitle: "Tool reference"
+description: "Reference for the Ringg AI MCP server: every tool with its inputs and defaults, plus the resources and prompts an MCP client can use with your workspace."
+related:
+  - "Connect an assistant": /resources/mcp-server/workspace-mcp-server/connect-an-assistant
+  - "Security and FAQ": /resources/mcp-server/workspace-mcp-server/security-and-faq
+  - "Drafts and versions": /documentation/build-agents/test-and-improve/drafts-and-versions
+"og:title": "Ringg AI MCP tools, resources and prompts"
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+The AI assistant picks tools for you; use this page to see what it can and cannot do in your workspace and to phrase requests it can act on. Every tool acts on the workspace whose [API key](/documentation/manage-account/api-key) you connected with, and IDs for agents, calls, numbers and voices always come from another tool's output.
+
+Many agent tools take an optional `version`: a version ID or slug such as `v2` from `get_agent`'s `versions`. Leave it out to act on the live version ([Agent versions](/documentation/build-agents/test-and-improve/drafts-and-versions)).
+
+## Workspace
+
+### `get_account_overview`
+
+The starting point, read-only, no inputs. Returns the workspace (name, currency, available credits, billing type), its phone numbers with a `usable_for_live_calls` flag, its agents, the last 30 days of call metrics, a `ready_to_call` verdict and suggested next steps.
+
+## Calls
+
+### `place_call`
+
+Dials a real number with an agent and returns a `call_id` straight away. It spends credits; clients should ask you before running it.
+
+| Input | Required | Notes |
+| --- | --- | --- |
+| `agent_id` | Yes | From `list_agents` or the overview |
+| `to_number` | Yes | International format, for example `+919876543210` |
+| `callee_name` | Yes | Available to the agent as `{{callee_name}}` |
+| `from_number_id` | No | Caller ID, from the overview's phone numbers. Omit to use the agent's default outbound number. |
+| `variables` | No | Values for the agent's custom variables, for example `{"appointment_time": "3 pm Tuesday"}` |
+| `purpose` | No | `promotional` (default) or `transactional`. Transactional calls skip the per-person [call limit](/documentation/manage-account/call-limits) but still follow DND and calling hours. |
+
+If the caller ID can't place live calls, for example a Ringg test number, the error lists numbers that can.
+
+### `get_call`
+
+A call's status and, once it has ended, the transcript, recording link, tool calls and post-call analysis.
+
+| Input | Default | Notes |
+| --- | --- | --- |
+| `call_id` | Required | From `place_call` or `list_calls` |
+| `wait_for_completion` | `false` | `true` polls, reporting progress, until the call reaches a final state |
+| `timeout_seconds` | `180` | Longest wait when polling, 5 to 600 |
+| `include_transcript` | `true` | |
+| `include_analysis` | `true` | Analysis is generated after the call; the tool says when it is still pending |
+| `include_tool_calls` | `true` | Every tool run (pre-call, on-call, post-call) with request, response and latency, placed in the transcript |
+
+Final statuses: `completed`, `failed`, `error`, `cancelled`, `forwarded`. `retry` means Ringg will redial under the agent's retry settings.
+
+### `list_calls`
+
+Recent calls, newest first, as compact rows without transcripts; use `get_call` for detail.
+
+| Input | Notes |
+| --- | --- |
+| `status` | One or more of `registered`, `ongoing`, `retry`, `completed`, `failed`, `error`, `cancelled`, `forwarded` |
+| `agent_id`, `to_number` | Narrow to one agent or one number |
+| `call_type` | `inbound`, `outbound`, `webcall`, `callback` or `voicemail` |
+| `start_date`, `end_date` | ISO dates, inclusive, for example `2026-09-01` |
+| `limit`, `offset` | Page size 1 to 100 (default 10), and how many to skip |
+
+### `get_call_analytics`
+
+Totals for a period: calls attempted and completed, connection rate, average duration and minutes connected. Inputs: `start_date` (default 30 days ago), `end_date` (default today) and an optional `agent_id`.
+
+## Agents
+
+### `list_agents`
+
+One page of agents with ID, name, type and versions. Inputs: `search` (case-insensitive, on the name), `limit` (1 to 100, default 25) and `offset`. When the response says `has_more`, ask again with `offset` set to `next_offset`.
+
+### `get_agent`
+
+One agent's full configuration: every prompt section, language, voice, the custom variables the prompt expects (fill them with `place_call`'s `variables`), and the tools attached per phase. Inputs: `agent_id`, optional `version`.
+
+### `create_agent`
+
+Creates a ready-to-call voice agent from a plain-language brief. Ringg picks a voice for the language and adds default tools.
+
+| Input | Required | Notes |
+| --- | --- | --- |
+| `agent_name` | Yes | Up to 100 characters |
+| `call_purpose` | Yes | The brief, up to 3,000 characters: goal, questions to ask, how to handle objections, when to end. Becomes the main prompt. |
+| `agent_type` | No | `outbound` (default) or `inbound` |
+| `inbound_number_id` | For inbound | The phone number to attach |
+| `language` | No | Default `en-US`. One of `en-US`, `en-GB`, `en-AU`, `en-IN`, `hi-IN`, `ta-IN`, `te-IN`, `bn-IN`, `mr-IN`, `kn-IN`, `ms-MY`, `zh-CN`, `od-IN`, `pa-IN`, `my-MM` |
+| `voice_id` | No | From `list_voices`; the language's default voice otherwise |
+| `intro_message` | No | The exact first line, up to 500 characters. Recommended: the generated one is generic. |
+| `custom_variables` | No | Extra placeholders, for example `["appointment_time", "order_id"]`. `callee_name` and `mobile_number` always exist. |
+| `additional_info` | No | FAQ, product facts, pricing, policies; up to 2,000 characters |
+
+### `update_agent`
+
+Changes an agent's name, language, voice, intro line or variables. Only the fields you pass change, and calls already in progress are unaffected. Two shortcuts edit one prompt section each: `call_purpose` replaces the **Task** section and `additional_info` replaces **FAQ Guidelines**. `custom_variables` replaces the whole list. Returns the updated configuration.
+
+### `list_voices`
+
+Voices you can assign, each with a `preview_url`. Filter by `language` (for example `hi-IN`) and `gender` (`male` or `female`).
+
+## Prompt editing
+
+### `edit_prompt_section`
+
+Changes one prompt section and leaves the rest alone; the client reads the sections with `get_agent` first. Set `section` to the section title and `mode` to one of:
+
+| `mode` | Uses | Effect |
+| --- | --- | --- |
+| `replace` (default) | `content` | New content for the section |
+| `append`, `prepend` | `content` | Adds content after or before what is there |
+| `find_replace` | `find`, `replace_with`, `replace_all` | Swaps an exact phrase; exactly one match unless `replace_all` is `true` |
+| `insert` | `content`, `position` | Adds a new section titled `section`, at a 0-based position or at the end |
+| `rename` | `new_title` | Renames the section |
+| `delete` | | Removes the section |
+
+In prompt text, variables are written `{{name}}`, pre-call tool outputs `((tool.field))`, and on-call tools `@||tool||`.
+
+### `set_agent_prompt`
+
+Replaces every section at once with `sections` (1 to 30 items, each a unique `title` and its `content`). Sections you leave out are deleted, so use it only to restructure or write a prompt from scratch.
+
+## Agent tools
+
+These manage the [tools](/documentation/build-agents/customize-agent-behaviour/tools/overview) an agent calls before, during and after a call.
+
+| Tool | What it does |
+| --- | --- |
+| `get_agent_tools` | Lists the agent's pre-call, on-call and post-call tools with their method, URL, parameters and response shaping, the built-in tools, and the variables tool parameters can use |
+| `upsert_api_tool` | Creates or updates an HTTP tool. Required: `agent_id`, `phase` (`pre_call`, `on_call` or `post_call`) and `tool_name`; creating also needs `url`. Only the fields you pass change. |
+| `upsert_function_tool` | Creates or updates a jq tool that transforms data without an HTTP call. Required: `agent_id`, `phase`, `tool_name` and `program` (a jq program). |
+| `remove_agent_tool` | Deletes an API or jq tool. Refused while the prompt still mentions it; built-in tools can't be removed. |
+| `test_api_tool` | Runs an API tool once against its real endpoint and shows the request, the raw response and the response after `response_jq`. It makes a real HTTP request. |
+| `test_jq` | Runs a jq expression on a sample object and returns the result or the error |
+
+Tool names may use letters, digits, `_` and `-`, up to 64 characters, and must be unique across phases. Header and query values that look like credentials are masked when read back; sending the masked value keeps the stored secret.
+
+## Multi-prompt agents
+
+These build and edit [multi-prompt agents](/documentation/build-agents/agents/multi-prompt-agents/overview), which the server calls flow or multi-node agents.
+
+| Tool | What it does |
+| --- | --- |
+| `get_flow_building_guide` | Returns the rules for node types, edges and conditions, how data moves between nodes, and what blocks publishing. Clients read it before designing a flow. |
+| `get_flow` | The full graph: nodes, edges with conditions, entry node, global settings and lint issues. Shows the draft when there is one. |
+| `create_flow_agent` | Creates a multi-prompt agent from nodes and edges in one call (up to 60 nodes). The design is checked first; `dry_run: true` only validates. The new agent goes live as `v1`. |
+| `upsert_flow_node` | Adds a node or changes an existing one. Changes go to a draft. |
+| `upsert_flow_edge` | Connects two nodes, or changes an edge's condition or transition message. Changes go to a draft. |
+| `delete_flow_node` | Removes a node and every edge touching it, in the draft |
+| `delete_flow_edge` | Removes the edges between two nodes, in the draft |
+| `publish_flow` | Validates the draft and, if it passes, makes it the live version. On failure nothing changes. |
+| `discard_flow_draft` | Throws away all unpublished changes |
+
+Node types, as `get_flow_building_guide` defines them: `agent_node`, `speak_node`, `router_node`, `action_node`, `transfer_node` (terminal; hands the call to a number or <Tooltip tip="Session Initiation Protocol: the standard for connecting voice calls between phone systems.">SIP</Tooltip> target), `collect_node`, `keypad_menu_node`, `widget_node`, plus `start_node` and `end_node`.
+
+## Resources
+
+Read-only documents a client can attach as context without a tool call.
+
+| URI | Content |
+| --- | --- |
+| `ringg://workspace` | Workspace summary and phone numbers |
+| `ringg://agents` | All agents, as summary rows |
+| `ringg://agents/{agent_id}` | One agent's full configuration |
+| `ringg://voices` | Available voices |
+| `ringg://calls/{call_id}/transcript` | A readable transcript, one line per turn |
+
+## Prompt playbooks
+
+Ready-made prompts a client can offer in its UI.
+
+| Prompt | Arguments | What it does |
+| --- | --- | --- |
+| `launch_first_call` | `goal`, `my_number`, `language` | Checks readiness, drafts and creates an agent, offers voices, places a test call to you, reviews the transcript and suggests prompt changes |
+| `review_call` | `call_id` | Summarises a call, quotes the transcript and proposes prompt edits |
+| `campaign_report` | `days`, `agent_id` | Pulls metrics and failures for a period and writes a short report |
+
+<RelatedTopics items={[["Connect an assistant", "/resources/mcp-server/workspace-mcp-server/connect-an-assistant"], ["Security and FAQ", "/resources/mcp-server/workspace-mcp-server/security-and-faq"], ["Drafts and versions", "/documentation/build-agents/test-and-improve/drafts-and-versions"]]} />

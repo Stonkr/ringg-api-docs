@@ -1,0 +1,78 @@
+---
+title: "Lesson: Knowledge base"
+sidebarTitle: "Knowledge base"
+description: "Create an EMI policy knowledge base from a CSV, wait for Ready, attach it to the EMI reminder agent, mention it in the prompt with @, and test it in live chat."
+related:
+  - "Knowledge base": /documentation/inventory/knowledge-base
+  - "Attach a knowledge base": /documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 3: Making your agent smarter · Lesson 2 of 4 · 20 minutes**
+
+## Objective
+
+Create a knowledge base of Acme's EMI policies, attach it to Ananya and tell her when to use it, so she answers policy questions from the document instead of guessing.
+
+## The scenario
+
+Customers ask what happens if they pay late. Acme's policy: a grace period of 3 days after the due date, a late fee of ₹500 after that, and payment by UPI, net banking or at a branch. The prompt holds only what the agent needs on every call; policies go in a knowledge base, which other agents can share.
+
+## Hands-on
+
+<Frame caption="Attaching knowledge bases and mentioning one in the prompt">
+  <video alt="Attaching knowledge bases and mentioning one in the prompt" aria-label="Attaching knowledge bases and mentioning one in the prompt" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/agents-knowledge-base/poster.webp">
+    <source src="/media/agents-knowledge-base/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Write the policy file">
+    Create `emi-policy.csv` with two columns, `question` and `answer`, and one row per policy: the grace period, the late fee and the payment methods. Clear columns help the agent match answers.
+  </Step>
+  <Step title="Create the knowledge base">
+    In the sidebar, open **Inventory → Knowledge base** and click **Create**. Set **Name** to `EMI policy`; it is saved as `emi_policy` and cannot be renamed later. On **Upload files**, drop the CSV. It opens in a preview with **Column Configuration** below; keep the **Type** Ringg guessed for each column and leave **Exact match** off. Click **Save**: "Knowledge base creation started".
+  </Step>
+  <Step title="Wait for Ready, then ask it a question">
+    The file's chip goes from **Processing** to **Indexed**, and on the list the status goes from **Training** to **Ready**. Open the knowledge base; it opens on the file's contents, so click the back arrow to reach the test chat. Type "What is the late fee?" into **Ask a question about your data...**. The answer names the fee and lists the file it came from. If it is wrong here, fix the CSV before you touch the agent.
+  </Step>
+  <Step title="Attach it to Ananya">
+    Open the agent, click **Knowledge Base** in the editor sidebar, then **Select Knowledge Base**, and tick `emi_policy`: "Knowledge base attached successfully". The button now shows the count.
+  </Step>
+  <Step title="Tell her when to use it">
+    In **Prompt**, in the **FAQs** section, type `@` and pick `emi_policy` from the **Knowledge Bases** group. Write: "For questions about late fees, the grace period or payment methods, answer from @emi_policy. If the answer is not there, say you will check and have an advisor call back." Click **Save**.
+  </Step>
+</Steps>
+
+## Checkpoint
+
+<Check>
+The **Knowledge Base** panel lists `emi_policy` below the button. Open **Test assistant**, pick **Live chat**, click **Start** and type "What happens if I pay late?": the reply gives the 3-day grace period and the ₹500 fee, the same answer the knowledge base's own chat gave.
+</Check>
+
+## Exercise
+
+Click the trash icon on `emi_policy` in the **Knowledge Base** panel. Expected result: "Knowledge base detached successfully", and the `@emi_policy` mention in the prompt turns red, because the menu lists only attached knowledge bases. Attach it again and the chip is back to normal.
+
+## What you learned
+
+- Short facts the agent needs on every call go in the prompt; policies, price lists and FAQs go in a knowledge base, which several agents can share.
+- A knowledge base must be **Ready** before an agent can use it. Test it in its own chat first, then in the agent.
+- Attaching makes the knowledge base available, and the agent decides when to search it; the `@` mention tells her which questions it answers.
+
+<Quiz
+  question="You attach emi_policy to Ananya and the toast confirms it, but on a test chat she still guesses at the late fee. What is the most likely cause?"
+  answers={[
+    { text: "The knowledge base must be re-uploaded after attaching", correct: false },
+    { text: "The prompt never mentions @emi_policy, so she does not know which questions it answers", correct: true },
+    { text: "CSV files only work with Exact match on", correct: false },
+    { text: "Attaching works only after the first real call", correct: false },
+  ]}
+  correctFeedback="Right. Attaching makes the knowledge base available, but the agent decides when to search it, and the @ mention in the prompt tells her which questions it answers. Add it in FAQs, say when to use it, and save."
+  incorrectFeedback="Not quite. Once the knowledge base is Ready and attached, what remains is the prompt: the @emi_policy mention tells Ananya which questions to answer from it. Re-uploading, Exact match or a real call do not change that."
+/>
+
+<RelatedTopics items={[["Knowledge base", "/documentation/inventory/knowledge-base"], ["Attach a knowledge base", "/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base"]]} />

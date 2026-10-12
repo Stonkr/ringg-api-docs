@@ -1,0 +1,81 @@
+---
+title: "Lesson: Logs"
+sidebarTitle: "Logs"
+description: "Open the dry-run campaign's calls in Logs, read one call's transcript and Pre-Call tool log, check Advanced analysis, and filter by payment_promised."
+related:
+  - "Logs": /documentation/monitor/logs
+  - "Manage a campaign": /documentation/deploy/campaigns/manage-a-campaign
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 6: Measuring and improving your agent · Lesson 1 of 4 · 15 minutes**
+
+## Objective
+
+Find every call of the dry-run campaign and read one of them down to its transcript, tool log and analysis.
+
+## The scenario
+
+The dry run from part 4 placed three calls. Acme's collections lead wants to know which customers promised to pay, whether the CRM lookup ran before each call, and what Ananya said when someone objected. All of it is in Logs.
+
+## Hands-on
+
+<Frame caption="Filtering Logs, opening a call and exporting">
+  <video alt="Filtering Logs, opening a call and exporting" aria-label="Filtering Logs, opening a call and exporting" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/monitor-logs/poster.webp">
+    <source src="/media/monitor-logs/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open the campaign's calls">
+    On **Monitor → Campaigns**, click **EMI reminders - dry run** and then **History**. Logs opens filtered to the campaign, with every call whatever its date. From Logs itself, the same view is **Filters → Campaigns**.
+  </Step>
+  <Step title="Read the list">
+    Each row shows the **Assistant** (with a version chip, since Ananya has V1 and V2), the **Callee** with their name beneath, **Called on**, **Status**, **Duration** and **Cost**. A call that went to a second attempt has a chevron, **Expand attempts**, which shows each attempt as its own row.
+  </Step>
+  <Step title="Open a call">
+    Click the row of the call you answered. The header shows the call ID with a copy button, the status, **From**, **Cost** and **Origin** **Campaign**. Play the recording, or **Download recording**. The **Call details** tab lists **Call latency**, **Call duration**, the **Custom variables** the CSV filled (`due_amount`, `due_date`, `loan_account`), then the general analysis. Right after a call it reads "General analysis is currently under process!" for a short while.
+  </Step>
+  <Step title="Read the transcript and the tool log">
+    Open **Transcript**. The turns run top to bottom, with the tools that ran grouped under **Pre-Call**, **On-Call** and **Post-Call**. Click `crm_lookup` under **Pre-Call**: its log shows the HTTP status, latency, when it ran, and **Request** and **Response** tabs (or **Error**). The copy icon copies the whole log as JSON, which is what you send a backend colleague when the lookup fails.
+  </Step>
+  <Step title="Check the analysis fields">
+    Open **Advanced analysis**. It holds the values Ananya extracted in part 3: `payment_promised`, `promised_date` and `objection`. The tab appears only when there is something to show.
+  </Step>
+  <Step title="Filter by what was said">
+    Click **Filters**. Under **Assistants** tick **EMI reminder - Hindi** and nothing else; **Advanced analysis** needs exactly one assistant. Add the condition `payment_promised` **is** true and apply.
+  </Step>
+</Steps>
+
+## Checkpoint
+
+<Check>
+The list narrows to the calls where the person said they would pay, and the filters show as chips next to **Filters**. **Reset** clears them.
+</Check>
+
+## Exercise
+
+Export what you filtered: click **Export** in the table footer and choose **Export with analysis**. Expected result: nothing downloads; a message says "Call history report (with the applied filters) is being sent to your email." The report arrives by email and uses the filters that were on screen.
+
+## What you learned
+
+- **History** on a campaign opens Logs for its calls with no date limit. **Call ID**, **From number**, **To number** and **Campaigns** also ignore the date range, which otherwise defaults to the last month.
+- The call panel holds the recording, **Call details** (latency, duration, variables, general analysis), **Advanced analysis**, the **Transcript** with each tool's request and response, and **Evals** once a call is scored.
+- The **Custom variables** and **Advanced analysis** filters work with exactly one assistant selected.
+
+<Quiz
+  question="You want every call from the dry-run campaign, including the two placed last month. Which is the fastest way, and will the date range hide any of them?"
+  answers={[
+    { text: "Filters → Call status: Completed; the date range hides older calls", correct: false },
+    { text: "History on the campaign; the Campaigns filter ignores the date range", correct: true },
+    { text: "Search by callee name; the date range applies", correct: false },
+    { text: "Export in the table footer; it covers all dates", correct: false },
+  ]}
+  correctFeedback="Right. History on a campaign opens Logs filtered to it with no date limit; the Campaigns, Call ID, From number and To number filters all ignore the date range, which otherwise defaults to the last month."
+  incorrectFeedback="Not quite. The Campaigns filter, like Call ID, From number and To number, ignores the date range, so History on the campaign shows every call whatever its date. Other filters and Export use the date range on screen."
+/>
+
+<RelatedTopics items={[["Logs", "/documentation/monitor/logs"], ["Manage a campaign", "/documentation/deploy/campaigns/manage-a-campaign"]]} />

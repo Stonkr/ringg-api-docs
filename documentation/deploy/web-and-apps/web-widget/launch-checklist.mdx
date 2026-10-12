@@ -1,0 +1,125 @@
+---
+title: "Web widget launch checklist"
+sidebarTitle: "Launch checklist"
+description: "Check the Ringg AI web widget before launch: placement, webcall key handling, allowed clients, CSP entries, CDN version pinning, browser QA and common failures."
+"og:title": "Web widget launch checklist: security and QA"
+---
+
+Most launch failures come from four places: an origin missing from **Allowed clients**, a <Tooltip tip="Content Security Policy: the header that controls which scripts and styles your site may load.">CSP</Tooltip> that blocks the CDN, an unpinned CDN version that changes under you, and the wrong bundle on a jQuery page.
+
+## Before you start
+
+<Card title="An installed widget" icon="globe" href="/documentation/deploy/web-and-apps/web-widget/overview" horizontal>
+  Run this list on the staging embed before it goes to production.
+</Card>
+
+## Set it up well
+
+A webcall agent runs in the visitor's browser, so what it knows and how it is found depend on the page as much as on the prompt.
+
+- Paste the snippet before the closing `</body>` tag. It loads the widget script itself, so it does not block the page. Keep the default bottom-right position unless your page has something there; move it with `widgetPosition` ([configuration](/documentation/deploy/web-and-apps/web-widget/configuration#position)).
+- Pass page context, such as the product a visitor is viewing, through `variables` so the agent can refer to it, and make the agent's first message say what it can help with.
+- Match the widget to your brand under **Appearance** in [Web widget overview](/documentation/deploy/web-and-apps/web-widget/overview#appearance), or with [`data-ringg` styling](/documentation/deploy/web-and-apps/web-widget/styling) on a 2.0 version.
+- Some visitors can't or won't talk: see [Chat mode](/documentation/deploy/web-and-apps/web-widget/chat-mode) for chat-first embeds and a prompt written for reading.
+
+## Security
+
+- The snippet uses the agent's webcall public key, never your workspace [API key](/documentation/manage-account/api-key) ([why](/documentation/deploy/web-and-apps/web-widget/overview#before-you-start)).
+- `variables` hold no passwords, internal tokens or personal data. Anyone can read them in the page source.
+- Analytics handlers treat `callId` and any user identifiers according to your privacy policy.
+
+If the key is used from somewhere it shouldn't be, [rotate it](/documentation/deploy/web-and-apps/web-widget/overview#rotate-the-webcall-key) and redeploy the new snippet in the same window.
+
+## Allowed clients
+
+Add each origin the widget runs on, and nothing you don't own, for example:
+
+| Environment | Entry |
+|---|---|
+| Staging | `staging.acme-lending.example` |
+| Production | `www.acme-lending.example` |
+
+Ringg checks each entry when you add it and shows the reason inline if it refuses one. Add staging separately so you can test a new CDN version or CSP change there first.
+
+## CSP setup
+
+If your site sends a Content Security Policy, allow jsDelivr:
+
+```text
+script-src 'self' https://cdn.jsdelivr.net;
+style-src 'self' https://cdn.jsdelivr.net;
+```
+
+To pin exact files, match the version and the bundle your loader uses:
+
+<CodeGroup>
+```text ES build
+script-src 'self' https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@1.0.21/dist/dv-agent.es.js;
+style-src 'self' https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@1.0.21/dist/style.css;
+```
+
+```text UMD build
+script-src 'self' https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@1.0.21/dist/dv-agent.umd.js;
+style-src 'self' https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@1.0.21/dist/style.css;
+```
+</CodeGroup>
+
+When you upgrade, change the loader version and the CSP paths in the same deploy.
+
+## Version pinning
+
+Ship the exact version you tested, the same string in `loadAgentsCdn` and in your CSP:
+
+```javascript
+loadAgentsCdn("1.0.21", function () {
+  loadAgent({
+    agentId: "your-agent-id",
+    authorization: "Bearer your-webcall-public-key",
+  });
+});
+```
+
+`latest` follows the 1.0 line and moves when a new 1.0 release is published. [Components](/documentation/deploy/web-and-apps/web-widget/components) and [`data-ringg` styling](/documentation/deploy/web-and-apps/web-widget/styling) need a `2.0.0-beta` version.
+
+## Browser QA
+
+- The trigger sits where you expect at desktop, tablet and mobile widths.
+- Voice mode asks for the microphone and handles both allow and deny. A call that won't start is usually a denied microphone or a page not served over HTTPS.
+- A test call connects, the agent is audible, and the call ends cleanly.
+- With `defaultTab: "text"`, chat sends and receives messages. If the widget opens in the wrong mode, check `defaultTab` and `hideTabSelector` in the deployed `loadAgent` object.
+- Components render real data: no `${{…}}` visible, required inputs block submit, **Send to agent** locks the component.
+- **Open a link** and **Page event** buttons work, and their listeners survive client-side navigation.
+- [Widget events](/documentation/deploy/web-and-apps/web-widget/events) fire once per action, including after client-side navigation.
+- No blocked CDN, CSP or mixed-content errors in the console or network panel.
+
+## Launch day
+
+1. The deployed `agentId` is the agent you tested, and every production origin is under **Allowed clients**.
+2. The snippet uses the current webcall key, the pinned CDN version, the right bundle for the page, and the intended `defaultTab`, `variables` and styling.
+3. The production CSP headers are tested on the live page, not only in staging.
+4. One real conversation: start and end a call or chat, submit a rating, confirm your event handlers received the payloads, then find the call in [Logs](/documentation/monitor/logs) under call type **Webcall**.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Works on staging, not on production">
+    The production origin is missing from **Allowed clients**, or the production CSP pins a different version than the loader.
+  </Accordion>
+  <Accordion title="jQuery's $ is undefined after the widget loads">
+    The page loads `dv-agent.es.js` as a plain `<script>`. The dashboard snippet does this by default. Switch to `dv-agent.umd.js` and update the CSP path.
+  </Accordion>
+  <Accordion title="Every embed stopped working at once">
+    The webcall key was rotated. Copy the new snippet from **Install & domains** and redeploy.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Review conversations in Logs" icon="scroll-text" href="/documentation/monitor/logs">
+    Each web conversation's transcript and analysis, under call type **Webcall**.
+  </Card>
+  <Card title="Read Analytics" icon="chart-line" href="/documentation/monitor/analytics">
+    Totals and trends across every conversation.
+  </Card>
+</Columns>

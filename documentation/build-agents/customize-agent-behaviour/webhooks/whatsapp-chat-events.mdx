@@ -1,0 +1,139 @@
+---
+title: "WhatsApp chat events"
+sidebarTitle: "WhatsApp chat events"
+description: "The chat events a Ringg AI WhatsApp agent sends to your endpoint: chat completed, analysis done and all processing done, with the payload fields and examples."
+tag: "NEW"
+related:
+  - "WhatsApp agents": /documentation/build-agents/agents/whatsapp-agents/overview
+  - "Connect WhatsApp": /documentation/inventory/tools-integrations/connect-whatsapp
+  - "Create a WhatsApp agent": /documentation/build-agents/agents/whatsapp-agents/create-an-agent
+  - "WhatsApp tools": /documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools
+  - "Start a conversation": /documentation/deploy/whatsapp/start-a-conversation
+  - "WhatsApp Relay": /documentation/deploy/whatsapp/relay-overview
+  - "WhatsApp Relay integration guide": /documentation/deploy/whatsapp/relay-integration-guide
+  - "WhatsApp Relay troubleshooting": /documentation/deploy/whatsapp/relay-troubleshooting
+  - "WhatsApp chats in Logs": /documentation/monitor/logs#whatsapp-chats
+  - "Event Subscription": /documentation/build-agents/customize-agent-behaviour/event-subscription
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+## WhatsApp chat events
+
+A [WhatsApp agent](/documentation/build-agents/agents/whatsapp-agents/create-an-agent) sends chat events instead of call events. You subscribe in the same [Event Subscription](/documentation/build-agents/customize-agent-behaviour/event-subscription) screen; only the event list and payload differ.
+
+### Events
+
+| Event | Label in the dashboard | Fires when |
+|---|---|---|
+| `chat_completed` | **Chat Completed** | The chat closes, before any analysis. |
+| `platform_analysis_completed` | **Platform Analysis Done** | Platform analysis (summary, key points, action items) succeeds. |
+| `client_analysis_completed` | **Advanced Analysis Complete** | Your [Advanced Analysis](/documentation/build-agents/customize-agent-behaviour/advanced-analysis) succeeds. |
+| `all_processing_completed` | **All Processing Done** | Everything after the chat has finished. |
+
+They arrive in that order. An analysis event is skipped when its analysis didn't succeed, but `all_processing_completed` still fires and carries the status.
+
+`chat_completed` fires when the chat [closes](/documentation/build-agents/agents/whatsapp-agents/create-an-agent#when-a-chat-opens-and-closes), not after each message.
+
+Call events (`call_started`, `call_ringing`, `call_ongoing`, `call_completed`, `recording_completed`) never fire for a chat and aren't offered on a WhatsApp agent. Subscribing to one through the API returns `400`: *Event type 'call_completed' is not available for a WhatsApp agent — it can only be produced by a voice call.* Likewise, `chat_completed` can't be added to a voice agent.
+
+### Chat payload
+
+Every chat event carries these base fields. None of them has `call_id` or `call_sid`; use `entity_type` to tell chat events from call events on a shared endpoint.
+
+| Field | Type | Description |
+|---|---|---|
+| `event_type` | string | One of the four events above. |
+| `entity_type` | string | Always `"chat"`. |
+| `chat_id` | string | Ringg's chat ID, as shown in **Logs → WhatsApp**. |
+| `channel` | string | `"whatsapp"`. |
+| `agent_id`, `agent_name` | string | The agent that handled the chat. |
+| `version_id`, `version_slug`, `version_description` | string | The [agent version](/documentation/build-agents/test-and-improve/drafts-and-versions) that handled it. |
+| `workspace_id` | string | Your workspace. |
+| `status` | string | Chat status, for example `completed`. |
+| `from_number` | string | The customer's WhatsApp number in E.164, for example `+919876543210`. |
+| `to_number` | string | Your business number's Meta phone number ID, not the phone number itself. |
+| `custom_args_values` | object | Custom variables for the chat, including values set by pre-call tools. |
+| `created_at` | string | When the chat started, ISO 8601. |
+| `transcript` | array | Messages in order, each an object with one key, `user` or `bot`. Text only. |
+
+Each event adds:
+
+| Event | Extra fields |
+|---|---|
+| `chat_completed` | none beyond the base fields |
+| `platform_analysis_completed` | `analysis_data`, `platform_analysis_status` |
+| `client_analysis_completed` | `analysis_data`, `client_analysis_status` |
+| `all_processing_completed` | `platform_analysis`, `platform_analysis_status`, `client_analysis`, `client_analysis_status`, `classification` |
+
+```json chat_completed
+{
+  "event_type": "chat_completed",
+  "entity_type": "chat",
+  "chat_id": "b6107fbd-1f1a-4382-88f6-781c2f6ea787",
+  "channel": "whatsapp",
+  "agent_id": "d81e3938-b8e1-42e4-bc5b-f8ea754a81c5",
+  "agent_name": "Acme Renewals WhatsApp",
+  "workspace_id": "0e9d8c7b-6a5f-4e3d-2c1b-0a9f8e7d6c5b",
+  "status": "completed",
+  "version_id": "6a3e05c1-51f0-4e54-b01c-bf8b15909120",
+  "version_slug": "v1",
+  "version_description": null,
+  "from_number": "+919876543210",
+  "to_number": "109876543210987",
+  "custom_args_values": { "name": "Priya" },
+  "created_at": "2026-09-24T10:29:46.123+00:00",
+  "transcript": [
+    { "user": "Hi, I want to renew my policy" },
+    { "bot": "Hi Priya! Happy to help. Which plan are you on?" },
+    { "user": "Family Health Plus" },
+    { "bot": "I've sent your renewal link on WhatsApp. It's valid for 7 days." }
+  ]
+}
+```
+
+```json all_processing_completed
+{
+  "event_type": "all_processing_completed",
+  "entity_type": "chat",
+  "chat_id": "b6107fbd-1f1a-4382-88f6-781c2f6ea787",
+  "channel": "whatsapp",
+  "agent_id": "d81e3938-b8e1-42e4-bc5b-f8ea754a81c5",
+  "agent_name": "Acme Renewals WhatsApp",
+  "workspace_id": "0e9d8c7b-6a5f-4e3d-2c1b-0a9f8e7d6c5b",
+  "status": "completed",
+  "version_id": "6a3e05c1-51f0-4e54-b01c-bf8b15909120",
+  "version_slug": "v1",
+  "version_description": null,
+  "from_number": "+919876543210",
+  "to_number": "109876543210987",
+  "custom_args_values": { "name": "Priya" },
+  "created_at": "2026-09-24T10:29:46.123+00:00",
+  "transcript": [
+    { "user": "Hi, I want to renew my policy" },
+    { "bot": "Hi Priya! Happy to help. Which plan are you on?" }
+  ],
+  "platform_analysis": {
+    "summary": "Customer asked to renew Family Health Plus and received the renewal link.",
+    "key_points": ["Wants to renew", "On Family Health Plus"],
+    "action_items": ["Follow up if not renewed in 7 days"]
+  },
+  "platform_analysis_status": "success",
+  "client_analysis": { "renewal_intent": "high" },
+  "client_analysis_status": "success",
+  "classification": "renewal_link_sent"
+}
+```
+
+### Common questions
+
+<AccordionGroup>
+  <Accordion title="Why did chat_completed arrive hours after the last message?">
+    The chat closes only when the agent calls **End Chat** or the agent's idle timeout passes (3 hours by default). Lower **End the chat after no messages for** under **Chat → Settings** if you need the event sooner.
+  </Accordion>
+  <Accordion title="Can one endpoint receive both call and chat events?">
+    Yes. Subscribe it on each agent and branch on `entity_type` ([payload](#chat-payload)). To read a chat while it is still open, use [Logs → WhatsApp](/documentation/monitor/logs#whatsapp-chats).
+  </Accordion>
+</AccordionGroup>
+
+<RelatedTopics items={[["WhatsApp agents", "/documentation/build-agents/agents/whatsapp-agents/overview"], ["Connect WhatsApp", "/documentation/inventory/tools-integrations/connect-whatsapp"], ["Create a WhatsApp agent", "/documentation/build-agents/agents/whatsapp-agents/create-an-agent"], ["WhatsApp tools", "/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools"], ["Start a conversation", "/documentation/deploy/whatsapp/start-a-conversation"], ["WhatsApp Relay", "/documentation/deploy/whatsapp/relay-overview"], ["WhatsApp Relay integration guide", "/documentation/deploy/whatsapp/relay-integration-guide"], ["WhatsApp Relay troubleshooting", "/documentation/deploy/whatsapp/relay-troubleshooting"], ["WhatsApp chats in Logs", "/documentation/monitor/logs#whatsapp-chats"], ["Event Subscription", "/documentation/build-agents/customize-agent-behaviour/event-subscription"]]} />

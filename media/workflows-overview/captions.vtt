@@ -1,0 +1,40 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:02.923
+Open Workflows from the sidebar
+
+00:00:02.923 --> 00:00:05.272
+Active workflows can run; drafts are still in progress
+
+00:00:05.272 --> 00:00:08.624
+Open a workflow to see its blocks
+
+00:00:08.624 --> 00:00:10.825
+Each block is a step: call, branch, act, wait, message
+
+00:00:10.825 --> 00:00:15.391
+Every publish is a version; one is live
+
+00:00:15.391 --> 00:00:16.830
+Every run is recorded in Logs → Workflows
+
+00:00:16.830 --> 00:00:19.688
+Filter runs by status or workflow
+
+00:00:19.688 --> 00:00:23.709
+Click a run to see the path it took
+
+00:00:23.709 --> 00:00:26.662
+Click the Agent step to open its call
+
+00:00:26.662 --> 00:00:31.129
+Recording, analysis and evals for that call
+
+00:00:31.129 --> 00:00:36.231
+A Conditional step shows the branch the run took
+
+00:00:36.231 --> 00:00:44.385
+A failed step shows the error that stopped the run
+
+00:00:44.385 --> 00:00:48.885
+Click a run's call count to see its calls in Logs

@@ -1,0 +1,78 @@
+---
+title: "Lesson: Run a campaign"
+sidebarTitle: "Run a campaign"
+description: "Launch Ananya's first campaign in Campaign Setup: upload a three-row list of numbers you own, pick the number pool, set retries and a calling window."
+related:
+  - "Create a campaign": /documentation/deploy/campaigns/create-a-campaign
+  - "Manage a campaign": /documentation/deploy/campaigns/manage-a-campaign
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 4: Taking your agent live · Lesson 2 of 4 · 20 minutes**
+
+## Objective
+
+Launch a campaign of three calls to numbers you own, and follow it from **Scheduled** to **Completed**.
+
+## The scenario
+
+Before Acme calls real customers, it runs the reminder over three internal numbers: yours and two colleagues who agree to answer. The flow is the same at thousands of rows. Make a CSV with the header row `callee_name,mobile_number,due_amount,due_date,loan_account` and three rows, phone numbers as ten digits without `+91`. Headers that match Ananya's variable names map themselves.
+
+## Hands-on
+
+<Frame caption="Creating a campaign in the dashboard">
+  <video alt="Creating a campaign in the dashboard" aria-label="Creating a campaign in the dashboard" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/campaigns-create/poster.webp">
+    <source src="/media/campaigns-create/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Name it and pick the agent">
+    In the sidebar, open **Monitor → Campaigns** and click **Create campaign**. **Campaign Setup** opens on **Upload details**. Enter **Campaign name** `EMI reminders - dry run`, keep **Campaign type** on **Assistant**, and pick **EMI reminder - Hindi** under **Select assistant**.
+  </Step>
+  <Step title="Upload the list">
+    Drag your CSV onto **Upload calling list** or click **Select File**. In **Calling list settings**, leave **Country code** on **+91** and check that every variable under **Map variables to CSV columns** found its column. Leave **Remove invalid rows** on. Click **Next**: "Processing CSV..." then "CSV verified successfully".
+  </Step>
+  <Step title="Configure the calls">
+    Under **Select number**, choose **Number pool** and pick **Acme EMI reminders**. Keep **Timezone** `Asia/Kolkata`; **Start date & time** defaults to 10 minutes from now and **End date & time** to a day later. **Calling windows** defaults to 08:00–20:00 every day; if you are outside those hours, click **Edit**, add a window that covers now, and **Save**. Set **Retry count** to **1 Retry** and **Cooldown Period** to **5 Minutes**. **Email notifications** already lists you.
+  </Step>
+  <Step title="Launch">
+    Click **Create campaign**. You see "Campaign created successfully!" and the campaign appears in the list as **Scheduled**. The three calls are real calls.
+  </Step>
+  <Step title="Watch it run">
+    Once the start time passes inside the calling window, your phones ring. Click the campaign's row: the detail panel shows **Status**, **Assistant**, **Call time**, **Timezone** and **Retry configuration**. **History** opens the campaign's calls in Logs, with no date limit.
+  </Step>
+</Steps>
+
+## Checkpoint
+
+<Check>
+When the attempts are done, the detail panel shows **Status** **Completed** with the buttons **Analytics**, **History** and **Export report**. **History** lists the three calls as **Completed**; a call you let ring first shows **Retry**, then **Completed** after the second attempt.
+</Check>
+
+## Exercise
+
+Create a second campaign from the same file, then stop it before it starts: select its row and click **Terminate**. The dialog reads "Termination will stop all future calls. Are you sure you want to proceed?" Click **Confirm**. Expected result: "Campaign terminated", and because the campaign never placed a call it drops out of the list. There is no pause, and no resume from the dashboard.
+
+## What you learned
+
+- **Campaign Setup** has two steps: **Upload details** (name, agent, CSV, country code, variable mapping) and **Configure campaign** (numbers or pool, schedule, calling windows, retries, notifications).
+- Calls go out only after the start time and inside a calling window, read in the campaign's timezone. Every retry is another call to the same person.
+- The detail panel's **History** opens the campaign's calls in Logs; **Terminate** stops all future calls, and a terminated campaign can't be resumed from the dashboard.
+
+<Quiz
+  question="It is 21:30 in Asia/Kolkata. You create a campaign with the default calling windows and a start time 10 minutes from now. When do the calls go out?"
+  answers={[
+    { text: "At 21:40, because the start time wins", correct: false },
+    { text: "Not until 08:00 tomorrow, because calls go out only inside a calling window", correct: true },
+    { text: "Immediately, because the default window is all day", correct: false },
+    { text: "Never; the campaign is rejected", correct: false },
+  ]}
+  correctFeedback="Right. Calls go out only after the start time and inside a calling window, read in the campaign's timezone. The default window is 08:00–20:00 every day, so a 21:40 start waits until 08:00. To run now, edit the windows to cover the current time."
+  incorrectFeedback="Not quite. Both conditions must hold: the start time has passed and the clock is inside a calling window. The default windows are 08:00–20:00 in the campaign's timezone, so an evening start waits for the next morning unless you add a window."
+/>
+
+<RelatedTopics items={[["Create a campaign", "/documentation/deploy/campaigns/create-a-campaign"], ["Manage a campaign", "/documentation/deploy/campaigns/manage-a-campaign"]]} />

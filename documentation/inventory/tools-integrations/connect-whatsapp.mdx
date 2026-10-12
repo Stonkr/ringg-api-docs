@@ -1,0 +1,230 @@
+---
+title: "Connect WhatsApp"
+sidebarTitle: "Connect WhatsApp"
+description: "Connect a WhatsApp Business account to Ringg AI through Meta's sign-in, add and register your own or a Ringg number, create message templates, and disconnect."
+"og:title": "Connect WhatsApp Business to Ringg AI | Ringg AI Guide"
+tag: "NEW"
+related:
+  - "WhatsApp agents": /documentation/build-agents/agents/whatsapp-agents/overview
+  - "Create a WhatsApp agent": /documentation/build-agents/agents/whatsapp-agents/create-an-agent
+  - "WhatsApp tools": /documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools
+  - "WhatsApp chat events": /documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events
+  - "Start a conversation": /documentation/deploy/whatsapp/start-a-conversation
+  - "WhatsApp Relay": /documentation/deploy/whatsapp/relay-overview
+  - "WhatsApp Relay integration guide": /documentation/deploy/whatsapp/relay-integration-guide
+  - "WhatsApp Relay troubleshooting": /documentation/deploy/whatsapp/relay-troubleshooting
+  - "WhatsApp chats in Logs": /documentation/monitor/logs#whatsapp-chats
+  - "Connect an app": /documentation/inventory/tools-integrations/connect-an-app
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+A [WhatsApp agent](/documentation/build-agents/agents/whatsapp-agents/create-an-agent) needs a WhatsApp Business account connected to your workspace and at least one registered number. Both are set up here, and the account page that results is also where templates live.
+
+In the dashboard: **Tools → Add more tools → WhatsApp Business**, or **Numbers → WhatsApp**.
+
+## Before you start
+
+- A Facebook login with admin access to your Meta Business portfolio, or permission to create one.
+- For your own number: one that can receive an SMS or a voice call and isn't active on the WhatsApp or WhatsApp Business app. Skip this if you will [get a Ringg number](#get-a-ringg-number).
+- The display name customers will see, following [Meta's display name rules](https://www.facebook.com/business/help/757569725593362).
+- Ad blockers and privacy extensions paused for the dashboard; they block Meta's sign-in window.
+
+## Connect your WhatsApp Business account
+
+Ringg connects through Meta's **Embedded Signup**: you sign in with Meta in a pop-up and share a WhatsApp Business account with Ringg, existing or new. Ringg never sees your Facebook password, and Meta's window doesn't ask for a phone number; you add numbers in the next section.
+
+<Frame caption="Connecting WhatsApp Business, registering a number and creating a template; Meta's sign-in window is not shown">
+  <video alt="Connecting WhatsApp Business, registering a number and creating a template; Meta's sign-in window is not shown" aria-label="Connecting WhatsApp Business, registering a number and creating a template; Meta's sign-in window is not shown" controls muted playsInline className="w-full aspect-video rounded-xl">
+    <source src="/media/whatsapp-onboarding/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Start the signup">
+    In the sidebar, open **Tools** and select the **WhatsApp Business** card under **Add more tools**. In **Link or create a WhatsApp Business account**, select **Setup WhatsApp Business Account**. Meta's **Facebook Login for Business** window opens.
+
+    <Frame caption="The Link or create a WhatsApp Business account dialog">
+      <img src="/media/whatsapp-onboarding/connect-modal.webp" alt="Dialog titled Link or create a WhatsApp Business account with a Setup WhatsApp Business Account button carrying the Meta logo" />
+    </Frame>
+  </Step>
+
+  <Step title="Share the business assets in Meta's window">
+    Log in to Facebook if asked and check that the account shown owns your business. Pick your **Business portfolio** and **WhatsApp Business account**, or create new ones from the same lists, review what Ringg gets access to, and select **Finish**. **Add payment method** is optional here; you can add one in Meta Business settings later.
+  </Step>
+
+  <Step title="Return to Ringg">
+    The dashboard button reads **Setting WhatsApp Business Account** while Ringg finishes setup. The account page then opens with two tabs, **Phone numbers** and **Message templates**, and no numbers yet.
+
+    <Check>The toast **WhatsApp connected** appears, and the **WhatsApp Business** card on the Tools page shows **1 Connected** and opens the account page directly.</Check>
+  </Step>
+</Steps>
+
+## Add a number
+
+Select **Add number** on the **Phone numbers** tab, or on **Numbers → WhatsApp**. Pick where the number comes from:
+
+| Option | What happens |
+|---|---|
+| **Ringg number** (default) | Ringg buys an India number, adds it to your WhatsApp Business account and verifies it. Billed monthly with your other numbers. |
+| **Own number** | You add a number and verify it with a code from Meta. |
+
+Take a Ringg number when you have no spare number or want to be live in minutes; add your own when customers already know it or you need a non-India number. Only a registered number can send and receive messages or be attached to an agent. If several WhatsApp Business accounts are connected, **Numbers → WhatsApp** shows one section per account, each with its own **Add number**.
+
+### Get a Ringg number
+
+<Steps>
+  <Step title="Pick a number">
+    In **Get Ringg number**, choose from the list of India numbers; it shows each number's location and monthly price.
+  </Step>
+  <Step title="Name it">
+    Enter **Name shown on WhatsApp**. It must match your business name; Meta reviews it before it appears in chats. Select **Get number**.
+  </Step>
+  <Step title="Wait for setup">
+    **Setting up number** shows four stages: **Buying number**, **Adding to WhatsApp**, **Verifying number** and **Ready**. It takes about 2 minutes and continues if you close the dialog; the row shows **Setting up…** until it's done, and selecting the row reopens the progress. During verification the stage reads **Meta is calling** or **Manual review**.
+
+    If a stage fails, the row shows **Setup failed**; open it and select **Retry setup** to continue from that stage.
+
+    <Check>The toast **Number connected** appears and the number is listed as **Ready** with a **Ringg** tag.</Check>
+  </Step>
+</Steps>
+
+A Ringg number has **Release** instead of **De-register**. Releasing disconnects it from WhatsApp and stops billing; the number can't be recovered afterwards. It stays listed as disconnected in Meta's WhatsApp Manager, where an admin can delete it.
+
+### Add your own number
+
+<Steps>
+  <Step title="Enter the number">
+    Choose **Own number**. Enter the **Phone number** with its country and the **Verified business name** customers will see. Select **Continue**.
+  </Step>
+  <Step title="Verify it with Meta's code">
+    Choose **SMS** or **Voice call**, select **Send code**, then enter the 6-digit code and select **Verify**. **Resend code** sends another.
+  </Step>
+  <Step title="Register it">
+    The number now shows **Pending** with a **Register** button. Select it, optionally set a **6-digit PIN** for two-step verification (blank keeps the default), and select **Register**. Keep the PIN: Meta asks for it if the number is ever registered again.
+
+    <Check>The toast **Number registered** appears and the row shows **Ready**.</Check>
+  </Step>
+</Steps>
+
+An own number passes through three states, and the row's button tells you which one it's in:
+
+| Status | Button | Meaning |
+|---|---|---|
+| **Pending** | **Verify** | Added, but the code hasn't been verified. **Verify** reopens the code step. |
+| **Pending** | **Register** | Verified, not yet registered with the WhatsApp Cloud API. |
+| **Ready** | **De-register** | Registered: it can send and receive messages. |
+
+### De-register a number
+
+**De-register** stops the number sending and receiving WhatsApp messages until it's registered again. **Archive the local number record** is ticked by default; it also removes the number from Ringg and detaches it from its agent, and the dialog names that agent.
+
+## Message templates
+
+A template is a message Meta has approved in advance. WhatsApp requires one for any message you start outside the 24-hour customer service window: follow-ups after a chat, reminders, a message after a voice call, or the [first message to a customer](/documentation/deploy/whatsapp/start-a-conversation). Manage them on the **Message templates** tab.
+
+<Steps>
+  <Step title="Create a template">
+    Select **New template** and fill in:
+
+    | Field | Rules |
+    |---|---|
+    | **Template name** | Lowercase letters, numbers and underscores, for example `policy_renewal_reminder`. Can't be changed later. |
+    | **Category** | **Marketing** (promotions and offers), **Utility** (updates and alerts, the default) or **Authentication** (<Tooltip tip="One-time password: a short code sent to confirm a phone number or sign-in.">OTP</Tooltip> and verification). |
+    | **Language** | **English (US)** by default; also English (UK), English, Hindi, Spanish, French, German, Portuguese (Brazil), Arabic, Japanese and Chinese (Simplified). Can't be changed later. |
+    | **Header** | **None** or **Text**. **Image** and **Document** are listed but disabled ("Media headers coming soon"). |
+    | **Body** | The message, with variables in double braces. |
+    | **Variable examples** | A sample for every variable. Meta reviews them with the template. |
+    | **Footer** | Optional, up to 60 characters. |
+    | **Quick reply buttons** | Optional, up to three, 25 characters each. URL and phone-number buttons aren't offered yet. |
+
+    The preview shows the message as a WhatsApp bubble while you type.
+
+    <Frame caption="The Create message template dialog with a live preview">
+      <img src="/media/whatsapp-onboarding/new-template.webp" alt="Create message template dialog: name emi_payment_link, category Utility selected, language English (US), header None, a body with three numbered variables, and a WhatsApp-style preview of the message with a Paid quick reply button" />
+    </Frame>
+  </Step>
+  <Step title="Submit for review">
+    <Check>The template shows **In review** until Meta decides; see [Meta's template review](https://developers.facebook.com/documentation/business-messaging/whatsapp/templates/template-review).</Check>
+  </Step>
+</Steps>
+
+### Variables: numbered or named
+
+Use one style per template, never both. **Add variable** inserts the next variable in the style the body already uses.
+
+Named variables are lowercase and start with a letter. In a tool, each variable gets a row labelled with its name:
+
+```text Named
+Hi {{customer_name}}, your {{plan_name}} policy renews on {{renewal_date}}.
+```
+
+Numbered variables run in order from `{{1}}`. A text header can have one variable, and it must be `{{1}}`:
+
+```text Numbered
+Hi {{1}}, your {{2}} policy renews on {{3}}.
+```
+
+### Template status
+
+The table lists each template's name, category, language, status and **Last used** date.
+
+| Status | Meaning | What you can do |
+|---|---|---|
+| **In review** | Waiting for Meta. | Nothing until Meta decides: it can't be sent or edited. |
+| **Ready** | Approved. | Send it, pick it in a tool, send a test, edit it. |
+| **Rejected** | Meta declined it. | Edit it and select **Re-apply**. |
+| **Paused** | Meta limited it, usually after poor quality signals. | Edit it, or duplicate it into a replacement. |
+| **Disabled** | Meta disabled it. | Duplicate it into a replacement. |
+
+Each template's **⋮** menu has **Send test** (**Ready** only), **Edit** (**Ready**, **Rejected** or **Paused**), **Duplicate** and **Delete**. Deleting removes the template from Meta and can't be undone. Templates created outside Ringg with media headers or link buttons can be sent, but not edited or duplicated here.
+
+### Send a test
+
+**Send test** on a **Ready** template asks for the **Recipient number** with its country code, such as `+919876543210`, the **Send from** number (a registered one), and a value for every variable.
+
+## Disconnect the account
+
+**Disconnect account**, at the top of the account page, de-registers every number on the account and unlinks the WhatsApp Business account from your workspace. It can't be undone; to use the account again you reconnect through Meta. Disconnecting is blocked while live agents still use this account's WhatsApp tools (the message names them), or while Ringg numbers are still on the account. Remove those tools or archive the agents, and [release](#get-a-ringg-number) the Ringg numbers, first.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Couldn't load Meta's sign-in">
+    An ad blocker or privacy extension is blocking Meta's script. Allow it for the dashboard and refresh the page.
+  </Accordion>
+  <Accordion title="WhatsApp Business Account information was not received">
+    The Meta window closed before you finished. Start again and complete every step, including **Finish**.
+  </Accordion>
+  <Accordion title="Failed to connect WhatsApp account">
+    Retry once. If it keeps failing, contact support with the time you tried.
+  </Accordion>
+  <Accordion title="This WhatsApp Business account is already connected to another workspace">
+    The account is linked to another Ringg workspace. Disconnect it there first. Reconnecting the same account in the same workspace is safe and refreshes the access token.
+  </Accordion>
+  <Accordion title="This WhatsApp Business account is registered for relay messaging">
+    The account is set up for [WhatsApp Relay](/documentation/deploy/whatsapp/relay-overview). Remove the relay registration before connecting it here.
+  </Accordion>
+  <Accordion title="Could not register number (#133006)">
+    Meta wants the number verified again before registering it. If the row offers **Verify**, verify it with a code (see [Add your own number](#add-your-own-number)); otherwise re-verify the number in Meta's WhatsApp Manager. Then select **Register** again.
+  </Accordion>
+  <Accordion title="Can I use the number that's already on my WhatsApp Business app?">
+    Not while it's active there. **Own number** accepts a number that isn't on WhatsApp yet; move the number off the app first, or add a different one. A Ringg number avoids the question.
+  </Accordion>
+  <Accordion title="Do I need a template to reply to a customer?">
+    No. Replies inside 24 hours of the customer's last message are free-form; a template is only for a [message you start](#message-templates) outside that window.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Create a WhatsApp agent" icon="bot" href="/documentation/build-agents/agents/whatsapp-agents/create-an-agent">
+    Attach the registered number and write a chat prompt.
+  </Card>
+  <Card title="Send WhatsApp messages from any agent" icon="send" href="/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#on-call">
+    Add the send tools to a voice or WhatsApp agent.
+  </Card>
+</Columns>
+
+<RelatedTopics items={[["WhatsApp agents", "/documentation/build-agents/agents/whatsapp-agents/overview"], ["Create a WhatsApp agent", "/documentation/build-agents/agents/whatsapp-agents/create-an-agent"], ["WhatsApp tools", "/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools"], ["WhatsApp chat events", "/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events"], ["Start a conversation", "/documentation/deploy/whatsapp/start-a-conversation"], ["WhatsApp Relay", "/documentation/deploy/whatsapp/relay-overview"], ["WhatsApp Relay integration guide", "/documentation/deploy/whatsapp/relay-integration-guide"], ["WhatsApp Relay troubleshooting", "/documentation/deploy/whatsapp/relay-troubleshooting"], ["WhatsApp chats in Logs", "/documentation/monitor/logs#whatsapp-chats"], ["Connect an app", "/documentation/inventory/tools-integrations/connect-an-app"]]} />

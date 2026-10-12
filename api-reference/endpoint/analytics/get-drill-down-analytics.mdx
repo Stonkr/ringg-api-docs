@@ -1,17 +1,16 @@
 ---
 openapi: get /analytics/drill-down-analytics
+description: "Get detailed performance metrics for one campaign by its bulk_list_id, optionally narrowed by date range, agent or voicemail, to report on a single run."
+related:
+  - "Platform analytics": /api-reference/endpoint/analytics/get-platform-analytics
 ---
 
-Return detailed analytics for one campaign or bulk list. This is the endpoint to use when a dashboard user clicks from a summary metric into campaign performance.
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-## Required input
+`bulk_list_id` is the campaign ID, returned as `list_id` or `bulk_list_id` when you upload the calling list.
 
-- `bulk_list_id`: the campaign/contact-list identifier returned by campaign upload and used when starting the campaign.
+## Notes
 
-## Use this for
+- To list the calls behind the numbers, call [call history](/api-reference/endpoint/history/get-call-history) with the same `bulk_list_id`.
 
-- Campaign performance views.
-- Status and outcome breakdowns.
-- Detailed campaign troubleshooting.
-
-Pair it with [Get call history](/api-reference/endpoint/history/get-call-history) filtered by the same `bulk_list_id` when users need call-level rows.
+<RelatedTopics items={[["Platform analytics", "/api-reference/endpoint/analytics/get-platform-analytics"]]} />

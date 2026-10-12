@@ -1,0 +1,87 @@
+---
+title: "Lesson: Tools"
+sidebarTitle: "Tools"
+description: "Add a pre-call API tool that fetches the loan account from Acme's CRM by mobile number, keep the two fields the agent needs, and read them in the prompt."
+related:
+  - "Tools": /documentation/build-agents/customize-agent-behaviour/tools/overview
+  - "The call panel in Logs": /documentation/monitor/logs#the-call-panel
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 3: Making your agent smarter · Lesson 3 of 4 · 15 minutes**
+
+## Objective
+
+Add a pre-call API tool that fetches the loan account from the CRM before Ananya says hello, and read its fields in the prompt.
+
+## The scenario
+
+The calling list is exported the night before. By the time Ananya calls, Rahul may already have paid. Acme's CRM at `crm.acme-lending.example` answers a `GET` on `/api/accounts` with the loan account for a phone number: `account_status` (`due`, `paid` or `overdue`) and `rm_phone`, the relationship manager's number. A pre-call tool fetches it on every call, and the prompt reads the result.
+
+You need an endpoint of your own that returns JSON for this. If you have none yet, add the tool with Acme's address anyway: the wiring is the same, and you skip the step that needs a response.
+
+## Hands-on
+
+<Frame caption="Adding a pre-call API tool and a call transfer tool">
+  <video alt="Adding a pre-call API tool and a call transfer tool" aria-label="Adding a pre-call API tool and a call transfer tool" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/agents-tools/poster.webp">
+    <source src="/media/agents-tools/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open the Pre-call tab">
+    In Ananya's editor, open **Advanced Settings → Tools**, pick **Pre-call** and click **API** in the side panel.
+  </Step>
+  <Step title="Name the request">
+    Enter the tool name `crm_lookup`, method **GET** and the URL `https://crm.acme-lending.example/api/accounts`.
+  </Step>
+  <Step title="Pass the phone number">
+    On **Query**, add a row with key `phone`, source **Variable** and value `custom_args.mobile_number`, so each call looks up its own customer. On **Headers**, add a **Static** row `Authorization` with your CRM token.
+  </Step>
+  <Step title="Keep the two fields">
+    Click **Test API**. On **Response**, tick `account_status` and `rm_phone` and nothing else: pre-call output goes into the prompt, and the rest is noise.
+  </Step>
+  <Step title="Block unknown customers">
+    On **Settings**, add `404` under **Block call on status codes**, so no call goes out to a number the CRM does not know. Other 4xx and 5xx only skip this tool's data. Click **Add to assistant**.
+  </Step>
+  <Step title="Read the fields in the prompt">
+    In **Prompt**, type `@`, open **crm_lookup** under **Pre-Call API Settings** and pick a key from **Response Keys**. Add to the script: "The CRM shows this account as `@((crm_lookup.account_status))`. If it is paid, thank the customer and end the call. If they ask for a person, give them their relationship manager's number, `@((crm_lookup.rm_phone))`." Click **Save**.
+  </Step>
+</Steps>
+
+<Frame caption="The Response tab after Test API">
+  <img src="/media/agents-tools/api-tool-response.webp" alt="New pre-call API tool crm_lookup with GET and a CRM URL, the Response tab showing customer and loan objects with loan ticked, and a response time of 182ms" />
+</Frame>
+
+## Checkpoint
+
+<Check>
+`crm_lookup` is listed on the **Pre-call** tab, and the prompt shows both keys as chips. Place a test call, then open it in **Logs**: the **Transcript** tab lists `crm_lookup` under **Pre-Call**, and clicking it shows the HTTP status, the latency and the **Request** and **Response** (or **Error**) tabs.
+</Check>
+
+## Exercise
+
+Open `crm_lookup`, go to **Settings** and set **Retry count** to `2`. Expected result: a **Backoff** section appears with **Exponential**, **Linear** or **Constant** and the initial and max delay fields. Retries cover timeouts, connection errors, 429 and 500, 502, 503 and 504; any other status, 404 included, is not retried. Click **Save tool**.
+
+## What you learned
+
+- Pre-call tools run before the call connects and their output reaches the prompt as `@((tool.key))`; on-call tools run when the agent decides and must be mentioned as `@||tool||`; post-call tools send results out once the call ends.
+- A parameter's source decides its value: **Static** for a fixed header, **Variable** for the call context such as `custom_args.mobile_number`.
+- **Block call on status codes** aborts the call; other 4xx and 5xx codes only drop the tool's data, so the prompt must still make sense without it.
+
+<Quiz
+  question="The CRM returns 404 for a number it does not know. With 404 under Block call on status codes, what happens to that call?"
+  answers={[
+    { text: "It goes out, and the prompt gets empty values for the tool's keys", correct: false },
+    { text: "It is retried up to the Retry count, then goes out", correct: false },
+    { text: "It is not placed at all", correct: true },
+    { text: "It goes out with the CRM's error text read aloud", correct: false },
+  ]}
+  correctFeedback="Right. Block call on status codes aborts the call for the listed codes. Any other 4xx or 5xx only drops this tool's data, so the prompt must still make sense without it."
+  incorrectFeedback="Not quite. A status code listed under Block call on status codes aborts the call before it is placed. Other 4xx and 5xx responses are the case where the call goes ahead without the tool's data, and retries cover timeouts, connection errors, 429 and 500, 502, 503 and 504."
+/>
+
+<RelatedTopics items={[["Tools", "/documentation/build-agents/customize-agent-behaviour/tools/overview"], ["The call panel in Logs", "/documentation/monitor/logs#the-call-panel"]]} />

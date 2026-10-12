@@ -1,0 +1,331 @@
+---
+title: "Web widget configuration"
+sidebarTitle: "Configuration"
+description: "Reference for every loadAgent option in the Ringg AI web widget: bundles, variables, theme, trigger button, positioning, window size and feedback screen."
+related:
+  - "Appearance": /documentation/deploy/web-and-apps/web-widget/overview#appearance
+"og:title": "Web widget configuration reference"
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+`loadAgent` takes one object that controls how the [web widget](/documentation/deploy/web-and-apps/web-widget/overview) looks and starts on your page. The agent's prompt, voice and tools stay in the dashboard. Settings from the **Appearance** tab in [Web widget overview](/documentation/deploy/web-and-apps/web-widget/overview#appearance) are written into the copied snippet as these same fields.
+
+Options marked <Badge>2.0</Badge> need a `2.0.0-beta` CDN version. See [Pick a CDN version](/documentation/deploy/web-and-apps/web-widget/overview#install-the-widget).
+
+## CDN bundles
+
+The CDN exposes `loadAgent` on `window` once the script has loaded. Two builds are published:
+
+| Bundle | Use it on |
+|---|---|
+| `dv-agent.es.js` | Pages built with Vite, webpack or Next.js, or code inside `<script type="module">`. |
+| `dv-agent.umd.js` | jQuery pages, legacy CMS themes and any page that loads plain `<script>` tags. |
+
+The ES build loaded as a plain `<script>` puts its internals on `window` and can overwrite globals such as jQuery's `$`. The snippet copied from the dashboard loads the ES build as a plain script, so on a non-module page change the file name to `dv-agent.umd.js`.
+
+<CodeGroup>
+```html ES build
+<script type="module">
+  function loadAgentsCdn(version, done) {
+    const stylesheet = document.createElement("link");
+    stylesheet.rel = "stylesheet";
+    stylesheet.href = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/style.css`;
+
+    const script = document.createElement("script");
+    script.type = "module";
+    script.onload = done;
+    script.src = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/dv-agent.es.js`;
+
+    document.head.appendChild(stylesheet);
+    document.head.appendChild(script);
+  }
+</script>
+```
+
+```html UMD build
+<script>
+  function loadAgentsCdn(version, done) {
+    const stylesheet = document.createElement("link");
+    stylesheet.rel = "stylesheet";
+    stylesheet.href = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/style.css`;
+
+    const script = document.createElement("script");
+    script.onload = done;
+    script.src = `https://cdn.jsdelivr.net/npm/@desivocal/agents-cdn@${version}/dist/dv-agent.umd.js`;
+
+    document.head.appendChild(stylesheet);
+    document.head.appendChild(script);
+  }
+</script>
+```
+</CodeGroup>
+
+## Full example
+
+```javascript
+loadAgentsCdn("1.0.21", function () {
+  loadAgent({
+    agentId: "your-agent-id",
+    authorization: "Bearer your-webcall-public-key",
+    variables: { callee_name: "Priya", loan_id: "AL-1042" },
+    defaultTab: "audio",
+    title: "Acme Lending support",
+    description: "Ask about your EMI or start a call.",
+    theme: { primaryColor: "#2563eb", buttonStyle: "pill" },
+    buttons: {
+      modalTrigger: { styles: { backgroundColor: "#2563eb", borderRadius: "50%" } },
+      call: { textBeforeCall: "Talk to us" },
+    },
+    widgetPosition: { triggerAlignment: "bottom-right", widgetAlignment: "bottom-right" },
+  });
+});
+```
+
+## Core options
+
+`variables`, the key and everything else in this object are readable in the page source. Never put passwords, internal tokens or personal data in them.
+
+<ResponseField name="agentId" type="string" required>
+  The agent to load.
+</ResponseField>
+
+<ResponseField name="authorization" type="string" required>
+  `Bearer <webcall-public-key>`, from the dashboard snippet.
+</ResponseField>
+
+<ResponseField name="variables" type="object" default="{}">
+  Values for the agent's [variables](/documentation/build-agents/customize-agent-behaviour/custom-variables), such as `callee_name`.
+</ResponseField>
+
+<ResponseField name="defaultTab" type='"audio" | "text"' default="audio">
+  `"audio"` opens on voice, `"text"` on chat.
+</ResponseField>
+
+<ResponseField name="hideTabSelector" type="boolean" default="false">
+  `true` shows only the `defaultTab` mode.
+</ResponseField>
+
+<ResponseField name="bypassStartScreen" type="boolean" default="false">
+  A trigger click starts the `defaultTab` conversation directly. From 1.0.20.
+</ResponseField>
+
+<ResponseField name="bypassFeedbackScreen" type="boolean" default="false">
+  Skips the rating screen after a conversation. <Badge>2.0</Badge>
+</ResponseField>
+
+<ResponseField name="defaultExpanded" type="boolean" default="false">
+  Opens the panel on page load. <Badge>2.0</Badge>
+</ResponseField>
+
+<ResponseField name="title" type="string" default="Ringg AI Support">
+  Start-screen heading.
+</ResponseField>
+
+<ResponseField name="description" type="string">
+  Start-screen text under the title. Defaults to Ringg's copy.
+</ResponseField>
+
+<ResponseField name="logoUrl" type="string">
+  Logo in the header. From 1.0.10.
+</ResponseField>
+
+<ResponseField name="legalDisclaimer" type="{ text, links }">
+  Replaces the privacy and terms text shown before a conversation. Words in `text` that match a key in `links` link to that URL.
+</ResponseField>
+
+<ResponseField name="typingWords" type="string[]" default="Thinking, Reasoning, Working on it, Almost there">
+  Words cycled while a reply is pending. <Badge>2.0</Badge>
+</ResponseField>
+
+<ResponseField name="theme" type="object">
+  Colors and corners. See [Theme](#theme).
+</ResponseField>
+
+<ResponseField name="buttons" type="object" default="{}">
+  Trigger and start buttons. See [Buttons](#buttons).
+</ResponseField>
+
+<ResponseField name="widgetPosition" type="object">
+  Fixed, bottom right by default. See [Position](#position).
+</ResponseField>
+
+<ResponseField name="innerWindowProps" type="object">
+  Panel size, 400 × 456 px by default (95% of the screen width on mobile). See [Window size](#window-size).
+</ResponseField>
+
+<ResponseField name="feedbackScreen" type="object">
+  Ringg copy and 5 stars by default. See [Feedback screen](#feedback-screen).
+</ResponseField>
+
+<ResponseField name="eventLogs" type="{ enabled, showIds }" default="{ enabled: false }">
+  Shows a pill in the chat each time an [agent action](/documentation/deploy/web-and-apps/web-widget/data#agent-actions) fires. <Badge>2.0</Badge>
+</ResponseField>
+
+## Theme
+
+Every color accepts a hex value or a CSS gradient string. [Components](/documentation/deploy/web-and-apps/web-widget/components) inherit these values.
+
+<ResponseField name="theme.primaryColor" type="string">
+  Buttons, selected states, the trigger and the typing shimmer.
+</ResponseField>
+
+<ResponseField name="theme.primaryTextColor" type="string">
+  Text on `primaryColor`.
+</ResponseField>
+
+<ResponseField name="theme.backgroundColor" type="string">
+  Panel background.
+</ResponseField>
+
+<ResponseField name="theme.surfaceColor" type="string">
+  Cards, inputs and the visitor's message bubble.
+</ResponseField>
+
+<ResponseField name="theme.agentBubbleColor" type="string">
+  Puts agent messages in a bubble of this color. Unset, they render as plain text. <Badge>2.0</Badge>
+</ResponseField>
+
+<ResponseField name="theme.textColor" type="string">
+  Body text.
+</ResponseField>
+
+<ResponseField name="theme.mutedTextColor" type="string">
+  Secondary text.
+</ResponseField>
+
+<ResponseField name="theme.borderColor" type="string">
+  Borders and dividers.
+</ResponseField>
+
+<ResponseField name="theme.errorColor" type="string">
+  Error states.
+</ResponseField>
+
+<ResponseField name="theme.successColor" type="string">
+  Success states.
+</ResponseField>
+
+<ResponseField name="theme.borderRadius" type="string">
+  Corner radius of the panel, cards and inputs, for example `"20px"`.
+</ResponseField>
+
+<ResponseField name="theme.buttonStyle" type='"rounded" | "pill" | "square"'>
+  Button corner style.
+</ResponseField>
+
+## Buttons
+
+```javascript
+buttons: {
+  modalTrigger: {
+    styles: { backgroundColor: "#2563eb", width: 64, height: 64, borderRadius: "50%" },
+    icon: { url: "https://www.acme-lending.example/chat-icon.svg", size: 28 },
+  },
+  call: { textBeforeCall: "Talk to us" },
+  text: { textBeforeCall: "Message us" },
+},
+```
+
+<ResponseField name="buttons.modalTrigger.styles" type="object">
+  CSS properties for the floating trigger.
+</ResponseField>
+
+<ResponseField name="buttons.modalTrigger.icon.url" type="string">
+  Trigger icon image. Defaults to the Ringg phone icon.
+</ResponseField>
+
+<ResponseField name="buttons.modalTrigger.icon.size" type="number" default="24">
+  Icon width and height in pixels. 25 on 1.0.
+</ResponseField>
+
+<ResponseField name="buttons.call.textBeforeCall" type="string" default="Start Call">
+  Label on the start-call button.
+</ResponseField>
+
+<ResponseField name="buttons.text.textBeforeCall" type="string" default="Start Chat">
+  Label on the start-chat button.
+</ResponseField>
+
+On 2.0, when both buttons show side by side, the defaults shorten to **Call** and **Chat**.
+
+## Position
+
+From 1.0.19.
+
+<ResponseField name="widgetPosition.triggerPlacement" type='"fixed" | "absolute"' default="fixed">
+  `"fixed"` floats over the viewport. `"absolute"` places the widget inside the `ringg_ai_container` element.
+</ResponseField>
+
+<ResponseField name="widgetPosition.triggerAlignment" type="string" default="bottom-right">
+  `"center"`, `"top-left"`, `"top-right"`, `"bottom-left"` or `"bottom-right"`.
+</ResponseField>
+
+<ResponseField name="widgetPosition.widgetAlignment" type="string" default="bottom-right">
+  `"bottom-left"`, `"bottom-center"` or `"bottom-right"`.
+</ResponseField>
+
+<ResponseField name="widgetPosition.hideTriggerOnExpand" type="boolean" default="true">
+  Hides the trigger while the panel is open.
+</ResponseField>
+
+For absolute placement, add the container before `loadAgent` runs and give it a height. Without it, the widget creates `ringg_ai_container` at the end of `<body>`.
+
+```html
+<div id="ringg_ai_container" style="position: relative; width: 100%; height: 500px;"></div>
+```
+
+```javascript
+loadAgent({
+  agentId: "your-agent-id",
+  authorization: "Bearer your-webcall-public-key",
+  widgetPosition: { triggerPlacement: "absolute", triggerAlignment: "center" },
+});
+```
+
+## Window size
+
+`innerWindowProps` sets the open panel's `width`, `height` and `borderRadius`. Numbers are pixels; strings pass through as CSS. The **Size** controls in **Appearance** allow width 280–600 px, height 300–700 px and radius 0–40 px.
+
+```javascript
+innerWindowProps: { width: 420, height: 560, borderRadius: 16 },
+```
+
+## Feedback screen
+
+Shown after a conversation ends, unless `bypassFeedbackScreen` is `true`. A submitted or skipped rating fires `ringg:feedback_status`; see [Events](/documentation/deploy/web-and-apps/web-widget/events).
+
+```javascript
+feedbackScreen: {
+  title: "How was your call?",
+  description: "Your rating helps us improve.",
+  starsCount: 5,
+  submitBtnCTA: "Send",
+},
+```
+
+<ResponseField name="feedbackScreen.title" type="string">
+  Heading above the stars.
+</ResponseField>
+
+<ResponseField name="feedbackScreen.description" type="string">
+  Text under the heading.
+</ResponseField>
+
+<ResponseField name="feedbackScreen.starsCount" type="number" default="5">
+  Number of stars. **Appearance** offers 3 to 5.
+</ResponseField>
+
+<ResponseField name="feedbackScreen.starsStyles" type="{ filledColor, emptyColor }">
+  Star colors.
+</ResponseField>
+
+<ResponseField name="feedbackScreen.placeholder" type="string">
+  Comment box placeholder.
+</ResponseField>
+
+<ResponseField name="feedbackScreen.submitBtnCTA" type="string">
+  Submit button label.
+</ResponseField>
+
+<RelatedTopics items={[["Appearance", "/documentation/deploy/web-and-apps/web-widget/overview#appearance"]]} />

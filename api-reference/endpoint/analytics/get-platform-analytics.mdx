@@ -1,16 +1,14 @@
 ---
 openapi: get /analytics/platform-analytics
+description: "Get workspace-level call metrics for a date range, filtered by agent, campaign or voicemail, for overview dashboards and reports built outside Ringg AI."
+related:
+  - "Number analytics": /api-reference/endpoint/analytics/get-number-analytics
 ---
 
-Return high-level platform analytics for calls in the workspace. Use this endpoint for overview dashboards and executive summaries.
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-## Common filters
+## Notes
 
-- `start_date` and `end_date` for the reporting period.
-- `agent_id` for one assistant.
-- `bulk_list_id` for one campaign.
-- `voicemail` when voicemail-heavy traffic should be included or separated.
+- For one campaign in detail, call [drill-down analytics](/api-reference/endpoint/analytics/get-drill-down-analytics); for call-level rows, [call history](/api-reference/endpoint/history/get-call-history).
 
-## Developer guidance
-
-Use this endpoint for top-level numbers, then use drill-down analytics or call history when a user clicks into a specific campaign, number, or status bucket.
+<RelatedTopics items={[["Number analytics", "/api-reference/endpoint/analytics/get-number-analytics"]]} />

@@ -1,0 +1,43 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:04.124
+Click Create campaign
+
+00:00:04.124 --> 00:00:07.402
+Enter a campaign name
+
+00:00:07.402 --> 00:00:12.243
+Keep Assistant and select your agent
+
+00:00:12.243 --> 00:00:15.520
+Upload your calling list (CSV)
+
+00:00:15.520 --> 00:00:19.803
+Map each variable to a CSV column
+
+00:00:19.803 --> 00:00:23.385
+Click Next to upload and verify the list
+
+00:00:23.385 --> 00:00:24.486
+Verified: step 2 opens
+
+00:00:24.486 --> 00:00:31.267
+Pick numbers, or switch to Number pool
+
+00:00:31.267 --> 00:00:35.117
+Set the timezone, start and end date & time
+
+00:00:35.117 --> 00:00:42.920
+Edit the calling windows, e.g. Mon–Sat only
+
+00:00:42.920 --> 00:00:47.599
+Set the retry count and cooldown period
+
+00:00:47.599 --> 00:00:49.474
+Choose who gets email notifications
+
+00:00:49.474 --> 00:00:52.575
+Click Create campaign
+
+00:00:52.575 --> 00:00:55.183
+The campaign appears on the campaigns list

@@ -1,0 +1,84 @@
+---
+title: "Lesson: Test it"
+sidebarTitle: "Test it"
+description: "Place a test call from the EMI reminder agent to your own number with variables filled in, verify the number once, then read the transcript in Logs."
+related:
+  - "Test an agent": /documentation/build-agents/test-and-improve/test-an-agent
+  - "Logs": /documentation/monitor/logs
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 2: Building your first agent · Lesson 4 of 4 · 15 minutes**
+
+## Objective
+
+Hear Ananya on your own phone with the prompt, voice and speed from the last two lessons, then find the call in Logs and read its transcript.
+
+## The scenario
+
+Before Ananya calls a customer, she calls you. You play Rahul Verma, with your own first name in the variables. A test call is a real call to your phone and spends credits like any other call; this one lasts about a minute.
+
+## Hands-on
+
+<Frame caption="Testing an agent with a phone call in the dashboard">
+  <video alt="Testing an agent with a phone call in the dashboard" aria-label="Testing an agent with a phone call in the dashboard" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/agents-test/poster.webp">
+    <source src="/media/agents-test/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open the test dialog">
+    In the editor's top bar, click **Test assistant**. If you see **Discard** and **Save** instead, save first. The dialog is titled **Test EMI reminder - Hindi** and has three tabs; stay on **Phone call**.
+  </Step>
+  <Step title="Choose the caller number">
+    Under **Choose a number**, the list is grouped into **Test numbers**, **Your numbers** and **In use**, and a Ringg test number is picked by default when one is available. Test numbers are region-bound: the +91 one calls only Indian numbers, so for a phone outside India pick another test number or one of your own.
+  </Step>
+  <Step title="Enter your own number">
+    In **Callee number**, enter a phone you can answer, in international format such as `+91 98765 4xxxx`. The hint reads "Use a number you control for testing. Don't use customer numbers."
+  </Step>
+  <Step title="Fill in the variables">
+    The tab shows one field per custom variable. Enter your own first name as the callee name; `mobile_number` is filled from **Callee number**. Leave **Smart formatter** off.
+  </Step>
+  <Step title="Start and verify">
+    Click **Start**. The first time you call a number, Ringg sends a 6-digit code to it on WhatsApp and opens **Verify number**: enter the code and the call is placed straight away. The number is then remembered for the workspace. Workspaces that have completed company details (<Tooltip tip="Know your customer: the business verification Ringg needs before some calls.">KYC</Tooltip>) skip this screen.
+  </Step>
+  <Step title="Answer and talk to Ananya">
+    The dialog shows the call's status, and **Call details** lists the variables sent. Answer, confirm it is you, and give a payment date when she asks. There is no hang-up button, so end the call from your phone; **Redial** places it again.
+  </Step>
+  <Step title="Find the call in Logs">
+    Open **Monitor → Logs**, or **History** in the agent's row menu for only Ananya's calls, and click the call. The call panel has the recording, **Call details** lists the **Custom variables** the call received, and **Transcript** has the conversation turn by turn. For a short while you may see "General analysis is currently under process!".
+  </Step>
+</Steps>
+
+## Checkpoint
+
+<Check>
+Your phone rings, Ananya speaks the first message with your name in the voice you chose, and when the call ends it appears in Logs with a transcript that shows her stating ₹4,500 due on 15 October and asking for a date.
+</Check>
+
+## Exercise
+
+Click **Redial** and, when Ananya greets you, answer in Hindi. Expected result: she switches to Hindi, because Hindi is her secondary language. Read that call's **Transcript** in Logs afterwards.
+
+## What you learned
+
+- **Test assistant** places a real call, charged like any other, from a test number or your own; the callee is verified once by WhatsApp code unless your workspace has completed KYC.
+- The variable fields in the dialog let you test the prompt with realistic values before a customer hears it.
+- Every test call lands in Logs with its recording, variables and transcript; judge the prompt there.
+
+<Quiz
+  question="Your colleague in Dubai wants to hear Ananya on their own phone. The test dialog has the +91 Ringg test number selected by default. What do you do?"
+  answers={[
+    { text: "Keep the default; test numbers call any country", correct: false },
+    { text: "Pick another test number or one of your own numbers, because test numbers are region-bound", correct: true },
+    { text: "Enter the number without a country code so Ringg routes it", correct: false },
+    { text: "Switch to the Live chat tab; phone tests only work in India", correct: false },
+  ]}
+  correctFeedback="Right. Test numbers are region-bound: the +91 one calls only Indian numbers. For a phone outside India pick a test number for that region or one of your own, and enter the callee in international format."
+  incorrectFeedback="Not quite. The +91 test number calls only Indian numbers, so a phone outside India needs another test number or one of your own. The callee number is always in international format."
+/>
+
+<RelatedTopics items={[["Test an agent", "/documentation/build-agents/test-and-improve/test-an-agent"], ["Logs", "/documentation/monitor/logs"]]} />

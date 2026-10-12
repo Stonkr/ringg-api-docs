@@ -1,32 +1,23 @@
 ---
 openapi: post /calling/v2/outbound/individual
+description: "Place one outbound call with an agent and let Ringg pick the caller number from a number pool, or pass a caller number yourself; optionally override the voice."
+related:
+  - "Number pools": /documentation/inventory/phone-numbers/number-pools
 ---
 
-Start one outbound call with a configured assistant, using a managed number pool for caller-number resolution. The pool handles rotation, spam skipping, and auto-purchase automatically — so you don't have to manage `from_number` lists yourself.
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-## Required inputs
+The [number pool](/documentation/inventory/phone-numbers/number-pools) rotates numbers and skips ones flagged as spam.
 
-| Field | Purpose |
+## Caller number
+
+Send at least one of these. With `number_pool_id`, Ringg picks the number from the pool and ignores the other two. Without a pool, outbound numbers set on the agent version are used before `from_number_id` or `from_number`.
+
+| Field | When to use it |
 |---|---|
-| `name` | Recipient name. Ringg also uses this as `callee_name` if you do not provide one in `custom_args_values`. |
-| `mobile_number` | Recipient phone number in E.164 format, for example `+919876543210`. |
-| `agent_id` | Assistant that will handle the conversation. Get it from `GET /agent/all`. |
-
-## Caller number source
-
-Provide **exactly one** of the following:
-
-| Field | When to use |
-|---|---|
-| `number_pool_id` | Recommended. Resolve the caller number automatically from a managed pool. |
-| `from_number_id` | Use a specific workspace number ID as caller ID. |
-| `from_number` | Use an explicit caller phone number (with country code). |
-
-<Warning>
-**`from_number_id` and `from_number` cannot both be set.** At least one number source is required.
-</Warning>
-
-## Minimal request
+| `number_pool_id` | Ringg picks the number from the pool. Copy the ID with **Copy pool ID** on the **Number pools** page. |
+| `from_number_id` | A specific workspace number, from [List workspace numbers](/api-reference/endpoint/numbers/get-workspace-numbers). |
+| `from_number` | A specific number written out with country code. |
 
 ```json
 {
@@ -41,46 +32,15 @@ Provide **exactly one** of the following:
 }
 ```
 
-## Custom variables
+`name`, `mobile_number`, `agent_id`, `custom_args_values`, `smart_formatter`, `call_config`, `version_id`, `purpose`, `call_validity_hours` and `call_deadline` work as on [Initiate individual call](/api-reference/endpoint/calling/initiate-individual-call). The response's `data.call_id` identifies the call everywhere else.
 
-Use `custom_args_values` to pass dynamic data to your assistant.
+## Troubleshooting
 
-- Reference variables in prompts with `@{{variable_name}}`.
-- Keep keys stable across your code, prompts, CSV mappings, and analytics.
-- Common keys include `callee_name`, `mobile_number`, `company_name`, `appointment_date`, and your product-specific IDs.
-
-## Smart formatter
-
-`smart_formatter` can normalize callee names before the call.
-
-```json
-{
-  "smart_formatter": {
-    "extract_first_name": true,
-    "transliteration": true,
-    "transliteration_language": {
-      "source": "en",
-      "target": "hi"
-    }
-  }
-}
-```
-
-For example, `Mr Rajesh Kumar` can become `Rajesh` or a transliterated value in `callee_name`. The original name is preserved as `original_callee_name` in `custom_args_values`.
-
-## Result handling
-
-Store the returned call ID. Use it to:
-
-- Match webhook events to your internal record.
-- Fetch details with [Get call details](/api-reference/endpoint/history/get-call-details).
-- Reconcile rows from [Get call history](/api-reference/endpoint/history/get-call-history).
-
-## Common failure checks
+As for [Initiate individual call](/api-reference/endpoint/calling/initiate-individual-call#troubleshooting), plus:
 
 | Symptom | Check |
 |---|---|
-| `401 Unauthorized` | Missing or invalid `X-API-KEY`. |
-| Validation error | Missing required field, no number source provided, or both `from_number_id` and `from_number` set. |
-| Call remains queued | Calling window, scheduled time, workspace credits, pool availability, or provider health. |
-| Assistant says wrong data | Prompt placeholders do not match `custom_args_values` keys. |
+| `422` | No caller number source, or both `from_number_id` and `from_number`. |
+| `400` | The pool does not exist (`Number pool not found`) or has no usable number (`Number pool has no available numbers`). |
+
+<RelatedTopics items={[["Number pools", "/documentation/inventory/phone-numbers/number-pools"]]} />

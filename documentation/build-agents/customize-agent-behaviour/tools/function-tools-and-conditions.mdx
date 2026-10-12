@@ -1,0 +1,31 @@
+---
+title: "Function tools and conditions"
+sidebarTitle: "Function tools and conditions"
+description: "Compute results with jq function tools that make no network call, and group pre-call or post-call tools under conditions that run only when a rule matches."
+---
+
+## Function tools
+
+A function tool runs a jq program for logic that needs no API, such as checking a date against a holiday list or testing business hours. Click **Function** in the side panel.
+
+- **Name** and **Description** say what it does; **Generate** writes the program from the description.
+- **Inputs** are **Static**, **Variable**, **JQ** or (on-call) **Dynamic**. Input keys use letters, numbers and `_`. A dynamic input also takes a data type: string, number or boolean.
+- **Program** is jq, and the inputs are its input object (`.`).
+- **Test function** shows **Input (.)** and **Output**. **View example** loads **Holiday check**, **Business hours** or **Format contact details**.
+
+A function tool has **Share to workspace** and **Delete** buttons.
+
+## Conditions
+
+On pre-call and post-call, **Condition** adds a group of tools that runs only when its rule matches. A rule is "If" a field, an operator and a value; several rules join with **And** or **Or**, or you write a **JQ expression** instead.
+
+| Operators | |
+|---|---|
+| Compare | equals, not equals, is greater than, is greater than or equal to, is less than, is less than or equal to |
+| Text | contains, not contains, starts with, ends with |
+| Presence | is empty, is not empty (no value needed) |
+| Arrays | array contains, array does not contain, size equals, size is greater than, size is less than |
+
+Put tools in the group by dragging them in, or click **Attach tool** and pick one; **Create new tool** builds a new API tool inside the group. A [workspace tool](/documentation/build-agents/customize-agent-behaviour/tools/workspace-tools#workspace-tools) listed as "Re-save this tool in the library to enable conditions" needs exactly that: open it in the library and click **Save tool**.
+
+For example, a post-call group with "If `platform_analysis.callback_requested` equals true" can create a follow-up task in your CRM.

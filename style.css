@@ -1,0 +1,46 @@
+/* Navbar logo: Mintlify's default (28px tall) is heavy for our wide wordmark. */
+img.nav-logo {
+  height: 1.375rem !important;
+  width: auto !important;
+}
+
+/* Figure cards (snippets/figure-card.mdx): Hairline figure on a faint shape pattern, drawn by hairline.js. */
+.figure-card {
+  display: flex;
+  flex-direction: column;
+  margin: 0.5rem 0; /* Columns only spaces columns; Mintlify's Card brings this same margin itself */
+  overflow: hidden;
+  border: 1px solid rgb(10 10 11 / 0.08);
+  border-radius: 1rem;
+  background: #ffffff;
+  text-decoration: none !important;
+  transition: border-color 150ms;
+}
+.figure-card:hover { border-color: rgb(10 10 11 / 0.2); }
+.dark .figure-card { border-color: rgb(255 255 255 / 0.08); background: rgb(var(--background-dark)); }
+.dark .figure-card:hover { border-color: rgb(255 255 255 / 0.2); }
+.figure-card-panel {
+  display: flex;
+  justify-content: center;
+  height: 12rem;
+  margin: 0.375rem 0.375rem 0;
+  border-radius: 0.75rem;
+  /* Fades into the card at the bottom, figure included. */
+  -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent);
+  mask-image: linear-gradient(to bottom, #000 62%, transparent);
+  background: #f6f6f7 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='384' height='256' fill='none' stroke='%230a0a0b' stroke-opacity='0.03' stroke-width='1.5'%3E%3Ccircle cx='32' cy='32' r='25'/%3E%3Ccircle cx='96' cy='32' r='25'/%3E%3Crect x='135' y='7' width='50' height='50' rx='8'/%3E%3Ccircle cx='224' cy='32' r='25'/%3E%3Ccircle cx='288' cy='32' r='25'/%3E%3Ccircle cx='352' cy='32' r='25'/%3E%3Ccircle cx='32' cy='96' r='25'/%3E%3Ccircle cx='96' cy='96' r='25'/%3E%3Ccircle cx='160' cy='96' r='25'/%3E%3Ccircle cx='224' cy='96' r='25'/%3E%3Ccircle cx='288' cy='96' r='25'/%3E%3Ccircle cx='352' cy='96' r='25'/%3E%3Ccircle cx='32' cy='160' r='25'/%3E%3Crect x='71' y='135' width='50' height='50' rx='8'/%3E%3Ccircle cx='160' cy='160' r='25'/%3E%3Ccircle cx='224' cy='160' r='25'/%3E%3Crect x='263' y='135' width='50' height='50' rx='8'/%3E%3Crect x='327' y='135' width='50' height='50' rx='8'/%3E%3Crect x='7' y='199' width='50' height='50' rx='8'/%3E%3Ccircle cx='96' cy='224' r='25'/%3E%3Crect x='135' y='199' width='50' height='50' rx='8'/%3E%3Ccircle cx='224' cy='224' r='25'/%3E%3Crect x='263' y='199' width='50' height='50' rx='8'/%3E%3Ccircle cx='352' cy='224' r='25'/%3E%3C/svg%3E") center / 192px 128px;
+}
+.dark .figure-card-panel { background: #0f0f11 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='384' height='256' fill='none' stroke='%23ffffff' stroke-opacity='0.025' stroke-width='1.5'%3E%3Ccircle cx='32' cy='32' r='25'/%3E%3Ccircle cx='96' cy='32' r='25'/%3E%3Crect x='135' y='7' width='50' height='50' rx='8'/%3E%3Ccircle cx='224' cy='32' r='25'/%3E%3Ccircle cx='288' cy='32' r='25'/%3E%3Ccircle cx='352' cy='32' r='25'/%3E%3Ccircle cx='32' cy='96' r='25'/%3E%3Ccircle cx='96' cy='96' r='25'/%3E%3Ccircle cx='160' cy='96' r='25'/%3E%3Ccircle cx='224' cy='96' r='25'/%3E%3Ccircle cx='288' cy='96' r='25'/%3E%3Ccircle cx='352' cy='96' r='25'/%3E%3Ccircle cx='32' cy='160' r='25'/%3E%3Crect x='71' y='135' width='50' height='50' rx='8'/%3E%3Ccircle cx='160' cy='160' r='25'/%3E%3Ccircle cx='224' cy='160' r='25'/%3E%3Crect x='263' y='135' width='50' height='50' rx='8'/%3E%3Crect x='327' y='135' width='50' height='50' rx='8'/%3E%3Crect x='7' y='199' width='50' height='50' rx='8'/%3E%3Ccircle cx='96' cy='224' r='25'/%3E%3Crect x='135' y='199' width='50' height='50' rx='8'/%3E%3Ccircle cx='224' cy='224' r='25'/%3E%3Crect x='263' y='199' width='50' height='50' rx='8'/%3E%3Ccircle cx='352' cy='224' r='25'/%3E%3C/svg%3E") center / 192px 128px; }
+/* Figure faces take the panel colour instead of Hairline's white / near-black. */
+.figure-card-panel { --hairline-plate: #f6f6f7; }
+.dark .figure-card-panel { --hairline-plate: #0f0f11; }
+/* Hairline draws at 5:4 of its parent's width; fix the width so the height fits the panel. */
+.figure-card-panel > [data-hairline] { width: 13.75rem; }
+.figure-card-text {
+  flex: 1;
+  padding: 0.25rem 1.25rem 1.25rem;
+}
+.figure-card-title { font-weight: 600; color: rgb(17 24 39); }
+.dark .figure-card-title { color: rgb(255 255 255); }
+.figure-card-body { margin-top: 0.25rem; font-size: 0.9375rem; line-height: 1.6; color: rgb(75 85 99); }
+.dark .figure-card-body { color: rgb(161 161 170); }

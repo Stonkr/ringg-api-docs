@@ -1,71 +1,50 @@
 ---
 title: "Upload large campaign CSV (Beta)"
-description: "Upload a 5,000+ row campaign CSV for asynchronous processing."
+description: "Upload a calling list for validation in the background, and get the bulk_list_id you poll for status and then start calls with."
 openapi: post /campaign/upload-csv
+related:
+  - "Calling list": /documentation/deploy/campaigns/calling-list
+  - "Run a campaign by API": /documentation/deploy/campaigns/campaigns-by-api#large-campaign-flow
 ---
 
-<Warning>
-This endpoint is beta. Use it only when large-campaign access is enabled for your workspace. For most campaigns, use [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list) and then [Start campaign](/api-reference/endpoint/campaign/start-campaign).
-</Warning>
+import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-`POST /campaign/upload-csv` starts the beta large-campaign flow. It accepts a large CSV and campaign configuration, then returns a `bulk_list_id` that you use for status polling, balance checking, and async call scheduling.
+The calling window, retries and caller numbers are not sent here; they go with [Start large campaign calls](/api-reference/endpoint/campaign/make-large-campaign-calls-async).
 
-## Endpoint
+The flow: upload → poll [upload status](/api-reference/endpoint/campaign/get-large-campaign-upload-status) until it is `draft` → [start calls](/api-reference/endpoint/campaign/make-large-campaign-calls-async).
 
-```text
-POST /campaign/upload-csv
-```
+## Fields
 
-## When to use
+The CSV follows the same rules as for [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list#the-csv). A list may have up to 100 rows by default, and up to 5,000 once Company details are saved in the dashboard; a longer list returns `402`. Contact Ringg for a higher limit.
 
-Use this endpoint for CSVs with 5,000 or more rows. It lets Ringg process and validate the upload asynchronously instead of making the initial upload request wait for the full import.
-
-## Request guidance
-
-Send `multipart/form-data`. Use the same CSV template and campaign fields as the standard `POST /campaign/save` flow.
-
-| Field | Required | Notes |
-|-------|----------|-------|
-| `file` | Yes | CSV file with `Mobile Number` and assistant variable columns |
-| `agent_id` | Yes | Assistant that will handle the campaign calls |
-| `campaign_name` | Yes | Human-readable campaign name |
-| `country_code` | Yes | Dialing prefix, such as `+91` or `+1` |
-| `variables_map` | Yes | JSON string mapping assistant variables to CSV columns |
-| `campaign_start_time` | Yes | Campaign start time in `DD/MM/YYYY, HH:MM` format |
-| `campaign_end_time` | Yes | Campaign end time in `DD/MM/YYYY, HH:MM` format |
-| `call_config` | Yes | JSON string for call window, retry, and call limit settings |
-| `remove_invalid_rows` | No | Set to `true` to skip invalid rows when supported |
-| `transliterate_callee_name` | No | Set to `true` when callee names should be transliterated |
+- Invalid rows never fail this upload: the valid rows load and the invalid ones are left out. With `remove_invalid_rows` off, the uploader is also emailed the invalid rows.
+- `transliterate_fields` is a JSON array of the agent's own variable names, not CSV headers, whose values are transliterated into the agent's language. Each must be mapped in `variables_map`, and `mobile_number` is not allowed. `transliterate_callee_name=true` is the same as adding `callee_name`.
 
 ```bash
 curl --request POST "https://prod-api.ringg.ai/ca/api/v0/campaign/upload-csv" \
   --header "X-API-KEY: $RINGG_API_KEY" \
   --form 'agent_id="your-agent-id"' \
-  --form 'campaign_name="Renewal reminders - large batch"' \
+  --form 'campaign_name="EMI reminders - October"' \
   --form 'country_code="+91"' \
-  --form 'variables_map="{\"mobile_number\":\"Mobile Number\",\"callee_name\":\"Name\"}"' \
-  --form 'campaign_start_time="18/10/2026, 09:00"' \
-  --form 'campaign_end_time="18/10/2026, 18:00"' \
-  --form 'call_config="{\"call_time\":{\"call_start_time\":\"09:00\",\"call_end_time\":\"18:00\",\"timezone\":\"Asia/Kolkata\"}}"' \
-  --form "file=@contacts-5000-plus.csv"
+  --form 'variables_map="{\"mobile_number\":\"mobile_number\",\"callee_name\":\"callee_name\"}"' \
+  --form 'remove_invalid_rows="true"' \
+  --form "file=@emi-reminders.csv"
 ```
 
-<Info>
-Do not set `Content-Type` manually in browser or Node `FormData` clients. Let the client include the multipart boundary.
-</Info>
-
-## Response guidance
-
-Persist the returned `bulk_list_id`. It identifies the uploaded list for every later beta endpoint.
+## Response
 
 ```json
 {
+  "message": "CSV uploaded successfully. Processing in background.",
   "bulk_list_id": "123e4567-e89b-12d3-a456-426614174000",
-  "status": "uploaded",
-  "message": "CSV upload accepted for processing"
+  "status": "verifying",
+  "total_rows": 5000,
+  "campaign_name": "EMI reminders - October"
 }
 ```
 
-## Next step
+`total_rows` counts the rows in the file, not counting fully blank rows. Valid and invalid counts come from [upload status](/api-reference/endpoint/campaign/get-large-campaign-upload-status) once validation finishes.
 
-Poll [Get large campaign upload status](/api-reference/endpoint/campaign/get-large-campaign-upload-status) until the upload is processed. Do not check balance or start calls until processing is complete.
+Store `bulk_list_id`. It is the campaign's ID in every later call, in call history and in analytics.
+
+<RelatedTopics items={[["Calling list", "/documentation/deploy/campaigns/calling-list"], ["Run a campaign by API", "/documentation/deploy/campaigns/campaigns-by-api#large-campaign-flow"]]} />
