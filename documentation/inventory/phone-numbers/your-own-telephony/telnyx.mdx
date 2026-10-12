@@ -1,0 +1,163 @@
+---
+title: "Telnyx"
+sidebarTitle: "Telnyx"
+description: "Connect your own Telnyx account to Ringg AI with your API key, Voice API Application ID and public key, import your Telnyx numbers, and use them for inbound and outbound agent calls."
+"og:title": "Connect Telnyx to Ringg AI"
+---
+
+Connect your own Telnyx account to Ringg and use your Telnyx numbers for inbound and outbound AI calls. Calls run on your Telnyx account; Ringg runs the voice agent.
+
+## Prerequisites
+
+- A Telnyx account with billing enabled
+- At least one Telnyx phone number
+- A Ringg workspace with access to Numbers
+
+<Note>
+Ringg never changes your Telnyx configuration. You create the Voice API Application, set its webhook, and assign numbers to it in the Telnyx portal.
+</Note>
+
+## Step 1: Telnyx Account Setup
+
+### Create an API key
+
+Create an **API v2 key** in the Telnyx portal. It starts with `KEY`. Copy it when it is shown; Telnyx displays it only once.
+
+### Copy your public key
+
+Copy your account's **public key** from the Telnyx portal. Ringg uses it to verify that every webhook really comes from Telnyx. Both the base64 form and the 64-character hex form are accepted.
+
+### Create a Voice API Application
+
+Create a **Voice API Application** (Call Control) and set:
+
+| Setting | Value |
+|---|---|
+| Webhook URL | `https://<ringg-host>/pc/v1/telnyx/webhook?region=<region>` |
+| Webhook API version | API v2 |
+
+The Ringg team shares the exact `<ringg-host>` for your account. Set `<region>` to the region your Ringg workspace runs in:
+
+| `region` | Workspace region |
+| - | - |
+| `in` | India |
+| `ksa` | Saudi Arabia |
+
+<Warning>
+A wrong `region` means Ringg cannot find your account and inbound calls are rejected.
+</Warning>
+
+Copy the application's **ID**. This is the **Connection ID** you enter in Ringg.
+
+### Allow outbound calling
+
+To place outbound calls, attach an **Outbound Voice Profile** to the Voice API Application and allow the destination countries you plan to call.
+
+## Step 2: Phone Number Configuration
+
+Assign each number you want to use with Ringg to the **Voice API Application** from Step 1. A number assigned to a different application or SIP connection will not reach Ringg.
+
+## Step 3: Connect Telnyx to Ringg
+
+<Steps>
+  <Step title="Open Numbers">
+    In the Ringg dashboard, go to **Numbers** and choose **Bring your own telephony**.
+  </Step>
+  <Step title="Select Telnyx">
+    Pick **Telnyx** from the list of providers.
+  </Step>
+  <Step title="Enter credentials">
+    Fill in the three fields:
+
+    ```text Credentials
+    API Key:        KEY…              (your API v2 key)
+    Connection ID:  2468013579246801357   (Voice API Application ID)
+    Public Key:     0nG3Lr5... (base64)  or  9c4f...e1 (64-character hex)
+    ```
+  </Step>
+  <Step title="Save">
+    Save the account. Ringg checks the API key and the public key format before saving.
+  </Step>
+</Steps>
+
+## Step 4: Use Telnyx Numbers in Ringg
+
+1. **Import numbers**: from your Telnyx account in Ringg, import the numbers assigned to your Voice API Application.
+2. **Inbound**: open the agent that should answer, go to **Attach number**, select your Telnyx account and the number, and save.
+3. **Outbound**: choose the Telnyx number as the caller ID when placing calls or creating campaigns.
+
+<Tip>
+Every inbound number needs an agent attached. Calls to a number with no agent are rejected.
+</Tip>
+
+## Step 5: Test Your Integration
+
+### Test outbound calls
+Place a test call from an agent using your Telnyx number. You should hear the agent's greeting within a few seconds of answering.
+
+### Test inbound calls
+Call your Telnyx number from any phone. The attached agent should answer and respond to you.
+
+### Test call quality
+
+<AccordionGroup>
+  <Accordion title="Audio">
+    Speak and listen on both sides. Audio is carried at 8 kHz (PCMU/PCMA), standard for phone calls.
+  </Accordion>
+  <Accordion title="Call ending">
+    Let the agent end the call. The call should end on your phone at the same time.
+  </Accordion>
+  <Accordion title="Transfers">
+    If your agent transfers calls, test one. Transfer targets must be in E.164 format (for example `+14155550123`) or a SIP URI.
+  </Accordion>
+</AccordionGroup>
+
+## How calls work
+
+- **Maximum call length**: the agent's maximum call length applies. Telnyx also enforces a hard limit slightly above it, so a call can never run indefinitely.
+- **Recordings and transcripts**: recorded by Ringg and available in call history, as with other providers.
+- **Security**: Ringg rejects any webhook that does not carry a valid Telnyx signature for your account.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Saving the account fails">
+    - Check the API key is an API v2 key starting with `KEY` and is still active.
+    - Check the public key is copied in full (base64, or 64 hexadecimal characters).
+    - Check the Connection ID is the **Voice API Application ID**, not a phone number or SIP connection ID.
+  </Accordion>
+  <Accordion title="Inbound calls are not answered or are rejected">
+    - The number must be assigned to the Voice API Application you entered in Ringg.
+    - The application's webhook URL must match Step 1, including the correct `region`.
+    - An agent must be attached to the number in Ringg.
+  </Accordion>
+  <Accordion title="Outbound calls fail">
+    - An Outbound Voice Profile must be attached to the Voice API Application.
+    - The destination country must be allowed in that profile.
+    - Your Telnyx account must have sufficient balance.
+  </Accordion>
+  <Accordion title="Transfers fail">
+    - Use E.164 format (`+` and country code) or a SIP URI for the target.
+    - Check the destination is allowed by your Outbound Voice Profile.
+  </Accordion>
+  <Accordion title="I rotated my API key or public key">
+    Update the Telnyx account in Ringg with the new values. Calls fail until both sides match.
+  </Accordion>
+</AccordionGroup>
+
+## Support Resources
+
+<CardGroup cols={2}>
+  <Card title="Telnyx Documentation" icon="book" href="https://developers.telnyx.com">
+    Voice API, applications and numbers
+  </Card>
+  <Card title="Telnyx Support" icon="headset" href="https://support.telnyx.com">
+    Account, billing and number issues
+  </Card>
+  <Card title="Bring Your Own Telephony" icon="phone" href="/documentation/inventory/phone-numbers/your-own-telephony/byot-overview">
+    How BYOT works in Ringg
+  </Card>
+  <Card title="Ringg Support" icon="envelope" href="mailto:admin@ringg.ai">
+    admin@ringg.ai
+  </Card>
+</CardGroup>
