@@ -31,11 +31,18 @@ Create a **Voice API Application** (Call Control) and set:
 
 | Setting | Value |
 |---|---|
-| Webhook URL | `https://use1-api.ringg.ai/pc/v1/telnyx/webhook?region=in` |
+| Webhook URL | `https://<ringg-host>/pc/v1/telnyx/webhook?region=<region>` |
 | Webhook API version | API v2 |
 
+The Ringg team shares the exact `<ringg-host>` for your account. Set `<region>` to the region your Ringg workspace runs in:
+
+| `region` | Workspace region |
+| - | - |
+| `in` | India |
+| `ksa` | Saudi Arabia |
+
 <Warning>
-Use `?region=ksa` instead of `?region=in` if your Ringg workspace is in the KSA region. A wrong region means Ringg cannot find your account and inbound calls are rejected.
+A wrong `region` means Ringg cannot find your account and inbound calls are rejected.
 </Warning>
 
 Copy the application's **ID**. This is the **Connection ID** you enter in Ringg.
@@ -61,7 +68,7 @@ Assign each number you want to use with Ringg to the **Voice API Application** f
     Fill in the three fields:
 
     ```text Credentials
-    API Key:        KEY0187A1B2C3D4E5F6...
+    API Key:        KEY…              (your API v2 key)
     Connection ID:  2468013579246801357   (Voice API Application ID)
     Public Key:     0nG3Lr5... (base64)  or  9c4f...e1 (64-character hex)
     ```

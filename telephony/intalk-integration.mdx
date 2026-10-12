@@ -112,9 +112,9 @@ Set InTalk's call-status webhook to:
 https://<ringg-host>/pc/v1/intalk/call_status?region=in
 ```
 
-Use **POST** with a JSON body, and the same `region` as the WSS URL. Ringg always answers `200` immediately and processes the event afterwards, so InTalk never retries the webhook.
+Use **POST** with a JSON body, and the same `region` as the WSS URL.
 
-This webhook is what reports calls that never reach the assistant. **Without it, unanswered and busy calls stay in progress in Ringg, hold a concurrency slot, and are not retried.**
+This webhook is what reports calls that never reach the assistant. **Without it, unanswered and busy calls stay in progress in Ringg and are not retried.**
 
 | InTalk `call_status` | Reported in Ringg as |
 | - | - |
@@ -122,7 +122,7 @@ This webhook is what reports calls that never reach the assistant. **Without it,
 | `no answer` / `noanswer` | No answer |
 | `fail` with `hangup_by` = customer | No answer (the customer rejected or did not pick up) |
 | `fail`, `failed`, `cancel`, `cancelled` | Failed |
-| `completed`, when the call connected but the stream never opened | Failed (`NO_BOT_STARTED`) |
+| `completed`, when the call connected but the stream never opened | Failed (the call never reached the assistant) |
 | `initiated`, `ringing`, `answered`, `completed` (normal) | Handled by the assistant's own call reporting |
 
 For outbound calls, the webhook must carry `custom_parameters.callback_call_id`. Ringg sets it when dialling and InTalk echoes it back unchanged.
