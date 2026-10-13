@@ -10,7 +10,7 @@ Test after every prompt or settings change, and always before you attach a live 
 
 In the dashboard: **Sidebar → Assistants →** open an agent **→ Test assistant**.
 
-This chapter is the loop between a change and going live: test here, ship the change with [drafts and versions](/documentation/build-agents/test-and-improve/drafts-and-versions) (A/B test it on live traffic if you want), and run through [go-live checklist](/documentation/build-agents/customize-agent-behaviour/voice-and-language#before-a-voice-agent-goes-live) before an agent that makes or answers phone calls goes live. After it, [Workflows](/documentation/build-agents/workflows/overview) chains several conversations per contact, and the **Deploy** tab starts with [phone numbers](/documentation/inventory/phone-numbers/overview).
+This section is the loop between a change and going live: test here, ship the change with [drafts and versions](/documentation/build-agents/test-and-improve/drafts-and-versions) (A/B test it on live traffic if you want), and run through [go-live checklist](/documentation/build-agents/customize-agent-behaviour/voice-and-language#before-a-voice-agent-goes-live) before an agent that makes or answers phone calls goes live. After it, [Workflows](/documentation/build-agents/workflows/overview) chains several conversations per contact, and **Inventory** covers the [phone numbers](/documentation/inventory/phone-numbers/overview) your agents call from.
 
 ## Before you start
 
@@ -98,7 +98,7 @@ A WhatsApp agent's dialog has no tabs. It says "Scan to start a WhatsApp chat" a
 
 ## With the API
 
-Place one call with [Initiate Individual Call](/api-reference/endpoint/calling/initiate-individual-call), sending your [API key](/documentation/manage-account/api-key) in `X-API-KEY`. The dialog's **cURL** button copies the request for the test you set up.
+Place one call with [Initiate Individual Call](/api-reference/calling/individual-calls/initiate-individual-call), sending your [API key](/documentation/manage-account/api-key) in `X-API-KEY`. The dialog's **cURL** button copies the request for the test you set up.
 
 <CodeGroup>
 ```bash cURL
@@ -161,11 +161,11 @@ print(response.json())
 </CodeGroup>
 
 - `name`, `mobile_number` and `agent_id` are required, plus exactly one of `from_number_id` or `from_number` ([choose the caller ID](/documentation/inventory/phone-numbers/inbound-agent-number#outbound-choose-the-caller-id)). Find the `agent_id` in the editor ([Find the agent ID](/documentation/build-agents/agents/agent-types#find-the-agent-id)).
-- Get `from_number_id` from [Get Workspace Numbers](/api-reference/endpoint/numbers/get-workspace-numbers).
+- Get `from_number_id` from [Get Workspace Numbers](/api-reference/inventory/numbers/get-workspace-numbers).
 - `version_id` is optional. Without it the call uses the agent's active version, or follows the traffic split while an A/B test runs. Pass it to test a specific [version](/documentation/build-agents/test-and-improve/drafts-and-versions).
 - A call placed with an API key is a live call, not a test call: it follows the calling window, call limits and retries, and it can't use a Ringg test number.
 
-<Check>The response includes `data.call_id` and `data.call_status` (for example `registered` or `ongoing`). Use the `call_id` with [Get Call Details](/api-reference/endpoint/history/get-call-details) to read the transcript and analysis.</Check>
+<Check>The response includes `data.call_id` and `data.call_status` (for example `registered` or `ongoing`). Use the `call_id` with [Get Call Details](/api-reference/monitoring/call-history/get-call-details) to read the transcript and analysis.</Check>
 
 ## Test numbers and verification
 

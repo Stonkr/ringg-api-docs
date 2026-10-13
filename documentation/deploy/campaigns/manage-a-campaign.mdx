@@ -93,7 +93,7 @@ Concurrency is the number of calls your workspace can run at the same time. **Ma
   </Step>
 </Steps>
 
-Through the API, [Make large campaign calls async](/api-reference/endpoint/campaign/make-large-campaign-calls-async) accepts a `concurrency_percentage` for the campaign you are starting.
+Through the API, [Make large campaign calls async](/api-reference/calling/large-campaigns/make-large-campaign-calls-async) accepts a `concurrency_percentage` for the campaign you are starting.
 
 ## Terminate a campaign
 
@@ -116,7 +116,7 @@ Terminating cancels the campaign's calls that are still queued (**Registered**) 
 
 ### Terminate with the API
 
-Call [Terminate calls by campaign ID](/api-reference/endpoint/terminate/campaign) (`PATCH /campaign/terminate`) with the campaign ID (the **ID** column's copy button, or `bulk_list_id`). You need an [API key](/documentation/manage-account/api-key).
+Call [Terminate calls by campaign ID](/api-reference/calling/campaigns/stop-campaign) (`PATCH /campaign/terminate`) with the campaign ID (the **ID** column's copy button, or `bulk_list_id`). You need an [API key](/documentation/manage-account/api-key).
 
 <CodeGroup>
 ```bash cURL
@@ -151,7 +151,7 @@ print(res.json())
 
 The response is `200` with `{"message": "Calls terminated successfully!"}`, even when no call matched. Only calls created in the last 7 days are cancelled.
 
-The same endpoint can also stop calls by `agent_id`, `call_ids` or `mobile_numbers`. See [Terminate calls by call IDs](/api-reference/endpoint/terminate/call-ids).
+The same endpoint can also stop calls by `agent_id`, `call_ids` or `mobile_numbers`. See [Terminate calls by call IDs](/api-reference/calling/individual-calls/stop-calls-by-id).
 
 ## Find campaign calls in Logs
 
@@ -163,7 +163,7 @@ Click **History** in the detail panel. It opens [Logs](/documentation/monitor/lo
 
 **Analytics** opens [Analytics](/documentation/monitor/analytics) for the same campaign, at `/analytics?bulk_list_id=<campaign ID>`.
 
-By API, pass the campaign ID as `bulk_list_id` to [Get call history](/api-reference/endpoint/history/get-call-history):
+By API, pass the campaign ID as `bulk_list_id` to [Get call history](/api-reference/monitoring/call-history/get-call-history):
 
 <CodeGroup>
 ```bash cURL
@@ -193,7 +193,7 @@ print(res.json())
 ```
 </CodeGroup>
 
-To list your campaigns and their statuses, use [Get all campaigns](/api-reference/endpoint/campaign/get-all-campaigns).
+To list your campaigns and their statuses, use [Get all campaigns](/api-reference/calling/campaigns/get-all-campaigns).
 
 ## Get results through Event Subscription
 

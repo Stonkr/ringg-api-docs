@@ -13,7 +13,7 @@ const callStatus = () => {
 
 export default {
   name: "agents-test",
-  docsPage: "agents/test",
+  docsPage: "documentation/build-agents/test-and-improve/test-an-agent",
   routes: {
     ...editorARoutes(),
     "GET /workspace": { workspace_info: noKycWorkspace },

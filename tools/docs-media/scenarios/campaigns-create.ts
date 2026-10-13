@@ -3,7 +3,7 @@ import { campaignRoutes, CSV_PATH } from "../fixtures/campaigns.ts";
 
 export default {
   name: "campaigns-create",
-  docsPage: "campaigns/create",
+  docsPage: "documentation/deploy/campaigns/create-a-campaign",
   routes: { ...campaignRoutes },
   async run(s) {
     const p = s.page;

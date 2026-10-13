@@ -74,9 +74,9 @@ Send `number_pool_id` to choose caller IDs from a pool. You need an [API key](/d
 
 | Endpoint | Pool field |
 |---|---|
-| [Initiate Individual Call (Number Pool)](/api-reference/endpoint/calling/initiate-individual-call-v2) `POST /calling/v2/outbound/individual` | `number_pool_id`. Send at least one of `number_pool_id`, `from_number_id` or `from_number`; with a pool, the pool is used and the other field is ignored. |
-| [Start Campaign (Number Pool)](/api-reference/endpoint/campaign/start-campaign-v2) `POST /campaign/v2/start` | `number_pool_id`, required with `agent_id` and `list_id`. |
-| [Start Large Campaign Calls](/api-reference/endpoint/campaign/make-large-campaign-calls-async) `POST /campaign/make-call-async` | `number_pool_id` or `from_numbers`, exactly one. Both or neither returns `422`. |
+| [Initiate Individual Call (Number Pool)](/api-reference/calling/individual-calls/initiate-individual-call-v2) `POST /calling/v2/outbound/individual` | `number_pool_id`. Send at least one of `number_pool_id`, `from_number_id` or `from_number`; with a pool, the pool is used and the other field is ignored. |
+| [Start Campaign (Number Pool)](/api-reference/calling/campaigns/start-campaign-v2) `POST /campaign/v2/start` | `number_pool_id`, required with `agent_id` and `list_id`. |
+| [Start Large Campaign Calls](/api-reference/calling/large-campaigns/make-large-campaign-calls-async) `POST /campaign/make-call-async` | `number_pool_id` or `from_numbers`, exactly one. Both or neither returns `422`. |
 
 A single call from a pool:
 
@@ -126,7 +126,7 @@ print(res.json())
 ```
 </CodeGroup>
 
-A pool ID that doesn't exist returns `400` "Number pool not found"; a pool with no numbers returns `400` "Number pool has no available numbers". To find which pool a number is in, read `number_pool_id` from [Get Workspace Numbers](/api-reference/endpoint/numbers/get-workspace-numbers).
+A pool ID that doesn't exist returns `400` "Number pool not found"; a pool with no numbers returns `400` "Number pool has no available numbers". To find which pool a number is in, read `number_pool_id` from [Get Workspace Numbers](/api-reference/inventory/numbers/get-workspace-numbers).
 
 ## How a pool picks the number
 
@@ -210,7 +210,7 @@ You can't delete a pool while a campaign is using it.
   <Card title="Run a campaign" icon="megaphone" href="/documentation/deploy/campaigns/create-a-campaign">
     Start a campaign that dials from your pool.
   </Card>
-  <Card title="Call from your backend" icon="code" href="/api-reference/endpoint/calling/initiate-individual-call-v2">
+  <Card title="Call from your backend" icon="code" href="/api-reference/calling/individual-calls/initiate-individual-call-v2">
     Place single calls with a pool by API.
   </Card>
 </Columns>

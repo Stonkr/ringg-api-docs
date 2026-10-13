@@ -6,7 +6,7 @@ import { makeTelephonyRoutes } from "../fixtures/telephony.ts";
 export default {
   name: "telephony-sip",
   title: "Connect a SIP trunk",
-  docsPage: "telephony/sip-integration",
+  docsPage: "documentation/inventory/phone-numbers/your-own-telephony/sip-trunking",
   routes: { ...agentRoutes, ...makeTelephonyRoutes() },
   async run(s) {
     const p = s.page;

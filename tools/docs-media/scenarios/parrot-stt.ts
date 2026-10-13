@@ -24,7 +24,7 @@ async function shotSpan(s: Session, name: string, from: Locator, to: Locator, pa
 export default {
   name: "parrot-stt",
   title: "Parrot STT",
-  docsPage: "parrot-stt/python-sdk",
+  docsPage: "documentation/ringg-labs/parrot-stt/python-sdk",
   routes: sttRoutes(),
   async run(s) {
     const p = s.page;

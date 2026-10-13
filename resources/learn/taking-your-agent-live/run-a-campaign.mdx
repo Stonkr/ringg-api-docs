@@ -2,12 +2,8 @@
 title: "Lesson: Run a campaign"
 sidebarTitle: "Run a campaign"
 description: "Launch Ananya's first campaign in Campaign Setup: upload a three-row list of numbers you own, pick the number pool, set retries and a calling window."
-related:
-  - "Create a campaign": /documentation/deploy/campaigns/create-a-campaign
-  - "Manage a campaign": /documentation/deploy/campaigns/manage-a-campaign
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -75,4 +71,13 @@ Create a second campaign from the same file, then stop it before it starts: sele
   incorrectFeedback="Not quite. Both conditions must hold: the start time has passed and the clock is inside a calling window. The default windows are 08:00–20:00 in the campaign's timezone, so an evening start waits for the next morning unless you add a window."
 />
 
-<RelatedTopics items={[["Create a campaign", "/documentation/deploy/campaigns/create-a-campaign"], ["Manage a campaign", "/documentation/deploy/campaigns/manage-a-campaign"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Create a campaign" icon="megaphone" href="/documentation/deploy/campaigns/create-a-campaign" horizontal>
+    Upload the list, set calling windows and retries, and launch.
+  </Card>
+  <Card title="Manage a campaign" icon="activity" href="/documentation/deploy/campaigns/manage-a-campaign" horizontal>
+    Watch status, split concurrency and terminate calls.
+  </Card>
+</Columns>

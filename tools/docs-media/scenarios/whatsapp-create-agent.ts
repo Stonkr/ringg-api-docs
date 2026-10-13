@@ -4,7 +4,8 @@ import { makeWhatsappEditorRoutes } from "../fixtures/whatsapp-agents.ts";
 
 export default {
   name: "whatsapp-create-agent",
-  docsPage: "whatsapp/create-agent",
+  docsPage: "documentation/build-agents/agents/whatsapp-agents/create-an-agent",
+  title: "Create a WhatsApp agent",
   routes: makeWhatsappEditorRoutes(),
   async run(s) {
     const p = s.page;

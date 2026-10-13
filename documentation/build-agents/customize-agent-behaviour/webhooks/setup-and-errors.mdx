@@ -58,7 +58,7 @@ Open the agent's **Event Subscription** tab, add the callback URL, the events an
 
 ### With the API
 
-Send [Edit Assistant](/api-reference/endpoint/assistant/edit-assistant) (`PATCH /agent/v1`) with `operation: "edit_event_subscriptions"` and the agent's complete subscription list in `event_subscriptions`.
+Send [Edit Assistant](/api-reference/agents/edit-assistant) (`PATCH /agent/v1`) with `operation: "edit_event_subscriptions"` and the agent's complete subscription list in `event_subscriptions`.
 
 ```bash Subscribe to all_processing_completed
 curl --request PATCH "https://prod-api.ringg.ai/ca/api/v0/agent/v1" \
@@ -163,7 +163,7 @@ A `4xx` response other than `429` is final and never retried. Other failures are
 So return a `5xx` for a temporary problem, not a `4xx`. Because deliveries are retried:
 
 - **The same event can arrive more than once.** Deduplicate on `call_id` plus `event_type` ([idempotency key](/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors#idempotency-key)).
-- **An event can be lost if your endpoint stays down.** After an outage, fetch the calls you missed with [Get Call History](/api-reference/endpoint/history/get-call-history) and [Get Call Details](/api-reference/endpoint/history/get-call-details).
+- **An event can be lost if your endpoint stays down.** After an outage, fetch the calls you missed with [Get Call History](/api-reference/monitoring/call-history/get-call-history) and [Get Call Details](/api-reference/monitoring/call-history/get-call-details).
 
 Keep the handler fast: store the event, return `2xx`, and do the work afterwards.
 
@@ -220,7 +220,7 @@ app.post("/webhooks/unified", async (req, res) => {
 
 ### Agent ID errors
 
-A subscription request with a wrong or deleted `agent_id` fails with `404`. List your agents with [Get Assistants](/api-reference/endpoint/assistant/get-assistants) and copy the right `id`:
+A subscription request with a wrong or deleted `agent_id` fails with `404`. List your agents with [Get Assistants](/api-reference/agents/get-assistants) and copy the right `id`:
 
 ```bash List agents
 curl "https://prod-api.ringg.ai/ca/api/v0/agent/all" \
@@ -231,7 +231,7 @@ curl "https://prod-api.ringg.ai/ca/api/v0/agent/all" \
 
 <AccordionGroup>
   <Accordion title="No requests reach my server">
-    Check that the subscription lists your URL and the event (in the dashboard under the agent's **Event Subscription**, or with [Get Assistant by ID](/api-reference/endpoint/assistant/get-assistant-by-id)). Then confirm the URL is reachable over HTTPS from the public internet with a valid certificate.
+    Check that the subscription lists your URL and the event (in the dashboard under the agent's **Event Subscription**, or with [Get Assistant by ID](/api-reference/agents/get-assistant-by-id)). Then confirm the URL is reachable over HTTPS from the public internet with a valid certificate.
   </Accordion>
   <Accordion title="recording_completed never arrives">
     It fires only for a call that has a recording. Calls that never connected have none; check the call's status in [Logs](/documentation/monitor/logs).

@@ -81,7 +81,7 @@ During the conversation, the agent searches an attached knowledge base when it d
 
 ## Do this with the API
 
-Call [Edit Assistant](/api-reference/endpoint/assistant/edit-assistant) (`PATCH /agent/v1`) with `operation` set to `attach_kb` or `remove_kb` and the `kb_id`, once per knowledge base. Send your [API key](/documentation/manage-account/api-key) in `X-API-KEY`.
+Call [Edit Assistant](/api-reference/agents/edit-assistant) (`PATCH /agent/v1`) with `operation` set to `attach_kb` or `remove_kb` and the `kb_id`, once per knowledge base. Send your [API key](/documentation/manage-account/api-key) in `X-API-KEY`.
 
 ```bash cURL
 curl --request PATCH "https://prod-api.ringg.ai/ca/api/v0/agent/v1" \
@@ -94,7 +94,7 @@ curl --request PATCH "https://prod-api.ringg.ai/ca/api/v0/agent/v1" \
   }'
 ```
 
-Get the `kb_id` from [Get All Knowledge Bases](/api-reference/endpoint/kb/get-all-knowledge-bases), and the `agent_id` from the editor ([Find an agent's ID](/documentation/build-agents/agents/agent-types#find-the-agent-id)). To create knowledge bases by API, see [Create Knowledge Base](/api-reference/endpoint/kb/create-knowledge-base).
+Get the `kb_id` from [Get All Knowledge Bases](/api-reference/inventory/knowledge-bases/get-all-knowledge-bases), and the `agent_id` from the editor ([Find an agent's ID](/documentation/build-agents/agents/agent-types#find-the-agent-id)). To create knowledge bases by API, see [Create Knowledge Base](/api-reference/inventory/knowledge-bases/create-knowledge-base).
 
 ## Test it
 

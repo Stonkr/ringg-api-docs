@@ -5,7 +5,7 @@ import { makeNumbersRoutes, showProviderLogos } from "../fixtures/numbers.ts";
 export default {
   name: "numbers-import",
   title: "Import a number",
-  docsPage: "numbers/buy-and-import",
+  docsPage: "documentation/inventory/phone-numbers/buy-or-import-a-number",
   routes: { ...agentRoutes, ...makeNumbersRoutes() },
   async run(s) {
     const p = s.page;

@@ -3,7 +3,8 @@ import { subWorkspaceRoutes } from "../fixtures/account.ts";
 
 export default {
   name: "account-sub-workspaces",
-  docsPage: "account/sub-workspaces",
+  docsPage: "documentation/manage-account/ringg-spaces/create-and-manage",
+  title: "Ringg Spaces",
   routes: subWorkspaceRoutes(),
   async run(s) {
     const p = s.page;

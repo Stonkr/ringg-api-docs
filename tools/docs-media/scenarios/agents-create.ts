@@ -3,7 +3,7 @@ import { agentsCreateRoutes } from "../fixtures/agents-create.ts";
 
 export default {
   name: "agents-create",
-  docsPage: "agents/create",
+  docsPage: "documentation/build-agents/agents/create-an-agent",
   routes: agentsCreateRoutes,
   async run(s) {
     const p = s.page;

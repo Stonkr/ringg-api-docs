@@ -9,14 +9,14 @@ Built and tested [agents](/documentation/build-agents/agents/agent-types) and [w
 
 In the dashboard: **Sidebar → Inventory → Numbers**.
 
-## Pages in this chapter
+## Pages in this section
 
 | Page | Covers |
 |---|---|
 | [Buy or import a number](/documentation/inventory/phone-numbers/buy-or-import-a-number) | The **Add number** dialog: buy a Ringg-provided number, connect a provider account, import or add your own numbers |
 | [Your own telephony](/documentation/inventory/phone-numbers/your-own-telephony/byot-overview) | What connecting Exotel, Plivo, Twilio, Ozonetel, Ameyo or a <Tooltip tip="Session Initiation Protocol: the standard for connecting voice calls between phone systems.">SIP</Tooltip> trunk involves, with a page per provider |
 | [Number pools](/documentation/inventory/phone-numbers/number-pools) | Group numbers so outbound calls rotate across them and skip spam-flagged numbers |
-| [Inbound agent number](/documentation/inventory/phone-numbers/inbound-agent-number) (Build agents › Inventory) | Point a number at an inbound agent; choose the caller ID for test calls, campaigns and API calls |
+| [Inbound agent number](/documentation/inventory/phone-numbers/inbound-agent-number) | Point a number at an inbound agent; choose the caller ID for test calls, campaigns and API calls |
 
 ## What numbers are used for
 
@@ -104,7 +104,8 @@ These providers appear in the **Add number** dialog. Their credential fields are
 | Ozonetel | India, United States | [Ozonetel](/documentation/inventory/phone-numbers/your-own-telephony/ozonetel) |
 | Plivo (also Ringg-provided) | India, United States | [Plivo](/documentation/inventory/phone-numbers/your-own-telephony/plivo) |
 | Tata Tele | India | — |
-| InTalk | Import only | — |
+| InTalk | Import only | [InTalk](/documentation/inventory/phone-numbers/your-own-telephony/intalk) |
+| Telnyx | Import only | [Telnyx](/documentation/inventory/phone-numbers/your-own-telephony/telnyx) |
 | Maqsam | Saudi Arabia, United Arab Emirates | — |
 | Twilio | United States, Canada | [Twilio](/documentation/inventory/phone-numbers/your-own-telephony/twilio) |
 | Vobiz (also Ringg-provided) | India | — |
@@ -116,7 +117,7 @@ Countries other than India appear only when international calling is enabled for
 
 ## List numbers by API
 
-[Get Workspace Numbers](/api-reference/endpoint/numbers/get-workspace-numbers) returns the whole **All Numbers** list in one response, newest first, including `id`, `is_test_number`, `is_spam`, `spam_message`, `provider`, `owner`, `tags`, `agent` and `number_pool_id`. It has no paging. To narrow it, pass `telephony_account_id` (a connected account's ID, or `ringg` for Ringg-provided and test numbers) or `inbound_enabled=true`. You need an [API key](/documentation/manage-account/api-key).
+[Get Workspace Numbers](/api-reference/inventory/numbers/get-workspace-numbers) returns the whole **All Numbers** list in one response, newest first, including `id`, `is_test_number`, `is_spam`, `spam_message`, `provider`, `owner`, `tags`, `agent` and `number_pool_id`. It has no paging. To narrow it, pass `telephony_account_id` (a connected account's ID, or `ringg` for Ringg-provided and test numbers) or `inbound_enabled=true`. You need an [API key](/documentation/manage-account/api-key).
 
 <CodeGroup>
 ```bash cURL
@@ -144,7 +145,7 @@ print(res.json())
 ```
 </CodeGroup>
 
-Pass a number's `id` as `from_number_id` when you [place a call](/api-reference/endpoint/calling/initiate-individual-call).
+Pass a number's `id` as `from_number_id` when you [place a call](/api-reference/calling/individual-calls/initiate-individual-call).
 
 ## Next steps
 

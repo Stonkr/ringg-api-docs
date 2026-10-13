@@ -4,7 +4,7 @@ import { campaignRoutes, CSV_PATH } from "../fixtures/campaigns.ts";
 export default {
   name: "campaigns-calling-list",
   title: "Calling list",
-  docsPage: "campaigns/calling-list",
+  docsPage: "documentation/deploy/campaigns/calling-list",
   routes: { ...campaignRoutes },
   async run(s) {
     const p = s.page;

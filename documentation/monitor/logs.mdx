@@ -8,7 +8,7 @@ boost: 4
 
 Open Logs to inspect one conversation your [agents](/documentation/build-agents/agents/agent-types) handled; use [Analytics](/documentation/monitor/analytics) for totals and trends. For the audit trail of who changed what in the workspace, see [Workspace logs](/documentation/manage-account/members#workspace-logs) instead.
 
-The Monitor chapter, in order: Logs (this page) for one call, chat or workflow run, [Analytics](/documentation/monitor/analytics) for volume, goals, connectivity and cost over a period, [Evals](/documentation/monitor/evals) for call quality and test cases, and [Alerts](/documentation/monitor/alerts) for a notification when a metric crosses a threshold.
+The Monitor section, in order: Logs (this page) for one call, chat or workflow run, [Analytics](/documentation/monitor/analytics) for volume, goals, connectivity and cost over a period, [Evals](/documentation/monitor/evals) for call quality and test cases, and [Alerts](/documentation/monitor/alerts) for a notification when a metric crosses a threshold.
 
 In the dashboard: **Sidebar → Monitor → Logs**.
 
@@ -92,7 +92,7 @@ For **Custom variables**, a **Value type** menu on the condition (**String**, **
 
 ## Call statuses
 
-Calls reach Logs from [campaigns](/documentation/deploy/campaigns/overview), [workflows](/documentation/build-agents/workflows/overview), [API calls](/api-reference/endpoint/calling/initiate-individual-call), [inbound numbers](/documentation/inventory/phone-numbers/inbound-agent-number) and [tests](/documentation/build-agents/test-and-improve/test-an-agent). These call statuses are separate from [campaign statuses](/documentation/deploy/campaigns/overview#campaign-statuses).
+Calls reach Logs from [campaigns](/documentation/deploy/campaigns/overview), [workflows](/documentation/build-agents/workflows/overview), [API calls](/api-reference/calling/individual-calls/initiate-individual-call), [inbound numbers](/documentation/inventory/phone-numbers/inbound-agent-number) and [tests](/documentation/build-agents/test-and-improve/test-an-agent). These call statuses are separate from [campaign statuses](/documentation/deploy/campaigns/overview#campaign-statuses).
 
 | Status | Meaning |
 |---|---|
@@ -114,7 +114,7 @@ WhatsApp chats use only **Ongoing**, **Completed** and **Failed**.
 
 | Type | Meaning |
 |---|---|
-| **Outbound** | The agent called the customer: single calls, [API calls](/api-reference/endpoint/calling/initiate-individual-call) and [campaigns](/documentation/deploy/campaigns/overview). |
+| **Outbound** | The agent called the customer: single calls, [API calls](/api-reference/calling/individual-calls/initiate-individual-call) and [campaigns](/documentation/deploy/campaigns/overview). |
 | **Inbound** | The customer called a number [attached to the agent](/documentation/inventory/phone-numbers/inbound-agent-number). |
 | **Webcall** | A call from the [web widget](/documentation/deploy/web-and-apps/web-widget/overview) in a browser. |
 | **Voicemail** | Calls where voicemail was detected (see [voicemail settings](/documentation/build-agents/customize-agent-behaviour/call-settings)). Their status is **Completed**. |
@@ -124,7 +124,7 @@ WhatsApp chats use only **Ongoing**, **Completed** and **Failed**.
 
 Click a row to open the call. On a wide screen it opens beside the list; on a narrower one, as a drawer.
 
-The header shows the agent (click it to open the agent), the call ID with a copy button, the status, **Next attempt** for queued calls, **From**, **Cost**, and **Origin**: **Campaign** ([campaigns](/documentation/deploy/campaigns/manage-a-campaign)) or **API** ([Initiate a call](/api-reference/endpoint/calling/initiate-individual-call)). WhatsApp chats show **Channel** **WhatsApp** instead of **Origin**.
+The header shows the agent (click it to open the agent), the call ID with a copy button, the status, **Next attempt** for queued calls, **From**, **Cost**, and **Origin**: **Campaign** ([campaigns](/documentation/deploy/campaigns/manage-a-campaign)) or **API** ([Initiate a call](/api-reference/calling/individual-calls/initiate-individual-call)). WhatsApp chats show **Channel** **WhatsApp** instead of **Origin**.
 
 Below it is the recording: play or pause, change speed (1x, 1.5x, 2x), and **Download recording** (`call-recording-<call ID>.mp3`). The transcript follows the playback, and clicking a transcript line seeks the recording to it. If there is no recording, the panel says "Call recording is not available.", or "Call recording has been deleted as per the data purge policy." once it has been purged.
 
@@ -209,9 +209,9 @@ Click **Export** in the table footer and choose **Export without analysis** or *
 
 | Dashboard | Endpoint |
 |---|---|
-| The call list | [Get call history](/api-reference/endpoint/history/get-call-history): `GET /calling/history`, filtered by `start_date`, `end_date`, `agent_id`, `status` and `bulk_list_id`, paged with `limit` and `offset` |
-| The call panel | [Get call details](/api-reference/endpoint/history/get-call-details): `GET /calling/call-details?id=<call ID>`; add `send_analysis=true` for the analysis |
-| **Export** | [Download call history](/api-reference/endpoint/history/download-call-history): `POST /calling/history/download`; add `include_analysis=true` for the analysis. The response is either a ZIP of the CSV or a message that the export is queued for email. |
+| The call list | [Get call history](/api-reference/monitoring/call-history/get-call-history): `GET /calling/history`, filtered by `start_date`, `end_date`, `agent_id`, `status` and `bulk_list_id`, paged with `limit` and `offset` |
+| The call panel | [Get call details](/api-reference/monitoring/call-history/get-call-details): `GET /calling/call-details?id=<call ID>`; add `send_analysis=true` for the analysis |
+| **Export** | [Download call history](/api-reference/monitoring/call-history/download-call-history): `POST /calling/history/download`; add `include_analysis=true` for the analysis. The response is either a ZIP of the CSV or a message that the export is queued for email. |
 
 You need an [API key](/documentation/manage-account/api-key) sent as `X-API-KEY` (see [Authentication](/api-reference/introduction/authentication)).
 
@@ -291,7 +291,7 @@ To get each call as it ends instead of polling, use [Event Subscription](/docume
     The call is probably outside the date range (the default is the last month). Search by **Call ID**, **From number** or **To number**, which ignore dates. Workflow calls appear only from the **Workflows** tab.
   </Accordion>
   <Accordion title="I can't pick a date older than 2 months">
-    The calendar does not go further back. Use **Call ID**, a number or a campaign filter, or the [Get call history](/api-reference/endpoint/history/get-call-history) API.
+    The calendar does not go further back. Use **Call ID**, a number or a campaign filter, or the [Get call history](/api-reference/monitoring/call-history/get-call-history) API.
   </Accordion>
   <Accordion title="Custom variables and Advanced analysis are greyed out">
     Select exactly one assistant under **Assistants**.
@@ -303,7 +303,7 @@ To get each call as it ends instead of polling, use [Event Subscription](/docume
     Feedback is available only on calls with status **Completed**, not on chats.
   </Accordion>
   <Accordion title='The recording says "deleted as per the data purge policy"'>
-    The recording was removed under a data purge policy set up for your workspace. Contact Ringg for its details. To keep recordings, use **Download recording**, or save the file from the `recording_url` that [Get call details](/api-reference/endpoint/history/get-call-details) returns. The link may expire; fetch a fresh one from Get call details. The dashboard shows campaign reports for 60 days after a campaign ends ([Manage a campaign](/documentation/deploy/campaigns/manage-a-campaign#the-detail-panel)).
+    The recording was removed under a data purge policy set up for your workspace. Contact Ringg for its details. To keep recordings, use **Download recording**, or save the file from the `recording_url` that [Get call details](/api-reference/monitoring/call-history/get-call-details) returns. The link may expire; fetch a fresh one from Get call details. The dashboard shows campaign reports for 60 days after a campaign ends ([Manage a campaign](/documentation/deploy/campaigns/manage-a-campaign#the-detail-panel)).
   </Accordion>
 </AccordionGroup>
 

@@ -2,12 +2,8 @@
 title: "Lesson: Build and connect"
 sidebarTitle: "Build and connect"
 description: "Prove on screen that Ananya has the EMI policy knowledge base attached, a crm_lookup tool that blocks unknown accounts, and a workspace number to call from."
-related:
-  - "Tools": /documentation/build-agents/customize-agent-behaviour/tools/overview
-  - "Attach a number and caller ID": /documentation/inventory/phone-numbers/inbound-agent-number
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -67,4 +63,13 @@ Click the trash icon on the attached knowledge base ("Knowledge base detached su
   incorrectFeedback="Not quite. Retries and timeouts change when the request happens, not whether the call is placed, and nothing reads errors aloud. Block call on status codes with 404 turns a CRM miss into no call, the outcome a reminder needs."
 />
 
-<RelatedTopics items={[["Tools", "/documentation/build-agents/customize-agent-behaviour/tools/overview"], ["Attach a number and caller ID", "/documentation/inventory/phone-numbers/inbound-agent-number"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Tools" icon="wrench" href="/documentation/build-agents/customize-agent-behaviour/tools/overview" horizontal>
+    Connect the agent to your APIs before, during and after a call.
+  </Card>
+  <Card title="Inbound agent number" icon="phone-incoming" href="/documentation/inventory/phone-numbers/inbound-agent-number" horizontal>
+    Point a number at an agent and choose the caller ID.
+  </Card>
+</Columns>

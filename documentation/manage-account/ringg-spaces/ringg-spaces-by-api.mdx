@@ -10,17 +10,17 @@ Every family endpoint takes the primary workspace's [API key](/documentation/man
 
 | Task | Endpoint |
 |---|---|
-| Create a Ringg Space | [Create Ringg Space](/api-reference/endpoint/sub-workspace/create-sub-workspace) |
-| Read the family, allocations and usage | [Get Ringg Spaces](/api-reference/endpoint/sub-workspace/get-sub-workspaces) |
-| List everyone with access | [List Family Members](/api-reference/endpoint/sub-workspace/list-family-members) |
-| Allocate concurrency | [Allocate Concurrency](/api-reference/endpoint/sub-workspace/allocate-concurrency) |
-| Set credit limits (postpaid) | [Reallocate Credit Limits](/api-reference/endpoint/sub-workspace/reallocate-credit-limits) |
-| Set balances (prepaid) | [Reallocate Credit Balances](/api-reference/endpoint/sub-workspace/reallocate-credit-balances) |
+| Create a Ringg Space | [Create Ringg Space](/api-reference/account/ringg-spaces/create-sub-workspace) |
+| Read the family, allocations and usage | [Get Ringg Spaces](/api-reference/account/ringg-spaces/get-sub-workspaces) |
+| List everyone with access | [List Family Members](/api-reference/account/ringg-spaces/list-family-members) |
+| Allocate concurrency | [Allocate Concurrency](/api-reference/account/ringg-spaces/allocate-concurrency) |
+| Set credit limits (postpaid) | [Reallocate Credit Limits](/api-reference/account/ringg-spaces/reallocate-credit-limits) |
+| Set balances (prepaid) | [Reallocate Credit Balances](/api-reference/account/ringg-spaces/reallocate-credit-balances) |
 
 Two things to know before you parse responses:
 
 - **Money formats.** The read endpoints and the concurrency endpoint return amounts as JSON numbers (`200000.0`); the two allocation endpoints return decimal strings (`"200000.00"`). Parse both before doing arithmetic. In requests, amounts can be numbers or numeric strings; they are rounded to 2 decimals.
-- **Agents inside a Ringg Space.** There is no family endpoint for this: a Ringg Space is a normal workspace, so call [Create agent](/api-reference/endpoint/assistant/create-agent) with that Ringg Space's own API key. The agent is invisible from the primary and from sibling Ringg Spaces.
+- **Agents inside a Ringg Space.** There is no family endpoint for this: a Ringg Space is a normal workspace, so call [Create agent](/api-reference/agents/create-agent) with that Ringg Space's own API key. The agent is invisible from the primary and from sibling Ringg Spaces.
 
 To give a Ringg Space 20 concurrent calls (`PATCH /workspace/sub/{sub_workspace_id}/concurrency`):
 

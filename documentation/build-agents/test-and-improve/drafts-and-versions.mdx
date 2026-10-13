@@ -131,11 +131,11 @@ The multi-prompt editor has no **Finalize** action. To send all calls to one ver
 | Minimum per version | 0% | 5% |
 | Maximum versions | 5 | 5 |
 
-Calls are shared between versions in proportion to their traffic. Each API, inbound or workflow call picks a version at random, weighted by the split. A campaign divides its contact list by count, in list order: with 70/30, roughly the first 70% of the list goes to one version, so shuffle the list if its order matters. A retry keeps its call's version, and a callback uses the version of the call it follows up. Each call records the version it used: see `version_slug` in [webhook payloads](/documentation/build-agents/customize-agent-behaviour/webhooks/call-events) (sent by [Event Subscription](/documentation/build-agents/customize-agent-behaviour/event-subscription)) and `agent.version` in [call history](/api-reference/endpoint/history/get-call-history).
+Calls are shared between versions in proportion to their traffic. Each API, inbound or workflow call picks a version at random, weighted by the split. A campaign divides its contact list by count, in list order: with 70/30, roughly the first 70% of the list goes to one version, so shuffle the list if its order matters. A retry keeps its call's version, and a callback uses the version of the call it follows up. Each call records the version it used: see `version_slug` in [webhook payloads](/documentation/build-agents/customize-agent-behaviour/webhooks/call-events) (sent by [Event Subscription](/documentation/build-agents/customize-agent-behaviour/event-subscription)) and `agent.version` in [call history](/api-reference/monitoring/call-history/get-call-history).
 
 ## Call a specific version with the API
 
-[Initiate Individual Call](/api-reference/endpoint/calling/initiate-individual-call) accepts an optional `version_id`. With it, the call uses that version and skips the traffic split. Without it, the call uses the agent's active version, or follows the traffic split while an A/B test runs. Campaigns can't pin a version. Copy a single-prompt version's ID from its menu in the version bar.
+[Initiate Individual Call](/api-reference/calling/individual-calls/initiate-individual-call) accepts an optional `version_id`. With it, the call uses that version and skips the traffic split. Without it, the call uses the agent's active version, or follows the traffic split while an A/B test runs. Campaigns can't pin a version. Copy a single-prompt version's ID from its menu in the version bar.
 
 Send your [API key](/documentation/manage-account/api-key) in `X-API-KEY`. `from_number` is the [caller ID](/documentation/inventory/phone-numbers/inbound-agent-number#outbound-choose-the-caller-id).
 
@@ -190,7 +190,7 @@ print(response.json())
 ```
 </CodeGroup>
 
-[Initiate Individual Call v2](/api-reference/endpoint/calling/initiate-individual-call-v2) takes the same optional `version_id` and calls from a [number pool](/documentation/inventory/phone-numbers/number-pools). Pinning a version lets you test a new version from your backend before you give it traffic.
+[Initiate Individual Call v2](/api-reference/calling/individual-calls/initiate-individual-call-v2) takes the same optional `version_id` and calls from a [number pool](/documentation/inventory/phone-numbers/number-pools). Pinning a version lets you test a new version from your backend before you give it traffic.
 
 ## Next steps
 

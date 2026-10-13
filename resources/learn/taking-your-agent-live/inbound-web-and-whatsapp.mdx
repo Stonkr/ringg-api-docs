@@ -2,12 +2,8 @@
 title: "Lesson: Inbound, web and WhatsApp"
 sidebarTitle: "Inbound, web and WhatsApp"
 description: "Create an Inbound agent for Acme's callbacks and attach a number to it in Attach Number, then find where Embed & Widgets and WhatsApp agents start."
-related:
-  - "Attach a number to an agent": /documentation/inventory/phone-numbers/inbound-agent-number
-  - "Embed & Widgets": /documentation/deploy/web-and-apps/web-widget/overview
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -77,4 +73,13 @@ On Ananya's **Install & domains**, add `https://www.acme-lending.example` under 
   incorrectFeedback="Not quite. A pool rotates caller IDs for outbound calls, the widget serves browser calls and WhatsApp serves chats. A phone call to Acme's number is answered only when that number is attached to an agent that takes inbound calls."
 />
 
-<RelatedTopics items={[["Attach a number to an agent", "/documentation/inventory/phone-numbers/inbound-agent-number"], ["Embed & Widgets", "/documentation/deploy/web-and-apps/web-widget/overview"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Inbound agent number" icon="phone-incoming" href="/documentation/inventory/phone-numbers/inbound-agent-number" horizontal>
+    Point a number at an agent and choose the caller ID.
+  </Card>
+  <Card title="Web widget" icon="globe" href="/documentation/deploy/web-and-apps/web-widget/overview" horizontal>
+    Put an agent on any web page and test it before launch.
+  </Card>
+</Columns>

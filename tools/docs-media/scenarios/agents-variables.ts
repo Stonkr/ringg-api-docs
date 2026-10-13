@@ -3,7 +3,7 @@ import { AGENT_ID, editorARoutes } from "../fixtures/editor-a.ts";
 
 export default {
   name: "agents-variables",
-  docsPage: "agents/variables",
+  docsPage: "documentation/build-agents/customize-agent-behaviour/custom-variables",
   routes: editorARoutes(),
   async run(s) {
     const p = s.page;

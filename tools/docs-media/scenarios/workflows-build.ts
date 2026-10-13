@@ -4,7 +4,7 @@ import { buildWorkflowRoutes } from "../fixtures/workflows-build.ts";
 
 export default {
   name: "workflows-build",
-  docsPage: "workflows/build",
+  docsPage: "documentation/build-agents/workflows/build-a-workflow",
   routes: buildWorkflowRoutes(),
   async run(s) {
     const p = s.page;

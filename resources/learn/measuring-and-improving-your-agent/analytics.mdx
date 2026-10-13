@@ -2,12 +2,8 @@
 title: "Lesson: Analytics"
 sidebarTitle: "Analytics"
 description: "Filter Analytics to the EMI reminder agent and its dry-run campaign, read Connectivity rate and Goal achieved, judge retries, and drill into Logs."
-related:
-  - "Analytics": /documentation/monitor/analytics
-  - "Advanced Analysis": /documentation/build-agents/customize-agent-behaviour/advanced-analysis
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -78,4 +74,13 @@ Scope the page to one version of Ananya. Under **Filters → Assistants**, untic
   incorrectFeedback="Not quite. Goal achieved and Cost per goal depend on one thing: a Boolean Advanced Analysis variable marked Use as goal on the agent, with an agent or campaign selected. Call volume, direction and date range do not make the card read -."
 />
 
-<RelatedTopics items={[["Analytics", "/documentation/monitor/analytics"], ["Advanced Analysis", "/documentation/build-agents/customize-agent-behaviour/advanced-analysis"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Analytics" icon="chart-line" href="/documentation/monitor/analytics" horizontal>
+    Volume, goals, connectivity and cost across calls.
+  </Card>
+  <Card title="Advanced Analysis" icon="list-checks" href="/documentation/build-agents/customize-agent-behaviour/advanced-analysis" horizontal>
+    Define the variables Ringg fills in from every conversation.
+  </Card>
+</Columns>

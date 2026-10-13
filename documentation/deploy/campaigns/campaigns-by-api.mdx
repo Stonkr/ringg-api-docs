@@ -6,7 +6,7 @@ description: "Create and start Ringg AI campaigns from your backend: the standar
 
 ## With the API
 
-All requests go to `https://prod-api.ringg.ai/ca/api/v0` with the header `X-API-KEY: $RINGG_API_KEY` ([API key](/documentation/manage-account/api-key), [Authentication](/api-reference/introduction/authentication)). You need the agent's ID ([Find an agent's ID](/documentation/build-agents/agents/agent-types#find-the-agent-id)) and either caller numbers ([Get Workspace Numbers](/api-reference/endpoint/numbers/get-workspace-numbers)) or a pool ID (**Copy pool ID** on [the pool list](/documentation/inventory/phone-numbers/number-pools#the-pool-list)). Campaign times use the format `DD/MM/YYYY, HH:MM` and are read in `call_config.call_time.timezone`.
+All requests go to `https://prod-api.ringg.ai/ca/api/v0` with the header `X-API-KEY: $RINGG_API_KEY` ([API key](/documentation/manage-account/api-key), [Authentication](/api-reference/introduction/authentication)). You need the agent's ID ([Find an agent's ID](/documentation/build-agents/agents/agent-types#find-the-agent-id)) and either caller numbers ([Get Workspace Numbers](/api-reference/inventory/numbers/get-workspace-numbers)) or a pool ID (**Copy pool ID** on [the pool list](/documentation/inventory/phone-numbers/number-pools#the-pool-list)). Campaign times use the format `DD/MM/YYYY, HH:MM` and are read in `call_config.call_time.timezone`.
 
 Two flows exist: the standard one (save, then start) and the large-campaign one (upload, poll verification, then schedule), which the dashboard uses for every campaign. Both apply the same [row limit](/documentation/deploy/campaigns/calling-list#file-rules).
 
@@ -14,7 +14,7 @@ Two flows exist: the standard one (save, then start) and the large-campaign one 
 
 <Steps>
   <Step title="Upload the list and settings">
-    [Upload campaign contact list](/api-reference/endpoint/campaign/upload-campaign-contact-list) (`POST /campaign/save`) takes the CSV and the campaign settings as `multipart/form-data`. The response includes `list_id`, `total_rows`, `successful_rows` and `failed_rows`.
+    [Upload campaign contact list](/api-reference/calling/campaigns/upload-campaign-contact-list) (`POST /campaign/save`) takes the CSV and the campaign settings as `multipart/form-data`. The response includes `list_id`, `total_rows`, `successful_rows` and `failed_rows`.
 
     <CodeGroup>
     ```bash cURL
@@ -86,7 +86,7 @@ Two flows exist: the standard one (save, then start) and the large-campaign one 
     </CodeGroup>
   </Step>
   <Step title="Start the calls">
-    Pass the `list_id` to [Start campaign (number pool)](/api-reference/endpoint/campaign/start-campaign-v2) (`POST /campaign/v2/start`) with a `number_pool_id`. `email_completion_user_ids` (workspace user IDs to email when the campaign is scheduled and when it completes) is optional; an ID that isn't a member of the workspace returns `404`.
+    Pass the `list_id` to [Start campaign (number pool)](/api-reference/calling/campaigns/start-campaign-v2) (`POST /campaign/v2/start`) with a `number_pool_id`. `email_completion_user_ids` (workspace user IDs to email when the campaign is scheduled and when it completes) is optional; an ID that isn't a member of the workspace returns `404`.
 
     <CodeGroup>
     ```bash cURL
@@ -131,7 +131,7 @@ Two flows exist: the standard one (save, then start) and the large-campaign one 
     ```
     </CodeGroup>
 
-    To pass explicit caller numbers instead, use [Start campaign](/api-reference/endpoint/campaign/start-campaign) (`POST /campaign/start`) with `from_numbers`: number IDs, or numbers written exactly as [Get Workspace Numbers](/api-reference/endpoint/numbers/get-workspace-numbers) returns them. Retries rotate through the list in order. It is deprecated in favour of the pool version.
+    To pass explicit caller numbers instead, use [Start campaign](/api-reference/calling/campaigns/start-campaign) (`POST /campaign/start`) with `from_numbers`: number IDs, or numbers written exactly as [Get Workspace Numbers](/api-reference/inventory/numbers/get-workspace-numbers) returns them. Retries rotate through the list in order. It is deprecated in favour of the pool version.
   </Step>
 </Steps>
 
@@ -141,7 +141,7 @@ The upload is verified in the background, and you schedule the calls once it is 
 
 <Steps>
   <Step title="Upload the CSV">
-    [Upload large campaign CSV](/api-reference/endpoint/campaign/upload-large-campaign-csv) (`POST /campaign/upload-csv`) takes `campaign_name`, `agent_id`, `country_code`, `variables_map`, `file` and optionally `remove_invalid_rows`, `transliterate_fields` and `transliterate_callee_name`. It returns `bulk_list_id`, `status` (`verifying`), `total_rows` and `campaign_name`. Save the `bulk_list_id`; it is also the campaign ID. A list over your [row limit](/documentation/deploy/campaigns/calling-list#file-rules) returns `402`.
+    [Upload large campaign CSV](/api-reference/calling/large-campaigns/upload-large-campaign-csv) (`POST /campaign/upload-csv`) takes `campaign_name`, `agent_id`, `country_code`, `variables_map`, `file` and optionally `remove_invalid_rows`, `transliterate_fields` and `transliterate_callee_name`. It returns `bulk_list_id`, `status` (`verifying`), `total_rows` and `campaign_name`. Save the `bulk_list_id`; it is also the campaign ID. A list over your [row limit](/documentation/deploy/campaigns/calling-list#file-rules) returns `402`.
 
     <CodeGroup>
     ```bash cURL
@@ -198,13 +198,13 @@ The upload is verified in the background, and you schedule the calls once it is 
     </CodeGroup>
   </Step>
   <Step title="Wait for verification">
-    Poll [Get large campaign upload status](/api-reference/endpoint/campaign/get-large-campaign-upload-status) (`GET /campaign/upload-status/{bulk_list_id}`) every few seconds (the dashboard uses 5). Continue when `status` is `draft`; stop on `failed`, `no_valid_contacts` or `insufficient_balance`. The response also gives `campaign_name`, `total_callees` (valid contacts loaded) and `invalidated_rows_count`. The invalid rows can be downloaded from the campaign's [detail panel](/documentation/deploy/campaigns/manage-a-campaign#the-detail-panel).
+    Poll [Get large campaign upload status](/api-reference/calling/large-campaigns/get-large-campaign-upload-status) (`GET /campaign/upload-status/{bulk_list_id}`) every few seconds (the dashboard uses 5). Continue when `status` is `draft`; stop on `failed`, `no_valid_contacts` or `insufficient_balance`. The response also gives `campaign_name`, `total_callees` (valid contacts loaded) and `invalidated_rows_count`. The invalid rows can be downloaded from the campaign's [detail panel](/documentation/deploy/campaigns/manage-a-campaign#the-detail-panel).
   </Step>
   <Step title="If balance is short">
-    On `insufficient_balance`, [add balance](/documentation/manage-account/billing#add-balance-prepaid), then call [Check large campaign balance](/api-reference/endpoint/campaign/check-large-campaign-balance) (`POST /campaign/check-balance/{bulk_list_id}`). Nothing resumes on its own. If the balance now covers it, the response has `status: "draft"` and `total_callees`, and you continue to the next step with the same `bulk_list_id`. If it is still short, `status` stays `insufficient_balance` and the response gives `required_credits` and `additional_balance_required`.
+    On `insufficient_balance`, [add balance](/documentation/manage-account/billing#add-balance-prepaid), then call [Check large campaign balance](/api-reference/calling/large-campaigns/check-large-campaign-balance) (`POST /campaign/check-balance/{bulk_list_id}`). Nothing resumes on its own. If the balance now covers it, the response has `status: "draft"` and `total_callees`, and you continue to the next step with the same `bulk_list_id`. If it is still short, `status` stays `insufficient_balance` and the response gives `required_credits` and `additional_balance_required`.
   </Step>
   <Step title="Schedule the calls">
-    [Make large campaign calls async](/api-reference/endpoint/campaign/make-large-campaign-calls-async) (`POST /campaign/make-call-async`) takes the schedule and exactly one of `from_numbers` or `number_pool_id`; both or neither returns `422`. `email_completion_user_ids` and `concurrency_percentage` are optional. The balance is checked again here: if it no longer covers the campaign, the response is `402` and the campaign goes back to `insufficient_balance`. Caller numbers and `email_completion_user_ids` are checked after the request is accepted, so a number or user that isn't found sets the campaign to `failed` instead of returning an error.
+    [Make large campaign calls async](/api-reference/calling/large-campaigns/make-large-campaign-calls-async) (`POST /campaign/make-call-async`) takes the schedule and exactly one of `from_numbers` or `number_pool_id`; both or neither returns `422`. `email_completion_user_ids` and `concurrency_percentage` are optional. The balance is checked again here: if it no longer covers the campaign, the response is `402` and the campaign goes back to `insufficient_balance`. Caller numbers and `email_completion_user_ids` are checked after the request is accepted, so a number or user that isn't found sets the campaign to `failed` instead of returning an error.
 
     <CodeGroup>
     ```bash cURL

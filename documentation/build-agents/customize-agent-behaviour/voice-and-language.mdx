@@ -126,7 +126,7 @@ Type into **Add keywords, comma-separated...**, for example `Acme Lending, EMI, 
 
 ## Change voice and language by API
 
-[Edit Agent Settings](/api-reference/endpoint/assistant/edit-assistant) (`PATCH /agent/v1`) changes one setting per request. Send your [API key](/documentation/manage-account/api-key) in `X-API-KEY`, and find the `agent_id` in the editor ([Find the agent ID](/documentation/build-agents/agents/agent-types#find-the-agent-id)).
+[Edit Agent Settings](/api-reference/agents/edit-assistant) (`PATCH /agent/v1`) changes one setting per request. Send your [API key](/documentation/manage-account/api-key) in `X-API-KEY`, and find the `agent_id` in the editor ([Find the agent ID](/documentation/build-agents/agents/agent-types#find-the-agent-id)).
 
 | Operation | Field | Matches |
 |---|---|---|
@@ -138,7 +138,7 @@ Type into **Add keywords, comma-separated...**, for example `Acme Lending, EMI, 
 
 Cloning is dashboard-only.
 
-Get voice IDs from [List Voices](/api-reference/endpoint/assistant/get-assistant-voices) (`GET /agent/voices`). Pass `language` to filter; separate several languages with commas to get only voices that speak all of them. Each voice lists the `languages` it speaks and a `voice_previews` URL per language.
+Get voice IDs from [List Voices](/api-reference/agents/get-assistant-voices) (`GET /agent/voices`). Pass `language` to filter; separate several languages with commas to get only voices that speak all of them. Each voice lists the `languages` it speaks and a `voice_previews` URL per language.
 
 <CodeGroup>
 ```bash cURL
@@ -224,8 +224,8 @@ The two endpoints accept different codes. On both, the voice must speak the lang
 
 | Endpoint | Accepted codes |
 |---|---|
-| [Create Agent](/api-reference/endpoint/assistant/create-agent) (`primary_language`, `secondary_language`) | `en-US`, `en-GB`, `en-AU`, `en-IN`, `hi-IN`, `ta-IN`, `te-IN`, `bn-IN`, `mr-IN`, `kn-IN`, `ms-MY`, `zh-CN`, `od-IN`, `pa-IN`, `my-MM` |
-| [Edit Agent Settings](/api-reference/endpoint/assistant/edit-assistant) (`language`, `additional_languages`) | `ar-AE`, `bn-IN`, `de-DE`, `en-AU`, `en-GB`, `en-IN`, `en-US`, `es-ES`, `fr-FR`, `gu-IN`, `hi-IN`, `it-IT`, `ja-JP`, `kn-IN`, `ko-KR`, `ml-IN`, `mr-IN`, `ms-MY`, `my-MM`, `nl-NL`, `od-IN`, `pa-IN`, `pt-BR`, `ru-RU`, `ta-IN`, `te-IN`, `zh-CN` |
+| [Create Agent](/api-reference/agents/create-agent) (`primary_language`, `secondary_language`) | `en-US`, `en-GB`, `en-AU`, `en-IN`, `hi-IN`, `ta-IN`, `te-IN`, `bn-IN`, `mr-IN`, `kn-IN`, `ms-MY`, `zh-CN`, `od-IN`, `pa-IN`, `my-MM` |
+| [Edit Agent Settings](/api-reference/agents/edit-assistant) (`language`, `additional_languages`) | `ar-AE`, `bn-IN`, `de-DE`, `en-AU`, `en-GB`, `en-IN`, `en-US`, `es-ES`, `fr-FR`, `gu-IN`, `hi-IN`, `it-IT`, `ja-JP`, `kn-IN`, `ko-KR`, `ml-IN`, `mr-IN`, `ms-MY`, `my-MM`, `nl-NL`, `od-IN`, `pa-IN`, `pt-BR`, `ru-RU`, `ta-IN`, `te-IN`, `zh-CN` |
 
 Kannada is `kn-IN`; `ka-IN` is rejected. To create an agent in a language Create Agent doesn't accept, create it in the dashboard, or change its language afterwards with Edit Agent Settings.
 

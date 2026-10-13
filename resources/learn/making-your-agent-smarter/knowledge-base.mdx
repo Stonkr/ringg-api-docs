@@ -2,12 +2,8 @@
 title: "Lesson: Knowledge base"
 sidebarTitle: "Knowledge base"
 description: "Create an EMI policy knowledge base from a CSV, wait for Ready, attach it to the EMI reminder agent, mention it in the prompt with @, and test it in live chat."
-related:
-  - "Knowledge base": /documentation/inventory/knowledge-base
-  - "Attach a knowledge base": /documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -75,4 +71,13 @@ Click the trash icon on `emi_policy` in the **Knowledge Base** panel. Expected r
   incorrectFeedback="Not quite. Once the knowledge base is Ready and attached, what remains is the prompt: the @emi_policy mention tells Ananya which questions to answer from it. Re-uploading, Exact match or a real call do not change that."
 />
 
-<RelatedTopics items={[["Knowledge base", "/documentation/inventory/knowledge-base"], ["Attach a knowledge base", "/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Knowledge base" icon="book-open" href="/documentation/inventory/knowledge-base" horizontal>
+    Build one from files and web pages, and test it in chat.
+  </Card>
+  <Card title="Attach a knowledge base" icon="bot" href="/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base" horizontal>
+    Attach it to an agent and mention it in the prompt.
+  </Card>
+</Columns>

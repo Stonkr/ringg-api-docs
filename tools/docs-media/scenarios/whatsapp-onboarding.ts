@@ -12,7 +12,7 @@ const FB_FRAME = `<!doctype html><script>parent.postMessage(JSON.stringify({ typ
 
 export default {
   name: "whatsapp-onboarding",
-  docsPage: "whatsapp/onboarding",
+  docsPage: "documentation/inventory/tools-integrations/connect-whatsapp",
   routes: { "GET /workspace-tools": editorB["GET /workspace-tools"], "GET /workspace/features": {}, ...makeWhatsappOnboardingRoutes() },
   async run(s) {
     const p = s.page;

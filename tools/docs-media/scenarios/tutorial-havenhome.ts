@@ -10,7 +10,7 @@ export default {
   name: "tutorial-havenhome",
   title: "HavenHome assisted purchase journey",
   highlight: false,
-  docsPage: "workflows/build",
+  docsPage: "documentation/build-agents/workflows/build-a-workflow",
   routes: havenhomeRoutes(),
   async run(s) {
     try { await this.body(s); } catch (e) { if (process.env.HH_DEBUG) console.log(String(e).slice(0, 2500)); throw e; }

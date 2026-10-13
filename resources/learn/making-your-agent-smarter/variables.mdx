@@ -2,12 +2,8 @@
 title: "Lesson: Variables"
 sidebarTitle: "Variables"
 description: "Add due_amount, due_date and loan_account as custom variables on the EMI reminder agent, insert them in the prompt with @, and fill them in Test assistant."
-related:
-  - "Variables": /documentation/build-agents/customize-agent-behaviour/custom-variables
-  - "Write the prompt": /documentation/build-agents/customize-agent-behaviour/agent-prompt
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -83,4 +79,13 @@ Create a variable from the prompt instead of the panel: in any section, type `@{
   incorrectFeedback="Not quite. Names are lowercase with _, converted as you type, so it becomes branch_name. Its value is filled per call, from Test assistant, a calling-list column or the API, never from the prompt or the knowledge base."
 />
 
-<RelatedTopics items={[["Variables", "/documentation/build-agents/customize-agent-behaviour/custom-variables"], ["Write the prompt", "/documentation/build-agents/customize-agent-behaviour/agent-prompt"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Custom variables" icon="braces" href="/documentation/build-agents/customize-agent-behaviour/custom-variables" horizontal>
+    Personalise every call with values you pass in.
+  </Card>
+  <Card title="Agent prompt" icon="pen-line" href="/documentation/build-agents/customize-agent-behaviour/agent-prompt" horizontal>
+    The first message, prompt sections and @ mentions.
+  </Card>
+</Columns>

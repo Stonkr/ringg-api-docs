@@ -5,7 +5,7 @@ import { PR_ID, makeWhatsappEditorRoutes } from "../fixtures/whatsapp-agents.ts"
 // One video for both WhatsApp tool pages: the on-call tools (on-call-tools.mdx) and the post-call tool (post-call-tools.mdx), on a voice agent.
 export default {
   name: "whatsapp-tools",
-  docsPage: "whatsapp/on-call-tools",
+  docsPage: "documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools",
   routes: makeWhatsappEditorRoutes(),
   async run(s) {
     const p = s.page;

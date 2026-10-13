@@ -36,7 +36,7 @@ All requests go to `https://prod-api.ringg.ai/ca/api/v0` and send your key in th
     export RINGG_API_KEY="your-api-key"
     ```
 
-    Check the key with [Get Workspace Info](/api-reference/endpoint/workspace/get-workspace-info), a read-only request.
+    Check the key with [Get Workspace Info](/api-reference/account/get-workspace-info), a read-only request.
 
     <CodeGroup>
     ```bash cURL
@@ -87,14 +87,14 @@ All requests go to `https://prod-api.ringg.ai/ca/api/v0` and send your key in th
 
     **In the dashboard:** open **Assistants** in the sidebar. For an existing agent, open it and click the copy button beside its name in the top bar; the ID is also in the URL, `/assistants/<agent_id>`. To create one, click **Create agent**, choose the **Outbound** tab and a template, then follow [Create an agent](/documentation/build-agents/agents/create-an-agent).
 
-    **With the API:** list your agents with [Get Assistants](/api-reference/endpoint/assistant/get-assistants) and pick one whose `agent_type` is `outbound` or `outbound_inbound`:
+    **With the API:** list your agents with [Get Assistants](/api-reference/agents/get-assistants) and pick one whose `agent_type` is `outbound` or `outbound_inbound`:
 
     ```bash
     curl "https://prod-api.ringg.ai/ca/api/v0/agent/all" \
       -H "X-API-KEY: $RINGG_API_KEY"
     ```
 
-    Or create one with [Create Agent](/api-reference/endpoint/assistant/create-agent). First get a `voice_id` that speaks your language from [Get Assistant Voices](/api-reference/endpoint/assistant/get-assistant-voices) (`GET /agent/voices?language=en-IN`).
+    Or create one with [Create Agent](/api-reference/agents/create-agent). First get a `voice_id` that speaks your language from [Get Assistant Voices](/api-reference/agents/get-assistant-voices) (`GET /agent/voices?language=en-IN`).
 
     <CodeGroup>
     ```bash cURL
@@ -176,7 +176,7 @@ All requests go to `https://prod-api.ringg.ai/ca/api/v0` and send your key in th
   </Step>
 
   <Step title="Choose a caller number">
-    The caller number is the number your phone will show. List your workspace's numbers with [Get Workspace Numbers](/api-reference/endpoint/numbers/get-workspace-numbers):
+    The caller number is the number your phone will show. List your workspace's numbers with [Get Workspace Numbers](/api-reference/inventory/numbers/get-workspace-numbers):
 
     <CodeGroup>
     ```bash cURL
@@ -227,7 +227,7 @@ All requests go to `https://prod-api.ringg.ai/ca/api/v0` and send your key in th
   </Step>
 
   <Step title="Place the call to your own phone">
-    Send [Initiate Individual Call](/api-reference/endpoint/calling/initiate-individual-call) with your `agent_id`, your `from_number_id`, and your own number, with country code, as `mobile_number`. `custom_args_values` fills the agent's [variables](/documentation/build-agents/customize-agent-behaviour/custom-variables), such as `@{{callee_name}}` in the prompt.
+    Send [Initiate Individual Call](/api-reference/calling/individual-calls/initiate-individual-call) with your `agent_id`, your `from_number_id`, and your own number, with country code, as `mobile_number`. `custom_args_values` fills the agent's [variables](/documentation/build-agents/customize-agent-behaviour/custom-variables), such as `@{{callee_name}}` in the prompt.
 
     <CodeGroup>
     ```bash cURL
@@ -315,7 +315,7 @@ All requests go to `https://prod-api.ringg.ai/ca/api/v0` and send your key in th
   </Step>
 
   <Step title="Read the result">
-    After you hang up, fetch the call with [Get Call Details](/api-reference/endpoint/history/get-call-details). Add `send_analysis=true` to include the analysis.
+    After you hang up, fetch the call with [Get Call Details](/api-reference/monitoring/call-history/get-call-details). Add `send_analysis=true` to include the analysis.
 
     <CodeGroup>
     ```bash cURL
@@ -420,7 +420,7 @@ Polling Get Call Details is fine for a test. In production, subscribe the agent 
     The call is queued because the agent's calling window is closed. Check **Call start time**, **Call end time** and **Timezone** in the agent's [call settings](/documentation/build-agents/customize-agent-behaviour/call-settings#calling-window), or send your own `call_config.call_time` with the call.
   </Accordion>
   <Accordion title="The call ended as failed or error">
-    Read `call_sub_status` in Get Call Details; the full list of values is in [Get Call Details](/api-reference/endpoint/history/get-call-details). Also check that the caller number is not a test number and is not flagged as spam on **Numbers**.
+    Read `call_sub_status` in Get Call Details; the full list of values is in [Get Call Details](/api-reference/monitoring/call-history/get-call-details). Also check that the caller number is not a test number and is not flagged as spam on **Numbers**.
   </Accordion>
   <Accordion title="The agent does not use my name">
     The prompt uses a variable you did not send, or sent under a different key. Add it to `custom_args_values`, for example `"callee_name": "Priya"`. See [Variables](/documentation/build-agents/customize-agent-behaviour/custom-variables).

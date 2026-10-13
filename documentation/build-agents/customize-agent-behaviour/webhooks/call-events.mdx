@@ -135,7 +135,7 @@ Sent when a call attempt finishes, for every outcome: `completed`, `failed`, `er
 
 ### Recording completed event
 
-Sent when the recording is processed. `recording_url` may expire about a day after the event is sent; download the file if you need to keep it, or fetch a fresh link from [Get Call Details](/api-reference/endpoint/history/get-call-details).
+Sent when the recording is processed. `recording_url` may expire about a day after the event is sent; download the file if you need to keep it, or fetch a fresh link from [Get Call Details](/api-reference/monitoring/call-history/get-call-details).
 
 ```json
 {
@@ -353,7 +353,7 @@ A scheduled callback and a redial after voicemail are each a separate call with 
 - `parent_call_id` is on every event type, so a child call is linkable from its `call_started`.
 - It is `null` for a call dialled directly, never absent: `parent_call_id != null` is a complete test for "this call came from another".
 - Scheduled callbacks are flat: every callback points at the original call. Voicemail redials are nested: each attempt points at the one before. To find the original call, follow `parent_call_id` upward until it is `null`, and cap the number of steps.
-- The webhook has no flag to tell a callback from a voicemail redial; the [call history API](/api-reference/endpoint/history/get-call-history) has the category.
+- The webhook has no flag to tell a callback from a voicemail redial; the [call history API](/api-reference/monitoring/call-history/get-call-history) has the category.
 
 ## Example handler
 

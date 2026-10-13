@@ -2,12 +2,8 @@
 title: "Lesson: Voice and language"
 sidebarTitle: "Voice and language"
 description: "Confirm the EMI reminder agent's languages, compare voices by provider and tag, preview them in English and Hindi, set the speaking speed, and save."
-related:
-  - "Voice and language": /documentation/build-agents/customize-agent-behaviour/voice-and-language
-  - "Write prompts for voice": /documentation/build-agents/customize-agent-behaviour/agent-prompt#write-prompts-for-voice
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -80,4 +76,13 @@ Give the speech recogniser the words it is most likely to mishear on Acme's call
   incorrectFeedback="Not quite. The primary language decides which voices are offered, so changing it clears the secondary language and the selected voice; you choose both again and save. Speed is not affected."
 />
 
-<RelatedTopics items={[["Voice and language", "/documentation/build-agents/customize-agent-behaviour/voice-and-language"], ["Write prompts for voice", "/documentation/build-agents/customize-agent-behaviour/agent-prompt#write-prompts-for-voice"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Voice and language" icon="mic" href="/documentation/build-agents/customize-agent-behaviour/voice-and-language" horizontal>
+    Choose languages, a voice and its speed.
+  </Card>
+  <Card title="Write prompts for voice" icon="audio-lines" href="/documentation/build-agents/customize-agent-behaviour/agent-prompt#write-prompts-for-voice" horizontal>
+    Write text that is heard, not read.
+  </Card>
+</Columns>

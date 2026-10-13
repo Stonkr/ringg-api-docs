@@ -3,7 +3,8 @@ import { multiPromptRoutes } from "../fixtures/multi-prompt.ts";
 
 export default {
   name: "agents-multi-prompt",
-  docsPage: "agents/multi-prompt",
+  docsPage: "documentation/build-agents/agents/multi-prompt-agents/overview",
+  title: "Multi-prompt agents",
   routes: multiPromptRoutes,
   async run(s) {
     const p = s.page;

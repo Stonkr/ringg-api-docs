@@ -2,12 +2,8 @@
 title: "Lesson: Write the prompt"
 sidebarTitle: "Write the prompt"
 description: "Rewrite the EMI reminder agent's first message and prompt sections to confirm the customer, state the amount and date, and ask for a payment date, then save."
-related:
-  - "Write the prompt": /documentation/build-agents/customize-agent-behaviour/agent-prompt
-  - "Write prompts for voice": /documentation/build-agents/customize-agent-behaviour/agent-prompt#write-prompts-for-voice
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -87,4 +83,13 @@ In **Conversation Script**, type `@{{calee_name}}` (one l) by hand. Expected res
   incorrectFeedback="Not quite. Red with a wavy underline means the agent has no variable of that name. Saving does not fix it, and hand-typed tokens are fine once they match a real variable: type @ and pick it, or create it."
 />
 
-<RelatedTopics items={[["Write the prompt", "/documentation/build-agents/customize-agent-behaviour/agent-prompt"], ["Write prompts for voice", "/documentation/build-agents/customize-agent-behaviour/agent-prompt#write-prompts-for-voice"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Agent prompt" icon="pen-line" href="/documentation/build-agents/customize-agent-behaviour/agent-prompt" horizontal>
+    The first message, prompt sections and @ mentions.
+  </Card>
+  <Card title="Write prompts for voice" icon="audio-lines" href="/documentation/build-agents/customize-agent-behaviour/agent-prompt#write-prompts-for-voice" horizontal>
+    Write text that is heard, not read.
+  </Card>
+</Columns>

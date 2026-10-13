@@ -3,7 +3,7 @@ import { makeEditorBRoutes, PR_ID, shotNoToasts } from "../fixtures/editor-b.ts"
 
 export default {
   name: "agents-advanced-analysis",
-  docsPage: "agents/advanced-analysis",
+  docsPage: "documentation/build-agents/customize-agent-behaviour/advanced-analysis",
   routes: makeEditorBRoutes(),
   async run(s) {
     const p = s.page;

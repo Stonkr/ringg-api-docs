@@ -87,7 +87,7 @@ Clicking **Multi Prompt** skips the form: Ringg creates an agent named **Untitle
 
 ## With the API
 
-Send `POST /public/agent` with your [API key](/documentation/manage-account/api-key) in `X-API-KEY` ([authentication](/api-reference/introduction/authentication)). It creates a single-prompt agent and returns its ID. Get a `voice_id` from [List Voices](/api-reference/endpoint/assistant/get-assistant-voices) first. The API cannot create Webcall, WhatsApp or multi-prompt agents; use the dashboard for those.
+Send `POST /public/agent` with your [API key](/documentation/manage-account/api-key) in `X-API-KEY` ([authentication](/api-reference/introduction/authentication)). It creates a single-prompt agent and returns its ID. Get a `voice_id` from [List Voices](/api-reference/agents/get-assistant-voices) first. The API cannot create Webcall, WhatsApp or multi-prompt agents; use the dashboard for those.
 
 <CodeGroup>
 ```bash cURL
@@ -169,16 +169,16 @@ print(response.json())
 ```
 
 <Check>
-`data.id` is the `agent_id` you pass to [calling](/api-reference/endpoint/calling/initiate-individual-call) and [campaign](/api-reference/endpoint/campaign/start-campaign) endpoints. [Get Agent](/api-reference/endpoint/assistant/get-assistant-by-id) returns the new agent, and it is on the **Agents** page in the dashboard.
+`data.id` is the `agent_id` you pass to [calling](/api-reference/calling/individual-calls/initiate-individual-call) and [campaign](/api-reference/calling/campaigns/start-campaign) endpoints. [Get Agent](/api-reference/agents/get-assistant-by-id) returns the new agent, and it is on the **Agents** page in the dashboard.
 </Check>
 
-**Likeliest error:** `400` with code `VOICE_LANGUAGE_MISMATCH`: the voice does not support `primary_language`. Pick a voice from [List Voices](/api-reference/endpoint/assistant/get-assistant-voices) whose `languages` include it.
+**Likeliest error:** `400` with code `VOICE_LANGUAGE_MISMATCH`: the voice does not support `primary_language`. Pick a voice from [List Voices](/api-reference/agents/get-assistant-voices) whose `languages` include it.
 
 `intro_message` becomes the agent's **First message**. The other text fields become four prompt sections, shown in the editor as **Objective**, **Response Guidelines**, **Conversation Script** (`task`, with `sample_conversations` appended) and **FAQs**; open the agent in the dashboard to review them ([Write the prompt](/documentation/build-agents/customize-agent-behaviour/agent-prompt)). An AI assistant can also create agents for you through the Ringg [MCP server](/resources/mcp-server/workspace-mcp-server/overview).
 
 ### Request fields
 
-The [Create Agent](/api-reference/endpoint/assistant/create-agent) reference lists every field. The essentials:
+The [Create Agent](/api-reference/agents/create-agent) reference lists every field. The essentials:
 
 <ResponseField name="agent_name" type="string" required>
   Up to 100 characters.
@@ -199,7 +199,7 @@ The [Create Agent](/api-reference/endpoint/assistant/create-agent) reference lis
   A locale such as `en-IN` or `hi-IN`; see [language codes the API accepts](/documentation/build-agents/customize-agent-behaviour/voice-and-language#language-codes-the-api-accepts).
 </ResponseField>
 <ResponseField name="voice_id" type="string" required>
-  From [List Voices](/api-reference/endpoint/assistant/get-assistant-voices); must support the language.
+  From [List Voices](/api-reference/agents/get-assistant-voices); must support the language.
 </ResponseField>
 <ResponseField name="agent_type" type="string">
   `outbound` (default), `inbound` or `outbound_inbound`.

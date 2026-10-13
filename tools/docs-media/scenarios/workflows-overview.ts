@@ -5,7 +5,7 @@ import { logsRoutes } from "../fixtures/monitor.ts";
 export default {
   name: "workflows-overview",
   title: "Workflows",
-  docsPage: "workflows/overview",
+  docsPage: "documentation/build-agents/workflows/overview",
   routes: { ...logsRoutes, ...workflowRoutes },
   async run(s) {
     const p = s.page;

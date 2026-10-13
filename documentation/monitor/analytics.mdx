@@ -136,11 +136,11 @@ Every drill-down keeps the page's date range, agents, versions, campaigns and wo
 
 The public API has five analytics endpoints. Each takes `start_date` and `end_date` (`YYYY-MM-DD`), `agent_id`, `bulk_list_id` and `voicemail`. They don't match the dashboard cards: they leave out **Cancelled** and **Error** calls, include callbacks, count unique numbers actually used, and have no registered count, change, goal, cost or latency figures. Expect their totals to differ from the page.
 
-- [Get Platform Analytics](/api-reference/endpoint/analytics/get-platform-analytics): workspace summary metrics.
-- [Get Drill-Down Analytics](/api-reference/endpoint/analytics/get-drill-down-analytics): one campaign (`bulk_list_id` required).
-- [Get Number Analytics](/api-reference/endpoint/analytics/get-number-analytics): metrics per phone number.
-- [Get Duration Distribution](/api-reference/endpoint/analytics/get-duration-distribution): call duration buckets.
-- [Get Classification Analytics](/api-reference/endpoint/analytics/get-classification-analytics): calls by outcome classification.
+- [Get Platform Analytics](/api-reference/monitoring/analytics/get-platform-analytics): workspace summary metrics.
+- [Get Drill-Down Analytics](/api-reference/monitoring/analytics/get-drill-down-analytics): one campaign (`bulk_list_id` required).
+- [Get Number Analytics](/api-reference/monitoring/analytics/get-number-analytics): metrics per phone number.
+- [Get Duration Distribution](/api-reference/monitoring/analytics/get-duration-distribution): call duration buckets.
+- [Get Classification Analytics](/api-reference/monitoring/analytics/get-classification-analytics): calls by outcome classification.
 
 You need an [API key](/documentation/manage-account/api-key) sent as `X-API-KEY` (see [Authentication](/api-reference/introduction/authentication)). Get an agent's ID from [Find an agent's ID](/documentation/build-agents/agents/agent-types#find-the-agent-id).
 
@@ -181,7 +181,7 @@ print(response.json())
 ```
 </CodeGroup>
 
-For call-level rows, use [Get call history](/api-reference/endpoint/history/get-call-history).
+For call-level rows, use [Get call history](/api-reference/monitoring/call-history/get-call-history).
 
 ## Troubleshooting
 

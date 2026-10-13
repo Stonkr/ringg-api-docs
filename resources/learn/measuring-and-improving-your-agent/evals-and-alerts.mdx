@@ -2,12 +2,8 @@
 title: "Lesson: Evals and alerts"
 sidebarTitle: "Evals and alerts"
 description: "Write an Evals test case that checks Ananya records a promise to pay, run it as a simulated call, then create an alert on the call failure rate."
-related:
-  - "Evals": /documentation/monitor/evals
-  - "Alerts": /documentation/monitor/alerts
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -84,4 +80,13 @@ On the **Workspace** tab, under **Recommended**, click the pencil icon on **Disc
   incorrectFeedback="Not quite. A failed case shows Failed with the criteria it missed, and a disabled Evals page says so up front. Not evaluated means the simulated conversation never reached the situation under test, which the Conversation path controls."
 />
 
-<RelatedTopics items={[["Evals", "/documentation/monitor/evals"], ["Alerts", "/documentation/monitor/alerts"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Evals" icon="shield-check" href="/documentation/monitor/evals" horizontal>
+    Score calls and run test cases.
+  </Card>
+  <Card title="Alerts" icon="bell" href="/documentation/monitor/alerts" horizontal>
+    Notify your team when a metric crosses a threshold.
+  </Card>
+</Columns>

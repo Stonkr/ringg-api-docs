@@ -1,0 +1,12 @@
+---
+openapi: get /analytics/number-analytics
+description: "Get call metrics grouped by caller number to compare how each of your numbers performs, filtered by date range, agent, campaign or voicemail status."
+related:
+  - "List workspace numbers": /api-reference/inventory/numbers/get-workspace-numbers
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Use it to find a number that connects less often than the others. [Phone numbers](/documentation/inventory/phone-numbers/overview) covers spam-flagged numbers, and a [number pool](/documentation/inventory/phone-numbers/number-pools) can rotate past them.
+
+<RelatedTopics items={[["List workspace numbers", "/api-reference/inventory/numbers/get-workspace-numbers"]]} />

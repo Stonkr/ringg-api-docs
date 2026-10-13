@@ -2,12 +2,8 @@
 title: "Lesson: Numbers"
 sidebarTitle: "Numbers"
 description: "Buy a Ringg-provided number or import one from your telephony provider in the Add Numbers dialog, then put it in a number pool that rotates Acme's caller IDs."
-related:
-  - "Buy or import a number": /documentation/inventory/phone-numbers/buy-or-import-a-number
-  - "Number pools": /documentation/inventory/phone-numbers/number-pools
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -75,4 +71,13 @@ Tag the number so your team can tell it apart from the ones Acme adds later. On 
   incorrectFeedback="Not quite. Test calls use Ringg's shared test numbers, which the campaign form never offers. Buy or import a number of your own in Add Numbers, then pick it under Individual numbers or put it in a pool."
 />
 
-<RelatedTopics items={[["Buy or import a number", "/documentation/inventory/phone-numbers/buy-or-import-a-number"], ["Number pools", "/documentation/inventory/phone-numbers/number-pools"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Buy or import a number" icon="hash" href="/documentation/inventory/phone-numbers/buy-or-import-a-number" horizontal>
+    Buy a number, import one from your provider, or add one by hand.
+  </Card>
+  <Card title="Number pools" icon="layers" href="/documentation/inventory/phone-numbers/number-pools" horizontal>
+    Rotate caller IDs across campaigns and API calls.
+  </Card>
+</Columns>

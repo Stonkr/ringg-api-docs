@@ -56,7 +56,7 @@ New keys start with `rg_live_`. A key generated earlier can start with `ringg_li
 
 ## Use the key
 
-Send the key in the `X-API-KEY` header to `https://prod-api.ringg.ai/ca/api/v0`. [Get Workspace Info](/api-reference/endpoint/workspace/get-workspace-info) (`GET /workspace`) is a quick check that it works:
+Send the key in the `X-API-KEY` header to `https://prod-api.ringg.ai/ca/api/v0`. [Get Workspace Info](/api-reference/account/get-workspace-info) (`GET /workspace`) is a quick check that it works:
 
 <CodeGroup>
 ```bash cURL
@@ -85,7 +85,7 @@ print(response.status_code, response.json())
 
 <Check>A `200` response with your workspace's details in `workspace_info` means the key works. A `401` with `{"message": "Invalid credentials"}` means it is missing, mistyped or was regenerated.</Check>
 
-The key acts for the whole workspace. It can [create agents](/api-reference/endpoint/assistant/create-agent), [start campaigns](/api-reference/endpoint/campaign/start-campaign) and [place calls](/api-reference/endpoint/calling/initiate-individual-call) that spend your [balance](/documentation/manage-account/billing).
+The key acts for the whole workspace. It can [create agents](/api-reference/agents/create-agent), [start campaigns](/api-reference/calling/campaigns/start-campaign) and [place calls](/api-reference/calling/individual-calls/initiate-individual-call) that spend your [balance](/documentation/manage-account/billing).
 
 ## Store it safely
 

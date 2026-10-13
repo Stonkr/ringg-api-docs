@@ -10,15 +10,15 @@ The prompt is the set of instructions an agent follows on every call or chat, an
 
 In the dashboard: **Sidebar → Assistants →** open an agent **→ Prompt**.
 
-This chapter is what the agent says and hears, in three pages:
+These three pages set what the agent says and hears:
 
 | Page | What you set |
 |---|---|
-| Write the prompt (this page) | The first message and the prompt sections, with variables, tools and knowledge bases inserted by `@` |
+| Agent prompt (this page) | The first message and the prompt sections, with variables, tools and knowledge bases inserted by `@` |
 | [Voice and language](/documentation/build-agents/customize-agent-behaviour/voice-and-language) | The languages it understands and speaks, the voice, and its speed |
-| [Variables](/documentation/build-agents/customize-agent-behaviour/custom-variables) | Values that change per call, filled by API, from a campaign CSV or from tools |
+| [Custom variables](/documentation/build-agents/customize-agent-behaviour/custom-variables) | Values that change per call, filled by API, from a campaign CSV or from tools |
 
-After this chapter, [Inventory](/documentation/inventory/knowledge-base) gives it your data and your APIs.
+After these, [Inventory](/documentation/inventory/knowledge-base) gives it your data and your APIs.
 
 ## Before you start
 
@@ -144,7 +144,7 @@ A voice agent's text is heard, not read, so write for the ear.
 
 ## Edit the prompt by API
 
-[Edit Agent Settings](/api-reference/endpoint/assistant/edit-assistant) (`PATCH /agent/v1`) changes one thing per request, named by `operation`. It matches **Save** in the Prompt section.
+[Edit Agent Settings](/api-reference/agents/edit-assistant) (`PATCH /agent/v1`) changes one thing per request, named by `operation`. It matches **Save** in the Prompt section.
 
 | Operation | Changes | Field |
 |---|---|---|
@@ -223,7 +223,7 @@ print(response.json())
 
 <Check>A successful response is `{"message": "Agent updated successfully!", "agent_id": "…"}`.</Check>
 
-When you create an agent by API, the first message and sections come from `intro_message`, `introduction_and_objective`, `task`, `faq` and `response_guidelines` in [Create Agent](/api-reference/endpoint/assistant/create-agent).
+When you create an agent by API, the first message and sections come from `intro_message`, `introduction_and_objective`, `task`, `faq` and `response_guidelines` in [Create Agent](/api-reference/agents/create-agent).
 
 ## Next steps
 

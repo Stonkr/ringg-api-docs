@@ -18,7 +18,7 @@ const section = (p: Page, heading: string) => p.locator("h2", { hasText: heading
 
 export default {
   name: "monitor-analytics",
-  docsPage: "monitor/analytics",
+  docsPage: "documentation/monitor/analytics",
   routes: { ...analyticsRoutes },
   async run(s) {
     const p = s.page;

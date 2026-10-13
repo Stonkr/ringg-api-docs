@@ -77,6 +77,8 @@ For a number on your own telephony account, the provider must route its calls to
 - **Plivo, Twilio and Vobiz**: Ringg links the number to its app in your provider account when you attach it. Plivo and Twilio numbers are unlinked again when you detach them.
 - **VoiceLink**: Ringg routes the number when you import or buy it.
 - **Exotel**: attach the number to the `Ringg Inbound` applet in Exotel yourself ([Exotel](/documentation/inventory/phone-numbers/your-own-telephony/exotel)).
+- **Telnyx**: assign the number to your Voice API Application in the Telnyx portal ([Telnyx](/documentation/inventory/phone-numbers/your-own-telephony/telnyx)).
+- **InTalk**: set the static WSS URL in InTalk's portal ([InTalk](/documentation/inventory/phone-numbers/your-own-telephony/intalk)).
 - **Other providers**: set the routing in the provider's console. Ozonetel's URLs are on its [guide](/documentation/inventory/phone-numbers/your-own-telephony/ozonetel); for the rest, contact Ringg.
 
 Ringg-provided numbers need no setup.
@@ -101,16 +103,16 @@ The agent answers, and the call appears at the top of [Logs](/documentation/moni
 
 You need an [API key](/documentation/manage-account/api-key), the agent's ID ([Find an agent's ID](/documentation/build-agents/agents/agent-types#find-the-agent-id)) and a caller number from your workspace ([Buy or import a number](/documentation/inventory/phone-numbers/buy-or-import-a-number)).
 
-[Initiate Individual Call](/api-reference/endpoint/calling/initiate-individual-call) takes one of:
+[Initiate Individual Call](/api-reference/calling/individual-calls/initiate-individual-call) takes one of:
 
 <ResponseField name="from_number_id" type="string | string[]">
-  A workspace number ID (the **ID** column, or `id` from [Get Workspace Numbers](/api-reference/endpoint/numbers/get-workspace-numbers)), or an array of IDs.
+  A workspace number ID (the **ID** column, or `id` from [Get Workspace Numbers](/api-reference/inventory/numbers/get-workspace-numbers)), or an array of IDs.
 </ResponseField>
 <ResponseField name="from_number" type="string | string[]">
   A caller number with country code, for example `+919876500001`, or an array of numbers.
 </ResponseField>
 
-[Initiate Individual Call (Number Pool)](/api-reference/endpoint/calling/initiate-individual-call-v2) also accepts `number_pool_id` (**Copy pool ID** on [the pool list](/documentation/inventory/phone-numbers/number-pools#the-pool-list)). Send at least one of the three; with a pool, the pool is used and the other field is ignored.
+[Initiate Individual Call (Number Pool)](/api-reference/calling/individual-calls/initiate-individual-call-v2) also accepts `number_pool_id` (**Copy pool ID** on [the pool list](/documentation/inventory/phone-numbers/number-pools#the-pool-list)). Send at least one of the three; with a pool, the pool is used and the other field is ignored.
 
 When no pool is sent, default outbound numbers set on the agent version take precedence over `from_number_id` and `from_number`.
 
@@ -160,7 +162,7 @@ print(res.json())
 ```
 </CodeGroup>
 
-For campaigns, [Start Campaign](/api-reference/endpoint/campaign/start-campaign) takes `from_numbers` (an array of number IDs, or numbers written exactly as listed in your workspace; each retry dials from the next one) and [Start Campaign (Number Pool)](/api-reference/endpoint/campaign/start-campaign-v2) takes `number_pool_id`.
+For campaigns, [Start Campaign](/api-reference/calling/campaigns/start-campaign) takes `from_numbers` (an array of number IDs, or numbers written exactly as listed in your workspace; each retry dials from the next one) and [Start Campaign (Number Pool)](/api-reference/calling/campaigns/start-campaign-v2) takes `number_pool_id`.
 
 ## Troubleshooting
 
@@ -180,7 +182,7 @@ For campaigns, [Start Campaign](/api-reference/endpoint/campaign/start-campaign)
     Test numbers are region-bound. The Indian test number calls Indian numbers only; the US test number calls numbers outside India. Click **Switch** or pick one of your own numbers. See [Test numbers](/documentation/inventory/phone-numbers/overview#test-numbers).
   </Accordion>
   <Accordion title="The API returns an error about the caller number">
-    Send `from_number_id` or `from_number`, not both. Sending neither returns `400` unless the agent version has default outbound numbers. On [Initiate Individual Call (Number Pool)](/api-reference/endpoint/calling/initiate-individual-call-v2), both together or none of the three returns `422`.
+    Send `from_number_id` or `from_number`, not both. Sending neither returns `400` unless the agent version has default outbound numbers. On [Initiate Individual Call (Number Pool)](/api-reference/calling/individual-calls/initiate-individual-call-v2), both together or none of the three returns `422`.
   </Accordion>
 </AccordionGroup>
 

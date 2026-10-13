@@ -3,7 +3,7 @@ import { callLimitRoutes } from "../fixtures/account.ts";
 
 export default {
   name: "account-call-limits",
-  docsPage: "account/call-limits",
+  docsPage: "documentation/manage-account/call-limits",
   routes: callLimitRoutes(),
   async run(s) {
     const p = s.page;

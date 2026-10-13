@@ -5,7 +5,7 @@ import { makeNumbersRoutes } from "../fixtures/numbers.ts";
 export default {
   name: "numbers-overview",
   title: "Numbers",
-  docsPage: "numbers/overview",
+  docsPage: "documentation/inventory/phone-numbers/overview",
   routes: { ...agentRoutes, ...makeNumbersRoutes() },
   async run(s) {
     const p = s.page;

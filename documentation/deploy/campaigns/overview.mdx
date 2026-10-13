@@ -5,7 +5,7 @@ description: "Understand Ringg AI campaigns: an agent calls every contact in a C
 "og:title": "Campaigns: call a list of people with an agent"
 ---
 
-A campaign is a batch of outbound calls by one [agent](/documentation/build-agents/agents/agent-types) to a [calling list](/documentation/deploy/campaigns/calling-list). This chapter covers [creating a campaign](/documentation/deploy/campaigns/create-a-campaign), the [calling list](/documentation/deploy/campaigns/calling-list) it dials, [launching a workflow campaign](/documentation/deploy/campaigns/workflow-campaign#workflow-campaigns) and [managing one](/documentation/deploy/campaigns/manage-a-campaign) after launch.
+A campaign is a batch of outbound calls by one [agent](/documentation/build-agents/agents/agent-types) to a [calling list](/documentation/deploy/campaigns/calling-list). This section covers [creating a campaign](/documentation/deploy/campaigns/create-a-campaign), [launching a workflow campaign](/documentation/deploy/campaigns/workflow-campaign#workflow-campaigns), [running campaigns by API](/documentation/deploy/campaigns/campaigns-by-api), the [calling list](/documentation/deploy/campaigns/calling-list) a campaign dials and [managing one](/documentation/deploy/campaigns/manage-a-campaign) after launch.
 
 In the dashboard: **Sidebar → Monitor → Campaigns**. Campaigns are not available on a primary (hub) workspace; open one of its [Ringg Spaces](/documentation/manage-account/ringg-spaces/overview).
 
@@ -14,7 +14,7 @@ In the dashboard: **Sidebar → Monitor → Campaigns**. Campaigns are not avail
 | You want to | Use | Why |
 |---|---|---|
 | Call a list of contacts (reminders, renewals, surveys, lead follow-ups) on a schedule | A campaign | <Tooltip tip="The hours of the day in which the campaign may place calls, in the campaign's timezone.">Calling windows</Tooltip>, retries, email notifications and one report for the whole list |
-| Call one person the moment your own system decides (a form fill, a failed payment) | [Initiate individual call](/api-reference/endpoint/calling/initiate-individual-call) | No CSV and no schedule. Your backend sends one request per call |
+| Call one person the moment your own system decides (a form fill, a failed payment) | [Initiate individual call](/api-reference/calling/individual-calls/initiate-individual-call) | No CSV and no schedule. Your backend sends one request per call |
 | Run several steps per contact (call, wait, branch on the outcome, call again) | A workflow campaign | The workflow's steps decide what happens to each contact. See [Workflows](/documentation/build-agents/workflows/overview) |
 
 When you create a campaign, **Campaign type** offers **Assistant** ("Call a list with one assistant") and **Workflow** ("Run a multi-step workflow"). [Create a campaign](/documentation/deploy/campaigns/create-a-campaign) covers **Assistant**; [Launch a workflow campaign](/documentation/deploy/campaigns/workflow-campaign#workflow-campaigns) covers **Workflow**.
@@ -39,7 +39,7 @@ The **Status** column on the campaigns list shows one of these values.
 | Verifying (`verifying`) | Ringg is checking the rows of the calling list. | Wait. |
 | Draft (`draft`) | The list is verified, but the campaign has not been launched yet. | **Complete Setup** to finish step 2, or **Terminate**. |
 | Preparing (`preparing`) | The campaign was launched and its calls are being prepared. | Wait. |
-| Processing (`in_db`) | The campaign's calls are being created, just after **Preparing**. [Get all campaigns](/api-reference/endpoint/campaign/get-all-campaigns) reports this step as `preparing`. | Wait. The panel shows **Processing...** |
+| Processing (`in_db`) | The campaign's calls are being created, just after **Preparing**. [Get all campaigns](/api-reference/calling/campaigns/get-all-campaigns) reports this step as `preparing`. | Wait. The panel shows **Processing...** |
 | Scheduled (`scheduled`) | The campaign is waiting for its start time. | **Analytics**, **History**, **Terminate**. |
 | Ongoing (`ongoing`) | Calls are being placed. | **Analytics**, **History**, **Terminate**. |
 | Completed (`completed`) | The campaign has finished. | **Analytics**, **History**, **Export report**. |

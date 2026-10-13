@@ -3,7 +3,8 @@ import { whatsappChatRoutes } from "../fixtures/whatsapp-chats.ts";
 
 export default {
   name: "whatsapp-chat-history",
-  docsPage: "whatsapp/chat-history",
+  docsPage: "documentation/monitor/logs",
+  title: "WhatsApp chats",
   routes: whatsappChatRoutes,
   async run(s) {
     const p = s.page;

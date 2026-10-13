@@ -3,7 +3,7 @@ import { apiKeyRoutes } from "../fixtures/account.ts";
 
 export default {
   name: "account-api-key",
-  docsPage: "account/api-key",
+  docsPage: "documentation/manage-account/api-key",
   routes: apiKeyRoutes(),
   async run(s) {
     const p = s.page;

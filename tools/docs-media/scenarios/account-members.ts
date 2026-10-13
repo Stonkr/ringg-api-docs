@@ -3,7 +3,7 @@ import { membersRoutes } from "../fixtures/account.ts";
 
 export default {
   name: "account-members",
-  docsPage: "account/members",
+  docsPage: "documentation/manage-account/members",
   routes: membersRoutes(),
   async run(s) {
     const p = s.page;

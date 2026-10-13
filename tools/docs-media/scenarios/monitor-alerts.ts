@@ -3,7 +3,7 @@ import { alertsRoutes, resetAlerts } from "../fixtures/monitor-alerts.ts";
 
 export default {
   name: "monitor-alerts",
-  docsPage: "monitor/alerts",
+  docsPage: "documentation/monitor/alerts",
   routes: { ...alertsRoutes },
   async run(s) {
     resetAlerts();

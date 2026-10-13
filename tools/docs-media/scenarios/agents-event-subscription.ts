@@ -3,7 +3,7 @@ import { makeEditorBRoutes, PR_ID, shotNoToasts } from "../fixtures/editor-b.ts"
 
 export default {
   name: "agents-event-subscription",
-  docsPage: "agents/event-subscription",
+  docsPage: "documentation/build-agents/customize-agent-behaviour/event-subscription",
   routes: makeEditorBRoutes(),
   async run(s) {
     const p = s.page;

@@ -3,7 +3,7 @@ import { makeEditorBRoutes, PR_ID, shotNoToasts } from "../fixtures/editor-b.ts"
 
 export default {
   name: "agents-call-settings",
-  docsPage: "agents/call-settings",
+  docsPage: "documentation/build-agents/customize-agent-behaviour/call-settings",
   routes: makeEditorBRoutes(),
   async run(s) {
     const p = s.page;

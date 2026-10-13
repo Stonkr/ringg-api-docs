@@ -5,7 +5,7 @@ import { campaignRoutes } from "../fixtures/campaigns.ts";
 export default {
   name: "campaigns-overview",
   title: "Campaigns",
-  docsPage: "campaigns/overview",
+  docsPage: "documentation/deploy/campaigns/overview",
   routes: { ...campaignRoutes },
   async run(s) {
     await s.page.context().addCookies([{ name: "sidebar:state", value: "false", url: "http://localhost:3201" }]);

@@ -2,12 +2,8 @@
 title: "Lesson: Fix the prompt"
 sidebarTitle: "Fix the prompt"
 description: "Turn one problem seen in Logs and Evals into a single prompt change on a new version of the EMI reminder agent, hear it, then split traffic and finalize."
-related:
-  - "Write the prompt": /documentation/build-agents/customize-agent-behaviour/agent-prompt
-  - "Drafts and versions": /documentation/build-agents/test-and-improve/drafts-and-versions
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -78,4 +74,13 @@ In Evals, open the test case from lesson 3 and click **Run again**. Expected res
   incorrectFeedback="Not quite. A/B Analytics compares versions, not individual edits, so two changes on one version cannot be told apart. Ship one change per version, give it a share of traffic, and finalize the winner."
 />
 
-<RelatedTopics items={[["Write the prompt", "/documentation/build-agents/customize-agent-behaviour/agent-prompt"], ["Drafts and versions", "/documentation/build-agents/test-and-improve/drafts-and-versions"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Agent prompt" icon="pen-line" href="/documentation/build-agents/customize-agent-behaviour/agent-prompt" horizontal>
+    The first message, prompt sections and @ mentions.
+  </Card>
+  <Card title="Drafts and versions" icon="git-branch" href="/documentation/build-agents/test-and-improve/drafts-and-versions" horizontal>
+    Drafts, publishing, versions and traffic split.
+  </Card>
+</Columns>

@@ -15,7 +15,7 @@ const STOPS: [string, string][] = [
 
 export default {
   name: "dashboard-tour",
-  docsPage: "get-started/overview/dashboard",
+  docsPage: "get-started/dashboard-tour",
   routes: tourRoutes,
   async run(s) {
     const p = s.page;

@@ -6,7 +6,7 @@ const CSV = resolve(import.meta.dirname, "../fixtures/acme-lending-faq.csv");
 
 export default {
   name: "knowledge-base",
-  docsPage: "knowledge-base/overview",
+  docsPage: "documentation/inventory/knowledge-base",
   routes: kbRoutes,
   async run(s) {
     const p = s.page;

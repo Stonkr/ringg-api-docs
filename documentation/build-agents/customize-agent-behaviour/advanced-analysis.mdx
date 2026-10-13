@@ -162,7 +162,7 @@ Agents that saved an analysis prompt or keys before the variable table existed k
 
 ## Do this with the API
 
-Advanced Analysis variables are set up in the dashboard only; the public API has no operation for them. Read results per call from [Get Call Details](/api-reference/endpoint/history/get-call-details) (the `client_analysis` field, returned when you send `send_analysis=true`) or from the `client_analysis_completed` webhook ([Event Subscription](/documentation/build-agents/customize-agent-behaviour/event-subscription)). You need an [API key](/documentation/manage-account/api-key) and the call's ID.
+Advanced Analysis variables are set up in the dashboard only; the public API has no operation for them. Read results per call from [Get Call Details](/api-reference/monitoring/call-history/get-call-details) (the `client_analysis` field, returned when you send `send_analysis=true`) or from the `client_analysis_completed` webhook ([Event Subscription](/documentation/build-agents/customize-agent-behaviour/event-subscription)). You need an [API key](/documentation/manage-account/api-key) and the call's ID.
 
 <CodeGroup>
 ```bash cURL

@@ -2,12 +2,8 @@
 title: "Lesson: Multi-prompt agents"
 sidebarTitle: "Multi-prompt agents"
 description: "Learn when a multi-prompt agent beats a single prompt, build a flow of Agent, LLM Router and End nodes on the canvas, publish it, and read the connection rules."
-related:
-  - "Multi-prompt agents": /documentation/build-agents/agents/multi-prompt-agents/overview
-  - "Publish changes": /documentation/build-agents/test-and-improve/drafts-and-versions#publish-changes-on-a-multi-prompt-agent
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -84,4 +80,13 @@ From the **Start** node, try to add an **End** node directly. Expected result: *
   incorrectFeedback="Not quite. A single prompt can describe steps but cannot enforce them, and a workflow runs a journey across calls, not stages within one call. Strict in-call steps with a PIN and an API check are the case for a multi-prompt agent."
 />
 
-<RelatedTopics items={[["Multi-prompt agents", "/documentation/build-agents/agents/multi-prompt-agents/overview"], ["Publish changes", "/documentation/build-agents/test-and-improve/drafts-and-versions#publish-changes-on-a-multi-prompt-agent"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Multi-prompt agents" icon="workflow" href="/documentation/build-agents/agents/multi-prompt-agents/overview" horizontal>
+    Lay out a step-by-step flow on the canvas.
+  </Card>
+  <Card title="Publish changes" icon="upload" href="/documentation/build-agents/test-and-improve/drafts-and-versions#publish-changes-on-a-multi-prompt-agent" horizontal>
+    Make a multi-prompt draft live, or fix the issues that block it.
+  </Card>
+</Columns>

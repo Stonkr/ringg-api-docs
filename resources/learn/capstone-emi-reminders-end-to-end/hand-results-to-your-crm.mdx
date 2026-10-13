@@ -2,12 +2,8 @@
 title: "Lesson: Hand results to your CRM"
 sidebarTitle: "Hand results to your CRM"
 description: "Subscribe Ananya to All Processing Done so each finished call reaches the Acme CRM endpoint with a bearer header, then store the fields that record the promise."
-related:
-  - "Event Subscription": /documentation/build-agents/customize-agent-behaviour/event-subscription
-  - "Webhook payloads": /documentation/build-agents/customize-agent-behaviour/webhooks/call-events
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -124,7 +120,7 @@ The `all_processing_completed` event for one outbound call, from [Webhook payloa
 | `status`, `sub_status` | `completed` / `ACCEPTED` means the call connected normally; anything else has no promise to record. |
 | `client_analysis` | `payment_promised`, `promised_date` and `objection`, when `client_analysis_status` is `success`. |
 | `platform_analysis.summary` | One line for the relationship manager. |
-| `recording_url` | The link may expire; fetch a fresh one from [Get Call Details](/api-reference/endpoint/history/get-call-details), and download the file if disputes need it. |
+| `recording_url` | The link may expire; fetch a fresh one from [Get Call Details](/api-reference/monitoring/call-history/get-call-details), and download the file if disputes need it. |
 | `bulk_list_id` | The campaign the call belongs to; `null` for single calls. |
 | `parent_call_id` | Set on a retry or callback of an earlier call; link it to that call rather than counting a second contact. |
 
@@ -156,4 +152,13 @@ Open the card's menu (**⋮**), click **Edit**, tick **Call Started** too, and c
   incorrectFeedback="Not quite. Duplicates are expected and handled on your side: dedupe on call_id plus event_type and update the record. A retry is a separate call with parent_call_id set, and your endpoint should answer 2xx fast either way."
 />
 
-<RelatedTopics items={[["Event Subscription", "/documentation/build-agents/customize-agent-behaviour/event-subscription"], ["Webhook payloads", "/documentation/build-agents/customize-agent-behaviour/webhooks/call-events"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Event Subscription" icon="webhook" href="/documentation/build-agents/customize-agent-behaviour/event-subscription" horizontal>
+    Have Ringg post call events to your server.
+  </Card>
+  <Card title="Webhook payloads" icon="braces" href="/documentation/build-agents/customize-agent-behaviour/webhooks/call-events" horizontal>
+    Every field Ringg sends for each event.
+  </Card>
+</Columns>

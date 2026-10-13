@@ -2,12 +2,8 @@
 title: "Lesson: Advanced Analysis"
 sidebarTitle: "Advanced Analysis"
 description: "Define payment_promised, promised_date and objection as Advanced Analysis variables on the EMI reminder agent, mark the goal, and test them on a past call."
-related:
-  - "Advanced Analysis": /documentation/build-agents/customize-agent-behaviour/advanced-analysis
-  - "Logs": /documentation/monitor/logs#custom-variables-and-advanced-analysis
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -84,4 +80,13 @@ Add `amount_promised` as a **Number** with the description "The amount in rupees
   incorrectFeedback="Not quite. The goal must be a Boolean, and there is one per agent. Goal achieved in Analytics is computed from it. A Date, Enum or Number can be extracted and filtered on, but not marked as the goal."
 />
 
-<RelatedTopics items={[["Advanced Analysis", "/documentation/build-agents/customize-agent-behaviour/advanced-analysis"], ["Logs", "/documentation/monitor/logs#custom-variables-and-advanced-analysis"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Advanced Analysis" icon="list-checks" href="/documentation/build-agents/customize-agent-behaviour/advanced-analysis" horizontal>
+    Define the variables Ringg fills in from every conversation.
+  </Card>
+  <Card title="Filter by analysis in Logs" icon="filter" href="/documentation/monitor/logs#custom-variables-and-advanced-analysis" horizontal>
+    Filter calls by a variable or an analysis field.
+  </Card>
+</Columns>

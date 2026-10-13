@@ -3,7 +3,7 @@ import { billingRoutes } from "../fixtures/account.ts";
 
 export default {
   name: "account-billing",
-  docsPage: "account/billing",
+  docsPage: "documentation/manage-account/billing",
   routes: billingRoutes(),
   async run(s) {
     const p = s.page;

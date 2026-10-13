@@ -2,12 +2,8 @@
 title: "Lesson: Calling lists"
 sidebarTitle: "Calling lists"
 description: "Build a campaign CSV with a column for each of Ananya's variables, map the CRM's headers by hand, read the upload summary and fix an invalid row."
-related:
-  - "Calling list (CSV)": /documentation/deploy/campaigns/calling-list
-  - "Variables": /documentation/build-agents/customize-agent-behaviour/custom-variables
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -83,4 +79,13 @@ Upload the original export once more with **Remove invalid rows** switched off. 
   incorrectFeedback="Not quite. Nothing is rejected and nothing is guessed by position. A header that exactly equals a variable name maps itself; every other variable reads Select CSV column until you map it, and Next is disabled until all are mapped."
 />
 
-<RelatedTopics items={[["Calling list (CSV)", "/documentation/deploy/campaigns/calling-list"], ["Variables", "/documentation/build-agents/customize-agent-behaviour/custom-variables"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Calling list" icon="file-spreadsheet" href="/documentation/deploy/campaigns/calling-list" horizontal>
+    Format the CSV and map its columns to variables.
+  </Card>
+  <Card title="Custom variables" icon="braces" href="/documentation/build-agents/customize-agent-behaviour/custom-variables" horizontal>
+    Personalise every call with values you pass in.
+  </Card>
+</Columns>

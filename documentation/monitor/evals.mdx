@@ -149,7 +149,7 @@ Open a call in [Logs](/documentation/monitor/logs#the-call-panel). If it was sco
 
 ## With the API
 
-To read a call's eval scores, call [Get call details](/api-reference/endpoint/history/get-call-details) with `call_metrics=true`. The response's `data.metrics` lists one entry per metric with `metric_name`, `output_type`, `score`, `explanation` and `violations`. Webhooks don't carry eval scores. Test cases and metric settings have no public API; manage them in the dashboard.
+To read a call's eval scores, call [Get call details](/api-reference/monitoring/call-history/get-call-details) with `call_metrics=true`. The response's `data.metrics` lists one entry per metric with `metric_name`, `output_type`, `score`, `explanation` and `violations`. Webhooks don't carry eval scores. Test cases and metric settings have no public API; manage them in the dashboard.
 
 ## Troubleshooting
 

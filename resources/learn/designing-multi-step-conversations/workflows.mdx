@@ -2,12 +2,8 @@
 title: "Lesson: Workflows"
 sidebarTitle: "Workflows"
 description: "Build the Payment reminder follow-up workflow: call with the EMI reminder agent, branch on payment_promised, update the CRM or wait a day and nudge on WhatsApp."
-related:
-  - "Workflows": /documentation/build-agents/workflows/overview
-  - "Build and run": /documentation/build-agents/workflows/build-a-workflow
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -86,4 +82,13 @@ Add a second rule to the Condition: source **Call duration**, comparison **is ov
   incorrectFeedback="Not quite. The Condition branches on payment_promised: Match goes to the CRM Action, No match to the Await and then the WhatsApp chat block. A workflow runs a journey across calls and messages; nothing redials on its own."
 />
 
-<RelatedTopics items={[["Workflows", "/documentation/build-agents/workflows/overview"], ["Build and run", "/documentation/build-agents/workflows/build-a-workflow"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Workflows" icon="workflow" href="/documentation/build-agents/workflows/overview" horizontal>
+    Chain calls, waits and messages per contact.
+  </Card>
+  <Card title="Build a workflow" icon="blocks" href="/documentation/build-agents/workflows/build-a-workflow" horizontal>
+    Add blocks and pass data between steps.
+  </Card>
+</Columns>

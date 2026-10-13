@@ -4,7 +4,7 @@ import { WA_ID, makeWhatsappEditorRoutes } from "../fixtures/whatsapp-agents.ts"
 
 export default {
   name: "whatsapp-events",
-  docsPage: "whatsapp/events",
+  docsPage: "documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events",
   routes: makeWhatsappEditorRoutes(),
   async run(s) {
     const p = s.page;

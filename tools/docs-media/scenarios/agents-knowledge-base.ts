@@ -3,7 +3,7 @@ import { AGENT_ID, editorARoutes } from "../fixtures/editor-a.ts";
 
 export default {
   name: "agents-knowledge-base",
-  docsPage: "agents/knowledge-base",
+  docsPage: "documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base",
   routes: editorARoutes({ kbIds: [] }),
   async run(s) {
     const p = s.page;

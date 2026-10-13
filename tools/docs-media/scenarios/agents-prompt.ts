@@ -37,7 +37,7 @@ async function selectText(s: Session, editor: Locator, text: string) {
 
 export default {
   name: "agents-prompt",
-  docsPage: "agents/prompt",
+  docsPage: "documentation/build-agents/customize-agent-behaviour/agent-prompt",
   routes: {
     ...editorARoutes({ tools: true }),
     "POST /agent/transliterate": { transliterated_text: "कभी भी कार्ड नंबर, OTP या पासवर्ड न पूछें" },

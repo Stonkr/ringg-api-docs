@@ -7,7 +7,8 @@ const CDN_VERSIONS = ["1.0.12", "1.0.11", "1.0.10", "1.0.9"];
 
 export default {
   name: "agents-embed",
-  docsPage: "agents/embed-and-widgets",
+  docsPage: "documentation/deploy/web-and-apps/web-widget/overview",
+  title: "Web widget",
   routes: makeEditorBRoutes(),
   async run(s) {
     const p = s.page;

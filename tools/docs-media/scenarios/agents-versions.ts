@@ -3,7 +3,7 @@ import { AGENT_ID, editorARoutes, hideToasts } from "../fixtures/editor-a.ts";
 
 export default {
   name: "agents-versions",
-  docsPage: "agents/versions",
+  docsPage: "documentation/build-agents/test-and-improve/drafts-and-versions",
   routes: {
     ...editorARoutes(),
     // A/B Analytics: last 7 days per version (values keyed by version slug).

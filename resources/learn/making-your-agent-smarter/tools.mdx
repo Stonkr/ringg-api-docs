@@ -2,12 +2,8 @@
 title: "Lesson: Tools"
 sidebarTitle: "Tools"
 description: "Add a pre-call API tool that fetches the loan account from Acme's CRM by mobile number, keep the two fields the agent needs, and read them in the prompt."
-related:
-  - "Tools": /documentation/build-agents/customize-agent-behaviour/tools/overview
-  - "The call panel in Logs": /documentation/monitor/logs#the-call-panel
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -84,4 +80,13 @@ Open `crm_lookup`, go to **Settings** and set **Retry count** to `2`. Expected r
   incorrectFeedback="Not quite. A status code listed under Block call on status codes aborts the call before it is placed. Other 4xx and 5xx responses are the case where the call goes ahead without the tool's data, and retries cover timeouts, connection errors, 429 and 500, 502, 503 and 504."
 />
 
-<RelatedTopics items={[["Tools", "/documentation/build-agents/customize-agent-behaviour/tools/overview"], ["The call panel in Logs", "/documentation/monitor/logs#the-call-panel"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Tools" icon="wrench" href="/documentation/build-agents/customize-agent-behaviour/tools/overview" horizontal>
+    Connect the agent to your APIs before, during and after a call.
+  </Card>
+  <Card title="The call panel" icon="panel-right" href="/documentation/monitor/logs#the-call-panel" horizontal>
+    Transcript, recording, tool calls and analysis for one call.
+  </Card>
+</Columns>

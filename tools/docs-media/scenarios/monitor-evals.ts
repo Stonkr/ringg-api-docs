@@ -10,7 +10,7 @@ async function scrollToHeading(p: Page, heading: string, settleMs = 1400) {
 
 export default {
   name: "monitor-evals",
-  docsPage: "monitor/evals",
+  docsPage: "documentation/monitor/evals",
   routes: { ...evalsRoutes },
   async run(s) {
     const p = s.page;

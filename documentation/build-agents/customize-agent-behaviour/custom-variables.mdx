@@ -116,7 +116,7 @@ The [calling list reference](/documentation/deploy/campaigns/calling-list) cover
 
 ### From the API
 
-[Initiate Individual Call](/api-reference/endpoint/calling/initiate-individual-call) takes the variables in `custom_args_values`, an object of `name: value` pairs. `name` and `mobile_number` are required request fields. When you send `custom_args_values`, it must include every variable the agent has, or the call fails with `400` "Missing custom arguments: …". When you leave it out, only `callee_name` and `mobile_number` are filled. Send your [API key](/documentation/manage-account/api-key) in `X-API-KEY`; `from_number` is the [caller ID](/documentation/inventory/phone-numbers/inbound-agent-number#outbound-choose-the-caller-id).
+[Initiate Individual Call](/api-reference/calling/individual-calls/initiate-individual-call) takes the variables in `custom_args_values`, an object of `name: value` pairs. `name` and `mobile_number` are required request fields. When you send `custom_args_values`, it must include every variable the agent has, or the call fails with `400` "Missing custom arguments: …". When you leave it out, only `callee_name` and `mobile_number` are filled. Send your [API key](/documentation/manage-account/api-key) in `X-API-KEY`; `from_number` is the [caller ID](/documentation/inventory/phone-numbers/inbound-agent-number#outbound-choose-the-caller-id).
 
 <CodeGroup>
 ```bash cURL
@@ -183,7 +183,7 @@ print(response.json())
 
 <Check>The response echoes the values the call received in `data.custom_args_values`.</Check>
 
-The [number pool version](/api-reference/endpoint/calling/initiate-individual-call-v2) takes the same field.
+The [number pool version](/api-reference/calling/individual-calls/initiate-individual-call-v2) takes the same field.
 
 ### From pre-call tools
 
@@ -197,7 +197,7 @@ Write the prompt so a missing value does not derail the call: "If the due date i
 
 ## Variables by API
 
-[Edit Assistant](/api-reference/endpoint/assistant/edit-assistant) with `"operation": "edit_custom_vars"` sets the agent's variable names in `custom_variables`, the same list the **Custom Variables** panel shows. [Create Agent](/api-reference/endpoint/assistant/create-agent) takes `custom_variables` too.
+[Edit Assistant](/api-reference/agents/edit-assistant) with `"operation": "edit_custom_vars"` sets the agent's variable names in `custom_variables`, the same list the **Custom Variables** panel shows. [Create Agent](/api-reference/agents/create-agent) takes `custom_variables` too.
 
 The list you send replaces the agent's list, so include every variable you want to keep, `callee_name` and `mobile_number` too: an outbound agent rejects a list without them with `403`. The API keeps names exactly as sent, so send them in lowercase snake_case.
 

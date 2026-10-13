@@ -18,7 +18,7 @@ The **Create Assistant** dialog has four tabs: **Outbound**, **Inbound**, **Webc
 
 | Type | What it does | What it needs to go live |
 |---|---|---|
-| Outbound | Calls people, from a [campaign](/documentation/deploy/campaigns/overview) or an [API call](/api-reference/endpoint/calling/initiate-individual-call) | A <Tooltip tip="The number your callee sees when the agent calls them.">caller ID</Tooltip>: a [number](/documentation/inventory/phone-numbers/buy-or-import-a-number) or a [number pool](/documentation/inventory/phone-numbers/number-pools) |
+| Outbound | Calls people, from a [campaign](/documentation/deploy/campaigns/overview) or an [API call](/api-reference/calling/individual-calls/initiate-individual-call) | A <Tooltip tip="The number your callee sees when the agent calls them.">caller ID</Tooltip>: a [number](/documentation/inventory/phone-numbers/buy-or-import-a-number) or a [number pool](/documentation/inventory/phone-numbers/number-pools) |
 | Inbound | Answers calls to your number | A number [attached to the agent](/documentation/inventory/phone-numbers/inbound-agent-number) |
 | Outbound-Inbound | Calls out and also answers calls | A caller ID for its outbound calls |
 | Webcall | Talks to visitors in a browser or app, through the Ringg widget | The widget installed on your site or app |
@@ -38,7 +38,7 @@ Every agent is either single-prompt or multi-prompt. The dashboard calls the sec
 | Good for | Reminders, lead qualification, support, surveys | Calls with fixed steps: keypad menus, <Tooltip tip="One-time password: a short code sent to confirm a phone number or sign-in.">OTP</Tooltip> or PIN capture, an API lookup before the next question |
 | Channels | Outbound, inbound, outbound-inbound, webcall, WhatsApp | Voice and web; not WhatsApp |
 | Created from | **Blank Template** or an industry template | The **Multi Prompt** card, or [**Convert to multi-prompt**](/documentation/build-agents/agents/multi-prompt-agents/test-and-convert#convert-a-single-prompt-agent) on a single-prompt agent |
-| By API | [Create Agent](/api-reference/endpoint/assistant/create-agent) (outbound, inbound, outbound-inbound) | Not available |
+| By API | [Create Agent](/api-reference/agents/create-agent) (outbound, inbound, outbound-inbound) | Not available |
 
 Start single-prompt. It is faster to write and easier to change, because a fix is one edit in one prompt. Move to multi-prompt when the model keeps skipping or reordering steps that must happen in order, or when a step needs keypad input or an API result before the call can continue.
 
@@ -47,7 +47,7 @@ Start single-prompt. It is faster to write and easier to change, because a fix i
 | You want to… | Build | Then |
 |---|---|---|
 | Call a list of borrowers with an EMI reminder | [Outbound, single-prompt](/documentation/build-agents/agents/create-an-agent) | [Create a campaign](/documentation/deploy/campaigns/create-a-campaign) |
-| Call one customer when an order ships | [Outbound, single-prompt](/documentation/build-agents/agents/create-an-agent) | [Initiate Individual Call](/api-reference/endpoint/calling/initiate-individual-call) |
+| Call one customer when an order ships | [Outbound, single-prompt](/documentation/build-agents/agents/create-an-agent) | [Initiate Individual Call](/api-reference/calling/individual-calls/initiate-individual-call) |
 | Answer your support line | [Inbound, single-prompt](/documentation/build-agents/agents/create-an-agent) | [Attach a number](/documentation/inventory/phone-numbers/inbound-agent-number) |
 | Call leads and take their callbacks | [Outbound with **Inbound Calling** enabled](/documentation/build-agents/agents/create-an-agent) | Campaign or API |
 | Add a "Talk to us" button to your site or app | [Webcall](/documentation/build-agents/agents/create-an-agent) | [Web widget overview](/documentation/deploy/web-and-apps/web-widget/overview), then the [web](/documentation/deploy/web-and-apps/web-widget/overview) or [mobile](/documentation/deploy/web-and-apps/mobile-apps/install) guide |
@@ -106,7 +106,7 @@ API calls, campaigns and webhooks identify an agent by its `agent_id`. Find it i
 - The editor URL: `/assistants/<agent_id>`.
 - The agent list search (**Search by name or ID**), which matches a full ID exactly.
 
-By API, [List Agents](/api-reference/endpoint/assistant/get-assistants) lists every agent with its ID. Send your [API key](/documentation/manage-account/api-key) in the `X-API-KEY` header ([authentication](/api-reference/introduction/authentication)).
+By API, [List Agents](/api-reference/agents/get-assistants) lists every agent with its ID. Send your [API key](/documentation/manage-account/api-key) in the `X-API-KEY` header ([authentication](/api-reference/introduction/authentication)).
 
 <CodeGroup>
 ```bash cURL
@@ -134,7 +134,7 @@ print(response.json())
 ```
 </CodeGroup>
 
-Page through the list with `limit` and `offset`; without `limit`, it returns every agent. To read one agent, use [Get Agent](/api-reference/endpoint/assistant/get-assistant-by-id).
+Page through the list with `limit` and `offset`; without `limit`, it returns every agent. To read one agent, use [Get Agent](/api-reference/agents/get-assistant-by-id).
 
 ## Next steps
 

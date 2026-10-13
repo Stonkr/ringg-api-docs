@@ -262,11 +262,11 @@
           {
             "group": "Agents",
             "pages": [
-              "api-reference/endpoint/assistant/get-assistants",
-              "api-reference/endpoint/assistant/get-assistant-by-id",
-              "api-reference/endpoint/assistant/create-agent",
-              "api-reference/endpoint/assistant/edit-assistant",
-              "api-reference/endpoint/assistant/get-assistant-voices"
+              "api-reference/agents/get-assistants",
+              "api-reference/agents/get-assistant-by-id",
+              "api-reference/agents/create-agent",
+              "api-reference/agents/edit-assistant",
+              "api-reference/agents/get-assistant-voices"
             ],
             "icon": "bot"
           },
@@ -277,18 +277,18 @@
               {
                 "group": "Knowledge bases",
                 "pages": [
-                  "api-reference/endpoint/kb/create-knowledge-base",
-                  "api-reference/endpoint/kb/get-all-knowledge-bases",
-                  "api-reference/endpoint/kb/get-knowledge-base-by-id",
-                  "api-reference/endpoint/kb/edit-knowledge-base",
-                  "api-reference/endpoint/kb/delete-knowledge-base"
+                  "api-reference/inventory/knowledge-bases/create-knowledge-base",
+                  "api-reference/inventory/knowledge-bases/get-all-knowledge-bases",
+                  "api-reference/inventory/knowledge-bases/get-knowledge-base-by-id",
+                  "api-reference/inventory/knowledge-bases/edit-knowledge-base",
+                  "api-reference/inventory/knowledge-bases/delete-knowledge-base"
                 ],
                 "expanded": true
               },
               {
                 "group": "Numbers",
                 "pages": [
-                  "api-reference/endpoint/numbers/get-workspace-numbers"
+                  "api-reference/inventory/numbers/get-workspace-numbers"
                 ],
                 "expanded": true
               }
@@ -300,23 +300,23 @@
               {
                 "group": "Individual calls",
                 "pages": [
-                  "api-reference/endpoint/calling/initiate-individual-call",
-                  "api-reference/endpoint/calling/initiate-individual-call-v2",
-                  "api-reference/endpoint/terminate/call-ids",
-                  "api-reference/endpoint/terminate/numbers",
-                  "api-reference/endpoint/terminate/agent"
+                  "api-reference/calling/individual-calls/initiate-individual-call",
+                  "api-reference/calling/individual-calls/initiate-individual-call-v2",
+                  "api-reference/calling/individual-calls/stop-calls-by-id",
+                  "api-reference/calling/individual-calls/stop-calls-to-numbers",
+                  "api-reference/calling/individual-calls/stop-agent-calls"
                 ],
                 "expanded": true
               },
               {
                 "group": "Campaigns",
                 "pages": [
-                  "api-reference/endpoint/campaign/upload-campaign-contact-list",
-                  "api-reference/endpoint/campaign/start-campaign",
-                  "api-reference/endpoint/campaign/start-campaign-v2",
-                  "api-reference/endpoint/campaign/get-all-campaigns",
-                  "api-reference/endpoint/terminate/campaign",
-                  "api-reference/endpoint/terminate/campaign-numbers"
+                  "api-reference/calling/campaigns/upload-campaign-contact-list",
+                  "api-reference/calling/campaigns/start-campaign",
+                  "api-reference/calling/campaigns/start-campaign-v2",
+                  "api-reference/calling/campaigns/get-all-campaigns",
+                  "api-reference/calling/campaigns/stop-campaign",
+                  "api-reference/calling/campaigns/stop-campaign-numbers"
                 ],
                 "expanded": true
               },
@@ -324,10 +324,10 @@
                 "group": "Large campaigns",
                 "tag": "BETA",
                 "pages": [
-                  "api-reference/endpoint/campaign/upload-large-campaign-csv",
-                  "api-reference/endpoint/campaign/get-large-campaign-upload-status",
-                  "api-reference/endpoint/campaign/check-large-campaign-balance",
-                  "api-reference/endpoint/campaign/make-large-campaign-calls-async"
+                  "api-reference/calling/large-campaigns/upload-large-campaign-csv",
+                  "api-reference/calling/large-campaigns/get-large-campaign-upload-status",
+                  "api-reference/calling/large-campaigns/check-large-campaign-balance",
+                  "api-reference/calling/large-campaigns/make-large-campaign-calls-async"
                 ],
                 "expanded": true
               }
@@ -340,20 +340,20 @@
               {
                 "group": "Call history",
                 "pages": [
-                  "api-reference/endpoint/history/get-call-history",
-                  "api-reference/endpoint/history/get-call-details",
-                  "api-reference/endpoint/history/download-call-history"
+                  "api-reference/monitoring/call-history/get-call-history",
+                  "api-reference/monitoring/call-history/get-call-details",
+                  "api-reference/monitoring/call-history/download-call-history"
                 ],
                 "expanded": true
               },
               {
                 "group": "Analytics",
                 "pages": [
-                  "api-reference/endpoint/analytics/get-platform-analytics",
-                  "api-reference/endpoint/analytics/get-drill-down-analytics",
-                  "api-reference/endpoint/analytics/get-number-analytics",
-                  "api-reference/endpoint/analytics/get-duration-distribution",
-                  "api-reference/endpoint/analytics/get-classification-analytics"
+                  "api-reference/monitoring/analytics/get-platform-analytics",
+                  "api-reference/monitoring/analytics/get-drill-down-analytics",
+                  "api-reference/monitoring/analytics/get-number-analytics",
+                  "api-reference/monitoring/analytics/get-duration-distribution",
+                  "api-reference/monitoring/analytics/get-classification-analytics"
                 ],
                 "expanded": true
               }
@@ -363,18 +363,18 @@
           {
             "group": "Account",
             "pages": [
-              "api-reference/endpoint/workspace/get-workspace-info",
-              "api-reference/endpoint/workspace/list-workspace-users",
-              "api-reference/endpoint/workspace/get-all-user-workspaces",
+              "api-reference/account/get-workspace-info",
+              "api-reference/account/list-workspace-users",
+              "api-reference/account/get-all-user-workspaces",
               {
                 "group": "Ringg Spaces",
                 "pages": [
-                  "api-reference/endpoint/sub-workspace/create-sub-workspace",
-                  "api-reference/endpoint/sub-workspace/get-sub-workspaces",
-                  "api-reference/endpoint/sub-workspace/list-family-members",
-                  "api-reference/endpoint/sub-workspace/allocate-concurrency",
-                  "api-reference/endpoint/sub-workspace/reallocate-credit-limits",
-                  "api-reference/endpoint/sub-workspace/reallocate-credit-balances"
+                  "api-reference/account/ringg-spaces/create-sub-workspace",
+                  "api-reference/account/ringg-spaces/get-sub-workspaces",
+                  "api-reference/account/ringg-spaces/list-family-members",
+                  "api-reference/account/ringg-spaces/allocate-concurrency",
+                  "api-reference/account/ringg-spaces/reallocate-credit-limits",
+                  "api-reference/account/ringg-spaces/reallocate-credit-balances"
                 ],
                 "expanded": true
               }
@@ -544,7 +544,7 @@
     },
     {
       "source": "/api-reference/endpoint/contact/get-contact-list",
-      "destination": "/api-reference/endpoint/campaign/upload-campaign-contact-list"
+      "destination": "/api-reference/calling/campaigns/upload-campaign-contact-list"
     },
     {
       "source": "/api-reference/endpoint/contact/delete-contact-list",
@@ -816,23 +816,23 @@
     },
     {
       "source": "/api-reference/terminate/call-ids",
-      "destination": "/api-reference/endpoint/terminate/call-ids"
+      "destination": "/api-reference/calling/individual-calls/stop-calls-by-id"
     },
     {
       "source": "/api-reference/terminate/numbers",
-      "destination": "/api-reference/endpoint/terminate/numbers"
+      "destination": "/api-reference/calling/individual-calls/stop-calls-to-numbers"
     },
     {
       "source": "/api-reference/terminate/agent",
-      "destination": "/api-reference/endpoint/terminate/agent"
+      "destination": "/api-reference/calling/individual-calls/stop-agent-calls"
     },
     {
       "source": "/api-reference/terminate/campaign",
-      "destination": "/api-reference/endpoint/terminate/campaign"
+      "destination": "/api-reference/calling/campaigns/stop-campaign"
     },
     {
       "source": "/api-reference/terminate/campaign-numbers",
-      "destination": "/api-reference/endpoint/terminate/campaign-numbers"
+      "destination": "/api-reference/calling/campaigns/stop-campaign-numbers"
     },
     {
       "source": "/resources/learn/start/how-a-call-flows",
@@ -2101,6 +2101,90 @@
     {
       "source": "/documentation/build-agents/customize-agent-behaviour/webhooks",
       "destination": "/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors"
+    },
+    {
+      "source": "/api-reference/endpoint/assistant/:slug*",
+      "destination": "/api-reference/agents/:slug*"
+    },
+    {
+      "source": "/api-reference/endpoint/kb/:slug*",
+      "destination": "/api-reference/inventory/knowledge-bases/:slug*"
+    },
+    {
+      "source": "/api-reference/endpoint/numbers/get-workspace-numbers",
+      "destination": "/api-reference/inventory/numbers/get-workspace-numbers"
+    },
+    {
+      "source": "/api-reference/endpoint/calling/:slug*",
+      "destination": "/api-reference/calling/individual-calls/:slug*"
+    },
+    {
+      "source": "/api-reference/endpoint/terminate/call-ids",
+      "destination": "/api-reference/calling/individual-calls/stop-calls-by-id"
+    },
+    {
+      "source": "/api-reference/endpoint/terminate/numbers",
+      "destination": "/api-reference/calling/individual-calls/stop-calls-to-numbers"
+    },
+    {
+      "source": "/api-reference/endpoint/terminate/agent",
+      "destination": "/api-reference/calling/individual-calls/stop-agent-calls"
+    },
+    {
+      "source": "/api-reference/endpoint/campaign/upload-campaign-contact-list",
+      "destination": "/api-reference/calling/campaigns/upload-campaign-contact-list"
+    },
+    {
+      "source": "/api-reference/endpoint/campaign/start-campaign",
+      "destination": "/api-reference/calling/campaigns/start-campaign"
+    },
+    {
+      "source": "/api-reference/endpoint/campaign/start-campaign-v2",
+      "destination": "/api-reference/calling/campaigns/start-campaign-v2"
+    },
+    {
+      "source": "/api-reference/endpoint/campaign/get-all-campaigns",
+      "destination": "/api-reference/calling/campaigns/get-all-campaigns"
+    },
+    {
+      "source": "/api-reference/endpoint/terminate/campaign",
+      "destination": "/api-reference/calling/campaigns/stop-campaign"
+    },
+    {
+      "source": "/api-reference/endpoint/terminate/campaign-numbers",
+      "destination": "/api-reference/calling/campaigns/stop-campaign-numbers"
+    },
+    {
+      "source": "/api-reference/endpoint/campaign/upload-large-campaign-csv",
+      "destination": "/api-reference/calling/large-campaigns/upload-large-campaign-csv"
+    },
+    {
+      "source": "/api-reference/endpoint/campaign/get-large-campaign-upload-status",
+      "destination": "/api-reference/calling/large-campaigns/get-large-campaign-upload-status"
+    },
+    {
+      "source": "/api-reference/endpoint/campaign/check-large-campaign-balance",
+      "destination": "/api-reference/calling/large-campaigns/check-large-campaign-balance"
+    },
+    {
+      "source": "/api-reference/endpoint/campaign/make-large-campaign-calls-async",
+      "destination": "/api-reference/calling/large-campaigns/make-large-campaign-calls-async"
+    },
+    {
+      "source": "/api-reference/endpoint/history/:slug*",
+      "destination": "/api-reference/monitoring/call-history/:slug*"
+    },
+    {
+      "source": "/api-reference/endpoint/analytics/:slug*",
+      "destination": "/api-reference/monitoring/analytics/:slug*"
+    },
+    {
+      "source": "/api-reference/endpoint/workspace/:slug*",
+      "destination": "/api-reference/account/:slug*"
+    },
+    {
+      "source": "/api-reference/endpoint/sub-workspace/:slug*",
+      "destination": "/api-reference/account/ringg-spaces/:slug*"
     }
   ],
   "seo": {

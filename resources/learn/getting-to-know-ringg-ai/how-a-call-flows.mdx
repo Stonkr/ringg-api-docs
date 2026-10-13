@@ -2,12 +2,8 @@
 title: "Lesson: How a call flows"
 sidebarTitle: "How a call flows"
 description: "Follow one EMI reminder call from its trigger through the conversation, analysis and events to Logs, and read the call statuses it passes through on the way."
-related:
-  - "How Ringg works": /get-started/how-ringg-works
-  - "Call statuses": /documentation/monitor/logs#call-statuses
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -80,4 +76,13 @@ Trace the call again, but this time Rahul does not pick up and the campaign allo
   incorrectFeedback="Not quite. Registered is a queued call, Completed is a finished one, and Retry is an attempt that did not connect. While Ananya talks the call is Ongoing, and Advanced Analysis fields are filled after it ends."
 />
 
-<RelatedTopics items={[["How Ringg works", "/get-started/how-ringg-works"], ["Call statuses", "/documentation/monitor/logs#call-statuses"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="How Ringg works" icon="network" href="/get-started/how-ringg-works" horizontal>
+    Agents, numbers, campaigns and tools, from trigger to transcript.
+  </Card>
+  <Card title="Call statuses" icon="list-checks" href="/documentation/monitor/logs#call-statuses" horizontal>
+    What each status in Logs means.
+  </Card>
+</Columns>

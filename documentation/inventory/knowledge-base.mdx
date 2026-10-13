@@ -9,7 +9,7 @@ A knowledge base is a set of files and web pages that an [agent](/documentation/
 
 In the dashboard: **Sidebar → Inventory → Knowledge base**.
 
-This chapter connects an agent to your data and your systems:
+These pages connect an agent to your data and your systems:
 
 | Page | What you do |
 |---|---|
@@ -153,7 +153,7 @@ API rate limits per workspace: create 10 per hour, edit 20 per hour, get one or 
 
 ## Do this with the API
 
-[Create Knowledge Base](/api-reference/endpoint/kb/create-knowledge-base) (`POST /external/kb`) takes `multipart/form-data` with `kb_name` and any of `files`, `urls` (a JSON array string) and `faqs`. You need an [API key](/documentation/manage-account/api-key) ([Authentication](/api-reference/introduction/authentication)).
+[Create Knowledge Base](/api-reference/inventory/knowledge-bases/create-knowledge-base) (`POST /external/kb`) takes `multipart/form-data` with `kb_name` and any of `files`, `urls` (a JSON array string) and `faqs`. You need an [API key](/documentation/manage-account/api-key) ([Authentication](/api-reference/introduction/authentication)).
 
 <CodeGroup>
 ```bash cURL
@@ -211,10 +211,10 @@ The other dashboard actions map to these endpoints:
 
 | Dashboard action | Endpoint |
 |---|---|
-| Add or remove sources | [Edit Knowledge Base](/api-reference/endpoint/kb/edit-knowledge-base): `PATCH /external/kb` with `kb_id` and `new_files`, `new_urls`, `new_faqs`, `files_to_remove`, `urls_to_remove` or `faqs_to_remove` (plus optional `new_files_metadata`), as `multipart/form-data` |
-| The list | [Get All Knowledge Bases](/api-reference/endpoint/kb/get-all-knowledge-bases): `GET /external/kb/all` |
-| Open one | [Get Knowledge Base by ID](/api-reference/endpoint/kb/get-knowledge-base-by-id): `GET /external/kb/{kb_id}` |
-| Delete | [Delete Knowledge Base](/api-reference/endpoint/kb/delete-knowledge-base): `DELETE /external/kb/{kb_id}` |
+| Add or remove sources | [Edit Knowledge Base](/api-reference/inventory/knowledge-bases/edit-knowledge-base): `PATCH /external/kb` with `kb_id` and `new_files`, `new_urls`, `new_faqs`, `files_to_remove`, `urls_to_remove` or `faqs_to_remove` (plus optional `new_files_metadata`), as `multipart/form-data` |
+| The list | [Get All Knowledge Bases](/api-reference/inventory/knowledge-bases/get-all-knowledge-bases): `GET /external/kb/all` |
+| Open one | [Get Knowledge Base by ID](/api-reference/inventory/knowledge-bases/get-knowledge-base-by-id): `GET /external/kb/{kb_id}` |
+| Delete | [Delete Knowledge Base](/api-reference/inventory/knowledge-bases/delete-knowledge-base): `DELETE /external/kb/{kb_id}` |
 
 Poll Get Knowledge Base by ID until its `status` shows processing has finished:
 

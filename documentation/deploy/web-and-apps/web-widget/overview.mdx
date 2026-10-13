@@ -10,7 +10,7 @@ The web widget puts an [agent](/documentation/build-agents/agents/agent-types) o
 
 In the dashboard: **Assistants → your agent → Embed & Widgets**. Its **Install & domains** and **Appearance** tabs are covered here; **Components** has [its own page](/documentation/deploy/web-and-apps/web-widget/components).
 
-## What this chapter covers
+## Pages in this section
 
 | Page | Read it when |
 |---|---|
@@ -20,6 +20,7 @@ In the dashboard: **Assistants → your agent → Embed & Widgets**. Its **Insta
 | [Chat mode](/documentation/deploy/web-and-apps/web-widget/chat-mode) | Visitors should type instead of talk. |
 | [Components](/documentation/deploy/web-and-apps/web-widget/components), [Data](/documentation/deploy/web-and-apps/web-widget/data), [Recipes](/documentation/deploy/web-and-apps/web-widget/recipes) | The agent should show forms, cards and slot pickers in the chat. |
 | [Styling](/documentation/deploy/web-and-apps/web-widget/styling) | You need CSS or JavaScript hooks the options don't cover. |
+| [Launch checklist](/documentation/deploy/web-and-apps/web-widget/launch-checklist) | You are about to put the widget on a live site. |
 | [Launch checklist](/documentation/deploy/web-and-apps/web-widget/launch-checklist) | You are about to go to production. |
 
 ## Before you start
@@ -166,7 +167,7 @@ Click **Rotate key** above the snippet and confirm **Rotate**. The old key stops
 
 ## With the API
 
-[Edit Assistant](/api-reference/endpoint/assistant/edit-assistant) sets **Allowed clients** with `operation: "edit_agent_whitelisted_domains"` and the list of origins in `whitelisted_domains`. The list replaces the saved one, so send every origin each time. It must still include `https://www.ringg.ai`, or the request fails with `400` "Ringg.ai domain cannot be removed!" You need an [API key](/documentation/manage-account/api-key) and the [agent ID](/documentation/build-agents/agents/agent-types#find-the-agent-id).
+[Edit Assistant](/api-reference/agents/edit-assistant) sets **Allowed clients** with `operation: "edit_agent_whitelisted_domains"` and the list of origins in `whitelisted_domains`. The list replaces the saved one, so send every origin each time. It must still include `https://www.ringg.ai`, or the request fails with `400` "Ringg.ai domain cannot be removed!" You need an [API key](/documentation/manage-account/api-key) and the [agent ID](/documentation/build-agents/agents/agent-types#find-the-agent-id).
 
 ```bash cURL
 curl -X PATCH "https://prod-api.ringg.ai/ca/api/v0/agent/v1" \

@@ -2,12 +2,8 @@
 title: "Lesson: Logs"
 sidebarTitle: "Logs"
 description: "Open the dry-run campaign's calls in Logs, read one call's transcript and Pre-Call tool log, check Advanced analysis, and filter by payment_promised."
-related:
-  - "Logs": /documentation/monitor/logs
-  - "Manage a campaign": /documentation/deploy/campaigns/manage-a-campaign
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -78,4 +74,13 @@ Export what you filtered: click **Export** in the table footer and choose **Expo
   incorrectFeedback="Not quite. The Campaigns filter, like Call ID, From number and To number, ignores the date range, so History on the campaign shows every call whatever its date. Other filters and Export use the date range on screen."
 />
 
-<RelatedTopics items={[["Logs", "/documentation/monitor/logs"], ["Manage a campaign", "/documentation/deploy/campaigns/manage-a-campaign"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Logs" icon="list-checks" href="/documentation/monitor/logs" horizontal>
+    Filter, search and open every call, chat and workflow run.
+  </Card>
+  <Card title="Manage a campaign" icon="activity" href="/documentation/deploy/campaigns/manage-a-campaign" horizontal>
+    Watch status, split concurrency and terminate calls.
+  </Card>
+</Columns>

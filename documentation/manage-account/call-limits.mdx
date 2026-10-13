@@ -130,7 +130,7 @@ Each [Ringg Space](/documentation/manage-account/ringg-spaces/overview) sets its
 - In [Logs](/documentation/monitor/logs#call-statuses), a held call shows **Waiting for limit** and a cancelled one **Cancelled by limit**.
 - In [Analytics](/documentation/monitor/analytics#call-limits), the **Call limits** section counts **Waiting for limit reset**, **Dialled after waiting**, **Cancelled, deadline passed** and **Cancelled, campaign ended**.
 
-The public API has no endpoint for call limits; set them in the dashboard. An API call over the limit is still accepted with `200`, because the limit is checked just before dialling. [Get Call Details](/api-reference/endpoint/history/get-call-details) then shows `call_sub_status` `FREQUENCY_DEFERRED` while the call waits, or `call_status` `cancelled` with `call_sub_status` `FREQUENCY_CAPPED` once the limit cancels it. No `call_completed` event is sent for a cancelled call.
+The public API has no endpoint for call limits; set them in the dashboard. An API call over the limit is still accepted with `200`, because the limit is checked just before dialling. [Get Call Details](/api-reference/monitoring/call-history/get-call-details) then shows `call_sub_status` `FREQUENCY_DEFERRED` while the call waits, or `call_status` `cancelled` with `call_sub_status` `FREQUENCY_CAPPED` once the limit cancels it. No `call_completed` event is sent for a cancelled call.
 
 ## Troubleshooting
 

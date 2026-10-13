@@ -5,7 +5,7 @@ import { campaignLogsRoutes } from "../fixtures/campaigns-logs.ts";
 
 export default {
   name: "campaigns-manage",
-  docsPage: "campaigns/manage",
+  docsPage: "documentation/deploy/campaigns/manage-a-campaign",
   // Analytics and Logs open scoped to the campaign; the campaign list and calls come from the campaigns fixtures.
   routes: { ...analyticsRoutes, ...campaignRoutes, ...campaignLogsRoutes },
   async run(s) {

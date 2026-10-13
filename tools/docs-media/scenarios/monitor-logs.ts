@@ -7,7 +7,7 @@ const runsRoutes = Object.fromEntries(["GET /workflow/runs", "GET /workflow/runs
 
 export default {
   name: "monitor-logs",
-  docsPage: "monitor/logs",
+  docsPage: "documentation/monitor/logs",
   routes: { ...logsRoutes, ...runsRoutes },
   async run(s) {
     const p = s.page;

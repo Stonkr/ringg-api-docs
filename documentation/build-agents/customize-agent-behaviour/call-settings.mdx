@@ -9,7 +9,7 @@ In the dashboard: Agents (listed under **Assistants** in the sidebar) → open a
 
 Switches and menus save as soon as you change them. **Noise Suppression Level** and **Exit Timing** save when you leave the field or press Enter. **Custom message**, **Exit Message** and the rate-limit fields have their own **Save** button.
 
-This chapter is the settings around the prompt and what comes out of each conversation:
+These pages cover the settings around the prompt and what comes out of each conversation:
 
 | Page | What you set |
 |---|---|
@@ -83,7 +83,7 @@ The hours an outbound agent may dial, in its **Timezone**. **Call start time** t
 
 An overnight window such as 22:00 to 06:00 can be set only through the [API](#do-this-with-the-api); the dashboard shows it and keeps it.
 
-An individual [API call](/api-reference/endpoint/calling/initiate-individual-call) can send its own `call_time`: each key it sends replaces the agent's value, and keys it leaves out keep the agent's. A [campaign](/documentation/deploy/campaigns/create-a-campaign) always uses its own window instead of the agent's; a campaign started by API without `call_time` calls from 09:00 to 21:00 IST.
+An individual [API call](/api-reference/calling/individual-calls/initiate-individual-call) can send its own `call_time`: each key it sends replaces the agent's value, and keys it leaves out keep the agent's. A [campaign](/documentation/deploy/campaigns/create-a-campaign) always uses its own window instead of the agent's; a campaign started by API without `call_time` calls from 09:00 to 21:00 IST.
 
 ## Voicemail
 
@@ -146,7 +146,7 @@ The **Chat** page shows **Chat Duration** on every agent except WhatsApp agents.
 
 ## Do this with the API
 
-[Create Agent](/api-reference/endpoint/assistant/create-agent) (`POST /public/agent`) takes these settings in `call_config`. Any key you leave out takes its default. You need an [API key](/documentation/manage-account/api-key).
+[Create Agent](/api-reference/agents/create-agent) (`POST /public/agent`) takes these settings in `call_config`. Any key you leave out takes its default. You need an [API key](/documentation/manage-account/api-key).
 
 <ResponseField name="call_config" type="object">
   <Expandable title="properties">
@@ -186,7 +186,7 @@ curl -X POST https://prod-api.ringg.ai/ca/api/v0/public/agent \
   }'
 ```
 
-To override settings for one call, send `call_config` (`max_call_length`, `idle_timeout_warning`, `idle_timeout_end`, `call_time`, `call_retry_config`) with [Initiate Individual Call](/api-reference/endpoint/calling/initiate-individual-call). On an existing agent, [Edit Assistant](/api-reference/endpoint/assistant/edit-assistant) changes these:
+To override settings for one call, send `call_config` (`max_call_length`, `idle_timeout_warning`, `idle_timeout_end`, `call_time`, `call_retry_config`) with [Initiate Individual Call](/api-reference/calling/individual-calls/initiate-individual-call). On an existing agent, [Edit Assistant](/api-reference/agents/edit-assistant) changes these:
 
 | Operation | Sets |
 |---|---|

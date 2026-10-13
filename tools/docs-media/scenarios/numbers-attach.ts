@@ -3,7 +3,7 @@ import { makeEditorBRoutes, SL_ID, shotNoToasts } from "../fixtures/editor-b.ts"
 
 export default {
   name: "numbers-attach",
-  docsPage: "numbers/attach-to-agent",
+  docsPage: "documentation/inventory/phone-numbers/inbound-agent-number",
   routes: makeEditorBRoutes(),
   async run(s) {
     const p = s.page;

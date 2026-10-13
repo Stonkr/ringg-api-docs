@@ -74,7 +74,8 @@ Every field is required unless marked optional. Provider-side setup is in each p
 | [Ozonetel](/documentation/inventory/phone-numbers/your-own-telephony/ozonetel) | Campaign Name, User Name, API Key, SIP Number |
 | [Plivo](/documentation/inventory/phone-numbers/your-own-telephony/plivo) | Auth ID, Auth Token, App ID (optional; leave it blank, Ringg creates its own app) |
 | Tata Tele | API Key, Auth Token |
-| InTalk | Account Name (the `acme` in `acme.apps.intalk.cc`), Base URL (the `apps.intalk.cc` part), API Token. Import only: no **Buy new** tab. |
+| [InTalk](/documentation/inventory/phone-numbers/your-own-telephony/intalk) | Account Name (the `acme` in `acme.apps.intalk.cc`), Base URL (the `apps.intalk.cc` part), API Token. Import only: no **Buy new** tab. |
+| [Telnyx](/documentation/inventory/phone-numbers/your-own-telephony/telnyx) | API Key, Connection ID (your Voice API Application's ID), Public Key. Import only: no **Buy new** tab. |
 | Maqsam | Base URL (your account host, for example `mycompany.maqsam.com`), Access Key ID, Access Secret, Campaign ID |
 | [Twilio](/documentation/inventory/phone-numbers/your-own-telephony/twilio) | Account SID, Auth Token |
 | Vobiz | Account ID, Auth ID, Auth Secret |
@@ -157,7 +158,7 @@ Detach a number from its agent and take it out of running campaigns before you r
 
 ## With the API
 
-Numbers are bought, imported and added in the dashboard only. [Get Workspace Numbers](/api-reference/endpoint/numbers/get-workspace-numbers) reads the list (example in [List numbers by API](/documentation/inventory/phone-numbers/overview#list-numbers-by-api)); pass a number's `id` as `from_number_id` when you [place a call](/documentation/inventory/phone-numbers/inbound-agent-number#outbound-choose-the-caller-id).
+Numbers are bought, imported and added in the dashboard only. [Get Workspace Numbers](/api-reference/inventory/numbers/get-workspace-numbers) reads the list (example in [List numbers by API](/documentation/inventory/phone-numbers/overview#list-numbers-by-api)); pass a number's `id` as `from_number_id` when you [place a call](/documentation/inventory/phone-numbers/inbound-agent-number#outbound-choose-the-caller-id).
 
 ## Troubleshooting
 

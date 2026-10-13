@@ -131,13 +131,13 @@ When the balance (or, on postpaid, the credit limit) runs out, new calls stop:
 
 - **A call in progress** is never cut off. It is charged when it ends, so the balance can end up below zero.
 - **A running campaign** is not paused. Its remaining calls wait and resume on their own after a top-up. If the campaign's end time passes first, the calls still waiting fail.
-- **API calls** to [Initiate Individual Call](/api-reference/endpoint/calling/initiate-individual-call) return `402` with "Your current balance is insufficient to initiate this call!".
+- **API calls** to [Initiate Individual Call](/api-reference/calling/individual-calls/initiate-individual-call) return `402` with "Your current balance is insufficient to initiate this call!".
 
-A [campaign](/documentation/deploy/campaigns/overview#campaign-statuses) that the balance can't cover when its list is checked or when it launches stays at **Insufficient Balance**, with "Top up your balance to schedule this campaign". Its **Add Balance** button brings you here. A top-up does not start it for you: launch it again with **Complete Setup**. For a campaign started by API, re-check with [Check large campaign balance](/api-reference/endpoint/campaign/check-large-campaign-balance), then call [Make large campaign calls async](/api-reference/endpoint/campaign/make-large-campaign-calls-async) again; there is no need to recreate the campaign.
+A [campaign](/documentation/deploy/campaigns/overview#campaign-statuses) that the balance can't cover when its list is checked or when it launches stays at **Insufficient Balance**, with "Top up your balance to schedule this campaign". Its **Add Balance** button brings you here. A top-up does not start it for you: launch it again with **Complete Setup**. For a campaign started by API, re-check with [Check large campaign balance](/api-reference/calling/large-campaigns/check-large-campaign-balance), then call [Make large campaign calls async](/api-reference/calling/large-campaigns/make-large-campaign-calls-async) again; there is no need to recreate the campaign.
 
 On prepaid, the workspace owner gets an email when the balance runs low and when it runs out. To be warned at your own threshold, set a balance [alert](/documentation/monitor/alerts).
 
-To read the balance from code, call [Get Workspace Info](/api-reference/endpoint/workspace/get-workspace-info) and read `workspace_info.total_available_credits` (prepaid), or `workspace_info.credit_limit` and `workspace_info.utilized_limit` (postpaid). You need an [API key](/documentation/manage-account/api-key).
+To read the balance from code, call [Get Workspace Info](/api-reference/account/get-workspace-info) and read `workspace_info.total_available_credits` (prepaid), or `workspace_info.credit_limit` and `workspace_info.utilized_limit` (postpaid). You need an [API key](/documentation/manage-account/api-key).
 
 <CodeGroup>
 ```bash cURL

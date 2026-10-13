@@ -6,7 +6,7 @@ import { AGENT_ID, editorARoutes, stubVoicePreviews } from "../fixtures/editor-a
 
 export default {
   name: "agents-voice",
-  docsPage: "agents/voice-and-language",
+  docsPage: "documentation/build-agents/customize-agent-behaviour/voice-and-language",
   routes: {
     ...editorARoutes(),
     "GET /workspace": { workspace_info: { ...workspace, is_voice_clone_enabled: true } },

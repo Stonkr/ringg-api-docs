@@ -2,12 +2,8 @@
 title: "Lesson: Versions and A/B"
 sidebarTitle: "Versions and A/B"
 description: "Turn on Create Versions for the EMI reminder agent, add V2 with a shorter first message, split traffic 70/30 with Assign Traffic, and find A/B Analytics."
-related:
-  - "Drafts and versions": /documentation/build-agents/test-and-improve/drafts-and-versions
-  - "Test an agent": /documentation/build-agents/test-and-improve/test-an-agent
 ---
 
-import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 import { Quiz } from "/snippets/learn-quiz.mdx";
 
@@ -79,4 +75,13 @@ Open **Assign Traffic** again, set V1 to 100% and V2 to 0%, and save. Expected r
   incorrectFeedback="Not quite. Nothing is routed by default: Save needs the versions to add up to exactly 100%, in 5% steps. Finalize is a separate action that picks the winner and turns A/B testing off."
 />
 
-<RelatedTopics items={[["Drafts and versions", "/documentation/build-agents/test-and-improve/drafts-and-versions"], ["Test an agent", "/documentation/build-agents/test-and-improve/test-an-agent"]]} />
+## Reference
+
+<Columns cols={2}>
+  <Card title="Drafts and versions" icon="git-branch" href="/documentation/build-agents/test-and-improve/drafts-and-versions" horizontal>
+    Drafts, publishing, versions and traffic split.
+  </Card>
+  <Card title="Test an agent" icon="play" href="/documentation/build-agents/test-and-improve/test-an-agent" horizontal>
+    Place a test call, chat with the agent and read the result.
+  </Card>
+</Columns>
