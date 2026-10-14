@@ -5565,7 +5565,7 @@
                   },
                   "to_number": {
                     "type": "string",
-                    "description": "(Optional) The customer's number, matched exactly in any stored format: an Indian number with `+91`, `91`, `0` or no prefix, other numbers with or without `+`. Matches outbound calls to it and inbound calls from it.",
+                    "description": "(Optional) The customer's number. An Indian number matches with `+91`, `91`, `0` or no prefix, and a number without a country code is read as Indian; send any other number with its country code. Matches outbound calls to it and inbound calls from it.",
                     "example": "+919876543210"
                   },
                   "from_number": {
@@ -5587,7 +5587,7 @@
                         }
                       ]
                     },
-                    "description": "(Optional) Custom variables that must all equal these values, compared as text. Up to 10 keys of letters, digits and underscores.",
+                    "description": "(Optional) Custom variables that must all equal these values. Strings, whole numbers and booleans are compared as text, decimals as numbers. Up to 10 keys of letters, digits and underscores.",
                     "example": {
                       "loan_id": "LN-20481"
                     }
@@ -5607,7 +5607,7 @@
                         }
                       ]
                     },
-                    "description": "(Optional) Advanced Analysis fields that must all equal these values, compared as text. Up to 10 top-level keys."
+                    "description": "(Optional) Advanced Analysis fields that must all equal these values, compared like `custom_args`. Up to 10 top-level keys."
                   },
                   "platform_analysis": {
                     "type": "object",
@@ -5624,7 +5624,7 @@
                         }
                       ]
                     },
-                    "description": "(Optional) Platform analysis fields that must all equal these values, compared as text. Up to 10 top-level keys. `summary` cannot be filtered on."
+                    "description": "(Optional) Platform analysis fields that must all equal these values, compared like `custom_args`. Up to 10 top-level keys. `summary` cannot be filtered on."
                   },
                   "lookback_days": {
                     "type": "integer",
