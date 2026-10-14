@@ -56,14 +56,14 @@ A first-time customer has no previous call, so the search returns `404`. That on
 - Strings, whole numbers and `true` or `false` are compared as text, so `2` and `"2"` both match a stored `2`. Decimals are compared as numbers, so `0.000001` matches a stored `0.000001`.
 - Phone numbers ignore spaces and dashes. An Indian number matches with `+91`, `91`, `0` or no prefix, and a number without a country code is read as Indian. Send any other number with its country code, such as `+6581234567`; it only ever matches that number, never an Indian one.
 - `client_analysis` and `platform_analysis` filters take top-level keys only. `platform_analysis.summary` can't be filtered on.
-- A blank value, such as `"to_number": ""`, or a number with no digits, is rejected rather than ignored, so an empty variable never widens the search to other customers.
+- A blank value, such as `"to_number": ""`, or a phone value with no number in it, such as `"00"`, is rejected rather than ignored, so an empty variable never widens the search to other customers.
 - Purged calls and eval simulation calls are never returned.
 
 ## Errors
 
 - `401`: `X-API-KEY` is missing or invalid.
 - `404`: no call in the lookback window matches every filter.
-- `422`: a filter is invalid, such as `lookback_days` above 30, a blank value, more than 10 keys in one filter, or a key with characters other than letters, digits and underscores.
+- `422`: a filter is invalid, such as `lookback_days` above 30, a blank value, a phone value with no number in it, more than 10 keys in one filter, or a key with characters other than letters, digits and underscores.
 - `503`: search is temporarily unavailable. Retry the request.
 
 <RelatedTopics items={[["Get call details", "/api-reference/monitoring/call-history/get-call-details"], ["API tools", "/documentation/build-agents/customize-agent-behaviour/tools/api-tools"], ["Custom variables", "/documentation/build-agents/customize-agent-behaviour/custom-variables"]]} />
