@@ -5550,18 +5550,25 @@
                     "description": "(Optional) Only calls in this direction."
                   },
                   "status": {
-                    "type": "string",
-                    "enum": [
-                      "registered",
-                      "ongoing",
-                      "retry",
-                      "error",
-                      "completed",
-                      "failed",
-                      "cancelled",
-                      "forwarded"
-                    ],
-                    "description": "(Optional) Only calls in this status. Leave it out to match any finished call: `completed`, `failed`, `error` or `cancelled`."
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "registered",
+                        "ongoing",
+                        "retry",
+                        "error",
+                        "completed",
+                        "failed",
+                        "cancelled",
+                        "forwarded"
+                      ]
+                    },
+                    "description": "(Optional) Only calls in any of these statuses. Leave it out to match any finished call: `completed`, `failed`, `error`, `cancelled` or `forwarded`.",
+                    "example": [
+                      "completed"
+                    ]
                   },
                   "to_number": {
                     "type": "string",
