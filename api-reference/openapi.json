@@ -5497,6 +5497,452 @@
         }
       }
     },
+    "/calling/call-details/search": {
+      "post": {
+        "tags": [
+          "calling"
+        ],
+        "summary": "Search Call Details",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Search Call Details | Ringg AI"
+          }
+        },
+        "description": "Returns the most recent call that matches every filter you send, in the same shape as Get Call Details. All filters are optional and combine with AND.",
+        "operationId": "searchCallDetails",
+        "parameters": [
+          {
+            "name": "X-API-KEY",
+            "in": "header",
+            "description": "(Required) Your Ringg AI API key.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "agent_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "(Optional) Only calls made by this agent, on any version.",
+                    "example": "00000000-0000-4000-8000-000000000110"
+                  },
+                  "version_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "(Optional) Only calls made by this agent version."
+                  },
+                  "call_type": {
+                    "type": "string",
+                    "enum": [
+                      "inbound",
+                      "outbound",
+                      "webcall"
+                    ],
+                    "description": "(Optional) Only calls in this direction."
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "registered",
+                      "ongoing",
+                      "retry",
+                      "error",
+                      "completed",
+                      "failed",
+                      "cancelled",
+                      "forwarded"
+                    ],
+                    "description": "(Optional) Only calls in this status. Leave it out to match any finished call: `completed`, `failed`, `error` or `cancelled`."
+                  },
+                  "to_number": {
+                    "type": "string",
+                    "description": "(Optional) The customer's number, matched exactly in any stored format: an Indian number with `+91`, `91`, `0` or no prefix, other numbers with or without `+`. Matches outbound calls to it and inbound calls from it.",
+                    "example": "+919876543210"
+                  },
+                  "from_number": {
+                    "type": "string",
+                    "description": "(Optional) The number that placed the call, matched like `to_number`: your caller ID on outbound calls, the customer's number on inbound calls."
+                  },
+                  "custom_args": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    },
+                    "description": "(Optional) Custom variables that must all equal these values, compared as text. Up to 10 keys of letters, digits and underscores.",
+                    "example": {
+                      "loan_id": "LN-20481"
+                    }
+                  },
+                  "client_analysis": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    },
+                    "description": "(Optional) Advanced Analysis fields that must all equal these values, compared as text. Up to 10 top-level keys."
+                  },
+                  "platform_analysis": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "oneOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    },
+                    "description": "(Optional) Platform analysis fields that must all equal these values, compared as text. Up to 10 top-level keys. `summary` cannot be filtered on."
+                  },
+                  "lookback_days": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 30,
+                    "default": 7,
+                    "description": "(Optional) How many days back to search, by when the call was created."
+                  },
+                  "exclude_call_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "description": "(Optional) A call to skip, such as the current call in a pre-call tool."
+                  },
+                  "send_analysis": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "(Optional) Include `platform_analysis` and `client_analysis` in the response."
+                  },
+                  "call_metrics": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "(Optional) Include eval results in `data.metrics`."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The latest matching call, in the same shape as Get Call Details.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "The unique identifier of the call",
+                          "example": "550e8400-e29b-41d4-a716-446655440000"
+                        },
+                        "call_direction": {
+                          "type": "string",
+                          "description": "The direction of the call",
+                          "enum": [
+                            "inbound",
+                            "outbound",
+                            "webcall"
+                          ],
+                          "example": "outbound"
+                        },
+                        "call_status": {
+                          "type": "string",
+                          "description": "`registered`: created, not dialled yet (queued, scheduled, outside calling hours or held by a call limit). `ongoing`: dialling, ringing or in conversation. `retry`: an attempt did not connect and another is scheduled. `completed`: connected and ended, including voicemail detected. `failed`: no conversation and nothing left to try, such as busy or unanswered on the last attempt, a DND number, or the campaign window ending first. `error`: a system-side failure, such as the dial or the pre-call API failing. `cancelled`: stopped on purpose, by Terminate calls, a passed deadline or a call limit. `forwarded`: an inbound call sent to the agent's transfer number by its inbound rate limit.",
+                          "enum": [
+                            "registered",
+                            "ongoing",
+                            "retry",
+                            "error",
+                            "completed",
+                            "failed",
+                            "cancelled",
+                            "forwarded"
+                          ],
+                          "example": "completed"
+                        },
+                        "call_sub_status": {
+                          "type": "string",
+                          "description": "The detail behind `call_status`. Examples: `FREQUENCY_DEFERRED` (held by a call limit), `FREQUENCY_CAPPED` (cancelled by a call limit), `DEADLINE_PASSED` (cancelled at `call_deadline` or `call_validity_hours`), `USER_TERMINATED` (Terminate calls), `DND_SKIPPED`, `RETRY_LIMIT_REACHED`. For a failed or error call, webhooks and exports can carry the carrier's own reason instead.",
+                          "enum": [
+                            "IN_DB",
+                            "QUEUED",
+                            "ACCEPTED",
+                            "RATE_LIMITED",
+                            "RETRY_LIMIT_REACHED",
+                            "RETRY_SCHEDULED",
+                            "FAILED",
+                            "USER_DID_NOT_JOIN",
+                            "USER_LEFT",
+                            "USER_BECAME_IDLE",
+                            "CAMPAIGN_TIME_EXCEEDED",
+                            "MAX_CALL_DURATION",
+                            "NOT_ABLE_TO_CALL",
+                            "USER_TERMINATED",
+                            "DND_SKIPPED",
+                            "VOICEMAIL_DETECTED",
+                            "VOICEMAIL_DETECTED_VIA_LLM",
+                            "PRE_CALL_API_FAILED",
+                            "RECONCILED_TO_ERROR_FROM_REGISTERED",
+                            "RECONCILED_TO_ERROR_FROM_RETRY",
+                            "RECONCILED_TO_ERROR_FROM_ONGOING",
+                            "RECONCILED_TO_COMPLETED_FROM_ONGOING",
+                            "FREQUENCY_DEFERRED",
+                            "FREQUENCY_CAPPED",
+                            "FREQUENCY_CHECK_FAILED",
+                            "DEADLINE_PASSED",
+                            "PHONOS_TIMEOUT"
+                          ],
+                          "example": "ACCEPTED"
+                        },
+                        "from_number": {
+                          "type": "string",
+                          "description": "The phone number the call was made from",
+                          "example": "+1234567890"
+                        },
+                        "to_number": {
+                          "type": "string",
+                          "description": "The phone number the call was made to",
+                          "example": "+14155550123"
+                        },
+                        "callee_name": {
+                          "type": "string",
+                          "description": "The name of the person called",
+                          "example": "John Doe"
+                        },
+                        "agent_id": {
+                          "type": "string",
+                          "description": "The ID of the agent that handled the call",
+                          "example": "agent-123-456"
+                        },
+                        "initiation_time": {
+                          "type": "string",
+                          "format": "date-time",
+                          "description": "When the call was initiated",
+                          "example": "2024-01-15T14:30:00Z"
+                        },
+                        "recording_url": {
+                          "type": "string",
+                          "description": "URL of the call recording. The link may expire; call this endpoint again for a fresh link, and download the file if you need to keep it.",
+                          "example": "https://example.com/recordings/call-123.mp3"
+                        },
+                        "transcription_url": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "The transcript as a JSON-encoded string, not an array: parse it to get one object per turn, keyed `bot` or `user`. `null` when there is no transcript, and `\"[]\"` for a call that never connected.",
+                          "example": "[{\"bot\": \"Hi Priya, this is Asha from Acme Lending. Is this a good time to talk about your EMI?\"}, {\"user\": \"Yes, go ahead.\"}]"
+                        },
+                        "platform_analysis": {
+                          "type": "object",
+                          "description": "Ringg's post-call analysis, with `send_analysis=true`: `summary`, `key_points`, `action_items`, `classification` (one of the agent's labels), `sentiment` (`positive`, `neutral` or `negative`), `sentiment_reason`, `callback_requested`, `callback_requested_time`, `callback_requested_via_human_agent`, `call_disconnect_reason` (`agent_hangup` or `user_hangup`) and `timezone`, plus token counters. A call where the callee never spoke gets only `summary`, `classification`, `key_points`, `action_items` and `call_disconnect_reason`.",
+                          "example": {
+                            "summary": "Priya confirmed she will pay the EMI on 5 October.",
+                            "key_points": [
+                              "EMI due on 5 October",
+                              "Customer will pay on time"
+                            ],
+                            "action_items": [],
+                            "classification": "promise_to_pay",
+                            "sentiment": "positive",
+                            "sentiment_reason": "The customer was cooperative.",
+                            "callback_requested": false,
+                            "callback_requested_time": null,
+                            "callback_requested_via_human_agent": false,
+                            "call_disconnect_reason": "agent_hangup",
+                            "timezone": "Asia/Kolkata"
+                          }
+                        },
+                        "client_analysis": {
+                          "type": "object",
+                          "description": "Your Advanced Analysis results, with `send_analysis=true`.",
+                          "example": {
+                            "emi_payment_date": "2026-10-05",
+                            "payment_intent": "will_pay"
+                          }
+                        },
+                        "metrics": {
+                          "type": "array",
+                          "description": "Eval results for the call, with `call_metrics=true`.",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "metric_id": {
+                                "type": "string"
+                              },
+                              "metric_run_id": {
+                                "type": "string"
+                              },
+                              "metric_name": {
+                                "type": "string",
+                                "example": "instruction_following"
+                              },
+                              "output_type": {
+                                "type": "string"
+                              },
+                              "score": {
+                                "type": "number"
+                              },
+                              "explanation": {
+                                "type": "string"
+                              },
+                              "raw_data": {
+                                "type": "object",
+                                "nullable": true
+                              },
+                              "violations": {
+                                "type": "array",
+                                "nullable": true,
+                                "items": {}
+                              },
+                              "created_at": {
+                                "type": "string",
+                                "format": "date-time"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "basic_response": {
+                    "summary": "Basic call details (send_analysis=false)",
+                    "value": {
+                      "status": "success",
+                      "data": {
+                        "id": "550e8400-e29b-41d4-a716-446655440000",
+                        "call_direction": "outbound",
+                        "call_status": "completed",
+                        "call_sub_status": "ACCEPTED",
+                        "from_number": "+1234567890",
+                        "to_number": "+14155550123",
+                        "callee_name": "John Doe",
+                        "agent_id": "agent-123-456",
+                        "initiation_time": "2024-01-15T14:30:00Z",
+                        "recording_url": "https://example.com/recordings/call-123.mp3",
+                        "transcription_url": "[{\"bot\": \"Hi Priya, this is Asha from Acme Lending. Is this a good time to talk about your EMI?\"}, {\"user\": \"Yes, go ahead.\"}]"
+                      }
+                    }
+                  },
+                  "with_analysis": {
+                    "summary": "Call details with analysis (send_analysis=true)",
+                    "value": {
+                      "status": "success",
+                      "data": {
+                        "id": "550e8400-e29b-41d4-a716-446655440000",
+                        "call_direction": "outbound",
+                        "call_status": "completed",
+                        "call_sub_status": "ACCEPTED",
+                        "from_number": "+1234567890",
+                        "to_number": "+14155550123",
+                        "callee_name": "John Doe",
+                        "agent_id": "agent-123-456",
+                        "initiation_time": "2024-01-15T14:30:00Z",
+                        "recording_url": "https://example.com/recordings/call-123.mp3",
+                        "transcription_url": "[{\"bot\": \"Hi Priya, this is Asha from Acme Lending. Is this a good time to talk about your EMI?\"}, {\"user\": \"Yes, go ahead.\"}]",
+                        "platform_analysis": {
+                          "summary": "Priya confirmed she will pay the EMI on 5 October.",
+                          "key_points": [
+                            "EMI due on 5 October",
+                            "Customer will pay on time"
+                          ],
+                          "action_items": [],
+                          "classification": "promise_to_pay",
+                          "sentiment": "positive",
+                          "sentiment_reason": "The customer was cooperative.",
+                          "callback_requested": false,
+                          "callback_requested_time": null,
+                          "callback_requested_via_human_agent": false,
+                          "call_disconnect_reason": "agent_hangup",
+                          "timezone": "Asia/Kolkata"
+                        },
+                        "client_analysis": {
+                          "emi_payment_date": "2026-10-05",
+                          "payment_intent": "will_pay"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No call matches the filters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "No call matches these filters"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "A filter is invalid, such as `lookback_days` above 30, a blank value, or a key with characters other than letters, digits and underscores."
+          },
+          "503": {
+            "description": "Search is temporarily unavailable. Retry the request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Call search is temporarily unavailable"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/campaign/all": {
       "get": {
         "tags": [

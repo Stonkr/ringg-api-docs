@@ -342,6 +342,7 @@
                 "pages": [
                   "api-reference/monitoring/call-history/get-call-history",
                   "api-reference/monitoring/call-history/get-call-details",
+                  "api-reference/monitoring/call-history/search-call-details",
                   "api-reference/monitoring/call-history/download-call-history"
                 ],
                 "expanded": true
