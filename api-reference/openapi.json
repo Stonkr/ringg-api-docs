@@ -10,6 +10,11 @@
       "url": "https://prod-api.ringg.ai/ca/api/v0"
     }
   ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
   "tags": [
     {
       "name": "workspace",
@@ -55,18 +60,6 @@
         },
         "description": "Retrieves information about your current workspace.",
         "operationId": "getWorkspaceInfo",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Successful Response: Information about the current workspace.",
@@ -155,16 +148,6 @@
         "description": "Retrieves a list of all users in your current workspace.",
         "operationId": "listWorkspaceUsers",
         "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
           {
             "name": "limit",
             "in": "query",
@@ -276,16 +259,6 @@
         "description": "Retrieves every phone number in your workspace, newest first. The list is not paged.",
         "operationId": "getWorkspaceNumbers",
         "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
           {
             "name": "telephony_account_id",
             "in": "query",
@@ -486,18 +459,6 @@
         },
         "description": "Purchases a phone number and adds it to the current workspace.",
         "operationId": "buyNumber",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -707,16 +668,6 @@
         "operationId": "unrentNumber",
         "parameters": [
           {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
-          {
             "name": "number_id",
             "in": "path",
             "description": "Workspace number ID returned by GET /workspace/numbers or POST /payment/number/checkout.",
@@ -822,18 +773,6 @@
         },
         "description": "Retrieves a list of all workspaces accessible to the current user.",
         "operationId": "getAllUserWorkspaces",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Successful Response: A list of user workspaces.",
@@ -934,18 +873,6 @@
         },
         "description": "Creates a new Ringg Space under the primary workspace that owns the API key. The Ringg Space is a full workspace (own agents, numbers, campaigns, call history, members) that starts with zero balance or credit limit and zero concurrency; allocate to it afterwards. Every member of the primary is given inherited access to it. The first Ringg Space turns the primary into a family in individual billing mode.",
         "operationId": "createSubWorkspace",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) The API key of the PRIMARY workspace. A Ringg Space's own key is refused (403, or 400 if Ringg Spaces are enabled on it).",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1107,18 +1034,6 @@
         },
         "description": "Returns the whole family in one call: the primary's summary, one row per active Ringg Space with its allocation, members and month-to-date usage, and the family totals. Works on a primary that has no Ringg Spaces yet (empty list).",
         "operationId": "getSubWorkspaces",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) The API key of the PRIMARY workspace. A Ringg Space's own key is refused (403, or 400 if Ringg Spaces are enabled on it).",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Successful Response: The family overview.",
@@ -1478,18 +1393,6 @@
         },
         "description": "Lists every person with access anywhere in the family and where that access comes from: members of the primary (who inherit access to every Ringg Space) and people added directly to one or more Ringg Spaces.",
         "operationId": "listFamilyMembers",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) The API key of the PRIMARY workspace. A Ringg Space's own key is refused (403, or 400 if Ringg Spaces are enabled on it).",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Successful Response: The family member matrix.",
@@ -1707,16 +1610,6 @@
         "operationId": "allocateSubWorkspaceConcurrency",
         "parameters": [
           {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) The API key of the PRIMARY workspace. A Ringg Space's own key is refused (403, or 400 if Ringg Spaces are enabled on it).",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
-          {
             "name": "sub_workspace_id",
             "in": "path",
             "required": true,
@@ -1920,18 +1813,6 @@
         },
         "description": "Postpaid, individual-billing families only. Sets every active Ringg Space's credit limit in one call and optionally the family total. The map must name every active Ringg Space exactly once; a slice cannot drop below what that Ringg Space has already used this month, the slices cannot exceed the family total, and what remains for the primary must cover its own usage. Not applicable to common-billing families, where credit is pooled on the primary.",
         "operationId": "reallocateSubWorkspaceCreditLimits",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) The API key of the PRIMARY workspace. A Ringg Space's own key is refused (403, or 400 if Ringg Spaces are enabled on it).",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -2133,18 +2014,6 @@
         },
         "description": "Prepaid, individual-billing families only. Sets every active Ringg Space's wallet to an absolute balance; the net difference moves from or to the primary's unallocated pot, which must be able to cover it. Top up on the primary first, then allocate. Not applicable to common-billing families, where the wallet is shared on the primary.",
         "operationId": "reallocateSubWorkspaceCreditBalances",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) The API key of the PRIMARY workspace. A Ringg Space's own key is refused (403, or 400 if Ringg Spaces are enabled on it).",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -2334,16 +2203,6 @@
         "description": "Retrieves the agents in your workspace. Without `limit`, every agent is returned.",
         "operationId": "getAssistants",
         "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
           {
             "name": "search",
             "in": "query",
@@ -2543,16 +2402,6 @@
         "operationId": "getAssistantVoices",
         "parameters": [
           {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
-          {
             "name": "language",
             "in": "query",
             "description": "Filter voices by language (e.g., 'en-US', 'hi-IN'). Multiple languages can be comma-separated.",
@@ -2682,18 +2531,6 @@
         },
         "description": "Updates one setting of an existing agent per request. Each operation requires specific fields. Without `version_id`, the change applies to the agent's active version.",
         "operationId": "editAssistant",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -3130,16 +2967,6 @@
         "operationId": "getAssistantById",
         "parameters": [
           {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
-          {
             "name": "agent_id",
             "in": "path",
             "description": "(Required) ID of the agent to retrieve.",
@@ -3458,16 +3285,6 @@
         "operationId": "deleteAssistant",
         "parameters": [
           {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
-          {
             "name": "agent_id",
             "in": "path",
             "description": "(Required) ID of the agent to delete.",
@@ -3558,18 +3375,6 @@
         },
         "description": "Starts one outbound call to a recipient. Send `from_number_id` or `from_number` as the caller number, not both. Both may be left out when the agent version has its own outbound numbers; those numbers also take precedence over the request's caller number.",
         "operationId": "initiateIndividualCall",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -4032,18 +3837,6 @@
         },
         "description": "Starts one outbound call to a recipient using a number pool or an explicit caller number. Send at least one of `number_pool_id`, `from_number_id` or `from_number`. With a pool, Ringg picks the caller number from it and ignores the other two.",
         "operationId": "initiateIndividualCallV2",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -4445,16 +4238,6 @@
           }
         ],
         "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
           {
             "name": "start_date",
             "in": "query",
@@ -4892,16 +4675,6 @@
         ],
         "parameters": [
           {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
-          {
             "name": "start_date",
             "in": "query",
             "description": "Filter calls starting from this date (ISO 8601 format with timezone)",
@@ -5151,16 +4924,6 @@
         "description": "Retrieves one call by its ID. Set `send_analysis=true` to include post-call analysis and `call_metrics=true` to include eval results.",
         "operationId": "getCallDetails",
         "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
           {
             "name": "id",
             "in": "query",
@@ -5512,16 +5275,6 @@
         "operationId": "getAllCampaigns",
         "parameters": [
           {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
-          {
             "name": "limit",
             "in": "query",
             "description": "Maximum number of campaigns to return (default: 10).",
@@ -5704,18 +5457,6 @@
         },
         "description": "Initiates a new campaign with the specified configuration.",
         "operationId": "startCampaign",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -5868,18 +5609,6 @@
         },
         "description": "Initiates a new campaign using a number pool for outbound calls. Ringg picks caller numbers from the pool, rotating numbers and skipping ones flagged as spam.",
         "operationId": "startCampaignV2",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -6032,18 +5761,6 @@
         },
         "description": "Uploads a contact list for a campaign. Accepts a CSV file and campaign configuration as form data.",
         "operationId": "uploadCampaignContactList",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -6263,16 +5980,6 @@
         "operationId": "getPlatformAnalytics",
         "parameters": [
           {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
-          {
             "name": "start_date",
             "in": "query",
             "description": "Start date for analytics filter (YYYY-MM-DD format)",
@@ -6397,16 +6104,6 @@
         "description": "Retrieves detailed analytics for a specific bulk list/campaign with drill-down capabilities.",
         "operationId": "getDrillDownAnalytics",
         "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
           {
             "name": "bulk_list_id",
             "in": "query",
@@ -6544,16 +6241,6 @@
         "operationId": "getNumberAnalytics",
         "parameters": [
           {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
-          {
             "name": "start_date",
             "in": "query",
             "description": "Start date for analytics filter (YYYY-MM-DD format)",
@@ -6670,16 +6357,6 @@
         "description": "Retrieves call duration distribution analytics.",
         "operationId": "getDurationDistribution",
         "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
           {
             "name": "start_date",
             "in": "query",
@@ -6798,16 +6475,6 @@
         "operationId": "getClassificationAnalytics",
         "parameters": [
           {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
-          {
             "name": "start_date",
             "in": "query",
             "description": "Start date for analytics filter (YYYY-MM-DD format)",
@@ -6923,18 +6590,6 @@
         },
         "description": "Cancels queued (`registered`) and `retry` calls, by agent ID, call IDs, campaign ID, campaign plus mobile numbers, or mobile numbers. A call already in progress is not hung up: it ends normally and is not retried. Only calls created in the last 7 days are cancelled; agent, call ID and campaign modes apply to outbound calls.",
         "operationId": "terminateCalls",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -7060,18 +6715,6 @@
         },
         "description": "Creates a new non-deterministic knowledge base. Rate limit: 10 requests per hour per workspace. File size limit: 2 MB per file, 5 MB total. Maximum 10 files and 20 URLs per request. Files are read by extension: PDF, DOCX, TXT, CSV (one entry per row) and JSON; any other extension is read as plain text. Knowledge bases created with the API are not listed on the dashboard's Knowledge Base page, but can be attached to agents.",
         "operationId": "createKnowledgeBase",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -7188,18 +6831,6 @@
         },
         "description": "Edits an existing knowledge base by adding or removing files, URLs, and FAQs. Rate limit: 20 requests per hour per workspace. File size limit: 2 MB per file, 5 MB total.",
         "operationId": "editKnowledgeBase",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -7375,16 +7006,6 @@
         "operationId": "getKnowledgeBaseById",
         "parameters": [
           {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
-          {
             "name": "kb_id",
             "in": "path",
             "description": "(Required) ID of the knowledge base",
@@ -7548,16 +7169,6 @@
         "operationId": "deleteKnowledgeBase",
         "parameters": [
           {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
-          {
             "name": "kb_id",
             "in": "path",
             "description": "(Required) ID of the knowledge base to delete",
@@ -7640,18 +7251,6 @@
         },
         "description": "Retrieves all knowledge bases for the current workspace. Rate limit: 60 requests per hour per workspace.",
         "operationId": "getAllKnowledgeBases",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "List of all knowledge bases retrieved successfully.",
@@ -7721,18 +7320,6 @@
         },
         "description": "Creates a new AI agent with the specified configuration. The agent will be created with a single prompt-based flow.",
         "operationId": "createAgent",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -8188,16 +7775,6 @@
         "operationId": "updateAgent",
         "parameters": [
           {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
-          {
             "name": "agent_id",
             "in": "path",
             "description": "(Required) The unique ID of the agent to update",
@@ -8468,18 +8045,6 @@
         },
         "description": "Beta endpoint. Uploads a campaign list and checks it in the background, creating a draft bulk list. Works for lists of any size up to the workspace's row limit.",
         "operationId": "uploadCampaignCsvBeta",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -8648,16 +8213,6 @@
         "operationId": "getCampaignUploadStatusBeta",
         "parameters": [
           {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
-          {
             "name": "bulk_list_id",
             "in": "path",
             "required": true,
@@ -8764,18 +8319,6 @@
         },
         "description": "Beta endpoint for starting calls from a draft bulk list created by /campaign/upload-csv.",
         "operationId": "makeCampaignCallAsyncBeta",
-        "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -9170,16 +8713,6 @@
         "description": "Beta endpoint for re-checking the balance of a campaign in `insufficient_balance` after a top-up. When the balance now covers it, the campaign returns to `draft`; then send /campaign/make-call-async again.",
         "operationId": "checkCampaignBalanceBeta",
         "parameters": [
-          {
-            "name": "X-API-KEY",
-            "in": "header",
-            "description": "(Required) Your Ringg AI API key.",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "rg_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-            }
-          },
           {
             "name": "bulk_list_id",
             "in": "path",
