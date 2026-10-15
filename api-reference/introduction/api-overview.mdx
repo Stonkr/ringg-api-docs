@@ -64,6 +64,7 @@ Some endpoints add keys beside `message`, such as `code` on [Create agent](/api-
 | `404` | The agent, call, campaign or knowledge base was not found in this workspace |
 | `409` | The same request is already being processed, for example a call history export |
 | `422` | A field is missing or failed validation; `message` names the problem |
+| `424` | A provider the request depends on, such as your telephony account, rejected its credentials; `message` names the provider and reason. Fix the provider's credentials, not your Ringg API key |
 | `429` | Rate limit hit; retry later with backoff. Endpoint pages list their limits |
 | `5xx` | Server-side failure; retry with backoff and log the request and any `call_id` |
 
