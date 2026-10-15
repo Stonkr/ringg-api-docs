@@ -11,7 +11,7 @@ Workspace members are the people who can sign in to your Ringg AI workspace. Eve
 
 | Role | Who | Access |
 |---|---|---|
-| Owner | The person who created the workspace | Everything, including the [API key](/documentation/manage-account/api-key). Only owners invite members, change their permissions and remove them. |
+| Owner | The person who created the workspace | Everything, including the [API key](/documentation/manage-account/api-key), inviting members, changing their permissions and removing them |
 | Member | Everyone you invite | Views the whole workspace and edits the areas you grant |
 
 A member starts as **View only**. You grant edit access from the **Authorize edit access** list in the **Permissions** picker:
@@ -23,10 +23,23 @@ A member starts as **View only**. You grant edit access from the **Authorize edi
 | **Knowledge Base** | [Knowledge bases](/documentation/inventory/knowledge-base) |
 | **Numbers** | [Phone numbers](/documentation/inventory/phone-numbers/overview) |
 | **API Key** | The API key |
+| **Members** | The member list: invite, change permissions and remove, within the areas they hold ([details](#let-a-member-manage-members)) |
 
 The picker reads **View only** with nothing ticked and **View & edit** once any area is ticked. Even with **API Key** ticked, only the owner can generate or regenerate the key in the dashboard.
 
 The dashboard has no ownership transfer. Ringg can make an accepted member the owner; ask through **Contact us** at the bottom of the Settings menu (admin@ringg.ai).
+
+## Let a member manage members
+
+To let someone other than the owner add and remove people, for example your IT admin, tick **Members** in their **Permissions** picker. They can then invite members, change members' permissions and remove members, with these limits:
+
+- **Only areas they hold.** They can tick or untick only the areas they have themselves; the rest are greyed out in their picker. A member with **Members** and **Campaigns** can give someone **Campaigns** or **Members**, but not **Assistants**. Only an owner can grant any area.
+- **Not the owner.** They can't change or remove an owner, or re-invite a removed owner.
+- **Not themselves.** Nobody changes their own permissions, removes themselves or invites their own email; their own row stays locked.
+
+Members without **Members** see the list read-only: no **Invite Member**, locked pickers and no **Remove member**.
+
+In a [Ringg Spaces](/documentation/manage-account/ringg-spaces/overview) family, **Members** granted in the primary workspace also applies in each Ringg Space the member reaches through it ([Inherited](#members-in-ringg-spaces-direct-and-inherited)), so they manage that Ringg Space's direct members too. A Ringg Space where they were invited directly keeps its own permissions: tick **Members** there as well if they need it.
 
 ## Invite a member
 
