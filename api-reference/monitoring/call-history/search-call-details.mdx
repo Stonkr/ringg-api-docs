@@ -54,6 +54,7 @@ A first-time customer has no previous call, so the search returns `404`. That on
 - A call is searchable once its post-call analysis has finished, so a call that ended moments ago may not match yet.
 - Every filter is an exact match. Partial values and `contains` are not supported, so `98765` never finds `+919876543210`.
 - Strings, whole numbers and `true` or `false` are compared as text, so `2` and `"2"` both match a stored `2`. Decimals are compared as numbers, so `0.000001` matches a stored `0.000001`.
+- `to_number` matches the number the call actually dialed, or the caller ID on an inbound call. It does not read the `mobile_number` custom variable, which can hold a different number.
 - Phone numbers ignore spaces and dashes. An Indian number matches with `+91`, `91`, `0` or no prefix, and a number without a country code is read as Indian. Send any other number with its country code, such as `+6581234567`; it only ever matches that number, never an Indian one.
 - `client_analysis` and `platform_analysis` filters take top-level keys only. `platform_analysis.summary` can't be filtered on.
 - A blank value, such as `"to_number": ""`, or a phone value with no number in it, such as `"00"`, is rejected rather than ignored, so an empty variable never widens the search to other customers.
