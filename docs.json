@@ -348,12 +348,19 @@
               },
               {
                 "group": "Analytics",
+                "tag": "NEW",
                 "pages": [
-                  "api-reference/monitoring/analytics/get-platform-analytics",
-                  "api-reference/monitoring/analytics/get-drill-down-analytics",
-                  "api-reference/monitoring/analytics/get-number-analytics",
-                  "api-reference/monitoring/analytics/get-duration-distribution",
-                  "api-reference/monitoring/analytics/get-classification-analytics"
+                  "api-reference/monitoring/analytics/get-volume-analytics",
+                  "api-reference/monitoring/analytics/get-connectivity-analytics",
+                  "api-reference/monitoring/analytics/get-agent-performance",
+                  "api-reference/monitoring/analytics/get-latency-trend",
+                  "api-reference/monitoring/analytics/get-concurrency-trend",
+                  "api-reference/monitoring/analytics/get-cohort-dimensions",
+                  "api-reference/monitoring/analytics/get-cohort-values",
+                  "api-reference/monitoring/analytics/get-cohort-breakdown",
+                  "api-reference/monitoring/analytics/get-active-campaigns",
+                  "api-reference/monitoring/analytics/get-data-freshness",
+                  "api-reference/monitoring/analytics/get-chat-analytics"
                 ],
                 "expanded": true
               }
@@ -2173,6 +2180,46 @@
     {
       "source": "/api-reference/endpoint/history/:slug*",
       "destination": "/api-reference/monitoring/call-history/:slug*"
+    },
+    {
+      "source": "/api-reference/endpoint/analytics/get-platform-analytics",
+      "destination": "/api-reference/monitoring/analytics/get-volume-analytics"
+    },
+    {
+      "source": "/api-reference/monitoring/analytics/get-platform-analytics",
+      "destination": "/api-reference/monitoring/analytics/get-volume-analytics"
+    },
+    {
+      "source": "/api-reference/endpoint/analytics/get-drill-down-analytics",
+      "destination": "/api-reference/monitoring/analytics/get-volume-analytics"
+    },
+    {
+      "source": "/api-reference/monitoring/analytics/get-drill-down-analytics",
+      "destination": "/api-reference/monitoring/analytics/get-volume-analytics"
+    },
+    {
+      "source": "/api-reference/endpoint/analytics/get-number-analytics",
+      "destination": "/api-reference/monitoring/analytics/get-volume-analytics"
+    },
+    {
+      "source": "/api-reference/monitoring/analytics/get-number-analytics",
+      "destination": "/api-reference/monitoring/analytics/get-volume-analytics"
+    },
+    {
+      "source": "/api-reference/endpoint/analytics/get-duration-distribution",
+      "destination": "/api-reference/monitoring/analytics/get-volume-analytics"
+    },
+    {
+      "source": "/api-reference/monitoring/analytics/get-duration-distribution",
+      "destination": "/api-reference/monitoring/analytics/get-volume-analytics"
+    },
+    {
+      "source": "/api-reference/endpoint/analytics/get-classification-analytics",
+      "destination": "/api-reference/monitoring/analytics/get-cohort-breakdown"
+    },
+    {
+      "source": "/api-reference/monitoring/analytics/get-classification-analytics",
+      "destination": "/api-reference/monitoring/analytics/get-cohort-breakdown"
     },
     {
       "source": "/api-reference/endpoint/analytics/:slug*",

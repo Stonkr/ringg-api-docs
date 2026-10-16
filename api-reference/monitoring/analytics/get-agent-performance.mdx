@@ -1,0 +1,26 @@
+---
+openapi: get /analytics/v4/agent-performance
+description: "Get goal rate, latency and cost for your agents, a side-by-side comparison of agent versions, and call, minute and cost totals for each agent in scope."
+related:
+  - "Analytics": /documentation/monitor/analytics
+  - "Drafts and versions": /documentation/build-agents/test-and-improve/drafts-and-versions
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Returns the **Performance** cards and the agents table in [Analytics](/documentation/monitor/analytics). Pass two or more IDs in `agent_version_id` to compare versions in `version_comparison`.
+
+## Notes
+
+- `summary` covers every version of the selected agents; `agent_version_id` changes only `version_comparison`.
+- `goal_rate` uses each call's own version goal (see [Where the goal comes from](/documentation/monitor/analytics#where-the-goal-comes-from)). It is `null` when no call in scope has a goal value.
+- `total_cost`, `cost` and `total_minutes` count completed calls only, in the workspace `currency`.
+- `client_analysis_key`, `client_analysis_value` and `client_analysis_type` narrow the result to calls with one [Advanced Analysis](/documentation/build-agents/customize-agent-behaviour/advanced-analysis) value, for example `disposition` equal to `interested`.
+- `assistants_in_action` lists agents with at least one call in scope, sorted by `call_count`.
+
+## Errors
+
+- `400`: a filter is invalid, such as an unknown `channel`, a malformed ID, or `sub_workspace_id` sent from a workspace that isn't a primary workspace.
+- `401`: `X-API-KEY` is missing or invalid.
+
+<RelatedTopics items={[["Analytics", "/documentation/monitor/analytics"], ["Drafts and versions", "/documentation/build-agents/test-and-improve/drafts-and-versions"]]} />

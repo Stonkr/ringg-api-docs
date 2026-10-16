@@ -1,0 +1,22 @@
+---
+openapi: get /analytics/v4/cohort/values
+description: "Get the distinct values of one analytics field and how many calls have each, most frequent first, to fill a filter list or see how outcomes split."
+related:
+  - "Analytics": /documentation/monitor/analytics
+  - "Get cohort dimensions": /api-reference/monitoring/analytics/get-cohort-dimensions
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Take `path` and `key` from [Get cohort dimensions](/api-reference/monitoring/analytics/get-cohort-dimensions). For example, `path=client_analysis&key=disposition` lists every disposition your calls ended with.
+
+## Notes
+
+- An invalid `path` or `key` returns `400`.
+
+## Errors
+
+- `400`: a filter is invalid, such as an unknown `channel`, a malformed ID, or `sub_workspace_id` sent from a workspace that isn't a primary workspace.
+- `401`: `X-API-KEY` is missing or invalid.
+
+<RelatedTopics items={[["Analytics", "/documentation/monitor/analytics"], ["Get cohort dimensions", "/api-reference/monitoring/analytics/get-cohort-dimensions"]]} />

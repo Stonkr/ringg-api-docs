@@ -134,19 +134,38 @@ Every drill-down keeps the page's date range, agents, versions, campaigns and wo
 
 ## With the API
 
-The public API has five analytics endpoints. Each takes `start_date` and `end_date` (`YYYY-MM-DD`), `agent_id`, `bulk_list_id` and `voicemail`. They don't match the dashboard cards: they leave out **Cancelled** and **Error** calls, include callbacks, count unique numbers actually used, and have no registered count, change, goal, cost or latency figures. Expect their totals to differ from the page.
+The Analytics v4 endpoints return the same figures as this page, so you can build your own reports. Send your [API key](/documentation/manage-account/api-key) as `X-API-KEY` (see [Authentication](/api-reference/introduction/authentication)).
 
-- [Get Platform Analytics](/api-reference/monitoring/analytics/get-platform-analytics): workspace summary metrics.
-- [Get Drill-Down Analytics](/api-reference/monitoring/analytics/get-drill-down-analytics): one campaign (`bulk_list_id` required).
-- [Get Number Analytics](/api-reference/monitoring/analytics/get-number-analytics): metrics per phone number.
-- [Get Duration Distribution](/api-reference/monitoring/analytics/get-duration-distribution): call duration buckets.
-- [Get Classification Analytics](/api-reference/monitoring/analytics/get-classification-analytics): calls by outcome classification.
+| Endpoint | Returns |
+|---|---|
+| [Get volume analytics](/api-reference/monitoring/analytics/get-volume-analytics) | The **Volume** cards and trend chart |
+| [Get connectivity analytics](/api-reference/monitoring/analytics/get-connectivity-analytics) | Connectivity and connected calls per attempt |
+| [Get agent performance](/api-reference/monitoring/analytics/get-agent-performance) | The **Performance** cards, version comparison and agents table |
+| [Get latency trend](/api-reference/monitoring/analytics/get-latency-trend) | Median and p95 latency over time |
+| [Get concurrency trend](/api-reference/monitoring/analytics/get-concurrency-trend) | **Concurrency usage** |
+| [Get cohort dimensions](/api-reference/monitoring/analytics/get-cohort-dimensions), [values](/api-reference/monitoring/analytics/get-cohort-values) and [breakdown](/api-reference/monitoring/analytics/get-cohort-breakdown) | **Cohort analysis** |
+| [Get active campaigns](/api-reference/monitoring/analytics/get-active-campaigns) | Campaigns to filter by |
+| [Get data freshness](/api-reference/monitoring/analytics/get-data-freshness) | How up to date the data is |
+| [Get chat analytics](/api-reference/monitoring/analytics/get-chat-analytics) | Web chat and WhatsApp volume and outcomes, which this page doesn't show |
 
-You need an [API key](/documentation/manage-account/api-key) sent as `X-API-KEY` (see [Authentication](/api-reference/introduction/authentication)). Get an agent's ID from [Find an agent's ID](/documentation/build-agents/agents/agent-types#find-the-agent-id).
+The query parameters match the [filters](#filters):
+
+| Parameter | Filter | Notes |
+|---|---|---|
+| `start_date`, `end_date` | **Date range** | `YYYY-MM-DD` or ISO-8601; `end_date` covers the whole day. Omit both for all time. |
+| `agent_id`, `agent_version_id` | **Assistants** | One ID or a comma-separated list. |
+| `bulk_list_id` | **Campaigns** | One ID or a comma-separated list. |
+| `channel` | **Channels** | `inbound`, `outbound`, `webcall`, comma-separated. |
+| `voicemail` | **Voicemail** | `false` excludes voicemail, `true` returns only voicemail. Omit for all calls. |
+| `include_callback` | **Include callbacks** | `false` by default. |
+| `sub_workspace_id` | **Workspaces** | Primary workspace only. Repeat it for several Ringg Spaces. |
+| `tz` | | IANA timezone for chart buckets, such as `Asia/Kolkata`. Default UTC. |
+
+Each endpoint page lists the parameters it takes. Rates are `0` to `1` and `null` when nothing was scored, except `connectivity_pct`, which is `0` to `100`. Change values (`delta_pct`) are relative percentages and `null` when the previous period had none.
 
 <CodeGroup>
 ```bash cURL
-curl --request GET "https://prod-api.ringg.ai/ca/api/v0/analytics/platform-analytics?start_date=2026-09-01&end_date=2026-09-30&agent_id=123e4567-e89b-12d3-a456-426614174000" \
+curl --request GET "https://prod-api.ringg.ai/ca/api/v0/analytics/v4/volume-graph?start_date=2026-09-01&end_date=2026-09-30&agent_id=00000000-0000-4000-8000-0000000000a1&tz=Asia/Kolkata" \
   --header "X-API-KEY: $RINGG_API_KEY"
 ```
 
@@ -154,11 +173,12 @@ curl --request GET "https://prod-api.ringg.ai/ca/api/v0/analytics/platform-analy
 const params = new URLSearchParams({
   start_date: "2026-09-01",
   end_date: "2026-09-30",
-  agent_id: "123e4567-e89b-12d3-a456-426614174000",
+  agent_id: "00000000-0000-4000-8000-0000000000a1",
+  tz: "Asia/Kolkata",
 });
 
 const response = await fetch(
-  `https://prod-api.ringg.ai/ca/api/v0/analytics/platform-analytics?${params}`,
+  `https://prod-api.ringg.ai/ca/api/v0/analytics/v4/volume-graph?${params}`,
   { headers: { "X-API-KEY": process.env.RINGG_API_KEY } }
 );
 console.log(await response.json());
@@ -169,11 +189,12 @@ import os
 import requests
 
 response = requests.get(
-    "https://prod-api.ringg.ai/ca/api/v0/analytics/platform-analytics",
+    "https://prod-api.ringg.ai/ca/api/v0/analytics/v4/volume-graph",
     params={
         "start_date": "2026-09-01",
         "end_date": "2026-09-30",
-        "agent_id": "123e4567-e89b-12d3-a456-426614174000",
+        "agent_id": "00000000-0000-4000-8000-0000000000a1",
+        "tz": "Asia/Kolkata",
     },
     headers={"X-API-KEY": os.environ["RINGG_API_KEY"]},
 )

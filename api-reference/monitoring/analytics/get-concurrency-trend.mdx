@@ -1,0 +1,24 @@
+---
+openapi: get /analytics/v4/concurrency-trend
+description: "Get your workspace's paid concurrency against the concurrency it received over time, hourly for up to two days and daily for longer date ranges."
+related:
+  - "Analytics": /documentation/monitor/analytics
+  - "Billing": /documentation/manage-account/billing
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Returns the **Concurrency usage** chart in [Analytics](/documentation/monitor/analytics). If `received` keeps reaching `paid`, your calls are waiting on concurrency: raise it on [Billing](/documentation/manage-account/billing#change-concurrency).
+
+## Notes
+
+- It covers the whole workspace and takes only the date range, `tz` and `sub_workspace_id`.
+- `granularity` is `hour` for ranges of two days or less and `day` otherwise.
+- `available` is `false` when there is no data for the range.
+
+## Errors
+
+- `400`: a filter is invalid, such as an unknown `channel`, a malformed ID, or `sub_workspace_id` sent from a workspace that isn't a primary workspace.
+- `401`: `X-API-KEY` is missing or invalid.
+
+<RelatedTopics items={[["Analytics", "/documentation/monitor/analytics"], ["Billing", "/documentation/manage-account/billing"]]} />
