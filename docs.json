@@ -53,7 +53,11 @@
                     "group": "WhatsApp agents",
                     "pages": [
                       "documentation/build-agents/agents/whatsapp-agents/overview",
-                      "documentation/build-agents/agents/whatsapp-agents/create-an-agent"
+                      "documentation/build-agents/agents/whatsapp-agents/create-an-agent",
+                      "documentation/build-agents/agents/whatsapp-agents/flows",
+                      "documentation/build-agents/agents/whatsapp-agents/flow-builder",
+                      "documentation/build-agents/agents/whatsapp-agents/flows-live-data",
+                      "documentation/build-agents/agents/whatsapp-agents/flows-your-server"
                     ],
                     "tag": "NEW"
                   }
