@@ -34,7 +34,7 @@
     },
     {
       "name": "analytics",
-      "description": "Endpoints for accessing call analytics and performance metrics."
+      "description": "Analytics v4 endpoints for call, agent, cohort and chat performance metrics."
     },
     {
       "name": "termination",
@@ -5965,124 +5965,652 @@
         }
       }
     },
-    "/analytics/platform-analytics": {
+    "/analytics/v4/volume-graph": {
       "get": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "Get Platform Analytics",
+        "tags": ["analytics"],
+        "summary": "Get Volume Analytics",
         "x-mint": {
           "metadata": {
-            "og:title": "Get Platform Analytics | Ringg AI"
+            "og:title": "Get Volume Analytics | Ringg AI"
           }
         },
-        "description": "Retrieves workspace-level call metrics and a summary of key numbers.",
-        "operationId": "getPlatformAnalytics",
+        "description": "Returns the headline call metrics (total, connected, failed, connection rate, handle time, minutes and more), each compared with the previous period, plus call volume over time.",
+        "operationId": "getVolumeAnalytics",
         "parameters": [
           {
             "name": "start_date",
             "in": "query",
-            "description": "Start date for analytics filter (YYYY-MM-DD format)",
+            "description": "Start of the reporting window. Accepts `YYYY-MM-DD` or ISO-8601. Omit both dates for all time.",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "2025-09-25"
+              "example": "2026-10-01"
             }
           },
           {
             "name": "end_date",
             "in": "query",
-            "description": "End date for analytics filter (YYYY-MM-DD format)",
+            "description": "End of the reporting window (inclusive). Accepts `YYYY-MM-DD` or ISO-8601.",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "2025-09-25"
+              "example": "2026-10-15"
             }
           },
           {
             "name": "agent_id",
             "in": "query",
-            "description": "Filter by specific agent ID",
+            "description": "Filter by one or more agent IDs (comma-separated).",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "123e4567-e89b-12d3-a456-426614174000"
+              "example": "00000000-0000-4000-8000-0000000000a1"
+            }
+          },
+          {
+            "name": "agent_version_id",
+            "in": "query",
+            "description": "Filter by one or more agent version IDs (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "00000000-0000-4000-8000-0000000000d1"
             }
           },
           {
             "name": "bulk_list_id",
             "in": "query",
-            "description": "Filter by specific bulk list/campaign ID",
+            "description": "Filter by one or more campaign (bulk list) IDs (comma-separated). Callback calls inherit the campaign of their parent call.",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "123e4567-e89b-12d3-a456-426614174000"
+              "example": "00000000-0000-4000-8000-0000000000c1"
             }
           },
           {
             "name": "voicemail",
             "in": "query",
-            "description": "Filter by voicemail status",
+            "description": "`true` returns only voicemail calls, `false` excludes them. Omit to include all calls.",
             "required": false,
             "schema": {
               "type": "boolean",
               "example": false
             }
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "description": "Filter by call channel (comma-separated): `inbound`, `outbound`, `webcall`. Unknown values return `400`.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "outbound"
+            }
+          },
+          {
+            "name": "include_callback",
+            "in": "query",
+            "description": "Include callback-feature calls (`call_category = CALLBACK`) in the metrics. Defaults to `false`.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "example": false
+            }
+          },
+          {
+            "name": "sub_workspace_id",
+            "in": "query",
+            "description": "Primary workspaces only: limit the combined analytics to these Ringg Spaces. Repeat the parameter for multiple IDs. The primary workspace's own ID is accepted; any other workspace sending this parameter gets `400`.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "example": ["00000000-0000-4000-8000-000000000101"]
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "tz",
+            "in": "query",
+            "description": "IANA timezone used to bucket the time series (for example `Asia/Kolkata`). Bucket labels are returned in this timezone. Omitted or invalid values fall back to UTC.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "Asia/Kolkata"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Platform analytics retrieved successfully.",
+            "description": "Volume analytics retrieved successfully.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "performance_metrics": {
+                    "volume": {
                       "type": "object",
-                      "description": "Performance metrics by different categories"
-                    },
-                    "metrics_summary": {
-                      "type": "object",
-                      "description": "Summary of key metrics"
-                    },
-                    "cached": {
-                      "type": "boolean",
-                      "description": "Whether the response was served from cache"
+                      "properties": {
+                        "total": {
+                          "type": "object",
+                          "description": "All calls in scope, across every status.",
+                          "properties": {
+                            "count": {
+                              "type": "number",
+                              "description": "Value for the selected window."
+                            },
+                            "previous": {
+                              "type": "number",
+                              "description": "Value for the equal-length window immediately before."
+                            },
+                            "delta_pct": {
+                              "type": "number",
+                              "description": "Relative change from `previous`, in percent. `null` when `previous` is 0.",
+                              "nullable": true
+                            },
+                            "campaign_count": {
+                              "type": "integer",
+                              "description": "Calls that came from a campaign (current window only)."
+                            },
+                            "api_count": {
+                              "type": "integer",
+                              "description": "Calls placed through the API (current window only)."
+                            }
+                          }
+                        },
+                        "callback_count": {
+                          "type": "object",
+                          "description": "Callback-feature calls in scope. Always reported, whatever `include_callback` is set to.",
+                          "properties": {
+                            "count": {
+                              "type": "number",
+                              "description": "Value for the selected window."
+                            },
+                            "previous": {
+                              "type": "number",
+                              "description": "Value for the equal-length window immediately before."
+                            },
+                            "delta_pct": {
+                              "type": "number",
+                              "description": "Relative change from `previous`, in percent. `null` when `previous` is 0.",
+                              "nullable": true
+                            }
+                          }
+                        },
+                        "registered": {
+                          "type": "object",
+                          "description": "Calls queued but not yet dialed.",
+                          "properties": {
+                            "count": {
+                              "type": "number",
+                              "description": "Value for the selected window."
+                            },
+                            "previous": {
+                              "type": "number",
+                              "description": "Value for the equal-length window immediately before."
+                            },
+                            "delta_pct": {
+                              "type": "number",
+                              "description": "Relative change from `previous`, in percent. `null` when `previous` is 0.",
+                              "nullable": true
+                            }
+                          }
+                        },
+                        "ongoing": {
+                          "type": "object",
+                          "description": "Calls in progress.",
+                          "properties": {
+                            "count": {
+                              "type": "number",
+                              "description": "Value for the selected window."
+                            },
+                            "previous": {
+                              "type": "number",
+                              "description": "Value for the equal-length window immediately before."
+                            },
+                            "delta_pct": {
+                              "type": "number",
+                              "description": "Relative change from `previous`, in percent. `null` when `previous` is 0.",
+                              "nullable": true
+                            }
+                          }
+                        },
+                        "retry": {
+                          "type": "object",
+                          "description": "Calls waiting for a retry.",
+                          "properties": {
+                            "count": {
+                              "type": "number",
+                              "description": "Value for the selected window."
+                            },
+                            "previous": {
+                              "type": "number",
+                              "description": "Value for the equal-length window immediately before."
+                            },
+                            "delta_pct": {
+                              "type": "number",
+                              "description": "Relative change from `previous`, in percent. `null` when `previous` is 0.",
+                              "nullable": true
+                            }
+                          }
+                        },
+                        "not_dialed": {
+                          "type": "object",
+                          "description": "Calls that were never dialed.",
+                          "properties": {
+                            "count": {
+                              "type": "number",
+                              "description": "Value for the selected window."
+                            },
+                            "previous": {
+                              "type": "number",
+                              "description": "Value for the equal-length window immediately before."
+                            },
+                            "delta_pct": {
+                              "type": "number",
+                              "description": "Relative change from `previous`, in percent. `null` when `previous` is 0.",
+                              "nullable": true
+                            }
+                          }
+                        },
+                        "connected": {
+                          "type": "object",
+                          "description": "Completed calls.",
+                          "properties": {
+                            "count": {
+                              "type": "number",
+                              "description": "Value for the selected window."
+                            },
+                            "previous": {
+                              "type": "number",
+                              "description": "Value for the equal-length window immediately before."
+                            },
+                            "delta_pct": {
+                              "type": "number",
+                              "description": "Relative change from `previous`, in percent. `null` when `previous` is 0.",
+                              "nullable": true
+                            }
+                          }
+                        },
+                        "failed": {
+                          "type": "object",
+                          "description": "Failed or errored calls.",
+                          "properties": {
+                            "count": {
+                              "type": "number",
+                              "description": "Value for the selected window."
+                            },
+                            "previous": {
+                              "type": "number",
+                              "description": "Value for the equal-length window immediately before."
+                            },
+                            "delta_pct": {
+                              "type": "number",
+                              "description": "Relative change from `previous`, in percent. `null` when `previous` is 0.",
+                              "nullable": true
+                            }
+                          }
+                        },
+                        "cancelled": {
+                          "type": "object",
+                          "description": "Cancelled calls.",
+                          "properties": {
+                            "count": {
+                              "type": "number",
+                              "description": "Value for the selected window."
+                            },
+                            "previous": {
+                              "type": "number",
+                              "description": "Value for the equal-length window immediately before."
+                            },
+                            "delta_pct": {
+                              "type": "number",
+                              "description": "Relative change from `previous`, in percent. `null` when `previous` is 0.",
+                              "nullable": true
+                            }
+                          }
+                        },
+                        "connection_rate": {
+                          "type": "object",
+                          "description": "`connected / total`, as a 0-1 ratio.",
+                          "properties": {
+                            "count": {
+                              "type": "number",
+                              "description": "Value for the selected window."
+                            },
+                            "previous": {
+                              "type": "number",
+                              "description": "Value for the equal-length window immediately before."
+                            },
+                            "delta_pct": {
+                              "type": "number",
+                              "description": "Relative change from `previous`, in percent. `null` when `previous` is 0.",
+                              "nullable": true
+                            },
+                            "campaign_time_exhausted": {
+                              "type": "integer",
+                              "description": "Calls stopped because the campaign window ended."
+                            },
+                            "retry_exhausted": {
+                              "type": "integer",
+                              "description": "Calls that hit the retry limit."
+                            }
+                          }
+                        },
+                        "voicemail": {
+                          "type": "object",
+                          "description": "Calls that reached voicemail.",
+                          "properties": {
+                            "count": {
+                              "type": "number",
+                              "description": "Value for the selected window."
+                            },
+                            "previous": {
+                              "type": "number",
+                              "description": "Value for the equal-length window immediately before."
+                            },
+                            "delta_pct": {
+                              "type": "number",
+                              "description": "Relative change from `previous`, in percent. `null` when `previous` is 0.",
+                              "nullable": true
+                            }
+                          }
+                        },
+                        "aht_seconds": {
+                          "type": "object",
+                          "description": "Average handle time of completed calls, in seconds.",
+                          "properties": {
+                            "count": {
+                              "type": "number",
+                              "description": "Value for the selected window."
+                            },
+                            "previous": {
+                              "type": "number",
+                              "description": "Value for the equal-length window immediately before."
+                            },
+                            "delta_pct": {
+                              "type": "number",
+                              "description": "Relative change from `previous`, in percent. `null` when `previous` is 0.",
+                              "nullable": true
+                            },
+                            "duration_distribution": {
+                              "type": "object",
+                              "description": "Completed calls by duration (current window only).",
+                              "properties": {
+                                "0_10": {
+                                  "type": "integer",
+                                  "description": "Completed calls shorter than 10 seconds."
+                                },
+                                "10_30": {
+                                  "type": "integer",
+                                  "description": "Completed calls of 10-30 seconds."
+                                },
+                                "30_60": {
+                                  "type": "integer",
+                                  "description": "Completed calls of 30-60 seconds."
+                                },
+                                "60_plus": {
+                                  "type": "integer",
+                                  "description": "Completed calls of 60 seconds or more."
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "total_minutes": {
+                          "type": "object",
+                          "description": "Total talk minutes.",
+                          "properties": {
+                            "count": {
+                              "type": "number",
+                              "description": "Value for the selected window."
+                            },
+                            "previous": {
+                              "type": "number",
+                              "description": "Value for the equal-length window immediately before."
+                            },
+                            "delta_pct": {
+                              "type": "number",
+                              "description": "Relative change from `previous`, in percent. `null` when `previous` is 0.",
+                              "nullable": true
+                            }
+                          }
+                        },
+                        "unique_numbers_used": {
+                          "type": "object",
+                          "description": "Phone numbers your workspace owns. It doesn't change with the date range or filters, so `previous` equals `count`.",
+                          "properties": {
+                            "count": {
+                              "type": "number",
+                              "description": "Value for the selected window."
+                            },
+                            "previous": {
+                              "type": "number",
+                              "description": "Value for the equal-length window immediately before."
+                            },
+                            "delta_pct": {
+                              "type": "number",
+                              "description": "Relative change from `previous`, in percent. `null` when `previous` is 0.",
+                              "nullable": true
+                            }
+                          }
+                        },
+                        "chat_total": {
+                          "type": "object",
+                          "description": "Chat sessions. `0` when a call `channel` filter is set.",
+                          "properties": {
+                            "count": {
+                              "type": "number",
+                              "description": "Value for the selected window."
+                            },
+                            "previous": {
+                              "type": "number",
+                              "description": "Value for the equal-length window immediately before."
+                            },
+                            "delta_pct": {
+                              "type": "number",
+                              "description": "Relative change from `previous`, in percent. `null` when `previous` is 0.",
+                              "nullable": true
+                            }
+                          }
+                        },
+                        "total_interactions": {
+                          "type": "object",
+                          "description": "Calls plus chat sessions.",
+                          "properties": {
+                            "count": {
+                              "type": "number",
+                              "description": "Value for the selected window."
+                            },
+                            "previous": {
+                              "type": "number",
+                              "description": "Value for the equal-length window immediately before."
+                            },
+                            "delta_pct": {
+                              "type": "number",
+                              "description": "Relative change from `previous`, in percent. `null` when `previous` is 0.",
+                              "nullable": true
+                            }
+                          }
+                        },
+                        "by_bucket": {
+                          "type": "array",
+                          "description": "Call volume over time. `sum(by_bucket[].total)` equals `total.count`.",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "bucket": {
+                                "type": "string",
+                                "description": "Time bucket label. Granularity is picked from the date range: hour `YYYY-MM-DD HH:00:00`, day `YYYY-MM-DD`, week (Monday) or month (first day)."
+                              },
+                              "total": {
+                                "type": "integer",
+                                "description": "All calls in the bucket."
+                              },
+                              "completed": {
+                                "type": "integer",
+                                "description": "Completed calls."
+                              },
+                              "failed": {
+                                "type": "integer",
+                                "description": "Failed or errored calls."
+                              },
+                              "cancelled": {
+                                "type": "integer",
+                                "description": "Cancelled calls."
+                              },
+                              "registered": {
+                                "type": "integer",
+                                "description": "Queued calls."
+                              },
+                              "ongoing": {
+                                "type": "integer",
+                                "description": "In-progress calls."
+                              },
+                              "retry": {
+                                "type": "integer",
+                                "description": "Calls waiting for a retry."
+                              }
+                            }
+                          }
+                        }
+                      }
                     }
                   }
+                },
+                "example": {
+                  "volume": {
+                    "total": {
+                      "count": 203,
+                      "previous": 239,
+                      "delta_pct": -15.06,
+                      "campaign_count": 51,
+                      "api_count": 152
+                    },
+                    "callback_count": {
+                      "count": 12,
+                      "previous": 10,
+                      "delta_pct": 20.0
+                    },
+                    "registered": {
+                      "count": 2,
+                      "previous": 0,
+                      "delta_pct": null
+                    },
+                    "ongoing": {
+                      "count": 1,
+                      "previous": 0,
+                      "delta_pct": null
+                    },
+                    "retry": {
+                      "count": 0,
+                      "previous": 0,
+                      "delta_pct": null
+                    },
+                    "not_dialed": {
+                      "count": 3,
+                      "previous": 5,
+                      "delta_pct": -40.0
+                    },
+                    "connected": {
+                      "count": 179,
+                      "previous": 198,
+                      "delta_pct": -9.6
+                    },
+                    "failed": {
+                      "count": 19,
+                      "previous": 39,
+                      "delta_pct": -51.28
+                    },
+                    "cancelled": {
+                      "count": 2,
+                      "previous": 2,
+                      "delta_pct": 0.0
+                    },
+                    "connection_rate": {
+                      "count": 0.8818,
+                      "previous": 0.8285,
+                      "delta_pct": 6.43,
+                      "campaign_time_exhausted": 4,
+                      "retry_exhausted": 12
+                    },
+                    "voicemail": {
+                      "count": 6,
+                      "previous": 9,
+                      "delta_pct": -33.33
+                    },
+                    "aht_seconds": {
+                      "count": 40.7,
+                      "previous": 41.2,
+                      "delta_pct": -1.21,
+                      "duration_distribution": {
+                        "0_10": 20,
+                        "10_30": 40,
+                        "30_60": 80,
+                        "60_plus": 39
+                      }
+                    },
+                    "total_minutes": {
+                      "count": 121.4,
+                      "previous": 140.9,
+                      "delta_pct": -13.84
+                    },
+                    "unique_numbers_used": {
+                      "count": 8,
+                      "previous": 8,
+                      "delta_pct": 0.0
+                    },
+                    "chat_total": {
+                      "count": 2,
+                      "previous": 1,
+                      "delta_pct": 100.0
+                    },
+                    "total_interactions": {
+                      "count": 205,
+                      "previous": 240,
+                      "delta_pct": -14.58
+                    },
+                    "by_bucket": [
+                      {
+                        "bucket": "2026-10-14",
+                        "total": 40,
+                        "completed": 33,
+                        "failed": 5,
+                        "cancelled": 0,
+                        "registered": 1,
+                        "ongoing": 1,
+                        "retry": 0
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid filter value (for example an unknown `channel` or malformed ID).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "invalid channel(s): sms"
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized - Invalid or missing authentication.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Invalid credentials"
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Unauthorized - Invalid or missing authentication."
           },
           "500": {
             "description": "Internal Server Error.",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "An unexpected error occurred. Please try again later."
-                    }
-                  }
+                "example": {
+                  "message": "Failed to fetch volume graph!"
                 }
               }
             }
@@ -6090,86 +6618,159 @@
         }
       }
     },
-    "/analytics/drill-down-analytics": {
+    "/analytics/v4/connectivity": {
       "get": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "Get Drill-Down Analytics",
+        "tags": ["analytics"],
+        "summary": "Get Connectivity Analytics",
         "x-mint": {
           "metadata": {
-            "og:title": "Get Drill-Down Analytics | Ringg AI"
+            "og:title": "Get Connectivity Analytics | Ringg AI"
           }
         },
-        "description": "Retrieves detailed analytics for a specific bulk list/campaign with drill-down capabilities.",
-        "operationId": "getDrillDownAnalytics",
+        "description": "Returns how many calls in scope connected, the connectivity percentage, and on which attempt each connected call got through.",
+        "operationId": "getConnectivityAnalytics",
         "parameters": [
-          {
-            "name": "bulk_list_id",
-            "in": "query",
-            "description": "(Required) Bulk list/campaign ID to get drill-down analytics for",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "example": "123e4567-e89b-12d3-a456-426614174000"
-            }
-          },
           {
             "name": "start_date",
             "in": "query",
-            "description": "Start date for analytics filter (YYYY-MM-DD format)",
+            "description": "Start of the reporting window. Accepts `YYYY-MM-DD` or ISO-8601. Omit both dates for all time.",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "2025-09-25"
+              "example": "2026-10-01"
             }
           },
           {
             "name": "end_date",
             "in": "query",
-            "description": "End date for analytics filter (YYYY-MM-DD format)",
+            "description": "End of the reporting window (inclusive). Accepts `YYYY-MM-DD` or ISO-8601.",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "2025-09-25"
+              "example": "2026-10-15"
             }
           },
           {
             "name": "agent_id",
             "in": "query",
-            "description": "Filter by specific agent ID",
+            "description": "Filter by one or more agent IDs (comma-separated).",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "123e4567-e89b-12d3-a456-426614174000"
+              "example": "00000000-0000-4000-8000-0000000000a1"
+            }
+          },
+          {
+            "name": "agent_version_id",
+            "in": "query",
+            "description": "Filter by one or more agent version IDs (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "00000000-0000-4000-8000-0000000000d1"
+            }
+          },
+          {
+            "name": "bulk_list_id",
+            "in": "query",
+            "description": "Filter by one or more campaign (bulk list) IDs (comma-separated). Callback calls inherit the campaign of their parent call.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "00000000-0000-4000-8000-0000000000c1"
             }
           },
           {
             "name": "voicemail",
             "in": "query",
-            "description": "Filter by voicemail status",
+            "description": "`true` returns only voicemail calls, `false` excludes them. Omit to include all calls.",
             "required": false,
             "schema": {
               "type": "boolean",
               "example": false
             }
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "description": "Filter by call channel (comma-separated): `inbound`, `outbound`, `webcall`. Unknown values return `400`.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "outbound"
+            }
+          },
+          {
+            "name": "include_callback",
+            "in": "query",
+            "description": "Include callback-feature calls (`call_category = CALLBACK`) in the metrics. Defaults to `false`.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "example": false
+            }
+          },
+          {
+            "name": "sub_workspace_id",
+            "in": "query",
+            "description": "Primary workspaces only: limit the combined analytics to these Ringg Spaces. Repeat the parameter for multiple IDs. The primary workspace's own ID is accepted; any other workspace sending this parameter gets `400`.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "example": ["00000000-0000-4000-8000-000000000101"]
+            },
+            "style": "form",
+            "explode": true
           }
         ],
         "responses": {
           "200": {
-            "description": "Drill-down analytics retrieved successfully.",
+            "description": "Connectivity analytics retrieved successfully.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "performance_metrics": {
+                    "connectivity": {
                       "type": "object",
-                      "description": "Detailed performance metrics for the bulk list"
-                    },
-                    "cached": {
-                      "type": "boolean",
-                      "description": "Whether the response was served from cache"
+                      "properties": {
+                        "total": {
+                          "type": "integer",
+                          "description": "All calls in scope, across every status."
+                        },
+                        "connected": {
+                          "type": "integer",
+                          "description": "Completed calls."
+                        },
+                        "connectivity_pct": {
+                          "type": "number",
+                          "description": "`connected / total` as a percentage (0-100), rounded to 2 decimals. `0.0` when there are no calls."
+                        },
+                        "by_retry_attempt": {
+                          "type": "object",
+                          "description": "Connected calls by the attempt they connected on, keyed `attempt_1`, `attempt_2`, and so on.",
+                          "additionalProperties": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "connectivity": {
+                    "total": 203,
+                    "connected": 179,
+                    "connectivity_pct": 88.18,
+                    "by_retry_attempt": {
+                      "attempt_1": 150,
+                      "attempt_2": 21,
+                      "attempt_3": 8
                     }
                   }
                 }
@@ -6177,48 +6778,909 @@
             }
           },
           "400": {
-            "description": "Bad Request - Missing required bulk_list_id parameter.",
+            "description": "Bad Request - invalid filter value (for example an unknown `channel` or malformed ID).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "invalid channel(s): sms"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Failed to fetch connectivity!"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/v4/agent-performance": {
+      "get": {
+        "tags": ["analytics"],
+        "summary": "Get Agent Performance",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Agent Performance | Ringg AI"
+          }
+        },
+        "description": "Returns goal rate, latency and cost for the selected agents, a side-by-side comparison of agent versions, and per-assistant call, minute and cost totals.",
+        "operationId": "getAgentPerformance",
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Start of the reporting window. Accepts `YYYY-MM-DD` or ISO-8601. Omit both dates for all time.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2026-10-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "End of the reporting window (inclusive). Accepts `YYYY-MM-DD` or ISO-8601.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2026-10-15"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "description": "Filter by one or more agent IDs (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "00000000-0000-4000-8000-0000000000a1"
+            }
+          },
+          {
+            "name": "agent_version_id",
+            "in": "query",
+            "description": "Filter by one or more agent version IDs (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "00000000-0000-4000-8000-0000000000d1"
+            }
+          },
+          {
+            "name": "bulk_list_id",
+            "in": "query",
+            "description": "Filter by one or more campaign (bulk list) IDs (comma-separated). Callback calls inherit the campaign of their parent call.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "00000000-0000-4000-8000-0000000000c1"
+            }
+          },
+          {
+            "name": "voicemail",
+            "in": "query",
+            "description": "`true` returns only voicemail calls, `false` excludes them. Omit to include all calls.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": false
+            }
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "description": "Filter by call channel (comma-separated): `inbound`, `outbound`, `webcall`. Unknown values return `400`.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "outbound"
+            }
+          },
+          {
+            "name": "include_callback",
+            "in": "query",
+            "description": "Include callback-feature calls (`call_category = CALLBACK`) in the metrics. Defaults to `false`.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "example": false
+            }
+          },
+          {
+            "name": "client_analysis_key",
+            "in": "query",
+            "description": "Only include calls whose post-call analysis field has this key, for example `disposition`. Use with `client_analysis_value`.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "disposition"
+            }
+          },
+          {
+            "name": "client_analysis_value",
+            "in": "query",
+            "description": "Value that `client_analysis_key` must equal.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "interested"
+            }
+          },
+          {
+            "name": "client_analysis_type",
+            "in": "query",
+            "description": "How to compare `client_analysis_value`.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["string", "boolean", "number"],
+              "default": "string"
+            }
+          },
+          {
+            "name": "sub_workspace_id",
+            "in": "query",
+            "description": "Primary workspaces only: limit the combined analytics to these Ringg Spaces. Repeat the parameter for multiple IDs. The primary workspace's own ID is accepted; any other workspace sending this parameter gets `400`.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "example": ["00000000-0000-4000-8000-000000000101"]
+            },
+            "style": "form",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Agent performance retrieved successfully.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "message": {
+                    "summary": {
+                      "type": "object",
+                      "properties": {
+                        "goal_rate": {
+                          "type": "number",
+                          "description": "Share of scored calls where the agent version's goal key is `true` (0-1). `null` when nothing is scored.",
+                          "nullable": true
+                        },
+                        "avg_latency_ms": {
+                          "type": "number",
+                          "description": "Average response latency in milliseconds.",
+                          "nullable": true
+                        },
+                        "total_cost": {
+                          "type": "number",
+                          "description": "Credits spent on completed calls."
+                        },
+                        "cost_per_outcome": {
+                          "type": "number",
+                          "description": "`total_cost` divided by calls that achieved the goal.",
+                          "nullable": true
+                        }
+                      }
+                    },
+                    "latency": {
+                      "type": "object",
+                      "properties": {
+                        "p50_ms": {
+                          "type": "number",
+                          "description": "Median latency in milliseconds.",
+                          "nullable": true
+                        },
+                        "p95_ms": {
+                          "type": "number",
+                          "description": "95th-percentile latency in milliseconds.",
+                          "nullable": true
+                        },
+                        "scored": {
+                          "type": "integer",
+                          "description": "Calls with a latency measurement."
+                        },
+                        "total": {
+                          "type": "integer",
+                          "description": "Calls in scope."
+                        }
+                      }
+                    },
+                    "currency": {
+                      "type": "string",
+                      "description": "Your workspace's billing currency, used by the cost fields."
+                    },
+                    "version_comparison": {
+                      "type": "array",
+                      "description": "Per-version metrics. Pass two or more IDs in `agent_version_id` to compare versions.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "agent_version_id": {
+                            "type": "string",
+                            "description": "Agent version ID."
+                          },
+                          "total": {
+                            "type": "integer",
+                            "description": "Calls on this version."
+                          },
+                          "connected": {
+                            "type": "integer",
+                            "description": "Completed calls."
+                          },
+                          "connection_rate": {
+                            "type": "number",
+                            "description": "`connected / total` (0-1).",
+                            "nullable": true
+                          },
+                          "aht_seconds": {
+                            "type": "number",
+                            "description": "Average handle time in seconds.",
+                            "nullable": true
+                          },
+                          "goal_rate": {
+                            "type": "number",
+                            "description": "Goal rate (0-1).",
+                            "nullable": true
+                          },
+                          "positive_sentiment_share": {
+                            "type": "number",
+                            "description": "Share of scored calls with positive sentiment (0-1).",
+                            "nullable": true
+                          },
+                          "avg_latency_ms": {
+                            "type": "number",
+                            "description": "Average latency in milliseconds.",
+                            "nullable": true
+                          }
+                        }
+                      }
+                    },
+                    "assistants_in_action": {
+                      "type": "array",
+                      "description": "Agents with at least one call in scope, sorted by `call_count` descending.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "agent_id": {
+                            "type": "string",
+                            "description": "Agent ID."
+                          },
+                          "agent_name": {
+                            "type": "string",
+                            "description": "Agent name."
+                          },
+                          "call_count": {
+                            "type": "integer",
+                            "description": "Calls in scope, across every status."
+                          },
+                          "total_connected": {
+                            "type": "integer",
+                            "description": "Completed calls."
+                          },
+                          "total_minutes": {
+                            "type": "number",
+                            "description": "Talk minutes on completed calls."
+                          },
+                          "cost": {
+                            "type": "number",
+                            "description": "Credits spent on completed calls, in `currency`."
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "summary": {
+                    "goal_rate": 0.625,
+                    "avg_latency_ms": 912.4,
+                    "total_cost": 42.75,
+                    "cost_per_outcome": 0.57
+                  },
+                  "latency": {
+                    "p50_ms": 883.4,
+                    "p95_ms": 1074.7,
+                    "scored": 102,
+                    "total": 120
+                  },
+                  "currency": "INR",
+                  "version_comparison": [
+                    {
+                      "agent_version_id": "00000000-0000-4000-8000-0000000000d1",
+                      "total": 120,
+                      "connected": 84,
+                      "connection_rate": 0.7,
+                      "aht_seconds": 41.2,
+                      "goal_rate": 0.625,
+                      "positive_sentiment_share": 0.72,
+                      "avg_latency_ms": 912.4
+                    }
+                  ],
+                  "assistants_in_action": [
+                    {
+                      "agent_id": "00000000-0000-4000-8000-0000000000a1",
+                      "agent_name": "Ananya",
+                      "call_count": 120,
+                      "total_connected": 84,
+                      "total_minutes": 310.5,
+                      "cost": 42.75
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid filter value (for example an unknown `channel` or malformed ID).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "invalid channel(s): sms"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Failed to fetch agent performance!"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/v4/latency-trend": {
+      "get": {
+        "tags": ["analytics"],
+        "summary": "Get Latency Trend",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Latency Trend | Ringg AI"
+          }
+        },
+        "description": "Returns p50 and p95 agent response latency over time.",
+        "operationId": "getLatencyTrend",
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Start of the reporting window. Accepts `YYYY-MM-DD` or ISO-8601. Omit both dates for all time.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2026-10-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "End of the reporting window (inclusive). Accepts `YYYY-MM-DD` or ISO-8601.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2026-10-15"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "description": "Filter by one or more agent IDs (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "00000000-0000-4000-8000-0000000000a1"
+            }
+          },
+          {
+            "name": "agent_version_id",
+            "in": "query",
+            "description": "Filter by one or more agent version IDs (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "00000000-0000-4000-8000-0000000000d1"
+            }
+          },
+          {
+            "name": "bulk_list_id",
+            "in": "query",
+            "description": "Filter by one or more campaign (bulk list) IDs (comma-separated). Callback calls inherit the campaign of their parent call.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "00000000-0000-4000-8000-0000000000c1"
+            }
+          },
+          {
+            "name": "voicemail",
+            "in": "query",
+            "description": "`true` returns only voicemail calls, `false` excludes them. Omit to include all calls.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": false
+            }
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "description": "Filter by call channel (comma-separated): `inbound`, `outbound`, `webcall`. Unknown values return `400`.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "outbound"
+            }
+          },
+          {
+            "name": "include_callback",
+            "in": "query",
+            "description": "Include callback-feature calls (`call_category = CALLBACK`) in the metrics. Defaults to `false`.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "example": false
+            }
+          },
+          {
+            "name": "sub_workspace_id",
+            "in": "query",
+            "description": "Primary workspaces only: limit the combined analytics to these Ringg Spaces. Repeat the parameter for multiple IDs. The primary workspace's own ID is accepted; any other workspace sending this parameter gets `400`.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "example": ["00000000-0000-4000-8000-000000000101"]
+            },
+            "style": "form",
+            "explode": true
+          },
+          {
+            "name": "tz",
+            "in": "query",
+            "description": "IANA timezone used to bucket the time series (for example `Asia/Kolkata`). Bucket labels are returned in this timezone. Omitted or invalid values fall back to UTC.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "Asia/Kolkata"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Latency trend retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "by_bucket": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "bucket": {
+                            "type": "string",
+                            "description": "Time bucket label. Granularity is picked from the date range: hour `YYYY-MM-DD HH:00:00`, day `YYYY-MM-DD`, week (Monday) or month (first day)."
+                          },
+                          "p50_ms": {
+                            "type": "number",
+                            "description": "Median latency in milliseconds.",
+                            "nullable": true
+                          },
+                          "p95_ms": {
+                            "type": "number",
+                            "description": "95th-percentile latency in milliseconds.",
+                            "nullable": true
+                          },
+                          "scored": {
+                            "type": "integer",
+                            "description": "Calls in the bucket with a latency measurement."
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "by_bucket": [
+                    {
+                      "bucket": "2026-10-14",
+                      "p50_ms": 883.4,
+                      "p95_ms": 1074.7,
+                      "scored": 30
+                    },
+                    {
+                      "bucket": "2026-10-15",
+                      "p50_ms": 910.2,
+                      "p95_ms": 1180.0,
+                      "scored": 41
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid filter value (for example an unknown `channel` or malformed ID).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "invalid channel(s): sms"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Failed to fetch latency trend!"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/v4/concurrency-trend": {
+      "get": {
+        "tags": ["analytics"],
+        "summary": "Get Concurrency Trend",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Concurrency Trend | Ringg AI"
+          }
+        },
+        "description": "Returns the workspace's paid (guaranteed) concurrency against the concurrency it actually received over time. Buckets are hourly for ranges of two days or less and daily otherwise.",
+        "operationId": "getConcurrencyTrend",
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Start of the reporting window. Accepts `YYYY-MM-DD` or ISO-8601. Omit both dates for all time.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2026-10-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "End of the reporting window (inclusive). Accepts `YYYY-MM-DD` or ISO-8601.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2026-10-15"
+            }
+          },
+          {
+            "name": "tz",
+            "in": "query",
+            "description": "IANA timezone used to bucket the time series (for example `Asia/Kolkata`). Bucket labels are returned in this timezone. Omitted or invalid values fall back to UTC.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "Asia/Kolkata"
+            }
+          },
+          {
+            "name": "sub_workspace_id",
+            "in": "query",
+            "description": "Primary workspaces only: limit the combined analytics to these Ringg Spaces. Repeat the parameter for multiple IDs. The primary workspace's own ID is accepted; any other workspace sending this parameter gets `400`.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "example": ["00000000-0000-4000-8000-000000000101"]
+            },
+            "style": "form",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Concurrency trend retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "series": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "bucket": {
+                            "type": "string",
+                            "description": "Bucket label: `YYYY-MM-DD HH:00:00` (hourly) or `YYYY-MM-DD` (daily)."
+                          },
+                          "paid": {
+                            "type": "integer",
+                            "description": "Guaranteed concurrency."
+                          },
+                          "received": {
+                            "type": "integer",
+                            "description": "Concurrency the workspace actually received."
+                          }
+                        }
+                      }
+                    },
+                    "granularity": {
+                      "type": "string",
+                      "enum": ["hour", "day"],
+                      "description": "Bucket size."
+                    },
+                    "available": {
+                      "type": "boolean",
+                      "description": "`false` when there is no data for the range."
+                    }
+                  }
+                },
+                "example": {
+                  "series": [
+                    {
+                      "bucket": "2026-10-15 14:00:00",
+                      "paid": 5,
+                      "received": 7
+                    }
+                  ],
+                  "granularity": "hour",
+                  "available": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid filter value (for example an unknown `channel` or malformed ID).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "invalid channel(s): sms"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Failed to fetch concurrency trend!"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/v4/cohort/dimensions": {
+      "get": {
+        "tags": ["analytics"],
+        "summary": "Get Cohort Dimensions",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Cohort Dimensions | Ringg AI"
+          }
+        },
+        "description": "Lists the fields you can slice analytics by: built-in fields such as sentiment, and the post-call analysis fields configured on the agent. The configuration is read from `agent_version_id`, else `agent_id`, else the agent that owns `bulk_list_id`.",
+        "operationId": "getCohortDimensions",
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "query",
+            "description": "Filter by one or more agent IDs (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "00000000-0000-4000-8000-0000000000a1"
+            }
+          },
+          {
+            "name": "agent_version_id",
+            "in": "query",
+            "description": "Filter by one or more agent version IDs (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "00000000-0000-4000-8000-0000000000d1"
+            }
+          },
+          {
+            "name": "bulk_list_id",
+            "in": "query",
+            "description": "Filter by one or more campaign (bulk list) IDs (comma-separated). Callback calls inherit the campaign of their parent call.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "00000000-0000-4000-8000-0000000000c1"
+            }
+          },
+          {
+            "name": "include_numeric",
+            "in": "query",
+            "description": "Also return number and integer analysis fields. These can't be used for grouping, so they are left out by default.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "sub_workspace_id",
+            "in": "query",
+            "description": "Primary workspaces only: limit the combined analytics to these Ringg Spaces. Repeat the parameter for multiple IDs. The primary workspace's own ID is accepted; any other workspace sending this parameter gets `400`.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "example": ["00000000-0000-4000-8000-000000000101"]
+            },
+            "style": "form",
+            "explode": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cohort dimensions retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reserved": {
+                      "type": "array",
+                      "description": "Built-in dimensions.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "description": "Column to pass as `path` to Get Cohort Values / Get Cohort Breakdown."
+                          },
+                          "key": {
+                            "type": "string",
+                            "description": "Field to pass as `key`."
+                          },
+                          "label": {
+                            "type": "string",
+                            "description": "Display label."
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": ["string", "boolean", "number", "integer"],
+                            "description": "Field type."
+                          },
+                          "values": {
+                            "type": "array",
+                            "description": "Known values, when the set is fixed.",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "client_analysis": {
+                      "type": "array",
+                      "description": "Post-call analysis fields configured on the agent.",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "path": {
+                            "type": "string",
+                            "description": "Column to pass as `path` to Get Cohort Values / Get Cohort Breakdown."
+                          },
+                          "key": {
+                            "type": "string",
+                            "description": "Field to pass as `key`."
+                          },
+                          "label": {
+                            "type": "string",
+                            "description": "Display label."
+                          },
+                          "type": {
+                            "type": "string",
+                            "enum": ["string", "boolean", "number", "integer"],
+                            "description": "Field type."
+                          },
+                          "values": {
+                            "type": "array",
+                            "description": "Known values, when the set is fixed.",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "reserved": [
+                    {
+                      "path": "platform_analysis",
+                      "key": "sentiment",
+                      "label": "Sentiment",
+                      "type": "string",
+                      "values": ["positive", "neutral", "negative"]
+                    }
+                  ],
+                  "client_analysis": [
+                    {
+                      "path": "client_analysis",
+                      "key": "ptp_obtained",
+                      "label": "PTP obtained",
+                      "type": "boolean"
+                    },
+                    {
+                      "path": "client_analysis",
+                      "key": "disposition",
+                      "label": "Disposition",
                       "type": "string"
                     }
-                  }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid filter value (for example an unknown `channel` or malformed ID).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "invalid channel(s): sms"
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized - Invalid or missing authentication.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Invalid credentials"
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Unauthorized - Invalid or missing authentication."
           },
           "500": {
             "description": "Internal Server Error.",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "An unexpected error occurred. Please try again later."
-                    }
-                  }
+                "example": {
+                  "message": "Failed to fetch cohort dimensions!"
                 }
               }
             }
@@ -6226,116 +7688,193 @@
         }
       }
     },
-    "/analytics/number-analytics": {
+    "/analytics/v4/cohort/values": {
       "get": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "Get Number Analytics",
+        "tags": ["analytics"],
+        "summary": "Get Cohort Values",
         "x-mint": {
           "metadata": {
-            "og:title": "Get Number Analytics | Ringg AI"
+            "og:title": "Get Cohort Values | Ringg AI"
           }
         },
-        "description": "Retrieves analytics broken down by phone numbers.",
-        "operationId": "getNumberAnalytics",
+        "description": "Returns the distinct values of one dimension and how many calls have each, most frequent first.",
+        "operationId": "getCohortValues",
         "parameters": [
           {
-            "name": "start_date",
+            "name": "path",
             "in": "query",
-            "description": "Start date for analytics filter (YYYY-MM-DD format)",
+            "description": "(Required) Column to group by. Use the `path` returned by Get Cohort Dimensions.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "client_analysis",
+                "platform_analysis",
+                "custom_args",
+                "retry_count"
+              ],
+              "example": "client_analysis"
+            }
+          },
+          {
+            "name": "key",
+            "in": "query",
+            "description": "Field inside `path` to group by, for example `disposition`. Ignored when `path` is `retry_count`.",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "2025-09-25"
+              "default": "",
+              "example": "disposition"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Start of the reporting window. Accepts `YYYY-MM-DD` or ISO-8601. Omit both dates for all time.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2026-10-01"
             }
           },
           {
             "name": "end_date",
             "in": "query",
-            "description": "End date for analytics filter (YYYY-MM-DD format)",
+            "description": "End of the reporting window (inclusive). Accepts `YYYY-MM-DD` or ISO-8601.",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "2025-09-25"
+              "example": "2026-10-15"
             }
           },
           {
             "name": "agent_id",
             "in": "query",
-            "description": "Filter by specific agent ID",
+            "description": "Filter by one or more agent IDs (comma-separated).",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "123e4567-e89b-12d3-a456-426614174000"
+              "example": "00000000-0000-4000-8000-0000000000a1"
+            }
+          },
+          {
+            "name": "agent_version_id",
+            "in": "query",
+            "description": "Filter by one or more agent version IDs (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "00000000-0000-4000-8000-0000000000d1"
             }
           },
           {
             "name": "bulk_list_id",
             "in": "query",
-            "description": "Filter by specific bulk list/campaign ID",
+            "description": "Filter by one or more campaign (bulk list) IDs (comma-separated). Callback calls inherit the campaign of their parent call.",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "123e4567-e89b-12d3-a456-426614174000"
+              "example": "00000000-0000-4000-8000-0000000000c1"
             }
           },
           {
-            "name": "voicemail",
+            "name": "channel",
             "in": "query",
-            "description": "Filter by voicemail status",
+            "description": "Filter by call channel (comma-separated): `inbound`, `outbound`, `webcall`. Unknown values return `400`.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "outbound"
+            }
+          },
+          {
+            "name": "include_callback",
+            "in": "query",
+            "description": "Include callback-feature calls (`call_category = CALLBACK`) in the metrics. Defaults to `false`.",
             "required": false,
             "schema": {
               "type": "boolean",
+              "default": false,
               "example": false
             }
+          },
+          {
+            "name": "sub_workspace_id",
+            "in": "query",
+            "description": "Primary workspaces only: limit the combined analytics to these Ringg Spaces. Repeat the parameter for multiple IDs. The primary workspace's own ID is accepted; any other workspace sending this parameter gets `400`.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "example": ["00000000-0000-4000-8000-000000000101"]
+            },
+            "style": "form",
+            "explode": true
           }
         ],
         "responses": {
           "200": {
-            "description": "Number analytics retrieved successfully.",
+            "description": "Cohort values retrieved successfully.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "number_analytics": {
+                    "values": {
                       "type": "array",
-                      "description": "Analytics data grouped by phone numbers"
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "string",
+                            "description": "Dimension value."
+                          },
+                          "count": {
+                            "type": "integer",
+                            "description": "Calls with this value."
+                          }
+                        }
+                      }
                     }
                   }
+                },
+                "example": {
+                  "values": [
+                    {
+                      "value": "interested",
+                      "count": 866
+                    },
+                    {
+                      "value": "busy",
+                      "count": 135
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid filter value (for example an unknown `channel` or malformed ID).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "invalid channel(s): sms"
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized - Invalid or missing authentication.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Invalid credentials"
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Unauthorized - Invalid or missing authentication."
           },
           "500": {
             "description": "Internal Server Error.",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "An unexpected error occurred. Please try again later."
-                    }
-                  }
+                "example": {
+                  "message": "Failed to fetch cohort values!"
                 }
               }
             }
@@ -6343,116 +7882,222 @@
         }
       }
     },
-    "/analytics/duration-distribution": {
+    "/analytics/v4/cohort/breakdown": {
       "get": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "Get Duration Distribution",
+        "tags": ["analytics"],
+        "summary": "Get Cohort Breakdown",
         "x-mint": {
           "metadata": {
-            "og:title": "Get Duration Distribution | Ringg AI"
+            "og:title": "Get Cohort Breakdown | Ringg AI"
           }
         },
-        "description": "Retrieves call duration distribution analytics.",
-        "operationId": "getDurationDistribution",
+        "description": "Returns call, connection, goal and handle-time metrics for each value of one dimension, for example connection rate per disposition.",
+        "operationId": "getCohortBreakdown",
         "parameters": [
           {
-            "name": "start_date",
+            "name": "path",
             "in": "query",
-            "description": "Start date for analytics filter (YYYY-MM-DD format)",
+            "description": "(Required) Column to group by. Use the `path` returned by Get Cohort Dimensions.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "client_analysis",
+                "platform_analysis",
+                "custom_args",
+                "retry_count"
+              ],
+              "example": "client_analysis"
+            }
+          },
+          {
+            "name": "key",
+            "in": "query",
+            "description": "Field inside `path` to group by, for example `disposition`. Ignored when `path` is `retry_count`.",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "2025-09-25"
+              "default": "",
+              "example": "disposition"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Start of the reporting window. Accepts `YYYY-MM-DD` or ISO-8601. Omit both dates for all time.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2026-10-01"
             }
           },
           {
             "name": "end_date",
             "in": "query",
-            "description": "End date for analytics filter (YYYY-MM-DD format)",
+            "description": "End of the reporting window (inclusive). Accepts `YYYY-MM-DD` or ISO-8601.",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "2025-09-25"
+              "example": "2026-10-15"
             }
           },
           {
             "name": "agent_id",
             "in": "query",
-            "description": "Filter by specific agent ID",
+            "description": "Filter by one or more agent IDs (comma-separated).",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "123e4567-e89b-12d3-a456-426614174000"
+              "example": "00000000-0000-4000-8000-0000000000a1"
+            }
+          },
+          {
+            "name": "agent_version_id",
+            "in": "query",
+            "description": "Filter by one or more agent version IDs (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "00000000-0000-4000-8000-0000000000d1"
             }
           },
           {
             "name": "bulk_list_id",
             "in": "query",
-            "description": "Filter by specific bulk list/campaign ID",
+            "description": "Filter by one or more campaign (bulk list) IDs (comma-separated). Callback calls inherit the campaign of their parent call.",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "123e4567-e89b-12d3-a456-426614174000"
+              "example": "00000000-0000-4000-8000-0000000000c1"
             }
           },
           {
-            "name": "voicemail",
+            "name": "channel",
             "in": "query",
-            "description": "Filter by voicemail status",
+            "description": "Filter by call channel (comma-separated): `inbound`, `outbound`, `webcall`. Unknown values return `400`.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "outbound"
+            }
+          },
+          {
+            "name": "include_callback",
+            "in": "query",
+            "description": "Include callback-feature calls (`call_category = CALLBACK`) in the metrics. Defaults to `false`.",
             "required": false,
             "schema": {
               "type": "boolean",
+              "default": false,
               "example": false
             }
+          },
+          {
+            "name": "sub_workspace_id",
+            "in": "query",
+            "description": "Primary workspaces only: limit the combined analytics to these Ringg Spaces. Repeat the parameter for multiple IDs. The primary workspace's own ID is accepted; any other workspace sending this parameter gets `400`.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "example": ["00000000-0000-4000-8000-000000000101"]
+            },
+            "style": "form",
+            "explode": true
           }
         ],
         "responses": {
           "200": {
-            "description": "Duration distribution retrieved successfully.",
+            "description": "Cohort breakdown retrieved successfully.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "duration_distribution": {
-                      "type": "object",
-                      "description": "Call duration distribution data"
+                    "path": {
+                      "type": "string",
+                      "description": "The requested `path`."
+                    },
+                    "key": {
+                      "type": "string",
+                      "description": "The requested `key`."
+                    },
+                    "breakdown": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "value": {
+                            "type": "string",
+                            "description": "Dimension value."
+                          },
+                          "calls": {
+                            "type": "integer",
+                            "description": "Calls with this value."
+                          },
+                          "connected": {
+                            "type": "integer",
+                            "description": "Completed calls."
+                          },
+                          "connection_rate": {
+                            "type": "number",
+                            "description": "`connected / calls` (0-1).",
+                            "nullable": true
+                          },
+                          "goal_rate": {
+                            "type": "number",
+                            "description": "Goal rate (0-1).",
+                            "nullable": true
+                          },
+                          "aht_seconds": {
+                            "type": "number",
+                            "description": "Average handle time in seconds.",
+                            "nullable": true
+                          }
+                        }
+                      }
                     }
                   }
+                },
+                "example": {
+                  "path": "client_analysis",
+                  "key": "disposition",
+                  "breakdown": [
+                    {
+                      "value": "interested",
+                      "calls": 120,
+                      "connected": 84,
+                      "connection_rate": 0.7,
+                      "goal_rate": 0.625,
+                      "aht_seconds": 41.2
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid filter value (for example an unknown `channel` or malformed ID).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "invalid channel(s): sms"
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized - Invalid or missing authentication.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Invalid credentials"
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Unauthorized - Invalid or missing authentication."
           },
           "500": {
             "description": "Internal Server Error.",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "An unexpected error occurred. Please try again later."
-                    }
-                  }
+                "example": {
+                  "message": "Failed to fetch cohort breakdown!"
                 }
               }
             }
@@ -6460,116 +8105,365 @@
         }
       }
     },
-    "/analytics/classification-analytics": {
+    "/analytics/v4/campaigns": {
       "get": {
-        "tags": [
-          "analytics"
-        ],
-        "summary": "Get Classification Analytics",
+        "tags": ["analytics"],
+        "summary": "Get Active Campaigns",
         "x-mint": {
           "metadata": {
-            "og:title": "Get Classification Analytics | Ringg AI"
+            "og:title": "Get Active Campaigns | Ringg AI"
           }
         },
-        "description": "Retrieves call classification analytics data.",
-        "operationId": "getClassificationAnalytics",
+        "description": "Lists ongoing and completed campaigns, for use as `bulk_list_id` filter options.",
+        "operationId": "getActiveCampaigns",
         "parameters": [
-          {
-            "name": "start_date",
-            "in": "query",
-            "description": "Start date for analytics filter (YYYY-MM-DD format)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "2025-09-25"
-            }
-          },
-          {
-            "name": "end_date",
-            "in": "query",
-            "description": "End date for analytics filter (YYYY-MM-DD format)",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "2025-09-25"
-            }
-          },
           {
             "name": "agent_id",
             "in": "query",
-            "description": "Filter by specific agent ID",
+            "description": "Only return this agent's campaigns.",
             "required": false,
             "schema": {
               "type": "string",
-              "example": "123e4567-e89b-12d3-a456-426614174000"
-            }
-          },
-          {
-            "name": "bulk_list_id",
-            "in": "query",
-            "description": "Filter by specific bulk list/campaign ID",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "example": "123e4567-e89b-12d3-a456-426614174000"
-            }
-          },
-          {
-            "name": "voicemail",
-            "in": "query",
-            "description": "Filter by voicemail status",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "example": false
+              "example": "00000000-0000-4000-8000-0000000000a1"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Classification analytics retrieved successfully.",
+            "description": "Campaigns retrieved successfully.",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "classification_analytics": {
-                      "type": "object",
-                      "description": "Call classification analytics data"
+                    "campaigns": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "Campaign (bulk list) ID."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Campaign name."
+                          },
+                          "agent_id": {
+                            "type": "string",
+                            "description": "Agent running the campaign.",
+                            "nullable": true
+                          }
+                        }
+                      }
                     }
                   }
+                },
+                "example": {
+                  "campaigns": [
+                    {
+                      "id": "00000000-0000-4000-8000-0000000000c1",
+                      "name": "EMI reminders - October",
+                      "agent_id": "00000000-0000-4000-8000-0000000000a1"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid filter value (for example an unknown `channel` or malformed ID).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "invalid channel(s): sms"
                 }
               }
             }
           },
           "401": {
-            "description": "Unauthorized - Invalid or missing authentication.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Invalid credentials"
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Unauthorized - Invalid or missing authentication."
           },
           "500": {
             "description": "Internal Server Error.",
             "content": {
               "application/json": {
+                "example": {
+                  "message": "Failed to fetch campaigns!"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/v4/data-freshness": {
+      "get": {
+        "tags": ["analytics"],
+        "summary": "Get Data Freshness",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Data Freshness | Ringg AI"
+          }
+        },
+        "description": "Returns how up to date the analytics data is for the workspace.",
+        "operationId": "getDataFreshness",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Data freshness retrieved successfully.",
+            "content": {
+              "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "message": {
+                    "data_as_of": {
                       "type": "string",
-                      "example": "An unexpected error occurred. Please try again later."
+                      "description": "Timestamp (ISO-8601, UTC) the analytics data is current to. `null` when there is no data yet.",
+                      "nullable": true
+                    },
+                    "lag_seconds": {
+                      "type": "number",
+                      "description": "Seconds between `data_as_of` and now.",
+                      "nullable": true
+                    },
+                    "version": {
+                      "type": "integer",
+                      "description": "Data version. It changes whenever new data lands, so you can use it to decide when to refetch."
                     }
                   }
+                },
+                "example": {
+                  "data_as_of": "2026-10-15T12:00:00+00:00",
+                  "lag_seconds": 12.3,
+                  "version": 1792584000000000
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Failed to fetch data freshness!"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/v4/chat-analytics": {
+      "get": {
+        "tags": ["analytics"],
+        "summary": "Get Chat Analytics",
+        "x-mint": {
+          "metadata": {
+            "og:title": "Get Chat Analytics | Ringg AI"
+          }
+        },
+        "description": "Returns chat and WhatsApp session volume over time, sessions per channel, and outcome metrics.",
+        "operationId": "getChatAnalytics",
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Start of the reporting window. Accepts `YYYY-MM-DD` or ISO-8601. Omit both dates for all time.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2026-10-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "End of the reporting window (inclusive). Accepts `YYYY-MM-DD` or ISO-8601.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "2026-10-15"
+            }
+          },
+          {
+            "name": "agent_id",
+            "in": "query",
+            "description": "Filter by one or more agent IDs (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "00000000-0000-4000-8000-0000000000a1"
+            }
+          },
+          {
+            "name": "agent_version_id",
+            "in": "query",
+            "description": "Filter by one or more agent version IDs (comma-separated).",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "00000000-0000-4000-8000-0000000000d1"
+            }
+          },
+          {
+            "name": "channel",
+            "in": "query",
+            "description": "Filter by chat channel (comma-separated), for example `chat` or `whatsapp_meta_chat`.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "whatsapp_meta_chat"
+            }
+          },
+          {
+            "name": "engaged_turns",
+            "in": "query",
+            "description": "Minimum user turns for a session to count as engaged.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "tz",
+            "in": "query",
+            "description": "IANA timezone used to bucket the time series (for example `Asia/Kolkata`). Bucket labels are returned in this timezone. Omitted or invalid values fall back to UTC.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "Asia/Kolkata"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chat analytics retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "volume": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer",
+                          "description": "Chat sessions in scope."
+                        },
+                        "by_bucket": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "bucket": {
+                                "type": "string",
+                                "description": "Time bucket label. Granularity is picked from the date range: hour `YYYY-MM-DD HH:00:00`, day `YYYY-MM-DD`, week (Monday) or month (first day)."
+                              },
+                              "count": {
+                                "type": "integer",
+                                "description": "Sessions in the bucket."
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "channel_split": {
+                      "type": "object",
+                      "description": "Sessions per channel.",
+                      "additionalProperties": {
+                        "type": "integer"
+                      }
+                    },
+                    "outcomes": {
+                      "type": "object",
+                      "properties": {
+                        "initiated": {
+                          "type": "integer",
+                          "description": "Sessions started."
+                        },
+                        "engaged": {
+                          "type": "integer",
+                          "description": "Sessions with at least `engaged_turns` user turns."
+                        },
+                        "resolved": {
+                          "type": "integer",
+                          "description": "Completed sessions."
+                        },
+                        "avg_session_seconds": {
+                          "type": "number",
+                          "description": "Average session length in seconds."
+                        },
+                        "avg_turns": {
+                          "type": "number",
+                          "description": "Average turns (user + agent) per session."
+                        },
+                        "goal_rate": {
+                          "type": "number",
+                          "description": "Goal rate (0-1).",
+                          "nullable": true
+                        },
+                        "positive_sentiment_share": {
+                          "type": "number",
+                          "description": "Share of scored sessions with positive sentiment (0-1).",
+                          "nullable": true
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "volume": {
+                    "total": 20,
+                    "by_bucket": [
+                      {
+                        "bucket": "2026-10-15",
+                        "count": 20
+                      }
+                    ]
+                  },
+                  "channel_split": {
+                    "whatsapp_meta_chat": 14,
+                    "chat": 6
+                  },
+                  "outcomes": {
+                    "initiated": 20,
+                    "engaged": 16,
+                    "resolved": 12,
+                    "avg_session_seconds": 184.2,
+                    "avg_turns": 9.4,
+                    "goal_rate": 0.5,
+                    "positive_sentiment_share": 0.6
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request - invalid filter value (for example an unknown `channel` or malformed ID).",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "invalid channel(s): sms"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid or missing authentication."
+          },
+          "500": {
+            "description": "Internal Server Error.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "message": "Failed to fetch chat analytics!"
                 }
               }
             }

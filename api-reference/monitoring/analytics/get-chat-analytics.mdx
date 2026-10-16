@@ -1,0 +1,23 @@
+---
+openapi: get /analytics/v4/chat-analytics
+description: "Get web chat and WhatsApp session volume over time, sessions per channel, and engagement, resolution and goal metrics, filtered by date, agent or channel."
+related:
+  - "Analytics": /documentation/monitor/analytics
+  - "WhatsApp chats in Logs": /documentation/monitor/logs#whatsapp-chats
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Covers chats only; the other analytics endpoints cover calls. The dashboard's Analytics page doesn't show chats.
+
+## Notes
+
+- `channel` takes chat channels such as `chat` or `whatsapp_meta_chat`, not the call channels.
+- `engaged_turns` sets how many user messages make a session `engaged` (default `1`). `resolved` counts completed sessions.
+- `goal_rate` uses each session's own version goal.
+
+## Errors
+
+- `401`: `X-API-KEY` is missing or invalid.
+
+<RelatedTopics items={[["Analytics", "/documentation/monitor/analytics"], ["WhatsApp chats in Logs", "/documentation/monitor/logs#whatsapp-chats"]]} />

@@ -1,0 +1,28 @@
+---
+openapi: get /analytics/v4/volume-graph
+description: "Get headline call metrics with the change against the previous period, plus call volume over time, filtered by date, agent, version, campaign or channel."
+related:
+  - "Analytics": /documentation/monitor/analytics
+  - "Get connectivity analytics": /api-reference/monitoring/analytics/get-connectivity-analytics
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Returns the numbers behind the **Volume** cards and trend chart in [Analytics](/documentation/monitor/analytics). Each card has `count`, `previous` (the period of the same length just before) and `delta_pct`.
+
+## Notes
+
+- `sum(by_bucket[].total)` equals `total.count`, and in each bucket `total = completed + failed + cancelled + registered + ongoing + retry`.
+- `total.campaign_count` and `total.api_count` split the current total by where calls came from. A callback counts toward its parent call's campaign.
+- `callback_count` always reports callback calls, whatever `include_callback` is set to. It overlaps `total` only when `include_callback=true`.
+- `connection_rate.campaign_time_exhausted` and `connection_rate.retry_exhausted` count calls stopped by the campaign's end time or retry limit.
+- `aht_seconds.duration_distribution` counts completed calls in four buckets: under 10 seconds, 10 to 30, 30 to 60, and 60 or more.
+- `unique_numbers_used` is the phone numbers your workspace owns, so it ignores the date range and filters.
+- With a call `channel` filter, chats are left out and `chat_total.count` is `0`.
+
+## Errors
+
+- `400`: a filter is invalid, such as an unknown `channel`, a malformed ID, or `sub_workspace_id` sent from a workspace that isn't a primary workspace.
+- `401`: `X-API-KEY` is missing or invalid.
+
+<RelatedTopics items={[["Analytics", "/documentation/monitor/analytics"], ["Get connectivity analytics", "/api-reference/monitoring/analytics/get-connectivity-analytics"]]} />

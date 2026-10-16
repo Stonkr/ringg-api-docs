@@ -1,0 +1,17 @@
+---
+openapi: get /analytics/v4/campaigns
+description: "List your ongoing and completed campaigns with their ID, name and agent, to use as the bulk_list_id filter on the other analytics endpoints."
+related:
+  - "Analytics": /documentation/monitor/analytics
+  - "Manage a campaign": /documentation/deploy/campaigns/manage-a-campaign
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Pass `agent_id` to list only that agent's campaigns. Use each `id` as `bulk_list_id` on the other analytics endpoints.
+
+## Errors
+
+- `401`: `X-API-KEY` is missing or invalid.
+
+<RelatedTopics items={[["Analytics", "/documentation/monitor/analytics"], ["Manage a campaign", "/documentation/deploy/campaigns/manage-a-campaign"]]} />
