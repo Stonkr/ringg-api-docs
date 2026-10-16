@@ -1,0 +1,31 @@
+WEBVTT
+
+00:00:01.614 --> 00:00:04.514
+Open Labs → STT in the sidebar
+
+00:00:04.514 --> 00:00:09.930
+Pick the language and turn on punctuation
+
+00:00:09.930 --> 00:00:12.890
+Upload a WAV, MP3, FLAC or M4A file
+
+00:00:12.890 --> 00:00:16.064
+The transcript and audio length appear
+
+00:00:16.064 --> 00:00:23.000
+Code shows the same request in TypeScript, Python and cURL
+
+00:00:23.000 --> 00:00:32.592
+Logs lists every request; click one for its details
+
+00:00:32.592 --> 00:00:38.332
+Usage tracks requests, audio processed and credits
+
+00:00:38.332 --> 00:00:41.240
+Pricing shows the rate for your currency
+
+00:00:41.240 --> 00:00:45.625
+The SDK needs an API key: Settings → API key
+
+00:00:45.625 --> 00:00:52.660
+Copy it once and store it as RINGG_API_KEY

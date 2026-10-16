@@ -1,0 +1,177 @@
+---
+title: "InTalk"
+sidebarTitle: "InTalk"
+description: "Connect InTalk (Agami Tech) to Ringg AI over InTalk Voice Streaming, import your InTalk DIDs, and use them for inbound and outbound agent calls."
+"og:title": "Connect InTalk to Ringg AI"
+---
+
+## Overview
+
+InTalk connects to Ringg over **InTalk Voice Streaming v1.1**: a WebSocket that carries the call's audio both ways, plus an HTTP webhook for call status. InTalk handles the phone network; Ringg runs the AI agent on the stream.
+
+| Direction | How the call starts |
+| - | - |
+| **Outbound** | Ringg asks InTalk's API to dial the customer. InTalk opens the WebSocket to Ringg when the call connects. |
+| **Inbound** | A customer calls your InTalk DID. InTalk opens the WebSocket to the URL you configure in its portal. |
+
+You configure two things in the InTalk portal:
+
+| Purpose | Where you set it |
+| - | - |
+| **WebSocket (WSS) URL** | InTalk's WSS / Voice Streaming module, as a **static** URL |
+| **Status webhook** | InTalk's call-status webhook (POST) |
+
+<Note>
+  Ringg records every InTalk call itself, so recordings, transcripts and call analysis appear in Ringg as for any other provider.
+</Note>
+
+## Prerequisites
+
+* An active InTalk account with API access
+* Your InTalk **account name**, **base URL** and **API token** (see Step 1)
+* At least one DID allocated to your InTalk account
+* A Ringg workspace with admin access, and an assistant ready to take calls
+
+## Step 1: Add InTalk as a telephony provider in Ringg
+
+<Steps>
+  <Step title="Open the InTalk account form">
+    Go to **Numbers → Add number**, select **InTalk**, and open **Configure provider** (the gear). Select **Add**.
+  </Step>
+
+  <Step title="Enter credentials">
+    All three fields are required. Your InTalk URL has the form `https://<account_name>.<base_url>`, for example `https://acme.apps.intalk.cc`.
+
+    | Field | Value |
+    | - | - |
+    | `account_name` | The first part of your InTalk URL, for example `acme` |
+    | `base_url` | The InTalk deployment host, for example `apps.intalk.cc` |
+    | `api_token` | Your InTalk API token |
+
+    `account_name` must be a single word (letters, digits, hyphens) and `base_url` a plain hostname. Ringg rejects values that contain a port, path, `#`, `?`, `@` or an IP address, and rejects empty values.
+  </Step>
+
+  <Step title="Save">
+    InTalk has no credential-test endpoint, so the account is saved without a live check. The first number import (next step) confirms the credentials work.
+  </Step>
+
+  <Step title="Import your numbers">
+    In **Add number**, choose the InTalk account and open **Import your own**. Ringg lists the DIDs allocated to your InTalk account; select the ones to import.
+
+    InTalk numbers are import-only: there is no **Buy new** option for InTalk.
+  </Step>
+
+  <Step title="Assign the numbers">
+    Assign each imported DID to an assistant, as the inbound number and/or as the caller ID for outbound calls and campaigns.
+  </Step>
+</Steps>
+
+## Step 2: WebSocket (WSS) URL
+
+In InTalk's WSS module, select a **static WSS URL** and set it to:
+
+```text theme={null}
+wss://<ringg-host>/pc/v1/intalk/ws?region=in&did_number={{did_number}}&customer_number={{origination_number}}
+```
+
+The Ringg team shares the exact `<ringg-host>` for your region; use the same host in the status webhook (Step 3).
+
+Paste `{{did_number}}` and `{{origination_number}}` exactly as shown. They are InTalk system variables, and InTalk fills them in on every call: the DID that was dialled and the caller's number. Ringg uses them to find the assistant for inbound calls.
+
+| Query parameter | Meaning |
+| - | - |
+| `region` | The Ringg region your workspace runs in: `in` (India), `ksa` or `uae`. Defaults to India if omitted. |
+| `did_number` | InTalk's `{{did_number}}`: the DID that was dialled. **Required for inbound.** |
+| `customer_number` | InTalk's `{{origination_number}}`: the caller's number. **Required for inbound.** |
+
+Numbers can arrive with or without `+91`, as 10 digits or with a leading `0`; Ringg normalises them to E.164 before looking up the assistant.
+
+### Other WSS settings
+
+| Setting | Value |
+| - | - |
+| URL type | **Static** WSS URL (not the dynamic / HTTPS URL option) |
+| Reconnect retry | **Off** |
+| Fallback | **Hangup** |
+
+### Outbound calls
+
+Outbound needs no extra portal setup. When Ringg places a call, it sends InTalk a per-call WSS URL and a `callback_call_id` custom parameter carrying the Ringg call ID. InTalk returns that ID in the `start` event and in the status webhook, which is how Ringg matches the stream to the call.
+
+<Note>
+  Outbound calls are placed to Indian numbers. Ringg dials the 10-digit national number, so `+91XXXXXXXXXX`, `91XXXXXXXXXX` and `0XXXXXXXXXX` all work. Numbers that do not reduce to 10 digits are rejected before dialling.
+</Note>
+
+## Step 3: Status webhook
+
+Set InTalk's call-status webhook to:
+
+```text theme={null}
+https://<ringg-host>/pc/v1/intalk/call_status?region=in
+```
+
+Use **POST** with a JSON body, and the same `region` as the WSS URL.
+
+This webhook is what reports calls that never reach the assistant. **Without it, unanswered and busy calls stay in progress in Ringg and are not retried.**
+
+| InTalk `call_status` | Reported in Ringg as |
+| - | - |
+| `busy` | Busy |
+| `no answer` / `noanswer` | No answer |
+| `fail` with `hangup_by` = customer | No answer (the customer rejected or did not pick up) |
+| `fail`, `failed`, `cancel`, `cancelled` | Failed |
+| `completed`, when the call connected but the stream never opened | Failed (the call never reached the assistant) |
+| `initiated`, `ringing`, `answered`, `completed` (normal) | Handled by the assistant's own call reporting |
+
+For outbound calls, the webhook must carry `custom_parameters.callback_call_id`. Ringg sets it when dialling and InTalk echoes it back unchanged.
+
+## Call features
+
+| Feature | Supported |
+| - | - |
+| Outbound and inbound calls | Yes |
+| Interruptions (barge-in) | Yes, via InTalk's `clear` event |
+| Caller keypad input (DTMF) | Yes, received from the caller |
+| Call transfer | Yes, see below |
+| Recording, transcript, analysis | Yes, recorded by Ringg |
+| Hangup | Ringg ends the call by closing the WebSocket; InTalk closes it when the caller hangs up |
+
+### Call transfer
+
+Configure transfers with the **Call Transfer** tool on the assistant. Each destination's **Target** is sent to InTalk in a `transfer` event. The transfer type decides how InTalk routes it. It applies to every destination on the tool, and the Ringg team sets it for you:
+
+| Type | What InTalk receives | Use for |
+| - | - | - |
+| `external_number` (default) | `{"type": "external_number", "number": "<target>"}` | Transferring to a phone number |
+| `queue` | `{"type": "queue", "queue_id": "<target>"}` | Transferring to an InTalk queue |
+| `sip_proxy` | `{"type": "sip_proxy", "other_data": {"destination": "<target>", "gateway_uuid": "<…>"}}` | Transferring over a SIP gateway |
+
+Extra fields your InTalk flow expects, for example an `event_type`, can be sent in the event's `other_data` as **custom variables** on the Call Transfer tool, with fixed or per-call values. The Ringg team configures these. For `sip_proxy`, `gateway_uuid` comes from a custom variable of that name, or defaults to the target.
+
+To route callers to different teams, add one destination per team (for example, one number per InTalk queue). The assistant picks the destination that matches the conversation.
+
+<Note>
+  After a successful transfer, InTalk bridges the call and closes the stream. Ringg does not hang up the caller.
+</Note>
+
+## URL reference
+
+| Purpose | Method | URL |
+| - | - | - |
+| WSS URL (static) | WebSocket | `wss://<ringg-host>/pc/v1/intalk/ws?region=<region>&did_number={{did_number}}&customer_number={{origination_number}}` |
+| Status webhook | POST | `https://<ringg-host>/pc/v1/intalk/call_status?region=<region>` |
+
+## Troubleshooting
+
+| Symptom | Likely cause |
+| - | - |
+| Saving the account fails with `Empty required fields` | One of `account_name`, `base_url` or `api_token` is blank. |
+| Saving fails with `must be a hostname` | `account_name` or `base_url` contains a URL, port or path. Use `acme` and `apps.intalk.cc`, not `https://acme.apps.intalk.cc/`. |
+| Number import shows no numbers | Wrong credentials, or no DIDs are allocated to the InTalk account. |
+| Outbound dial fails with `requires a 10-digit phone number` | The customer number is not an Indian number. |
+| Inbound call is dropped at once | `did_number` / `customer_number` missing from the WSS URL, the URL type is not static, or the DID is not imported and assigned to an assistant in Ringg. |
+| Inbound call never connects on the right assistant | `{{did_number}}` was typed differently, or the `region` does not match your workspace. |
+| Call drops as soon as the stream opens | InTalk's stream is not 8 kHz mu-law audio. |
+| Call never connects to the assistant | Outbound WebSocket traffic to `<ringg-host>` is blocked from InTalk's side. |
+| Unanswered or busy calls are never retried | The status webhook is not configured, or it does not carry `custom_parameters.callback_call_id`. |
+| Transfer fails | The transfer type does not match the target (for example a queue ID with `external_number`), or the queue / gateway does not exist in InTalk. |

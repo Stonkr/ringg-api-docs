@@ -1,0 +1,37 @@
+WEBVTT
+
+00:00:01.521 --> 00:00:04.368
+Open Numbers and click Add number
+
+00:00:04.368 --> 00:00:07.528
+Select SIP in the provider list
+
+00:00:07.528 --> 00:00:10.909
+Click the gear to open Configure SIP Trunks
+
+00:00:10.909 --> 00:00:13.688
+Click Add
+
+00:00:13.688 --> 00:00:21.521
+Name the trunk and set Direction to Both
+
+00:00:21.521 --> 00:00:27.392
+Add the IPs or CIDRs your INVITEs come from
+
+00:00:27.392 --> 00:00:36.321
+Set the outbound target, tech prefix and strip digits
+
+00:00:36.321 --> 00:00:41.566
+Choose the transport
+
+00:00:41.566 --> 00:00:59.474
+Turn on Authentication and enter the credentials
+
+00:00:59.474 --> 00:01:02.709
+Click Save
+
+00:01:02.709 --> 00:01:05.697
+The trunk is listed; edit or delete it from here
+
+00:01:05.697 --> 00:01:16.811
+Close the panel: Add custom takes the trunk's numbers

@@ -1,0 +1,31 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:04.646
+Open Advanced Analysis
+
+00:00:04.646 --> 00:00:07.172
+Click Add a new variable
+
+00:00:07.172 --> 00:00:16.472
+Name it, pick a type and describe it
+
+00:00:16.472 --> 00:00:18.948
+Turn on Use as goal (Boolean only)
+
+00:00:18.948 --> 00:00:30.662
+Add several at once: a Number this time
+
+00:00:30.662 --> 00:00:33.834
+Click Add
+
+00:00:33.834 --> 00:00:38.123
+Give context and include tool call logs
+
+00:00:38.123 --> 00:00:40.874
+Click Test to try it on a past call
+
+00:00:40.874 --> 00:00:44.480
+Pick a call from the recent call log
+
+00:00:44.480 --> 00:00:48.225
+Check the result against the transcript

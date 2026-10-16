@@ -1,0 +1,43 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:04.773
+Open Prompt: the first message, then each section
+
+00:00:04.773 --> 00:00:06.818
+Interruptible: callers can talk over the first message
+
+00:00:06.818 --> 00:00:10.051
+Edit the first message
+
+00:00:10.051 --> 00:00:12.650
+Edit a prompt section
+
+00:00:12.650 --> 00:00:17.271
+Type @ to insert a variable, tool or knowledge base
+
+00:00:17.271 --> 00:00:21.698
+Mention an on-call tool so the agent uses it
+
+00:00:21.698 --> 00:00:25.190
+No match? Create the variable from the menu
+
+00:00:25.190 --> 00:00:36.387
+Logic → If Condition: text that applies only sometimes
+
+00:00:36.387 --> 00:00:39.678
+Select text: format, find and replace, or translate
+
+00:00:39.678 --> 00:00:43.360
+Find and replace works across every section
+
+00:00:43.360 --> 00:00:48.861
+Translate converts a selection to the secondary language
+
+00:00:48.861 --> 00:00:50.921
+Unsaved edits swap Test assistant for Discard and Save
+
+00:00:50.921 --> 00:00:53.729
+Click Save (or press Cmd+S)
+
+00:00:53.729 --> 00:00:57.464
+Saved: Test assistant is back in the top bar

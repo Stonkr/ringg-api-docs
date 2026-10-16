@@ -1,0 +1,210 @@
+---
+title: "Chat components"
+sidebarTitle: "Components"
+description: "Build the cards, forms and slot pickers a Ringg AI agent shows inside a web chat: describe one in plain words, edit its blocks, then mention it in the prompt."
+"og:title": "Build Chat Components for the Ringg AI Widget | Ringg AI Guide"
+---
+
+The visitor acts on a component in the thread, and what they tap or type goes back to the [agent](/documentation/build-agents/agents/agent-types). Build one when the agent needs structured input or has to show more than a sentence.
+
+In the dashboard: **Assistants → your agent → Embed & Widgets → Components**. If your agent has no **Components** tab, contact Ringg.
+
+## Before you start
+
+<Columns cols={3}>
+  <Card title="An installed widget" icon="globe" href="/documentation/deploy/web-and-apps/web-widget/overview">
+    Components render only in the web widget's chat thread.
+  </Card>
+  <Card title="A 2.0 widget version" icon="git-branch" href="/documentation/deploy/web-and-apps/web-widget/launch-checklist#version-pinning">
+    The 1.0 line can't render them; pin a `2.0.0-beta` build.
+  </Card>
+  <Card title="A chat-mode embed" icon="message-square" href="/documentation/deploy/web-and-apps/web-widget/chat-mode">
+    Components are designed for text conversations.
+  </Card>
+</Columns>
+
+## Build a component
+
+<Steps>
+  <Step title="Open the Components tab">
+    Click **New component**. Everything you build is listed on this tab; agents that still have fixed-purpose widgets also see them below, under [Legacy widgets](/documentation/deploy/web-and-apps/web-widget/chat-mode#legacy-widgets).
+
+    <Frame caption="Embed & Widgets → Components → New component.">
+      <video alt="Embed & Widgets → Components → New component" aria-label="Embed & Widgets → Components → New component" autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/01-create.png" className="w-full rounded-lg">
+        <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/01-create.mp4" type="video/mp4" />
+      </video>
+    </Frame>
+  </Step>
+
+  <Step title="Pick a starting point">
+    Six templates ship with the builder: **Start blank**, **Plan comparison**, **Lead form**, **Info card**, **Calendar slots** and **Quick actions**. Picking one opens the builder; every block, label, colour and action stays editable.
+
+    <Frame caption="Choosing Start blank opens the builder on an empty canvas.">
+      <video alt="Choosing Start blank opens the builder on an empty canvas" aria-label="Choosing Start blank opens the builder on an empty canvas" autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/02-template.png" className="w-full rounded-lg">
+        <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/02-template.mp4" type="video/mp4" />
+      </video>
+    </Frame>
+  </Step>
+
+  <Step title="Describe what you need">
+    The **Chat** panel builds the component from a plain-English description:
+
+    ```text
+    Create a family member detail collection form that collects full name,
+    age, city and relationship for one member at a time, with a submit button
+    ```
+
+    To build from a design instead, use **Add an image or screenshot**: up to three PNG, JPEG or WebP images.
+
+    <Frame caption="Typing the description, sending it, and the component being built (build fast-forwarded).">
+      <video alt="Typing the description, sending it, and the component being built (build fast-forwarded)" aria-label="Typing the description, sending it, and the component being built (build fast-forwarded)" autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/03-describe.png" className="w-full rounded-lg">
+        <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/03-describe.mp4" type="video/mp4" />
+      </video>
+    </Frame>
+  </Step>
+
+  <Step title="Save it, then use it in the agent">
+    Check it collects what you asked for, set **Name** (the mention token is shown beneath it), then click **Save**.
+
+    Save before you edit the prompt: the `@` menu offers only saved, enabled components. Type `@` where the component should appear and pick it under **Chat Components**; it inserts as a mention chip.
+
+    ```text
+    When the user agrees to add dependants, show @[[family_member_details_form]]
+    and collect one member at a time.
+    ```
+
+    The token comes from the name: lowercased, each run of characters outside `a-z0-9` turned into one `_`, leading and trailing `_` dropped, cut to 48 characters. A component created from a template whose name is taken gets a number (`lead_form_2`); a duplicated one gets `_copy`.
+
+    <Frame caption="Saving the component, then inserting its mention in the agent's prompt from the @ menu.">
+      <video alt="Saving the component, then inserting its mention in the agent's prompt from the @ menu" aria-label="Saving the component, then inserting its mention in the agent's prompt from the @ menu" autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/04-copy-mention.png" className="w-full rounded-lg">
+        <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/04-copy-mention.mp4" type="video/mp4" />
+      </video>
+    </Frame>
+  </Step>
+
+  <Step title="Tune any block by hand">
+    Open the **Blocks** panel and select any block; its inspector opens on the right. In the video, the **City** input goes to 50% width and its label becomes "Current city". The preview updates as you type.
+
+    <Frame caption="Selecting the City input, then editing its width and label.">
+      <video alt="Selecting the City input, then editing its width and label" aria-label="Selecting the City input, then editing its width and label" autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/05-tune-block.png" className="w-full rounded-lg">
+        <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/05-tune-block.mp4" type="video/mp4" />
+      </video>
+    </Frame>
+  </Step>
+
+  <Step title="Keep iterating in chat">
+    Back in **Chat**, ask for a change such as "Add one more button for adding new member" and it edits the existing component. Switch between chat and hand-editing freely, then **Save**.
+
+    <Frame caption="A follow-up instruction editing the existing component (rebuild fast-forwarded).">
+      <video alt="A follow-up instruction editing the existing component (rebuild fast-forwarded)" aria-label="A follow-up instruction editing the existing component (rebuild fast-forwarded)" autoPlay muted loop playsInline preload="metadata" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/06-iterate.png" className="w-full rounded-lg">
+        <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/06-iterate.mp4" type="video/mp4" />
+      </video>
+    </Frame>
+  </Step>
+</Steps>
+
+Use chat for structure ("a card with an image, three facts and two buttons") and the inspector for exact values such as a width or an Action ID. The preview switches between **Component** and **In chat**, and **Interact** lets you click through it on sample data; real values arrive during the conversation.
+
+## Show it in a conversation
+
+**Send agent text with widget** is off by default, so the component is sent on its own, which reads better in chat. Turn it on to let the agent add a sentence alongside it.
+
+## Blocks
+
+A component is a tree of typed blocks. The builder's add-block palette groups them as below.
+
+### Layout
+
+| Type | Builder name | Notes |
+|---|---|---|
+| `card` | Card | Bordered surface that groups blocks. |
+| `carousel` | Carousel | Horizontally swipeable set of children. |
+| `column` / `row` | Stack | Vertical or horizontal; flip the direction in the inspector. |
+| `form` | Form | Groups inputs for one submit. A **Send to agent** button inside it sends only this form's inputs. |
+| `expander` | Expander | Collapsible "view details" section. |
+| `box` | Box | Plain container. Not in the palette; appears in generated components. |
+
+### Content
+
+| Type | Builder name | Notes |
+|---|---|---|
+| `header` | Heading | Levels 1 to 3. |
+| `text` | Text | Body copy. |
+| `image` | Image | Picture by URL. See [Render an image](/documentation/deploy/web-and-apps/web-widget/data#render-an-image). |
+| `facts` | Facts | Label and value pairs. |
+| `table` | Table | Up to 4 columns. |
+| `steps` | Steps | Progress through ordered steps; `current` is 1-based. |
+| `badge` | Badge | Tone: `neutral`, `info`, `success`, `warning`, `danger`. |
+| `callout` | Callout | Tone: `info`, `success`, `warning`, `error`. |
+| `divider` | Divider | Horizontal rule. |
+
+### Inputs
+
+Every input has a **name**; the submitted value arrives under that key.
+
+| Type | Builder name | Notes |
+|---|---|---|
+| `input_text` | Text input | Single line. |
+| `input_textarea` | Long text | Multi-line. |
+| `input_email` | Email | Checked for format. |
+| `input_phone_number` | Phone | |
+| `input_number` | Number | |
+| `input_date` | Date | Date picker. |
+| `input_time` | Time | Time picker. |
+| `input_checkbox` | Checkbox | Yes or no. |
+| `input_single_select` | Dropdown | One option, as a dropdown or pills. |
+| `input_multi_select` | Multi-select | Several options, as checkboxes or pills. |
+| `input_rating` | Rating | `max` 3 to 10. |
+
+### Actions
+
+`button` is the only block that reacts to a tap. What a tap does is set under **When tapped**; see [Working with data](/documentation/deploy/web-and-apps/web-widget/data).
+
+### Sizing
+
+`width` is a percentage of the parent (0 to 100). `height`, `font_size`, `gap` and `padding` are pixels.
+
+A button with no width set fills its parent, so two buttons side by side need explicit widths. Put them in a **Stack** set to horizontal and give each `50`.
+
+### Conditional and repeated blocks
+
+To show a block only for some answers, give it a condition on an input's value: `eq`, `ne`, `in`, `gt`, `lt` or `truthy`. Combine several in one `all` or `any` group; groups don't nest.
+
+To repeat a block over a list, point it at an array binding. It renders once per item, with the item under an alias you choose, plus its index:
+
+```text
+source     ${{api_res.plans}}
+as         plan
+max_items  20
+```
+
+Inside the repeated block, `${{plan.name}}` and `${{plan_index}}` resolve per item. `max_items` accepts 1 to 50 and defaults to 20. Give repeated inputs a bound name such as `qty_${{item.id}}`, so each copy submits under its own key.
+
+## Styling
+
+Components inherit the widget [theme](/documentation/deploy/web-and-apps/web-widget/configuration#theme). For anything else, every rendered block carries a `data-ringg` attribute; see [Styling](/documentation/deploy/web-and-apps/web-widget/styling#components).
+
+## Common questions
+
+<AccordionGroup>
+  <Accordion title="The component isn't in the @ menu">
+    Save it in the builder and check its switch on the **Components** tab, then type `@` again.
+  </Accordion>
+  <Accordion title="Can I delete a component the prompt still mentions?">
+    No. Ringg refuses to delete or turn off a component the prompt still mentions, with "Remove tool references from the prompt before deleting the tool." Remove the mention from the prompt first.
+  </Accordion>
+  <Accordion title="Does it work on the 1.0 CDN version?">
+    No; see [Pick a CDN version](/documentation/deploy/web-and-apps/web-widget/overview#install-the-widget). The React Native and Flutter packages render them natively.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Wire it to your API" icon="database" href="/documentation/deploy/web-and-apps/web-widget/data">
+    Fetch data before showing, send data on tap, fire page events.
+  </Card>
+  <Card title="Copy a recipe" icon="lightbulb" href="/documentation/deploy/web-and-apps/web-widget/recipes">
+    Lead capture, live pricing, slot booking, downloads.
+  </Card>
+</Columns>

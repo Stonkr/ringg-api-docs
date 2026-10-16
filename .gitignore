@@ -4,5 +4,5 @@
 # dependencies
 node_modules
 
-# local brainstorming previews
-.superpowers/
+# Claude Code settings
+.claude/

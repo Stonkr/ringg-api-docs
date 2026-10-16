@@ -1,0 +1,34 @@
+WEBVTT
+
+00:00:01.501 --> 00:00:04.677
+Open the agent and click Test assistant
+
+00:00:04.677 --> 00:00:12.210
+Three ways to test: Phone call, Web call, Live chat
+
+00:00:12.210 --> 00:00:16.668
+Choose the caller number: test or your own
+
+00:00:16.668 --> 00:00:21.556
+Enter a callee number; verified ones are in the list
+
+00:00:21.556 --> 00:00:27.382
+Fill in variables (optional)
+
+00:00:27.382 --> 00:00:32.319
+Smart formatter cleans up the name before the call
+
+00:00:32.319 --> 00:00:34.534
+cURL copies the same request for your backend
+
+00:00:34.534 --> 00:00:42.345
+A new callee number? Verify it once by WhatsApp code
+
+00:00:42.345 --> 00:00:44.347
+The call is placed; status updates live
+
+00:00:44.347 --> 00:00:51.634
+Call details lists the variables sent
+
+00:00:51.634 --> 00:00:54.241
+When it ends, review the call in Logs

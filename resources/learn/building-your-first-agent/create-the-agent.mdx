@@ -1,0 +1,92 @@
+---
+title: "Lesson: Create the agent"
+sidebarTitle: "Create the agent"
+description: "Create Acme Lending's EMI reminder agent from a Financial template in the Create Assistant dialog, name it, set its languages and voice, and open the editor."
+---
+
+import { Quiz } from "/snippets/learn-quiz.mdx";
+
+**Part 2: Building your first agent · Lesson 1 of 4 · 10 minutes**
+
+## Objective
+
+Create an outbound agent from a template and open it in the editor, ready to be given a prompt.
+
+## The scenario
+
+Acme Lending sends a reminder call three days before a customer's EMI is due. The agent, Ananya, confirms who she is speaking to, states the amount and date, and asks when the customer will pay. This lesson creates her; the next three give her a prompt, a voice and a test call.
+
+## Hands-on
+
+<Frame caption="Creating a single-prompt agent in the dashboard">
+  <video alt="Creating a single-prompt agent in the dashboard" aria-label="Creating a single-prompt agent in the dashboard" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/agents-create/poster.webp">
+    <source src="/media/agents-create/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open the create dialog">
+    In the sidebar, click **Assistants**, then **Create agent**. In the **Create Assistant** dialog, choose the **Outbound** tab: the reminder is a call Acme places, not one it receives.
+  </Step>
+  <Step title="Start from the Financial templates">
+    Under **Select industry templates**, click **Financial** and pick the template closest to a payment reminder. A template gives you a prompt written for the use case, which you edit in the next lesson.
+  </Step>
+  <Step title="Name the agent and pick its languages">
+    Set **Agent Name** to `EMI reminder - Hindi`. The name is how your team finds the agent later, so say what it does and in which language.
+
+    Set **Primary Language** to English (India) and **Secondary Language** to Hindi, so Ananya can switch when a customer answers in Hindi.
+  </Step>
+  <Step title="Choose a voice">
+    Pick any Indian English female voice; clicking a card plays its preview. You will compare voices properly in lesson 3. Click **Next**.
+  </Step>
+  <Step title="Fill in the call context">
+    These fields are what the template turns into a prompt. Enter:
+
+    - **Company details**: `Acme Lending offers personal and two-wheeler loans across Maharashtra.`
+    - **Purpose of the call**: `Remind the customer of their upcoming EMI and note the date they will pay.`
+
+    Leave the custom variables and knowledge base as they are; part 3 covers both. Click **Create Assistant**.
+  </Step>
+  <Step title="Wait for the prompt">
+    A progress screen shows while Ringg writes the prompt from your context, usually under a minute. Then you see **Assistant created** and the agent opens in the editor.
+  </Step>
+</Steps>
+
+## Checkpoint
+
+<Check>
+The editor's top bar shows **EMI reminder - Hindi** and a **Test assistant** button, and the **Prompt** section holds a first message and prompt sections. The agent also appears on the **Agents** page.
+</Check>
+
+## Exercise
+
+Open **Create agent** again, pick the same Financial template, fill in **Agent basics**, click **Next**, then click **Back**. Expected result: the first step still shows the name, languages and voice you entered; **Back** returns without losing them. Close the dialog without creating a second agent.
+
+## What you learned
+
+- Every agent starts in the **Create Assistant** dialog, where the channel tab decides whether it calls, answers, runs on a web page or on WhatsApp.
+- A template writes the first prompt from the call context you enter. You edit from there rather than from a blank page.
+- Languages and voice are set at creation but can be changed later, so a wrong choice here costs nothing.
+
+<Quiz
+  question="Acme also wants an agent that answers calls from customers who ring the branch. In the Create Assistant dialog, what decides that?"
+  answers={[
+    { text: "The template you pick under Select industry templates", correct: false },
+    { text: "The channel tab: Inbound instead of Outbound", correct: true },
+    { text: "The Primary Language, since callers choose the language", correct: false },
+    { text: "The voice, since an inbound agent needs a different one", correct: false },
+  ]}
+  correctFeedback="Right. The channel tab decides how conversations reach the agent: Outbound calls people, Inbound answers calls to a number attached to it. Templates, languages and voice can be changed later; the channel is the one choice made at creation."
+  incorrectFeedback="Not quite. Templates write the first prompt, and languages and voice can be changed in the editor at any time. Whether an agent places calls or answers them is set by the channel tab at the top of the dialog."
+/>
+
+## Reference
+
+<Columns cols={2}>
+  <Card title="Create an agent" icon="bot" href="/documentation/build-agents/agents/create-an-agent" horizontal>
+    Every field, the API call, and troubleshooting.
+  </Card>
+  <Card title="Agent types" icon="layers" href="/documentation/build-agents/agents/agent-types" horizontal>
+    Outbound, inbound, web and WhatsApp agents, single- or multi-prompt.
+  </Card>
+</Columns>

@@ -1,0 +1,16 @@
+---
+openapi: get /workspace/all
+description: "List every workspace the API key's user can access, with role, credits and parent workspace, to see which workspaces are Ringg Spaces of a primary."
+related:
+  - "Ringg Spaces": /documentation/manage-account/ringg-spaces/overview
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+A workspace with `parent_workspace_id` set is a [Ringg Space](/documentation/manage-account/ringg-spaces/ringg-spaces-by-api#manage-the-family-by-api) of that primary.
+
+## Notes
+
+- Calls, campaigns and analytics always act on the workspace that owns the key. To work in another workspace from this list, use that workspace's own key.
+
+<RelatedTopics items={[["Ringg Spaces", "/documentation/manage-account/ringg-spaces/overview"]]} />

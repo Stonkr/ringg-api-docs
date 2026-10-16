@@ -1,0 +1,7 @@
+{
+  "name": "ringg-docs-media",
+  "private": true,
+  "type": "module",
+  "scripts": { "shots": "node run.ts" },
+  "devDependencies": { "@playwright/test": "1.56.0" }
+}

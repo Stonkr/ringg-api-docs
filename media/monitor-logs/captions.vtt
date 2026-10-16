@@ -1,0 +1,52 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:03.435
+Logs lists every call your agents handled
+
+00:00:03.435 --> 00:00:06.453
+Expand a retried call to see each attempt
+
+00:00:06.453 --> 00:00:08.642
+Click Filters
+
+00:00:08.642 --> 00:00:10.764
+Pick a date range
+
+00:00:10.764 --> 00:00:14.348
+Choose an assistant
+
+00:00:14.348 --> 00:00:18.727
+Narrow by call status
+
+00:00:18.727 --> 00:00:20.129
+Applied filters show as chips
+
+00:00:20.129 --> 00:00:23.301
+Click a call to open it
+
+00:00:23.301 --> 00:00:25.428
+Recording, latency, variables and analysis
+
+00:00:25.428 --> 00:00:28.150
+Open Advanced analysis
+
+00:00:28.150 --> 00:00:31.182
+Read the transcript
+
+00:00:31.182 --> 00:00:36.665
+Click a tool call to see its request and response
+
+00:00:36.665 --> 00:00:39.268
+Tools run before, during and after the call
+
+00:00:39.268 --> 00:00:43.279
+Evals score the call, metric by metric
+
+00:00:43.279 --> 00:00:48.129
+Export the list by email
+
+00:00:48.129 --> 00:00:55.738
+WhatsApp: the same view for chats
+
+00:00:55.738 --> 00:00:59.647
+Workflows: one row per workflow run

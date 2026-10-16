@@ -1,0 +1,126 @@
+---
+title: "Exotel"
+sidebarTitle: "Exotel"
+description: "Set up Exotel Voicebot applets for Ringg AI outbound and inbound calls, connect your Exotel account in the Numbers page, and import ExoPhones for your agents."
+"og:title": "Connect Exotel to Ringg AI"
+---
+
+Run Ringg agents on your own Exotel account and ExoPhones, one of the [bring-your-own-telephony](/documentation/inventory/phone-numbers/your-own-telephony/byot-overview) options. Exotel routes calls to Ringg through Voicebot applets you create in its App Bazaar, one per direction:
+
+- **Outbound**: a `Ringg Outbound` applet. Its app ID goes into the Exotel account form in Ringg.
+- **Inbound**: a `Ringg Inbound` applet. Every inbound ExoPhone must be attached to it in Exotel.
+
+## Before you start
+
+<Columns cols={3}>
+  <Card title="An Exotel account" icon="building" href="https://my.exotel.com">
+    With API access, credit for calls, <Tooltip tip="Know your customer: the business verification Ringg needs before some calls.">KYC</Tooltip> if your account requires it, and at least one ExoPhone.
+  </Card>
+  <Card title="Your Exotel API credentials" icon="key" href="https://my.exotel.com">
+    Account SID, API key, API token and subdomain, from **Settings → API Settings**.
+  </Card>
+  <Card title="An inbound agent" icon="bot" href="/documentation/build-agents/agents/create-an-agent">
+    Only for inbound: the agent that answers calls on your ExoPhone.
+  </Card>
+</Columns>
+
+## Outbound setup
+
+### Create the Ringg Outbound applet
+
+<Steps>
+  <Step title="Create a custom app">
+    In the Exotel console, open **App Bazaar** and create a custom app named `Ringg Outbound`.
+  </Step>
+  <Step title="Add a Voicebot applet">
+    Drag the **Voicebot** applet into the flow and set its URL to:
+
+    ```text
+    wss://use1-api.ringg.ai/pc/v1/exotel/ws
+    ```
+  </Step>
+  <Step title="Save and copy the app ID">
+    Save the app and copy its app ID. It is not the same as your API key or token.
+  </Step>
+</Steps>
+
+### Connect the account in Ringg
+
+<Steps>
+  <Step title="Open the Exotel account form">
+    Go to **Numbers → Add number**, select **Exotel**, and open **Configure provider** (the gear). Select **Add**; with no Exotel account yet, the form opens on its own.
+  </Step>
+  <Step title="Fill in the fields and save">
+    | Field | Value |
+    |---|---|
+    | **Name** | Your label, for example `Exotel Mumbai` |
+    | **SID** | Your Exotel account SID |
+    | **API Key** | Your Exotel API key |
+    | **API Token** | Your Exotel API token |
+    | **App ID** | The `Ringg Outbound` app ID |
+    | **Subdomain** | Your Exotel API subdomain, for example `api.exotel.com` |
+
+    <Check>"BYOT added successfully." appears and the account is listed under **Configure Exotel Accounts**.</Check>
+  </Step>
+</Steps>
+
+Then import your ExoPhones and use them as caller ID: steps 3 and 4 of [How BYOT works](/documentation/inventory/phone-numbers/your-own-telephony/byot-overview#how-byot-works).
+
+## Inbound setup
+
+Do these in order for every ExoPhone that should reach a Ringg agent:
+
+<Steps>
+  <Step title="Create the Ringg Inbound applet">
+    In App Bazaar, create a custom app named `Ringg Inbound` with a **Voicebot** applet whose URL is:
+
+    ```text
+    https://use1-api.ringg.ai/pc/v1/exotel/inbound
+    ```
+
+    You need this app once; reuse it for every inbound number.
+  </Step>
+  <Step title="Attach the ExoPhone to the applet">
+    In Exotel, attach the ExoPhone to `Ringg Inbound`. An ExoPhone attached to an agent in Ringg but not to this applet never reaches Ringg.
+  </Step>
+  <Step title="Import the number in Ringg">
+    [Import the ExoPhone](/documentation/inventory/phone-numbers/buy-or-import-a-number#import-a-number-you-already-own) from your Exotel account.
+  </Step>
+  <Step title="Attach it to an agent">
+    In the inbound agent's editor, expand **Attach Number** and select the number. See [Attach a number](/documentation/inventory/phone-numbers/inbound-agent-number).
+
+    <Check>Call the ExoPhone from a phone. The agent answers, and the call appears in [Logs](/documentation/monitor/logs).</Check>
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Outbound calls fail">
+    - Check the `Ringg Outbound` applet is saved with `wss://use1-api.ringg.ai/pc/v1/exotel/ws`.
+    - Check **App ID** in Ringg is that applet's ID, and **SID**, **API Key**, **API Token** and **Subdomain** were copied without extra spaces.
+    - Check the Exotel account has API access and credit, and the caller ExoPhone is active.
+    - Compare the call in Ringg [Logs](/documentation/monitor/logs) with Exotel's call logs.
+  </Accordion>
+  <Accordion title="Inbound calls don't reach Ringg">
+    - Check the ExoPhone is attached to `Ringg Inbound`, and that applet uses `https://use1-api.ringg.ai/pc/v1/exotel/inbound`.
+    - Check the number is imported in Ringg and attached to the right agent.
+  </Accordion>
+  <Accordion title="Poor audio or dropped calls">
+    Keep each applet to the Voicebot step only, then follow the [general checks](/documentation/inventory/phone-numbers/your-own-telephony/byot-overview#troubleshooting); include the Exotel call SID when you contact support.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Import your ExoPhones" icon="hash" href="/documentation/inventory/phone-numbers/buy-or-import-a-number#import-a-number-you-already-own">
+    Bring the numbers into Ringg.
+  </Card>
+  <Card title="Attach a number to an agent" icon="phone-incoming" href="/documentation/inventory/phone-numbers/inbound-agent-number">
+    Answer inbound calls on an ExoPhone.
+  </Card>
+  <Card title="Exotel documentation" icon="book" href="https://developer.exotel.com/">
+    Exotel's API and Voicebot docs.
+  </Card>
+</Columns>

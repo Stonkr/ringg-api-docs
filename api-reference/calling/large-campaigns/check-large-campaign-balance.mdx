@@ -1,0 +1,15 @@
+---
+title: "Check large campaign balance (Beta)"
+description: "Re-check the workspace balance for a large campaign that stopped at insufficient_balance, after a top-up, so it returns to draft and calls can start."
+openapi: post /campaign/check-balance/{bulk_list_id}
+related:
+  - "Run a campaign by API": /documentation/deploy/campaigns/campaigns-by-api#large-campaign-flow
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Add balance first ([Billing](/documentation/manage-account/billing)), then call it with the `bulk_list_id` from [upload status](/api-reference/calling/large-campaigns/get-large-campaign-upload-status). When the response's `status` is `draft`, [start calls](/api-reference/calling/large-campaigns/make-large-campaign-calls-async) again with the same `bulk_list_id`; there is no need to upload the list again.
+
+If the balance is still short, `status` stays `insufficient_balance` and the response gives `required_credits` and `additional_balance_required`. A campaign in another status, or with no contacts or agent, returns `400`. [Get all campaigns](/api-reference/calling/campaigns/get-all-campaigns) runs the same check on every `insufficient_balance` campaign it lists.
+
+<RelatedTopics items={[["Run a campaign by API", "/documentation/deploy/campaigns/campaigns-by-api#large-campaign-flow"]]} />

@@ -1,0 +1,30 @@
+---
+title: "Multi-prompt global settings"
+sidebarTitle: "Global settings"
+description: "Settings that apply to a whole Ringg AI multi-prompt agent: voice, number, variables, knowledge base, analysis, call and chat settings, events, and pre- and post-call tools."
+---
+
+## Global Settings
+
+With no node selected, the right panel shows **Global Settings**, which apply to the whole agent:
+
+<Frame caption="A loan application flow on the canvas, with Global Settings on the right">
+  <img src="/media/agents-multi-prompt/canvas.webp" alt="Canvas of a loan application flow: Start, Agent node Greet and confirm identity, LLM Router Interested?, Collect PIN code, Action Check eligibility (POST /v1/eligibility), Logic Router Eligible?, Speak node Confirm offer, Keypad Menu Advisor callback?, Action Book advisor callback and End, with Global Settings from Voice to Post-call tools on the right" />
+</Frame>
+
+| Item | Covers |
+|---|---|
+| [**Voice**](/documentation/build-agents/customize-agent-behaviour/voice-and-language) | Default language, voice and speed |
+| [**Attach number**](/documentation/inventory/phone-numbers/inbound-agent-number) | Inbound number for the agent |
+| [**Custom variables**](/documentation/build-agents/customize-agent-behaviour/custom-variables) | Variables passed in per call |
+| [**Knowledge base**](/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base) | Agent-wide knowledge bases |
+| [**Advanced Analysis**](/documentation/build-agents/customize-agent-behaviour/advanced-analysis) | Post-call extraction |
+| **Keywords boosting** | Words the speech recogniser should favour |
+| [**Call**](/documentation/build-agents/customize-agent-behaviour/call-settings) | Call duration, voicemail, interruption and other call settings |
+| [**Chat**](/documentation/build-agents/customize-agent-behaviour/call-settings) | Duration settings for text sessions |
+| [**Events subscription**](/documentation/build-agents/customize-agent-behaviour/event-subscription) | Webhooks for call events |
+| [**Pre-call tools**](/documentation/build-agents/customize-agent-behaviour/tools/overview) | Tools that run before the call |
+| [**Embed & widgets**](/documentation/deploy/web-and-apps/web-widget/overview) | Web widget, its components and install code |
+| [**Post-call tools**](/documentation/build-agents/customize-agent-behaviour/tools/overview) | Tools that run after the call |
+
+On-call tools are not in Global Settings: you attach them per Agent node.

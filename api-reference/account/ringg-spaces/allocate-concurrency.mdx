@@ -1,0 +1,28 @@
+---
+openapi: patch /workspace/sub/{sub_workspace_id}/concurrency
+description: "Set how many concurrent calls one Ringg Space may run, out of the capacity bought on the primary; a new Ringg Space starts at 0 and cannot call."
+related:
+  - "Ringg Spaces API overview": /documentation/manage-account/ringg-spaces/ringg-spaces-by-api#manage-the-family-by-api
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Allocations across all Ringg Spaces cannot exceed the capacity bought on the primary. The same call rebalances capacity between clients or teams later.
+
+## Notes
+
+- `concurrency` is absolute, not a delta. Lowering an allocation always succeeds; raising it must fit `family.concurrency_available` from [Get Ringg Spaces](/api-reference/account/ringg-spaces/get-sub-workspaces).
+- `limit_concurrency` in the response is the persisted ceiling. In an individual-billing family it equals the allocation. In a common-billing family it is the family total, because idle capacity is shared, so it can be larger than `concurrency`.
+- This is the only allocation endpoint that applies to common-billing families; money is pooled on the primary there.
+- When `family.concurrency_available` reaches `0`, buy more capacity on the primary, then allocate the new slots here.
+
+## Errors
+
+- `400`: `Only 30 concurrent calls are available to allocate from the parent workspace (capacity 50, 20 already allocated to other sub-workspaces).` — the allocation does not fit.
+- `400`: `Sub-workspaces cannot have their own sub-workspaces.` — the key belongs to a Ringg Space that has Ringg Spaces enabled.
+- `401`: Invalid or missing API key.
+- `403`: `Sub-workspaces are not enabled for this workspace.` — Ringg Spaces are not enabled on the primary, or the key belongs to a Ringg Space.
+- `404`: `Sub-workspace not found` — no active Ringg Space with this ID under your primary.
+- `422`: `sub_workspace_id` is not a UUID, or `concurrency` is negative or missing.
+
+<RelatedTopics items={[["Ringg Spaces API overview", "/documentation/manage-account/ringg-spaces/ringg-spaces-by-api#manage-the-family-by-api"]]} />
