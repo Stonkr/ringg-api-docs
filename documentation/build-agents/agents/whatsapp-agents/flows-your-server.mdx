@@ -21,7 +21,7 @@ related:
 
 import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-Choose **Your server** under a Flow's **Live data** when its screens need data from your own systems, such as branches near a pincode, stock, prices, order status or availability from a system Ringg doesn't connect to.
+Choose **Server** as a Flow's **Data source** when its screens need data from your own systems, such as branches near a pincode, stock, prices, order status or availability from a system Ringg doesn't connect to.
 
 WhatsApp normally requires every Flow endpoint to handle its RSA and AES encryption, key management and health checks. With this option, Ringg does all of that. Your server gets one plain JSON `POST` per screen change, signed so you can trust it, and returns the next screen as JSON.
 
@@ -130,6 +130,10 @@ What makes it a live-data Flow:
 - A `data_exchange` action. Its `payload` is exactly what your server receives as `data`.
 - A `data` block on each screen that shows your server's values, with an `__example__` for Meta's preview. Your response must match these types.
 
+<Tip>
+You can also create this Flow in Ringg: in the **Flows** tab, select **Create Flow**, then **Paste JSON** with the design above, and **Save draft**. After connecting your server below, publish it from its details instead of WhatsApp Manager.
+</Tip>
+
 ### 2. The endpoint
 
 <CodeGroup>
@@ -211,15 +215,29 @@ app.listen(3000);
 
 ### 3. Connect it in Ringg
 
+<Frame caption="Choosing Server as a Flow's data source, saving it, and copying the signing secret">
+  <video alt="Choosing Server as a Flow's data source, saving it, and copying the signing secret" aria-label="Choosing Server as a Flow's data source, saving it, and copying the signing secret" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/whatsapp-flows-your-server/poster.webp">
+    <source src="/media/whatsapp-flows-your-server/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
 <Steps>
   <Step title="Open the Flow">
-    Go to **Integrations → WhatsApp Business**, open your account, select the **Flows** tab and open the Flow.
+    Go to **Tools → WhatsApp Business**, select the **Flows** tab and open the Flow.
   </Step>
   <Step title="Enter your server's URL">
-    Under **Live data**, select **Set up live data**, choose **Your server** and enter your endpoint's URL, for example `https://api.example.com/whatsapp-flow`. Select **Save**.
+    Under **Data source**, select **Set up data source**, choose **Server** and enter your endpoint's URL in **Server URL**, for example `https://api.example.com/whatsapp-flow`. It must start with `https://`. Select **Save**.
+
+    <Frame caption="Choosing Server as the data source and entering its URL">
+      <img src="/media/whatsapp-flows-your-server/server-source.webp" alt="Find a showroom details: the Data source form with the encryption key notice, Choose data source set to Server, and Server URL https://api.acme-lending.example/whatsapp-flow with a description of the request, response and signature, above Cancel and Save" />
+    </Frame>
   </Step>
   <Step title="Copy the signing secret">
-    Ringg shows a **signing secret** once. Copy it and store it on your server, for example as `RINGG_FLOW_SIGNING_SECRET`. It can't be shown again. If it is lost, edit the live data, tick **Issue a new signing secret** and save.
+    Ringg shows a **signing secret** once. Copy it with the copy icon and store it on your server, for example as `RINGG_FLOW_SIGNING_SECRET`. It can't be shown again. If it is lost, select **Edit source**, tick **Issue a new signing secret** and save.
+
+    <Frame caption="The signing secret, shown once after saving">
+      <img src="/media/whatsapp-flows-your-server/signing-secret.webp" alt="Data source showing Source https://api.acme-lending.example/whatsapp-flow, then Signing secret: copy it now, it won't be shown again, with the secret and a copy icon, and an Edit source button" />
+    </Frame>
   </Step>
   <Step title="Check the endpoint">
     If Ringg says ***Meta kept this Flow's own endpoint***, the Flow was already published. Copy the URL shown, paste it as the Flow's endpoint in WhatsApp Manager, and publish the Flow again. That URL is Ringg's, not your server's: WhatsApp calls Ringg, and Ringg calls you.
@@ -231,12 +249,6 @@ app.listen(3000);
     Sync the **Flows** tab, then add the Flow to a WhatsApp assistant as described in [WhatsApp Flows](/documentation/build-agents/agents/whatsapp-agents/flows#let-your-assistant-send-it). Set **Opens on** to **Loaded by the Flow's endpoint**, so your server is asked for the first screen.
   </Step>
 </Steps>
-
-<Frame caption="Choosing Your server under Live data and entering its URL. After saving, Ringg shows the signing secret once.">
-  <video alt="Choosing Your server under Live data and entering its URL. After saving, Ringg shows the signing secret once" aria-label="Choosing Your server under Live data and entering its URL. After saving, Ringg shows the signing secret once" controls muted playsInline className="w-full rounded-xl" preload="metadata" controlsList="nodownload noremoteplayback" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/whatsapp/20-live-data-your-server.png">
-    <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/whatsapp/20-live-data-your-server.mp4" type="video/mp4" />
-  </video>
-</Frame>
 
 ## Request reference
 
@@ -362,7 +374,7 @@ You should get the `PICK_SHOWROOM` screen back. Then use **Preview** in WhatsApp
 
 | Symptom | Cause |
 |---|---|
-| *Your server's URL* is marked invalid, or saving fails | The URL isn't `https://`, or it points to a private or internal address. |
+| **Server URL** is marked invalid, or saving fails | The URL isn't `https://`, or it points to a private or internal address. |
 | Every request fails your signature check | You're hashing re-serialised JSON instead of the raw body, or using an old secret. |
 | *This form can't load right now* on the phone | Your server took longer than 7 seconds, returned a status other than `200`, redirected, or returned a body without `screen` or `data`. |
 | WhatsApp's generic error on the phone | Your response names a screen the current one can't lead to, or its `data` doesn't match the screen's `data` block. |
@@ -370,7 +382,7 @@ You should get the `PICK_SHOWROOM` screen back. Then use **Preview** in WhatsApp
 | The health check fails | Ringg answers the health check itself, so the problem is on the Meta side. See [troubleshooting for live data](/documentation/build-agents/agents/whatsapp-agents/flows-live-data#troubleshooting). |
 
 <Warning>
-Ringg sets its own encryption key on every number of the WhatsApp Business account when you save live data. If you also run a WhatsApp Flow endpoint of your own on those numbers with a different key, it stops working. Move those Flows to **Your server** so Ringg handles the encryption for all of them.
+Ringg sets its own encryption key on every number of the WhatsApp Business account when you save a data source. If you also run a WhatsApp Flow endpoint of your own on those numbers with a different key, it stops working. Move those Flows to a **Server** data source so Ringg handles the encryption for all of them.
 </Warning>
 
 <RelatedTopics items={[["WhatsApp agents", "/documentation/build-agents/agents/whatsapp-agents/overview"], ["Connect WhatsApp", "/documentation/inventory/tools-integrations/connect-whatsapp"], ["Create a WhatsApp agent", "/documentation/build-agents/agents/whatsapp-agents/create-an-agent"], ["WhatsApp Flows", "/documentation/build-agents/agents/whatsapp-agents/flows"], ["Flow builder", "/documentation/build-agents/agents/whatsapp-agents/flow-builder"], ["Flows with live data", "/documentation/build-agents/agents/whatsapp-agents/flows-live-data"], ["WhatsApp tools", "/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools"], ["WhatsApp chat events", "/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events"], ["Start a conversation", "/documentation/deploy/whatsapp/start-a-conversation"], ["WhatsApp Relay", "/documentation/deploy/whatsapp/relay-overview"], ["WhatsApp Relay integration guide", "/documentation/deploy/whatsapp/relay-integration-guide"], ["WhatsApp Relay troubleshooting", "/documentation/deploy/whatsapp/relay-troubleshooting"], ["WhatsApp chats in Logs", "/documentation/monitor/logs#whatsapp-chats"]]} />

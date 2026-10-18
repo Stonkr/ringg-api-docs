@@ -21,14 +21,14 @@ related:
 
 import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-A static Flow only shows what you typed in WhatsApp Manager. A **dynamic Flow** asks for fresh information while the customer is inside it. The dashboard calls this **Live data**. For example, the customer picks a date and the next screen lists the times still free in your calendar that day.
+A static Flow only shows what you typed when you built it. A **dynamic Flow** asks for fresh information while the customer is inside it. In the dashboard, a Flow's **Data source** says where that information comes from, and the **Live data** column of the Flows tab shows it. For example, the customer picks a date and the next screen lists the times still free in your calendar that day.
 
 Ringg does the technical part for you. It hosts the connection WhatsApp needs (the *endpoint*), handles WhatsApp's encryption, and fetches the data. You choose where the data comes from:
 
 | Source | Use it for | Who sets it up |
 |---|---|---|
-| **A calendar** | Showing free appointment slots from Calendly, Google Calendar or Cal.com | Anyone, by following this page. No code needed. |
-| **Your server** | Anything from your own systems: branches near a pincode, stock, prices, order status | A developer on your team. See [Live data from your server](/documentation/build-agents/agents/whatsapp-agents/flows-your-server). |
+| **Calendar** | Showing free appointment slots from Calendly, Google Calendar or Cal.com | Anyone, by following this page. No code needed. |
+| **Server** | Anything from your own systems: branches near a pincode, stock, prices, order status | A developer on your team. See [Live data from your server](/documentation/build-agents/agents/whatsapp-agents/flows-your-server). |
 
 <Note>
 Read [WhatsApp Flows](/documentation/build-agents/agents/whatsapp-agents/flows) first. Adding a Flow to an assistant, the prompt, and where answers show up all work the same way with live data.
@@ -63,143 +63,161 @@ The Flow itself doesn't book anything. It shows the free times and sends the cus
 ### Before you start
 
 - A WhatsApp assistant with a **Ready** WhatsApp number attached. See [Create a WhatsApp agent](/documentation/build-agents/agents/whatsapp-agents/create-an-agent).
-- Calendly, Google Calendar or Cal.com connected under **Integrations** in Ringg.
+- Calendly, Google Calendar or Cal.com connected under **Tools** in Ringg.
 
-### The quick way: the booking preset
+### The booking design
 
-Ringg has a ready-made booking Flow. Plan about 5 minutes.
+Both ways below use this design: a **Pick a date** screen, then a **Pick a time** screen that lists the free times and asks for the customer's name and email.
 
-<Steps>
-  <Step title="Create it from the preset">
-    Go to **Integrations → WhatsApp Business**, open your account, select the **Flows** tab, then **Create Flow**. Name it, for example *Book a visit*, choose the category **Appointment booking**, set **Start from** to **Booking preset**, and select **Save draft**.
-  </Step>
-  <Step title="Connect your calendar">
-    In the Flow's details, under **Live data**, select **Set up live data**, then choose **A calendar** and pick your calendar. **Date screen** and **Slots screen** are already set to **Pick a date** and **Pick a time**. The other settings are explained in the **Connect your calendar** step of [Or design it in WhatsApp Manager](#or-design-it-in-whatsapp-manager).
+<Accordion title="Booking Flow design: copy all of it">
+  ```json
+  {
+    "version": "6.3",
+    "data_api_version": "3.0",
+    "routing_model": { "PICK_DATE": ["PICK_SLOT"], "PICK_SLOT": [] },
+    "screens": [
+      {
+        "id": "PICK_DATE",
+        "title": "Pick a date",
+        "data": {
+          "min_date": { "type": "string", "__example__": "2026-10-01" },
+          "max_date": { "type": "string", "__example__": "2026-10-31" }
+        },
+        "layout": {
+          "type": "SingleColumnLayout",
+          "children": [
+            {
+              "type": "DatePicker",
+              "name": "date",
+              "label": "Date",
+              "required": true,
+              "min-date": "${data.min_date}",
+              "max-date": "${data.max_date}"
+            },
+            {
+              "type": "Footer",
+              "label": "See times",
+              "on-click-action": { "name": "data_exchange", "payload": { "date": "${form.date}" } }
+            }
+          ]
+        }
+      },
+      {
+        "id": "PICK_SLOT",
+        "title": "Pick a time",
+        "terminal": true,
+        "data": {
+          "date": { "type": "string", "__example__": "2026-10-02" },
+          "slots": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": { "id": { "type": "string" }, "title": { "type": "string" } }
+            },
+            "__example__": [{ "id": "2026-10-02T10:00:00+05:30", "title": "10:00 AM" }]
+          }
+        },
+        "layout": {
+          "type": "SingleColumnLayout",
+          "children": [
+            {
+              "type": "RadioButtonsGroup",
+              "name": "slot",
+              "label": "Available times",
+              "data-source": "${data.slots}",
+              "required": true
+            },
+            { "type": "TextInput", "name": "name", "label": "Your name", "required": true },
+            { "type": "TextInput", "name": "email", "label": "Email", "input-type": "email", "required": true },
+            {
+              "type": "Footer",
+              "label": "Book",
+              "on-click-action": {
+                "name": "complete",
+                "payload": {
+                  "date": "${data.date}",
+                  "slot": "${form.slot}",
+                  "name": "${form.name}",
+                  "email": "${form.email}"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+  ```
+</Accordion>
 
-    Select **Save**. Ringg confirms *WhatsApp calls Ringg for this Flow's data*.
-  </Step>
-  <Step title="Publish it">
-    Select **Publish**, then confirm.
-  </Step>
-</Steps>
+### The quick way: build it in Ringg
 
-<Frame caption="Creating a booking Flow from the preset, connecting Google Calendar under Live data, and publishing it.">
-  <video alt="Creating a booking Flow from the preset, connecting Google Calendar under Live data, and publishing it" aria-label="Creating a booking Flow from the preset, connecting Google Calendar under Live data, and publishing it" controls muted playsInline className="w-full rounded-xl" preload="metadata" controlsList="nodownload noremoteplayback" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/whatsapp/24-booking-preset.png">
-    <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/whatsapp/24-booking-preset.mp4" type="video/mp4" />
+Plan about 5 minutes.
+
+<Frame caption="Pasting the booking design into Ringg, connecting Google Calendar as its data source, and publishing it">
+  <video alt="Pasting the booking design into Ringg, connecting Google Calendar as its data source, and publishing it" aria-label="Pasting the booking design into Ringg, connecting Google Calendar as its data source, and publishing it" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/whatsapp-flows-live-data/poster.webp">
+    <source src="/media/whatsapp-flows-live-data/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
   </video>
 </Frame>
+
+<Steps>
+  <Step title="Create the Flow">
+    Go to **Tools → WhatsApp Business**, select the **Flows** tab, then **Create Flow**. Name it, for example *Book a visit*, and choose the category **Appointment booking**.
+  </Step>
+  <Step title="Paste the booking design">
+    Copy the [booking design](#the-booking-design) above, then select **Paste JSON** in the builder. The **Pick a date** and **Pick a time** screens appear. The parts that read live data stay as **JSON** rows, which is expected: Ringg sends them to Meta exactly as written.
+
+    <Frame caption="The booking design pasted into the builder">
+      <img src="/media/whatsapp-flows-live-data/pasted-design.webp" alt="Create a Flow dialog with Name Book a visit and Category Appointment booking; screen 1. Pick a date holds two JSON rows, DatePicker and Footer, and the preview shows their names" />
+    </Frame>
+  </Step>
+  <Step title="Save the draft">
+    Select **Save draft**, then **Cancel** to see the Flow's details.
+  </Step>
+  <Step title="Connect your calendar">
+    Under **Data source**, select **Set up data source**. Keep **Calendar** and pick your connected calendar. **Date screen** and **Slots screen** are already set to **Pick a date** and **Pick a time**. Check the **Timezone**; the other settings are explained in the **Connect your calendar** step of [Or design it in WhatsApp Manager](#or-design-it-in-whatsapp-manager). Select **Save**.
+
+    <Frame caption="A Google Calendar data source for the booking Flow">
+      <img src="/media/whatsapp-flows-live-data/calendar-source.webp" alt="Data source form with Calendar selected, Google Calendar (Site visits), Calendar ID primary, Slot length 30 minutes, Date screen Pick a date, Slots screen Pick a time, Date field date, Timezone Asia/Kolkata, Days ahead 30 and Most slots shown 20, with Cancel and Save" />
+    </Frame>
+
+    <Check>**Data source** lists the calendar, the date screen and the slots screen.</Check>
+  </Step>
+  <Step title="Publish it">
+    Select **Publish**, then **Publish** again to confirm. In the **Flows** tab, **Live data** shows **Calendar, via Ringg**.
+
+    <Frame caption="The Flows tab after publishing: Book a visit reads its data from the calendar">
+      <img src="/media/whatsapp-flows-live-data/flows-tab.webp" alt="Flows table with Book a visit at the top, Published, 4 questions, Live data Calendar, via Ringg; below it Site visit request, Find a showroom (Draft, From endpoint) and Visit feedback" />
+    </Frame>
+  </Step>
+</Steps>
 
 Now [let your assistant send it and book](#let-your-assistant-send-it-and-book).
 
 ### Or design it in WhatsApp Manager
 
-To change the booking Flow's layout beyond its words, build it from the design below in WhatsApp Manager. You need access to the same WhatsApp Business account in Meta's [WhatsApp Manager](https://business.facebook.com/wa/manage/home/). Plan about 15 minutes.
-
-<Tip>
-You can also paste the same design into Ringg: **Create Flow → Start from → Flow JSON**. Then skip to **Connect your calendar**, and publish from the Flow's details instead of WhatsApp Manager.
-</Tip>
+If you'd rather keep the Flow in WhatsApp Manager, for example to edit its layout there, build it from the same design. You need access to the same WhatsApp Business account in Meta's [WhatsApp Manager](https://business.facebook.com/wa/manage/home/). Plan about 15 minutes.
 
 <Steps>
   <Step title="Create the Flow in WhatsApp Manager">
     In WhatsApp Manager, open **Account tools → Flows** and select **Create Flow**. Name it, for example *Book a visit*, choose the category **Appointment booking**, and start from a blank Flow.
   </Step>
   <Step title="Paste the ready-made design">
-    The builder shows the Flow's code on the left and a preview on the right. Select everything in the code editor, delete it, and paste the design below. The preview should show a **Pick a date** screen.
+    The builder shows the Flow's code on the left and a preview on the right. Select everything in the code editor, delete it, and paste the [booking design](#the-booking-design). The preview should show a **Pick a date** screen.
 
-    <Accordion title="Booking Flow design: copy all of it">
-      ```json
-      {
-        "version": "6.3",
-        "data_api_version": "3.0",
-        "routing_model": { "PICK_DATE": ["PICK_SLOT"], "PICK_SLOT": [] },
-        "screens": [
-          {
-            "id": "PICK_DATE",
-            "title": "Pick a date",
-            "data": {
-              "min_date": { "type": "string", "__example__": "2026-10-01" },
-              "max_date": { "type": "string", "__example__": "2026-10-31" }
-            },
-            "layout": {
-              "type": "SingleColumnLayout",
-              "children": [
-                {
-                  "type": "DatePicker",
-                  "name": "date",
-                  "label": "Date",
-                  "required": true,
-                  "min-date": "${data.min_date}",
-                  "max-date": "${data.max_date}"
-                },
-                {
-                  "type": "Footer",
-                  "label": "See times",
-                  "on-click-action": { "name": "data_exchange", "payload": { "date": "${form.date}" } }
-                }
-              ]
-            }
-          },
-          {
-            "id": "PICK_SLOT",
-            "title": "Pick a time",
-            "terminal": true,
-            "data": {
-              "date": { "type": "string", "__example__": "2026-10-02" },
-              "slots": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": { "id": { "type": "string" }, "title": { "type": "string" } }
-                },
-                "__example__": [{ "id": "2026-10-02T10:00:00+05:30", "title": "10:00 AM" }]
-              }
-            },
-            "layout": {
-              "type": "SingleColumnLayout",
-              "children": [
-                {
-                  "type": "RadioButtonsGroup",
-                  "name": "slot",
-                  "label": "Available times",
-                  "data-source": "${data.slots}",
-                  "required": true
-                },
-                { "type": "TextInput", "name": "name", "label": "Your name", "required": true },
-                { "type": "TextInput", "name": "email", "label": "Email", "input-type": "email", "required": true },
-                {
-                  "type": "Footer",
-                  "label": "Book",
-                  "on-click-action": {
-                    "name": "complete",
-                    "payload": {
-                      "date": "${data.date}",
-                      "slot": "${form.slot}",
-                      "name": "${form.name}",
-                      "email": "${form.email}"
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        ]
-      }
-      ```
-    </Accordion>
-
-    Select **Save**. Don't publish yet: the Flow needs its live data connected first.
+    Select **Save**. Don't publish yet: the Flow needs its data source connected first.
   </Step>
   <Step title="Open the Flow in Ringg">
-    In Ringg, go to **Integrations → WhatsApp Business**, open your account and select the **Flows** tab. It syncs as it opens. Select **Book a visit**. It shows as **Draft**, which is expected.
+    In Ringg, go to **Tools → WhatsApp Business** and select the **Flows** tab. It syncs as it opens. Select **Book a visit**. It shows as **Draft**, which is expected.
   </Step>
   <Step title="Connect your calendar">
-    In the Flow's details, under **Live data**, select **Set up live data**, then choose **A calendar** and fill in:
+    In the Flow's details, under **Data source**, select **Set up data source**. Keep **Calendar** and fill in:
 
     | Setting | What to enter |
     |---|---|
     | **Calendar** | The calendar to read free times from. |
-    | **Event type link** (Calendly) or **Event type ID** (Cal.com) | The meeting type to offer, for example your *30 minute site visit*. Leave it empty to use the account's first one. In Cal.com, the ID is the number at the end of the address when you edit the event type. For Calendly, it is the event type's API link, which starts with `https://api.calendly.com/event_types/`. |
-    | **Calendar ID** and **Slot length** (Google Calendar) | Leave the calendar ID empty to use the main calendar. Slot length is how long each appointment is, in minutes. |
+    | **Event type link** (Calendly) or **Event type ID** (Cal.com), both optional | The meeting type to offer, for example your *30 minute site visit*. Leave it empty to use the account's first one. In Cal.com, the ID is the number at the end of the address when you edit the event type. For Calendly, it is the event type's API link, which starts with `https://api.calendly.com/event_types/`. |
+    | **Calendar ID** (optional) and **Slot length (minutes)** (Google Calendar) | Leave the calendar ID empty to use the main calendar. Slot length is how long each appointment is, in minutes. |
     | **Date screen** | **Pick a date** |
     | **Slots screen** | **Pick a time** |
     | **Date field** | `date`. Leave it as it is. |
@@ -210,10 +228,10 @@ You can also paste the same design into Ringg: **Create Flow → Start from → 
     Select **Save**.
   </Step>
   <Step title="Check the result">
-    After saving, Ringg tells you where things stand:
+    After saving, **Data source** shows where things stand:
 
-    - ***WhatsApp calls Ringg for this Flow's data.*** Everything is connected. Go to the next step.
-    - ***Meta kept this Flow's own endpoint*** with a URL beneath it. This happens when the Flow was already published. Copy the URL with the copy icon. In WhatsApp Manager, open the Flow, paste the URL as its **endpoint**, and publish it again.
+    - Only the calendar, the date screen and the slots screen: everything is connected. Go to the next step.
+    - ***Meta kept this Flow's own endpoint***, with a URL beneath it. This happens when the Flow was already published. Copy the URL with the copy icon. In WhatsApp Manager, open the Flow, paste the URL as its **endpoint**, and publish it again.
   </Step>
   <Step title="Finish in WhatsApp Manager">
     Back in the Flow in WhatsApp Manager:
@@ -237,19 +255,13 @@ You can also paste the same design into Ringg: **Create Flow → Start from → 
 </Frame>
 */}
 
-<Frame caption="Connecting a calendar to a Flow under Live data.">
-  <video alt="Connecting a calendar to a Flow under Live data" aria-label="Connecting a calendar to a Flow under Live data" controls muted playsInline className="w-full rounded-xl" preload="metadata" controlsList="nodownload noremoteplayback" poster="https://storage.googleapis.com/ringg-cdn/images/ringg-docs/whatsapp/19-live-data-calendar.png">
-    <source src="https://storage.googleapis.com/ringg-cdn/videos/ringg-docs/whatsapp/19-live-data-calendar.mp4" type="video/mp4" />
-  </video>
-</Frame>
-
 ## Let your assistant send it and book
 
 <Steps>
   <Step title="Add the Flow to the assistant">
-    In the agent editor, expand **WhatsApp Flows**, open **Add a Flow** and pick **Book a visit**. Write the **Message** and **Button label**, for example *Tap below to pick a time for your visit.* and *Book a visit*.
+    In the agent editor, select **WhatsApp Flows**, then **Add flow**, and pick **Book a visit**. Write the **Message** and **Button label**, for example *Tap below to pick a time for your visit.* and *Book a visit*.
 
-    Set **Opens on** to **Loaded by the Flow's endpoint**, so every customer starts on today's dates. Select **Save**.
+    Keep **Opens on** set to **Loaded by the Flow's endpoint**, so every customer starts on today's dates. Select **Save**.
   </Step>
   <Step title="Add the calendar's booking tool">
     Select **Tools** in the left menu, then **On-call → Integration**, pick your calendar and add its booking tool:
@@ -298,40 +310,40 @@ Leave these exactly as they are, because Ringg relies on them:
 | Keep | Why |
 |---|---|
 | `"data_api_version": "3.0"` and the `routing_model` | They tell WhatsApp this Flow loads live data. |
-| The screen IDs `PICK_DATE` and `PICK_SLOT` | Ringg sends each answer to these screens. If you rename them, pick the new names under **Live data** again. |
+| The screen IDs `PICK_DATE` and `PICK_SLOT` | Ringg sends each answer to these screens. If you rename them, pick the new names under **Data source** again. |
 | `"name": "date"` on the date picker, and `"date"` in the **See times** payload | That is the **Date field** Ringg reads. |
 | `${data.min_date}`, `${data.max_date}`, `${data.slots}`, `${data.date}` and the `data` blocks | These are where Ringg's dates and free times appear. |
 
-To change a published Flow, open it in the **Flows** tab and select **Duplicate to edit**, or **Copy to edit in Ringg** for one made in WhatsApp Manager. Edit the copy, set up live data on it, and publish it. See [Change a published Flow](/documentation/build-agents/agents/whatsapp-agents/flow-builder#change-a-published-flow).
+To change a published Flow, open it in the **Flows** tab and select **Duplicate & edit**. Edit the copy, set up its data source again, and publish it. See [Change a published Flow](/documentation/build-agents/agents/whatsapp-agents/flow-builder#change-a-published-flow).
 
 ## Troubleshooting
 
 | You see | Where | What to do |
 |---|---|---|
-| *Connect Calendly, Google Calendar or Cal.com in Integrations first.* | Live data setup | Connect a calendar under **Integrations**, then come back. |
-| *Meta kept this Flow's own endpoint* | Live data, after saving | Paste the URL shown as the Flow's endpoint in WhatsApp Manager, publish, then sync. |
-| Health check fails with *Unknown Flow* | WhatsApp Manager | Live data isn't saved on this Flow in Ringg yet. Save it, then run the check again. |
+| *Connect Calendly, Google Calendar or Cal.com in Integrations first.* | Data source setup | Connect a calendar under **Tools**, then come back. |
+| *Meta kept this Flow's own endpoint* | Data source, after saving | Paste the URL shown as the Flow's endpoint in WhatsApp Manager, publish, then sync. |
+| Health check fails with *Unknown Flow* | WhatsApp Manager | The data source isn't saved on this Flow in Ringg yet. Save it, then run the check again. |
 | Health check fails with a signature error (432) | WhatsApp Manager | The wrong Meta app is connected to the Flow. Connect the app you use with Ringg. |
-| The Flow says it can't open, or the health check reports a key problem (421) | Phone or WhatsApp Manager | The number's encryption key isn't Ringg's. Open **Live data** in Ringg and save again. This puts Ringg's key back on every number of the account. |
+| The Flow says it can't open, or the health check reports a key problem (421) | Phone or WhatsApp Manager | The number's encryption key isn't Ringg's. In Ringg, select **Edit source** under the Flow's **Data source** and save again. This puts Ringg's key back on every number of the account. |
 | *No free slots on 2 Oct. Pick another date.* | The customer's phone | The calendar has no free times that day. Check the event type and the calendar's working hours. |
-| *Couldn't load free slots. Please try again.* | The customer's phone | Ringg couldn't read the calendar. Reconnect it under **Integrations** and check the event type. |
-| *Booking isn't available right now.* | The customer's phone | The calendar was disconnected. Reconnect it, then pick it again under **Live data**. |
-| Times are an hour or more off | The customer's phone | Set the right **Timezone** under **Live data**. |
+| *Couldn't load free slots. Please try again.* | The customer's phone | Ringg couldn't read the calendar. Reconnect it under **Tools** and check the event type. |
+| *Booking isn't available right now.* | The customer's phone | The calendar was disconnected. Reconnect it, then pick it again under **Data source**. |
+| Times are an hour or more off | The customer's phone | Set the right **Timezone** under **Data source**. |
 
 ## Good to know
 
 <AccordionGroup>
   <Accordion title="Ringg sets an encryption key on your WhatsApp numbers">
-    WhatsApp encrypts everything a Flow sends, using a key set on each phone number. When you save live data, Ringg puts its key on every number of the WhatsApp Business account, reusing the key it already has. If a developer connected the same numbers to their own Flow server with a different key, that setup stops working. Talk to them first, or have them use [Your server](/documentation/build-agents/agents/whatsapp-agents/flows-your-server) instead.
+    WhatsApp encrypts everything a Flow sends, using a key set on each phone number. When you save a data source, Ringg puts its key on every number of the WhatsApp Business account, reusing the key it already has. If a developer connected the same numbers to their own Flow server with a different key, that setup stops working. Talk to them first, or have them use [a server data source](/documentation/build-agents/agents/whatsapp-agents/flows-your-server) instead.
   </Accordion>
   <Accordion title="Published Flows">
-    Changing a published Flow's endpoint moves it back to Draft in WhatsApp Manager, so Ringg never changes it for you. If a published Flow isn't already using Ringg's endpoint, saving live data shows the URL to paste in WhatsApp Manager, and you publish the Flow again there. Setting up live data before you publish avoids this.
+    Changing a published Flow's endpoint moves it back to Draft in WhatsApp Manager, so Ringg never changes it for you. If a published Flow isn't already using Ringg's endpoint, saving its data source shows the URL to paste in WhatsApp Manager, and you publish the Flow again there. Setting up the data source before you publish avoids this.
   </Accordion>
   <Accordion title="A slot can be taken in the meantime">
     Free times are read when the customer picks a date. If someone else books the same time before they submit, the booking tool returns an error and the assistant can offer another time, as the prompt above tells it to.
   </Accordion>
-  <Accordion title="Remove live data">
-    Open the Flow in the **Flows** tab and select **Remove** under **Live data**. The Flow then has nowhere to load its data from, so stop sending it or remove it from your assistants first.
+  <Accordion title="Remove a data source">
+    Open the Flow in the **Flows** tab, select **Edit source** under **Data source**, then **Remove**. The Flow then has nowhere to load its data from, so stop sending it or remove it from your assistants first.
   </Accordion>
 </AccordionGroup>
 
