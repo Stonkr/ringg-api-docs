@@ -1,0 +1,24 @@
+---
+openapi: get /analytics/v4/cohort/breakdown
+description: "Get calls, connection rate, goal rate and average handle time for each value of one analytics field, such as a disposition or a custom argument."
+related:
+  - "Analytics": /documentation/monitor/analytics
+  - "Get cohort dimensions": /api-reference/monitoring/analytics/get-cohort-dimensions
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Returns the data behind **Cohort analysis** in [Analytics](/documentation/monitor/analytics). Take `path` and `key` from [Get cohort dimensions](/api-reference/monitoring/analytics/get-cohort-dimensions).
+
+## Notes
+
+- `path=custom_args` groups by a variable you sent when placing calls, for example `key=city`.
+- `path=retry_count` groups by retry attempt and ignores `key`.
+- `goal_rate` uses each call's own version goal and is `null` for values with no scored calls.
+
+## Errors
+
+- `400`: a filter is invalid, such as an unknown `channel`, a malformed ID, or `sub_workspace_id` sent from a workspace that isn't a primary workspace.
+- `401`: `X-API-KEY` is missing or invalid.
+
+<RelatedTopics items={[["Analytics", "/documentation/monitor/analytics"], ["Get cohort dimensions", "/api-reference/monitoring/analytics/get-cohort-dimensions"]]} />

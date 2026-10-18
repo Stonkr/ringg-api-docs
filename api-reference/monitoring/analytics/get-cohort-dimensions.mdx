@@ -1,0 +1,24 @@
+---
+openapi: get /analytics/v4/cohort/dimensions
+description: "List the fields you can slice call analytics by: built-in fields such as sentiment, and the Advanced Analysis variables configured on your agent."
+related:
+  - "Analytics": /documentation/monitor/analytics
+  - "Get cohort breakdown": /api-reference/monitoring/analytics/get-cohort-breakdown
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Start here to build a cohort view. Pass a dimension's `path` and `key` to [Get cohort values](/api-reference/monitoring/analytics/get-cohort-values) for its values, or to [Get cohort breakdown](/api-reference/monitoring/analytics/get-cohort-breakdown) for metrics per value.
+
+## Notes
+
+- Dimensions come from `agent_version_id`, else `agent_id`, else the agent that runs `bulk_list_id`.
+- Number fields are returned only with `include_numeric=true`, because they can't be grouped.
+- The goal variable appears as an ordinary Boolean field.
+
+## Errors
+
+- `400`: an ID is malformed, or `sub_workspace_id` was sent from a workspace that isn't a primary workspace.
+- `401`: `X-API-KEY` is missing or invalid.
+
+<RelatedTopics items={[["Analytics", "/documentation/monitor/analytics"], ["Get cohort breakdown", "/api-reference/monitoring/analytics/get-cohort-breakdown"]]} />
