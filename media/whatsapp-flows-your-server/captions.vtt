@@ -1,0 +1,19 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:06.164
+Open your WhatsApp account, select Flows and open the Flow
+
+00:00:06.164 --> 00:00:08.369
+Under Data source, click Set up data source
+
+00:00:08.369 --> 00:00:16.143
+Choose Server and enter your endpoint's URL
+
+00:00:16.143 --> 00:00:19.480
+Click Save
+
+00:00:19.480 --> 00:00:24.826
+Copy the signing secret now: it is shown only once
+
+00:00:24.826 --> 00:00:32.041
+Lost it? Edit the source and issue a new signing secret

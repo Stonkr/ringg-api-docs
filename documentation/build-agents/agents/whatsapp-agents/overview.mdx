@@ -7,6 +7,10 @@ boost: 4
 related:
   - "Connect WhatsApp": /documentation/inventory/tools-integrations/connect-whatsapp
   - "Create a WhatsApp agent": /documentation/build-agents/agents/whatsapp-agents/create-an-agent
+  - "WhatsApp Flows": /documentation/build-agents/agents/whatsapp-agents/flows
+  - "Flow builder": /documentation/build-agents/agents/whatsapp-agents/flow-builder
+  - "Flows with live data": /documentation/build-agents/agents/whatsapp-agents/flows-live-data
+  - "Live data from your server": /documentation/build-agents/agents/whatsapp-agents/flows-your-server
   - "WhatsApp tools": /documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools
   - "WhatsApp chat events": /documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events
   - "Start a conversation": /documentation/deploy/whatsapp/start-a-conversation
@@ -30,9 +34,10 @@ Use it when customers already reach you on WhatsApp, or to follow up a call in w
 | 2 | [Add and register a number](/documentation/inventory/tools-integrations/connect-whatsapp#add-a-number) | A number marked **Ready**, your own or one bought through Ringg |
 | 3 | [Message templates](/documentation/inventory/tools-integrations/connect-whatsapp#message-templates) (optional) | Meta-approved messages for anything you send outside the 24-hour window |
 | 4 | [Create a WhatsApp agent](/documentation/build-agents/agents/whatsapp-agents/create-an-agent) | The agent attached to the number, with a chat prompt and session timeouts |
-| 5 | [On-call](/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#on-call) and [post-call](/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#post-call) tools | Messages sent from any agent, during a call or after it |
-| 6 | [Start a conversation by API](/documentation/deploy/whatsapp/start-a-conversation) or [WhatsApp Relay](/documentation/deploy/whatsapp/relay-overview) (Deploy) | Outbound first messages from your backend; or the agent on a number that stays in your own Meta account |
-| 7 | [WhatsApp chats in Logs](/documentation/monitor/logs#whatsapp-chats) (Monitor) and [chat events](/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events#whatsapp-chat-events) (Webhooks) | Every chat readable and exportable in Logs, and a webhook when a chat closes |
+| 5 | [WhatsApp Flows](/documentation/build-agents/agents/whatsapp-agents/flows) (optional) | Forms the agent sends inside the chat, like bookings, lead forms and surveys, with answers back in the chat |
+| 6 | [On-call](/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#on-call) and [post-call](/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#post-call) tools | Messages sent from any agent, during a call or after it |
+| 7 | [Start a conversation by API](/documentation/deploy/whatsapp/start-a-conversation) or [WhatsApp Relay](/documentation/deploy/whatsapp/relay-overview) (Deploy) | Outbound first messages from your backend; or the agent on a number that stays in your own Meta account |
+| 8 | [WhatsApp chats in Logs](/documentation/monitor/logs#whatsapp-chats) (Monitor) and [chat events](/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events#whatsapp-chat-events) (Webhooks) | Every chat readable and exportable in Logs, and a webhook when a chat closes |
 
 <Frame caption="Step 2 ends here: the connected account's Phone numbers tab with a Ready number">
   <img src="/media/whatsapp-onboarding/phone-numbers.webp" alt="WhatsApp account page for Acme Lending showing the Phone numbers tab with one Ready number and one Pending number that has a Register button" />
@@ -76,4 +81,4 @@ Use it when customers already reach you on WhatsApp, or to follow up a call in w
   </Card>
 </Columns>
 
-<RelatedTopics items={[["Connect WhatsApp", "/documentation/inventory/tools-integrations/connect-whatsapp"], ["Create a WhatsApp agent", "/documentation/build-agents/agents/whatsapp-agents/create-an-agent"], ["WhatsApp tools", "/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools"], ["WhatsApp chat events", "/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events"], ["Start a conversation", "/documentation/deploy/whatsapp/start-a-conversation"], ["WhatsApp Relay", "/documentation/deploy/whatsapp/relay-overview"], ["WhatsApp Relay integration guide", "/documentation/deploy/whatsapp/relay-integration-guide"], ["WhatsApp Relay troubleshooting", "/documentation/deploy/whatsapp/relay-troubleshooting"], ["WhatsApp chats in Logs", "/documentation/monitor/logs#whatsapp-chats"]]} />
+<RelatedTopics items={[["Connect WhatsApp", "/documentation/inventory/tools-integrations/connect-whatsapp"], ["Create a WhatsApp agent", "/documentation/build-agents/agents/whatsapp-agents/create-an-agent"], ["WhatsApp Flows", "/documentation/build-agents/agents/whatsapp-agents/flows"], ["Flow builder", "/documentation/build-agents/agents/whatsapp-agents/flow-builder"], ["Flows with live data", "/documentation/build-agents/agents/whatsapp-agents/flows-live-data"], ["Live data from your server", "/documentation/build-agents/agents/whatsapp-agents/flows-your-server"], ["WhatsApp tools", "/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools"], ["WhatsApp chat events", "/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events"], ["Start a conversation", "/documentation/deploy/whatsapp/start-a-conversation"], ["WhatsApp Relay", "/documentation/deploy/whatsapp/relay-overview"], ["WhatsApp Relay integration guide", "/documentation/deploy/whatsapp/relay-integration-guide"], ["WhatsApp Relay troubleshooting", "/documentation/deploy/whatsapp/relay-troubleshooting"], ["WhatsApp chats in Logs", "/documentation/monitor/logs#whatsapp-chats"]]} />

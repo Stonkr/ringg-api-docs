@@ -1,0 +1,43 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:05.779
+Open your WhatsApp account, select Flows, then Create Flow
+
+00:00:05.779 --> 00:00:08.651
+Name it and pick a category
+
+00:00:08.651 --> 00:00:14.668
+Give the screen a title and edit its Short answer
+
+00:00:14.668 --> 00:00:20.527
+Click + to add a screen
+
+00:00:20.527 --> 00:00:39.452
+Add content adds text and questions, such as a dropdown
+
+00:00:39.452 --> 00:00:42.175
+The last screen's button sends every answer to the chat
+
+00:00:42.175 --> 00:00:53.901
+Try it in the preview, as the customer would
+
+00:00:53.901 --> 00:00:56.760
+The preview shows the message your assistant reads
+
+00:00:56.760 --> 00:01:03.274
+View as JSON shows the Flow JSON Ringg sends to Meta
+
+00:01:03.274 --> 00:01:06.939
+Click Save draft
+
+00:01:06.939 --> 00:01:11.014
+The saved draft stays open for editing. Click Cancel to see its details
+
+00:01:11.014 --> 00:01:15.901
+Click Publish, then Publish again to confirm
+
+00:01:15.901 --> 00:01:21.118
+Published Flows are locked. Duplicate & edit makes a new draft
+
+00:01:21.118 --> 00:01:23.723
+The copy opens in the builder, named (copy)
