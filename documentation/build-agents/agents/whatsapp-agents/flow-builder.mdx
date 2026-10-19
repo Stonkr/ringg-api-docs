@@ -23,11 +23,12 @@ import { RelatedTopics } from "/snippets/related-topics.mdx";
 
 You can build a [WhatsApp Flow](/documentation/build-agents/agents/whatsapp-agents/flows) in Ringg instead of Meta's WhatsApp Manager. The builder shows one screen at a time: its title and content on the left, and on the right a preview you can fill in like the customer would. Ringg saves the Flow to your WhatsApp Business account as a draft, and when you publish it, any of your WhatsApp assistants can send it.
 
-There are two ways to start:
+There are three ways to start:
 
 | Start from | Use it for |
 |---|---|
 | **The builder** | Forms such as lead capture, feedback, site visit requests or KYC details. |
+| **A template** | A Flow with live data: **Appointment booking** (a date, then the free times from a calendar) or **Lookup from your server** (an answer, then options your server returns). See [Load live data](#load-live-data). |
 | **Paste JSON** | A Flow JSON you already have, such as a design from WhatsApp Manager, from a developer, or the booking design in [Flows with live data](/documentation/build-agents/agents/whatsapp-agents/flows-live-data#set-up-appointment-booking). See [Paste Flow JSON](#paste-flow-json). |
 
 ## Before you start
@@ -135,6 +136,29 @@ A screen holds up to 49 pieces of content, and a button label is up to 35 charac
 Labels matter. Ringg shows the customer's answers under these labels in the chat, in **Logs** and in your webhooks, and your assistant reads them too. *Preferred visit date* is clearer than *Date*.
 </Tip>
 
+## Load live data
+
+A Flow can ask a data source, a connected calendar or your own server, for what to show next. Three settings in the builder do this:
+
+| Setting | Where | What it does |
+|---|---|---|
+| **Load the next page from the data source** | Under a page's button, on every page except the last | The button sends the page's answers to the data source, which sends back the next page and its data. |
+| **Options come from the data source** | On a single choice, multiple choice or dropdown | The data source lists the options when the page opens. The options you type are **Example options** for the preview. |
+| **Dates come from the data source** | On a date picker | The data source sets the earliest and latest date. One date picker per page can use it. |
+
+The quickest start is **Templates**, next to **Paste JSON**, when you create a Flow:
+
+- **Appointment booking**: a date, then the free times from a calendar, then name and email. See [Flows with live data](/documentation/build-agents/agents/whatsapp-agents/flows-live-data#set-up-appointment-booking).
+- **Lookup from your server**: a pincode, then the branches your server returns. See [Live data from your server](/documentation/build-agents/agents/whatsapp-agents/flows-your-server).
+
+A template only fills in the builder, so you can rename pages and add questions before saving. In the preview, a button that loads the next page moves on with the example options.
+
+Once the draft is saved, set up its **Data source** in the Flow's details. A Flow without any of these settings shows only what you typed, so it can't have a data source.
+
+<Frame caption="The Appointment booking template: the times on page 2 come from the data source">
+  <img src="/media/whatsapp-flows-live-data/template-builder.webp" alt="Create a Flow dialog with Name Book an appointment and Category Appointment booking, page 2. Pick a time open, and the Single choice Available times expanded with Options come from the data source ticked and two example options, 10:00 AM and 10:30 AM; the preview shows Available times, Your name, Email and a Book button" />
+</Frame>
+
 ## View as JSON
 
 Every Flow is a Flow JSON document that WhatsApp reads. Select **View as JSON** in the builder to see the complete Flow JSON for what you've built. It is read-only: select the copy icon to copy it, for example for a developer or into WhatsApp Manager. Select **Edit flow** to go back.
@@ -202,6 +226,9 @@ The builder names the first problem it finds at the bottom left, next to **Save 
 | *"Preferred date of the site visit" is longer than 40 characters.* | Builder | Shorten it. The limits are Meta's. See [What you can add](#what-you-can-add). |
 | *"Project" needs at least one option.* | Builder | Add an option, or remove the question. |
 | *Add some content to screen 2.* | Builder | Add a question or text, or select **Delete screen**. |
+| *Only one date picker on screen 1 can take its dates from the data source.* | Builder | Turn **Dates come from the data source** off on the other date pickers of that page. |
+| *"Available times" needs at least one example option.* | Builder | Type at least one option. It only shows in the preview; the data source sends the real ones. |
+| *This Flow's screens don't ask for live data, so it can't have a data source yet.* | Data source | Edit the draft and turn on **Load the next page from the data source** on a page's button, or create the Flow from a template. |
 | *Meta found problems in the saved draft* | Top of the builder | The draft is saved, but Meta lists what it won't accept. Fix each one and select **Save** again. |
 | *Clipboard is not Flow JSON* or *Clipboard is empty* | A pop-up message after **Paste JSON** | Copy the whole Flow JSON, including its `screens` list, and paste again. |
 | *Clipboard access denied* | A pop-up message after **Paste JSON** | Allow clipboard access for the dashboard in your browser, then paste again. |

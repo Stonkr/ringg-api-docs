@@ -65,9 +65,56 @@ The Flow itself doesn't book anything. It shows the free times and sends the cus
 - A WhatsApp assistant with a **Ready** WhatsApp number attached. See [Create a WhatsApp agent](/documentation/build-agents/agents/whatsapp-agents/create-an-agent).
 - Calendly, Google Calendar or Cal.com connected under **Tools** in Ringg.
 
+### The quick way: start from the template
+
+Plan about 5 minutes. You don't need any Flow JSON.
+
+<Frame caption="Creating a booking Flow from the Appointment booking template, connecting Google Calendar and publishing it">
+  <video alt="Creating a booking Flow from the Appointment booking template, connecting Google Calendar and publishing it" aria-label="Creating a booking Flow from the Appointment booking template, connecting Google Calendar and publishing it" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/whatsapp-flows-live-data/poster.webp">
+    <source src="/media/whatsapp-flows-live-data/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Create it from the template">
+    Go to **Tools → WhatsApp Business**, select the **Flows** tab, then **Create Flow**. Select **Templates**, then **Appointment booking**. It fills in two pages:
+
+    - **Pick a date**: a date picker whose **Dates come from the data source**, and a **See times** button set to **Load the next page from the data source**.
+    - **Pick a time**: **Available times**, whose **Options come from the data source**, then **Your name** and **Email**.
+
+    <Frame caption="The Appointment booking template: the times on page 2 come from the data source">
+      <img src="/media/whatsapp-flows-live-data/template-builder.webp" alt="Create a Flow dialog with Name Book an appointment and Category Appointment booking, page 2. Pick a time open, and the Single choice Available times expanded with Options come from the data source ticked and two example options, 10:00 AM and 10:30 AM; the preview shows Available times, Your name, Email and a Book button" />
+    </Frame>
+  </Step>
+  <Step title="Make it yours (optional)">
+    Rename the pages, labels and buttons, and add questions to **Pick a time**, such as a phone number or notes. Keep the three data source settings on.
+  </Step>
+  <Step title="Save the draft">
+    Select **Save draft**, then **Cancel** to see the Flow's details.
+  </Step>
+  <Step title="Connect your calendar">
+    Under **Data source**, select **Set up data source**. Keep **Calendar** and pick your connected calendar. The date page, its date question and the page that lists the times are already filled in. Check the **Timezone**; the other settings are explained in the **Connect your calendar** step of [Or design it in WhatsApp Manager](#or-design-it-in-whatsapp-manager). Select **Save**.
+
+    <Frame caption="A Google Calendar data source for the booking Flow">
+      <img src="/media/whatsapp-flows-live-data/calendar-source.webp" alt="Data source form with Calendar selected, Google Calendar (Site visits), Calendar ID primary, Slot length 30 minutes, Date screen Pick a date, Slots screen Pick a time, Date field date, Timezone Asia/Kolkata, Days ahead 30 and Most slots shown 20, with Cancel and Save" />
+    </Frame>
+
+    <Check>**Data source** lists the calendar, the date screen and the slots screen.</Check>
+  </Step>
+  <Step title="Publish it">
+    Select **Publish**, then **Publish** again to confirm. In the **Flows** tab, **Live data** shows **Calendar, via Ringg**.
+
+    <Frame caption="The Flows tab after publishing: Book an appointment reads its data from the calendar">
+      <img src="/media/whatsapp-flows-live-data/flows-tab.webp" alt="Flows table with Book an appointment at the top, Published, 4 questions, Live data Calendar, via Ringg; below it Site visit request, Find a showroom (Draft, From endpoint) and Visit feedback" />
+    </Frame>
+  </Step>
+</Steps>
+
+Now [let your assistant send it and book](#let-your-assistant-send-it-and-book).
+
 ### The booking design
 
-Both ways below use this design: a **Pick a date** screen, then a **Pick a time** screen that lists the free times and asks for the customer's name and email.
+To build the same Flow from Flow JSON, in WhatsApp Manager or with **Paste JSON** in Ringg, use this design: a **Pick a date** screen, then a **Pick a time** screen that lists the free times and asks for the customer's name and email.
 
 <Accordion title="Booking Flow design: copy all of it">
   ```json
@@ -149,50 +196,6 @@ Both ways below use this design: a **Pick a date** screen, then a **Pick a time*
   }
   ```
 </Accordion>
-
-### The quick way: build it in Ringg
-
-Plan about 5 minutes.
-
-<Frame caption="Pasting the booking design into Ringg, connecting Google Calendar as its data source, and publishing it">
-  <video alt="Pasting the booking design into Ringg, connecting Google Calendar as its data source, and publishing it" aria-label="Pasting the booking design into Ringg, connecting Google Calendar as its data source, and publishing it" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/whatsapp-flows-live-data/poster.webp">
-    <source src="/media/whatsapp-flows-live-data/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
-  </video>
-</Frame>
-
-<Steps>
-  <Step title="Create the Flow">
-    Go to **Tools → WhatsApp Business**, select the **Flows** tab, then **Create Flow**. Name it, for example *Book a visit*, and choose the category **Appointment booking**.
-  </Step>
-  <Step title="Paste the booking design">
-    Copy the [booking design](#the-booking-design) above, then select **Paste JSON** in the builder. The **Pick a date** and **Pick a time** screens appear. The parts that read live data stay as **JSON** rows, which is expected: Ringg sends them to Meta exactly as written.
-
-    <Frame caption="The booking design pasted into the builder">
-      <img src="/media/whatsapp-flows-live-data/pasted-design.webp" alt="Create a Flow dialog with Name Book a visit and Category Appointment booking; screen 1. Pick a date holds two JSON rows, DatePicker and Footer, and the preview shows their names" />
-    </Frame>
-  </Step>
-  <Step title="Save the draft">
-    Select **Save draft**, then **Cancel** to see the Flow's details.
-  </Step>
-  <Step title="Connect your calendar">
-    Under **Data source**, select **Set up data source**. Keep **Calendar** and pick your connected calendar. **Date screen** and **Slots screen** are already set to **Pick a date** and **Pick a time**. Check the **Timezone**; the other settings are explained in the **Connect your calendar** step of [Or design it in WhatsApp Manager](#or-design-it-in-whatsapp-manager). Select **Save**.
-
-    <Frame caption="A Google Calendar data source for the booking Flow">
-      <img src="/media/whatsapp-flows-live-data/calendar-source.webp" alt="Data source form with Calendar selected, Google Calendar (Site visits), Calendar ID primary, Slot length 30 minutes, Date screen Pick a date, Slots screen Pick a time, Date field date, Timezone Asia/Kolkata, Days ahead 30 and Most slots shown 20, with Cancel and Save" />
-    </Frame>
-
-    <Check>**Data source** lists the calendar, the date screen and the slots screen.</Check>
-  </Step>
-  <Step title="Publish it">
-    Select **Publish**, then **Publish** again to confirm. In the **Flows** tab, **Live data** shows **Calendar, via Ringg**.
-
-    <Frame caption="The Flows tab after publishing: Book a visit reads its data from the calendar">
-      <img src="/media/whatsapp-flows-live-data/flows-tab.webp" alt="Flows table with Book a visit at the top, Published, 4 questions, Live data Calendar, via Ringg; below it Site visit request, Find a showroom (Draft, From endpoint) and Visit feedback" />
-    </Frame>
-  </Step>
-</Steps>
-
-Now [let your assistant send it and book](#let-your-assistant-send-it-and-book).
 
 ### Or design it in WhatsApp Manager
 
@@ -299,7 +302,9 @@ date=2026-10-02, Available times=2026-10-02T10:00:00+05:30, Your name=Priya Shar
 
 ## Change the design safely
 
-You can change the words the customer sees without breaking anything:
+A Flow from the template changes in the builder like any other: edit the words and add questions. Keep **Dates come from the data source** on the date picker, **Load the next page from the data source** on its button, and **Options come from the data source** on the times.
+
+For a Flow from the booking design's JSON, you can change the words the customer sees without breaking anything:
 
 - Screen titles, such as `"title": "Pick a date"`.
 - Field and button labels, such as `"label": "See times"`.

@@ -57,7 +57,9 @@ The customer enters a pincode, your server looks up nearby showrooms, and the cu
 
 ### 1. The Flow
 
-Create a Flow in WhatsApp Manager (**Account tools → Flows → Create Flow**), paste this into the code editor and **Save**. Don't publish it yet.
+**In Ringg**, no JSON needed: in the **Flows** tab, select **Create Flow → Templates → Lookup from your server**. It asks for a pincode, sends it to your server with **Find branches**, and lists the branches your server returns. Rename its questions and buttons to fit. To build your own, turn on **Load the next page from the data source** under a page's button, and **Options come from the data source** on a choice. Ringg shows the exact request and reply for your Flow under **Data source** (step 3), so you can skip the JSON below.
+
+**In WhatsApp Manager**, create a Flow (**Account tools → Flows → Create Flow**), paste this into the code editor and **Save**. Don't publish it yet.
 
 ```json
 {
@@ -226,10 +228,12 @@ app.listen(3000);
     Go to **Tools → WhatsApp Business**, select the **Flows** tab and open the Flow.
   </Step>
   <Step title="Enter your server's URL">
-    Under **Data source**, select **Set up data source**, choose **Server** and enter your endpoint's URL in **Server URL**, for example `https://api.example.com/whatsapp-flow`. It must start with `https://`. Select **Save**.
+    Under **Data source**, select **Set up data source**, choose **Server** and enter your endpoint's URL in **Server URL**, for example `https://api.example.com/whatsapp-flow`. It must start with `https://`.
+
+    Below it, **What your server answers** lists each request Ringg will send for this Flow and the reply your server returns, with the Flow's own screen IDs and data keys. Select **Save**.
 
     <Frame caption="Choosing Server as the data source and entering its URL">
-      <img src="/media/whatsapp-flows-your-server/server-source.webp" alt="Find a showroom details: the Data source form with the encryption key notice, Choose data source set to Server, and Server URL https://api.acme-lending.example/whatsapp-flow with a description of the request, response and signature, above Cancel and Save" />
+      <img src="/media/whatsapp-flows-your-server/server-source.webp" alt="Find a showroom details: Choose data source set to Server, Server URL https://api.acme-lending.example/whatsapp-flow, and What your server answers: when Find showrooms is tapped on Find a showroom, Ringg sends a data_exchange for screen PINCODE with a pincode, and you return screen PICK_SHOWROOM with pincode and a showrooms list of id and title" />
     </Frame>
   </Step>
   <Step title="Copy the signing secret">
@@ -304,6 +308,8 @@ Verify the signature against the exact bytes you received, before parsing them. 
 </Warning>
 
 ## Response reference
+
+In a Flow built in Ringg, a choice whose options come from your server reads them from `<question key>_options`, a date picker's range from `min_date` and `max_date`, and each answer's key is its label in snake case, such as `your_pincode`. **What your server answers** shows them for your Flow.
 
 Return HTTP `200` with a JSON body naming the next screen and the data it reads:
 
