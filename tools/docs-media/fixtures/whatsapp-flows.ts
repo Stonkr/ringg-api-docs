@@ -39,22 +39,51 @@ const questionComponent = (question: Json, key: string) => {
   return { type: CHOICE_COMPONENTS[question.type], ...common, "data-source": question.options.map((option: Json, i: number) => ({ id: ids[i], title: option.title, ...(option.description ? { description: option.description } : {}) })) };
 };
 
-/** A builder definition as Flow JSON, as the backend compiles it. */
+const OPTION_ITEM = { type: "object", properties: { id: { type: "string" }, title: { type: "string" }, description: { type: "string" } } };
+
+/** The question's component, reading from the screen's data what the data source fills in (the backend's _live_component). */
+const liveComponent = (question: Json, key: string, data: Json) => {
+  const component: Json = questionComponent(question, key);
+  if (question.options_from_data && CHOICE_COMPONENTS[question.type]) {
+    data[`${key}_options`] = { type: "array", items: structuredClone(OPTION_ITEM), __example__: component["data-source"] };
+    component["data-source"] = `\${data.${key}_options}`;
+  }
+  if (question.dates_from_data && question.type === "date") {
+    data.min_date = { type: "string", __example__: "2026-10-01" };
+    data.max_date = { type: "string", __example__: "2026-10-31" };
+    component["min-date"] = "${data.min_date}";
+    component["max-date"] = "${data.max_date}";
+  }
+  return component;
+};
+
+/** A builder definition as Flow JSON, as the backend compiles it, live data included. */
 export function compileFlow(definition: Json): Json {
   if (definition.kind === "json") return structuredClone(definition.flow_json ?? {});
   const questions = definition.screens.map((screen: Json) => screen.components.filter((item: Json) => item.component === "question"));
   const flat = uniqueSlugs(questions.flat().map((question: Json) => question.label), "question");
   const keys: string[][] = questions.map((list: Json[]) => list.map(() => flat.shift()!));
+  let live = false;
   const screens = definition.screens.map((screen: Json, index: number) => {
     const screenKeys = [...keys[index]];
-    const children = screen.components.map((item: Json) => (item.component === "text" ? { type: TEXT_COMPONENTS[item.style], text: item.text } : questionComponent(item, screenKeys.shift()!)));
+    const data: Json = {};
+    const children = screen.components.map((item: Json) => (item.component === "text" ? { type: TEXT_COMPONENTS[item.style], text: item.text } : liveComponent(item, screenKeys.shift()!, data)));
     const isLast = index === definition.screens.length - 1;
     const payload = Object.fromEntries(keys.flatMap((list, at) => list.map((key) => [key, at === index ? `\${form.${key}}` : `\${screen.${screenId(at)}.form.${key}}`])));
-    const action = isLast ? { name: "complete", payload } : { name: "navigate", next: { type: "screen", name: screenId(index + 1) }, payload: {} };
+    const loadsNext = !isLast && screen.loads_next_screen;
+    const action = isLast
+      ? { name: "complete", payload }
+      : loadsNext
+        ? { name: "data_exchange", payload: Object.fromEntries(keys[index].map((key) => [key, `\${form.${key}}`])) }
+        : { name: "navigate", next: { type: "screen", name: screenId(index + 1) }, payload: {} };
     children.push({ type: "Footer", label: isLast ? definition.submit_label : screen.button_label || "Continue", "on-click-action": action });
-    return { id: screenId(index), title: screen.title, ...(isLast ? { terminal: true } : {}), layout: { type: "SingleColumnLayout", children } };
+    if (loadsNext || Object.keys(data).length) live = true;
+    return { id: screenId(index), title: screen.title, ...(Object.keys(data).length ? { data } : {}), layout: { type: "SingleColumnLayout", children }, ...(isLast ? { terminal: true } : {}) };
   });
-  return { version: "7.0", screens };
+  const ids = screens.map((screen: Json) => screen.id);
+  return live
+    ? { version: "7.0", data_api_version: "3.0", routing_model: Object.fromEntries(ids.map((id: string, index: number) => [id, ids.slice(index + 1, index + 2)])), screens }
+    : { version: "7.0", screens };
 }
 
 const FIELD_KINDS: Record<string, string> = { TextArea: "long_text", DatePicker: "date", CalendarPicker: "calendar", RadioButtonsGroup: "single_choice", CheckboxGroup: "multiple_choice", Dropdown: "dropdown", ChipsSelector: "chips", OptIn: "opt_in" };

@@ -1,37 +1,37 @@
 WEBVTT
 
-00:00:01.500 --> 00:00:05.759
+00:00:01.500 --> 00:00:05.812
 Open your WhatsApp account, select Flows, then Create Flow
 
-00:00:05.759 --> 00:00:11.312
-Name it and choose Appointment booking
+00:00:05.812 --> 00:00:09.670
+Select Templates, then Appointment booking
 
-00:00:11.312 --> 00:00:13.808
-Copy the booking design from this page, then click Paste JSON
+00:00:09.670 --> 00:00:12.582
+Page 1's button loads the free times from the calendar
 
-00:00:13.808 --> 00:00:17.407
-Both screens arrive. Parts that read live data stay as JSON
+00:00:12.582 --> 00:00:19.066
+On page 2, the times come from the data source
 
-00:00:17.407 --> 00:00:22.617
+00:00:19.066 --> 00:00:24.418
 Click Save draft, then Cancel to see its details
 
-00:00:22.617 --> 00:00:24.807
+00:00:24.418 --> 00:00:26.605
 Under Data source, click Set up data source
 
-00:00:24.807 --> 00:00:28.544
+00:00:26.605 --> 00:00:30.311
 Keep Calendar and pick your connected calendar
 
-00:00:28.544 --> 00:00:33.382
-The date and slots screens are already picked. Check the timezone
+00:00:30.311 --> 00:00:35.103
+The pages and the date question are already filled in. Check the timezone
 
-00:00:33.382 --> 00:00:36.757
+00:00:35.103 --> 00:00:38.400
 Click Save
 
-00:00:36.757 --> 00:00:38.360
+00:00:38.400 --> 00:00:39.804
 The Flow now reads free slots from the calendar
 
-00:00:38.360 --> 00:00:45.037
+00:00:39.804 --> 00:00:46.468
 Click Publish, then Publish again to confirm
 
-00:00:45.037 --> 00:00:48.744
+00:00:46.468 --> 00:00:50.180
 Live data shows Calendar, via Ringg
