@@ -1,0 +1,267 @@
+{
+ "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+ "calls": [
+  {
+   "method": "GET",
+   "path": "/auth/me",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "id": "3df810d8-3a7c-48a2-8132-94d100ca47a9",
+    "email": "priya@acme-lending.example",
+    "full_name": "Priya Sharma",
+    "is_active": true,
+    "created_at": "2026-10-22T07:37:03.476024Z",
+    "last_login_at": null,
+    "role": "owner",
+    "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+    "show_ai_scores": true,
+    "require_all_parameters": false
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/workspaces/mine",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+     "name": "Acme Lending",
+     "role": "owner",
+     "is_current": true
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/rubrics",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "id": "a22091c9-1643-447c-be6c-45d2c2a391d6",
+     "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+     "use_case_id": "47020d6e-299e-42ce-b736-2e804f77fbd4",
+     "media_type": "audio",
+     "source_type": "call",
+     "version": 1,
+     "parameters": [
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Call opening",
+       "weight": 5,
+       "parameter": "Greeted the customer by name",
+       "description": "Uses the customer's name in the first 15 seconds."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Call opening",
+       "weight": 5,
+       "parameter": "Stated name and company",
+       "description": "Says their own name and Acme Lending before the reason for the call."
+      },
+      {
+       "fatal": true,
+       "scale": "yes_no",
+       "bucket": "Compliance",
+       "weight": 15,
+       "parameter": "Verified the customer's identity",
+       "description": "Confirms date of birth or the last four digits of the loan account before discussing it."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Compliance",
+       "weight": 10,
+       "parameter": "Gave the recording disclosure",
+       "description": "Tells the customer the call is recorded."
+      },
+      {
+       "fatal": true,
+       "scale": "yes_no",
+       "bucket": "Compliance",
+       "weight": 15,
+       "parameter": "No threats or pressure",
+       "description": "No threats, shaming or pressure tactics at any point."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Resolution",
+       "weight": 10,
+       "parameter": "Stated the EMI amount and due date",
+       "description": "States the exact amount and the due date."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no_maybe",
+       "bucket": "Resolution",
+       "weight": 15,
+       "parameter": "Offered payment options",
+       "description": "Offers UPI link, auto-debit or a branch visit as fits the customer."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no_na",
+       "bucket": "Resolution",
+       "weight": 10,
+       "parameter": "Captured a promise to pay",
+       "description": "Gets a date the customer commits to pay by. N/A when the EMI is already paid."
+      },
+      {
+       "fatal": false,
+       "scale": "partial_5",
+       "bucket": "Soft skills",
+       "weight": 10,
+       "parameter": "Showed empathy",
+       "description": "Acknowledges the customer's situation before moving on."
+      },
+      {
+       "fatal": false,
+       "scale": "range_5",
+       "bucket": "Soft skills",
+       "weight": 5,
+       "parameter": "Closed with a recap",
+       "description": "Recaps amount, date and next step before ending."
+      }
+     ],
+     "is_active": true,
+     "created_at": "2026-10-22T07:37:03.476024Z"
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/use-cases",
+   "query": "active_only=true",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "id": "47020d6e-299e-42ce-b736-2e804f77fbd4",
+     "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+     "name": "EMI collections",
+     "description": "Outbound calls to remind customers about EMIs and agree a payment date.",
+     "is_active": true,
+     "variables": [],
+     "created_at": "2026-10-22T07:37:03.476024Z"
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/rubrics",
+   "query": "use_case_id=47020d6e-299e-42ce-b736-2e804f77fbd4",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "id": "a22091c9-1643-447c-be6c-45d2c2a391d6",
+     "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+     "use_case_id": "47020d6e-299e-42ce-b736-2e804f77fbd4",
+     "media_type": "audio",
+     "source_type": "call",
+     "version": 1,
+     "parameters": [
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Call opening",
+       "weight": 5,
+       "parameter": "Greeted the customer by name",
+       "description": "Uses the customer's name in the first 15 seconds."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Call opening",
+       "weight": 5,
+       "parameter": "Stated name and company",
+       "description": "Says their own name and Acme Lending before the reason for the call."
+      },
+      {
+       "fatal": true,
+       "scale": "yes_no",
+       "bucket": "Compliance",
+       "weight": 15,
+       "parameter": "Verified the customer's identity",
+       "description": "Confirms date of birth or the last four digits of the loan account before discussing it."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Compliance",
+       "weight": 10,
+       "parameter": "Gave the recording disclosure",
+       "description": "Tells the customer the call is recorded."
+      },
+      {
+       "fatal": true,
+       "scale": "yes_no",
+       "bucket": "Compliance",
+       "weight": 15,
+       "parameter": "No threats or pressure",
+       "description": "No threats, shaming or pressure tactics at any point."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Resolution",
+       "weight": 10,
+       "parameter": "Stated the EMI amount and due date",
+       "description": "States the exact amount and the due date."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no_maybe",
+       "bucket": "Resolution",
+       "weight": 15,
+       "parameter": "Offered payment options",
+       "description": "Offers UPI link, auto-debit or a branch visit as fits the customer."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no_na",
+       "bucket": "Resolution",
+       "weight": 10,
+       "parameter": "Captured a promise to pay",
+       "description": "Gets a date the customer commits to pay by. N/A when the EMI is already paid."
+      },
+      {
+       "fatal": false,
+       "scale": "partial_5",
+       "bucket": "Soft skills",
+       "weight": 10,
+       "parameter": "Showed empathy",
+       "description": "Acknowledges the customer's situation before moving on."
+      },
+      {
+       "fatal": false,
+       "scale": "range_5",
+       "bucket": "Soft skills",
+       "weight": 5,
+       "parameter": "Closed with a recap",
+       "description": "Recaps amount, date and next step before ending."
+      }
+     ],
+     "is_active": true,
+     "created_at": "2026-10-22T07:37:03.476024Z"
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/business-metrics",
+   "query": "source_type=call&use_case_id=47020d6e-299e-42ce-b736-2e804f77fbd4",
+   "phase": 0,
+   "status": 200,
+   "body": []
+  }
+ ]
+}

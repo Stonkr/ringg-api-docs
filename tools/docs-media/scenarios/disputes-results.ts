@@ -1,0 +1,24 @@
+import type { Scenario } from "../run.ts";
+import ids from "../fixtures/analytics/ids.json" with { type: "json" };
+
+// What the agent sees once a QA resolves their dispute.
+export default {
+  name: "disputes-results",
+  docsPage: "disputes/results-and-corrections",
+  routes: {},
+  analytics: { as: "arjun", fixture: "disputes-results" },
+  async run(s) {
+    await s.goto(`/interactions/${ids.calls.appeal_arjun}`);
+    await s.page.getByText("Final score · Appeal reviewed by QA").waitFor();
+    await s.pause(1500);
+    await s.page.mouse.move(1300, 20); // no hover states in the shot
+    // Frame the analytics column (it scrolls on its own) from the final-score card down.
+    await s.page.getByText("Final score · Appeal reviewed by QA").evaluate((el) => {
+      let p = el.parentElement;
+      while (p && !/(auto|scroll)/.test(getComputedStyle(p).overflowY)) p = p.parentElement;
+      p?.setAttribute("data-docs-shot", "analytics");
+      el.closest(".rounded-xl")?.scrollIntoView({ block: "start" });
+    });
+    await s.shot("result", s.page.locator('[data-docs-shot="analytics"]'), 0);
+  },
+} satisfies Scenario;

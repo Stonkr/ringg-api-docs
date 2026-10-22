@@ -1,0 +1,63 @@
+---
+title: "Results and corrections"
+sidebarTitle: "Results and corrections"
+description: "After a QA resolves a dispute, the agent sees the final score, each parameter's result and the QA's remarks. A QA can correct a resolved dispute later."
+"og:title": "Dispute results and corrections in Ringg Analytics"
+---
+
+When a QA resolves a dispute, the result shows on the call for the agent, their team lead and reviewers, and an email goes out. If the decision has to change later, a QA corrects it; every version is kept.
+
+In [Ringg Analytics](https://analytics.ringg.ai): **Sidebar → Interactions →** open the call.
+
+## What the agent sees
+
+<Frame caption="An overturned dispute, as the agent sees it">
+  <img src="/media/disputes-results/result.webp" alt="Final score · Appeal reviewed by QA card showing 100, AI scored 92 (+8) · Overturned; the Appeal card marked Resolved with who submitted and who resolved it; both disputed parameters, Greeted the customer by name No to Yes and Closed with a recap 2 to 5, marked Changed with the QA's remarks; and the original AI score of 92 below" />
+</Frame>
+
+| Part | Shows |
+|---|---|
+| "Final score · Appeal reviewed by QA" | The official score, the AI's score and the difference, and the outcome: **AI score upheld**, **Partially overturned** or **Overturned** |
+| **Appeal** card | Status, who submitted it and when, who resolved it and when |
+| Disputed parameters | The AI's rating, the QA's, **Changed** or **Unchanged**, and the QA's remark |
+| The AI's score | The original AI scoring, unchanged, for comparison |
+
+The agent and their current team lead get an email: "Appeal reviewed: … — final score N%", with each disputed parameter's result and the QA's note.
+
+The official score then counts everywhere: **Interactions**, **Summary**, **Agents**, [report cards](/analytics/coach-agents/report-cards), [notification](/analytics/set-up/notifications) conditions and exports.
+
+## Appeal history
+
+**Appeal history** at the bottom of the call lists every step: **Appealed**, **Review started**, **Released**, **Reassigned**, **Resolved** and **Corrected**, by whom and when, with each version's final score. Everyone who can see the call can read it, and it is never deleted.
+
+## Corrections
+
+Use a correction when a resolved decision turns out wrong, for example after a team lead escalates it offline and the escalation is accepted.
+
+<Steps>
+  <Step title="Open the resolved call">
+    As a QA, admin or owner, open the call and click **Correct the final score (offline dispute accepted)**.
+  </Step>
+  <Step title="Re-rate and give a reason">
+    Change the ratings that need it and write why you are correcting. The reason is required.
+  </Step>
+  <Step title="Save">
+    Click **Review correction**, then **Save correction**.
+
+    <Check>The call shows the new final score and **Corrected · v2**, with your reason. The agent and their team lead get an email: "Score corrected: … — now N%".</Check>
+  </Step>
+</Steps>
+
+<Frame caption="A corrected dispute">
+  <img src="/media/disputes-corrections/corrected.webp" alt="Final score 86, AI scored 71 (+15) · Overturned · corrected (v2); the Appeal card marked Resolved and Corrected · v2; both disputed parameters marked Changed; the correction reason; and the Correct the final score (offline dispute accepted) button" />
+</Frame>
+
+If two reviewers correct the same appeal at once, the second save is refused, so nobody overwrites a correction they haven't seen.
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Settings and reports" icon="settings" href="/disputes/settings-and-reports">See overturn rates by parameter.</Card>
+  <Card title="Report cards" icon="award" href="/analytics/coach-agents/report-cards">Where resolved disputes show for an agent.</Card>
+  <Card title="Overview" icon="scale" href="/disputes/overview">The rules for disputes.</Card>
+</Columns>

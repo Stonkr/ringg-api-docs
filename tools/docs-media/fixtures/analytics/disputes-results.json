@@ -1,0 +1,1001 @@
+{
+ "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+ "calls": [
+  {
+   "method": "GET",
+   "path": "/auth/me",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "id": "3624ee97-57d0-4fe5-b153-757f3a99063a",
+    "email": "arjun@acme-lending.example",
+    "full_name": "Arjun Mehta",
+    "is_active": true,
+    "created_at": "2026-10-22T07:37:03.476024Z",
+    "last_login_at": null,
+    "role": "agent",
+    "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+    "show_ai_scores": true,
+    "require_all_parameters": false
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/workspaces/mine",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+     "name": "Acme Lending",
+     "role": "agent",
+     "is_current": true
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/interactions/727075a1-d59a-4338-842b-76253e227d06",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "id": "727075a1-d59a-4338-842b-76253e227d06",
+    "agent_id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+    "agent_name": "Arjun Mehta",
+    "source_type": "call",
+    "media_type": "audio",
+    "status": "analyzed",
+    "title": "EMI reminder · AL-20526",
+    "external_id": "AL-20526",
+    "use_case_id": "47020d6e-299e-42ce-b736-2e804f77fbd4",
+    "use_case_name": "EMI collections",
+    "overall_score": 100,
+    "is_fatal": false,
+    "score_source": "appeal",
+    "ai_overall_score": 92,
+    "ai_is_fatal": false,
+    "created_at": "2026-10-21T21:19:09.461569Z",
+    "duration_seconds": 57.5,
+    "subject": null,
+    "sender": null,
+    "human_evaluated": false,
+    "human_fatal": false,
+    "ai_hidden": false,
+    "active_job": null,
+    "appeal_status": "resolved",
+    "appeal_due_at": "2026-10-23T22:43:28.885828Z",
+    "appeal_overdue": false,
+    "appeal_claimed_by_name": null,
+    "appeal_deadline": null,
+    "recording_url": "/__docs-media/call.mp3",
+    "transcript": [
+     {
+      "role": "agent",
+      "speaker": "speaker_0",
+      "end_time": 4.3,
+      "utterance": "Hello, good morning. This is Arjun from Acme Lending.",
+      "start_time": 0.8
+     },
+     {
+      "role": "customer",
+      "speaker": "speaker_1",
+      "end_time": 6.9,
+      "utterance": "Yes, tell me.",
+      "start_time": 5.3
+     },
+     {
+      "role": "agent",
+      "speaker": "speaker_0",
+      "end_time": 12.4,
+      "utterance": "Before we continue, this call is recorded for quality and training.",
+      "start_time": 7.9
+     },
+     {
+      "role": "agent",
+      "speaker": "speaker_0",
+      "end_time": 17,
+      "utterance": "Could you please confirm your date of birth for verification?",
+      "start_time": 12.9
+     },
+     {
+      "role": "customer",
+      "speaker": "speaker_1",
+      "end_time": 19.2,
+      "utterance": "It's the 14th of March, 1986.",
+      "start_time": 17.3
+     },
+     {
+      "role": "agent",
+      "speaker": "speaker_0",
+      "end_time": 21.7,
+      "utterance": "Thank you, that's verified.",
+      "start_time": 19.9
+     },
+     {
+      "role": "agent",
+      "speaker": "speaker_0",
+      "end_time": 25.6,
+      "utterance": "Just a reminder that your EMI is coming up.",
+      "start_time": 22.7
+     },
+     {
+      "role": "agent",
+      "speaker": "speaker_0",
+      "end_time": 29.4,
+      "utterance": "The amount is ₹13,400 and it's due on 26 October.",
+      "start_time": 26.1
+     },
+     {
+      "role": "customer",
+      "speaker": "speaker_1",
+      "end_time": 34.7,
+      "utterance": "There were some medical expenses at home this month, so it got delayed.",
+      "start_time": 30
+     },
+     {
+      "role": "agent",
+      "speaker": "speaker_0",
+      "end_time": 39.3,
+      "utterance": "I'm sorry to hear that, I hope everyone is doing better now.",
+      "start_time": 35.3
+     },
+     {
+      "role": "agent",
+      "speaker": "speaker_0",
+      "end_time": 46.4,
+      "utterance": "I can send a UPI payment link by SMS, or set up auto-debit so you don't miss the next one.",
+      "start_time": 40.4
+     },
+     {
+      "role": "customer",
+      "speaker": "speaker_1",
+      "end_time": 48.9,
+      "utterance": "I can pay by Saturday.",
+      "start_time": 47.3
+     },
+     {
+      "role": "agent",
+      "speaker": "speaker_0",
+      "end_time": 51.1,
+      "utterance": "Great, I've noted Saturday.",
+      "start_time": 49.3
+     },
+     {
+      "role": "agent",
+      "speaker": "speaker_0",
+      "end_time": 53.5,
+      "utterance": "I'll send the link. Thank you.",
+      "start_time": 51.5
+     },
+     {
+      "role": "customer",
+      "speaker": "speaker_1",
+      "end_time": 56,
+      "utterance": "No, that's all. Thank you.",
+      "start_time": 54.2
+     }
+    ],
+    "speaking_stats": {
+     "by_time": {
+      "agent": {
+       "seconds": 33.9,
+       "percent": 74.5
+      },
+      "customer": {
+       "seconds": 11.6,
+       "percent": 25.5
+      }
+     },
+     "by_turns": {
+      "agent": {
+       "turns": 10,
+       "percent": 66.7
+      },
+      "customer": {
+       "turns": 5,
+       "percent": 33.3
+      }
+     },
+     "total_seconds": 45.5,
+     "total_turns": 15
+    },
+    "body_text": null,
+    "thread_id": null,
+    "customer_id": null,
+    "case_id": null,
+    "call_type": null,
+    "sub_call_type": null,
+    "received_at": null,
+    "variables": null,
+    "analytics": {
+     "overall_score": 92,
+     "raw_score": 92,
+     "is_fatal": false,
+     "fatal_parameters": null,
+     "rubric_version": 1,
+     "category_scores": [
+      {
+       "max": 10,
+       "name": "Call opening",
+       "score": 50,
+       "earned": 5
+      },
+      {
+       "max": 40,
+       "name": "Compliance",
+       "score": 100,
+       "earned": 40
+      },
+      {
+       "max": 35,
+       "name": "Resolution",
+       "score": 100,
+       "earned": 35
+      },
+      {
+       "max": 15,
+       "name": "Soft skills",
+       "score": 80,
+       "earned": 12
+      }
+     ],
+     "parameter_scores": [
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Call opening",
+       "rating": 0,
+       "weight": 5,
+       "evidence": "Hello, good morning. This is Arjun from Acme Lending.",
+       "optional": false,
+       "parameter": "Greeted the customer by name",
+       "reasoning": "Did not use the customer's name in the opening.",
+       "timestamp": 0.8,
+       "na_excluded": false,
+       "weighted_score": 0
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Call opening",
+       "rating": 1,
+       "weight": 5,
+       "evidence": "",
+       "optional": false,
+       "parameter": "Stated name and company",
+       "reasoning": "Introduced themselves as Arjun from Acme Lending.",
+       "timestamp": null,
+       "na_excluded": false,
+       "weighted_score": 5
+      },
+      {
+       "fatal": true,
+       "scale": "yes_no",
+       "bucket": "Compliance",
+       "rating": 1,
+       "weight": 15,
+       "evidence": "Could you please confirm your date of birth for verification?",
+       "optional": false,
+       "parameter": "Verified the customer's identity",
+       "reasoning": "Confirmed the date of birth before discussing the loan.",
+       "timestamp": 12.9,
+       "na_excluded": false,
+       "weighted_score": 15
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Compliance",
+       "rating": 1,
+       "weight": 10,
+       "evidence": "Before we continue, this call is recorded for quality and training.",
+       "optional": false,
+       "parameter": "Gave the recording disclosure",
+       "reasoning": "Said the call is recorded for quality.",
+       "timestamp": 7.9,
+       "na_excluded": false,
+       "weighted_score": 10
+      },
+      {
+       "fatal": true,
+       "scale": "yes_no",
+       "bucket": "Compliance",
+       "rating": 1,
+       "weight": 15,
+       "evidence": "",
+       "optional": false,
+       "parameter": "No threats or pressure",
+       "reasoning": "Calm and respectful throughout.",
+       "timestamp": null,
+       "na_excluded": false,
+       "weighted_score": 15
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Resolution",
+       "rating": 1,
+       "weight": 10,
+       "evidence": "The amount is ₹13,400 and it's due on 26 October.",
+       "optional": false,
+       "parameter": "Stated the EMI amount and due date",
+       "reasoning": "Stated ₹13,400 due on 26 October.",
+       "timestamp": 26.1,
+       "na_excluded": false,
+       "weighted_score": 10
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no_maybe",
+       "bucket": "Resolution",
+       "rating": 2,
+       "weight": 15,
+       "evidence": "I can send a UPI payment link by SMS, or set up auto-debit so you don't miss the next one.",
+       "optional": false,
+       "parameter": "Offered payment options",
+       "reasoning": "Offered the UPI link and auto-debit.",
+       "timestamp": 40.4,
+       "na_excluded": false,
+       "weighted_score": 15
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no_na",
+       "bucket": "Resolution",
+       "rating": 1,
+       "weight": 10,
+       "evidence": "Great, I've noted Saturday.",
+       "optional": false,
+       "parameter": "Captured a promise to pay",
+       "reasoning": "Customer committed to pay by Saturday.",
+       "timestamp": 49.3,
+       "na_excluded": false,
+       "weighted_score": 10
+      },
+      {
+       "fatal": false,
+       "scale": "partial_5",
+       "bucket": "Soft skills",
+       "rating": 5,
+       "weight": 10,
+       "evidence": "I'm sorry to hear that, I hope everyone is doing better now.",
+       "optional": false,
+       "parameter": "Showed empathy",
+       "reasoning": "Acknowledged the medical expenses before moving on.",
+       "timestamp": 35.3,
+       "na_excluded": false,
+       "weighted_score": 10
+      },
+      {
+       "fatal": false,
+       "scale": "range_5",
+       "bucket": "Soft skills",
+       "rating": 2,
+       "weight": 5,
+       "evidence": "I'll send the link. Thank you.",
+       "optional": false,
+       "parameter": "Closed with a recap",
+       "reasoning": "Ended without a recap.",
+       "timestamp": 51.5,
+       "na_excluded": false,
+       "weighted_score": 2
+      }
+     ],
+     "summary": "Arjun called Nisha Bansal about the ₹13,400 EMI on loan AL-20526. The customer promised to pay by Saturday.",
+     "action_items": [
+      "Send the UPI payment link by SMS",
+      "Follow up on Saturday if unpaid"
+     ],
+     "topic_phrases": [
+      {
+       "phrase": "medical expenses",
+       "description": "Reason the EMI was delayed"
+      },
+      {
+       "phrase": "UPI link",
+       "description": "Payment option offered"
+      }
+     ],
+     "human_scores": null,
+     "human_score": null,
+     "human_raw_score": null,
+     "human_is_fatal": false,
+     "human_fatal_parameters": null,
+     "human_fatal": false,
+     "human_fatal_reason": null
+    },
+    "classifications": [
+     {
+      "bucket_id": "466a78c4-2f74-459f-8ab7-191b17000846",
+      "bucket_name": "Promise to pay",
+      "severity": "informational",
+      "confidence": 0.92
+     }
+    ],
+    "human_scores": null,
+    "human_score": null,
+    "human_raw_score": null,
+    "human_is_fatal": false,
+    "human_fatal_reason": null,
+    "effective_raw_score": 100,
+    "effective_fatal_parameters": [],
+    "appeal": {
+     "eligibility": {
+      "can_appeal": false,
+      "deadline": "2026-10-24T21:25:09.461569Z",
+      "reason_if_not": "already_appealed"
+     },
+     "appeal": {
+      "id": "45188d16-cf37-4c20-baa0-5f544db49037",
+      "interaction_id": "727075a1-d59a-4338-842b-76253e227d06",
+      "status": "resolved",
+      "agent": {
+       "id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+       "name": "Arjun Mehta"
+      },
+      "team_leader": {
+       "id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+       "name": "Kavya Nair"
+      },
+      "submitted_by": {
+       "id": "3624ee97-57d0-4fe5-b153-757f3a99063a",
+       "name": "Arjun Mehta"
+      },
+      "submitted_at": "2026-10-21T22:43:28.885828Z",
+      "ai_scored_at": "2026-10-21T21:25:09.461569Z",
+      "appeal_deadline_at": "2026-10-24T21:25:09.461569Z",
+      "due_at": "2026-10-23T22:43:28.885828Z",
+      "overdue": false,
+      "claimed_by": {
+       "id": "df3fcf29-7620-4acc-a09a-e46d4e34373d",
+       "name": "Farah Ali"
+      },
+      "claimed_at": "2026-10-22T01:27:24.724851Z",
+      "note": "Happy to walk through the recording if that helps.",
+      "disputes": [
+       {
+        "parameter": "Greeted the customer by name",
+        "comment": "I greeted him as Harish ji in the first line. Please listen from 0:01."
+       },
+       {
+        "parameter": "Closed with a recap",
+        "comment": "I recapped the amount, the date and the SMS link before ending."
+       }
+      ],
+      "ai_snapshot": {
+       "is_fatal": false,
+       "raw_score": 92,
+       "analyzed_at": "2026-10-21T21:25:09.461569+00:00",
+       "overall_score": 92,
+       "rubric_version": 1,
+       "category_scores": [
+        {
+         "max": 10,
+         "name": "Call opening",
+         "score": 50,
+         "earned": 5
+        },
+        {
+         "max": 40,
+         "name": "Compliance",
+         "score": 100,
+         "earned": 40
+        },
+        {
+         "max": 35,
+         "name": "Resolution",
+         "score": 100,
+         "earned": 35
+        },
+        {
+         "max": 15,
+         "name": "Soft skills",
+         "score": 80,
+         "earned": 12
+        }
+       ],
+       "fatal_parameters": null,
+       "parameter_scores": [
+        {
+         "fatal": false,
+         "scale": "yes_no",
+         "bucket": "Call opening",
+         "rating": 0,
+         "weight": 5,
+         "evidence": "Hello, good morning. This is Arjun from Acme Lending.",
+         "optional": false,
+         "parameter": "Greeted the customer by name",
+         "reasoning": "Did not use the customer's name in the opening.",
+         "timestamp": 0.8,
+         "na_excluded": false,
+         "weighted_score": 0
+        },
+        {
+         "fatal": false,
+         "scale": "yes_no",
+         "bucket": "Call opening",
+         "rating": 1,
+         "weight": 5,
+         "evidence": "",
+         "optional": false,
+         "parameter": "Stated name and company",
+         "reasoning": "Introduced themselves as Arjun from Acme Lending.",
+         "timestamp": null,
+         "na_excluded": false,
+         "weighted_score": 5
+        },
+        {
+         "fatal": true,
+         "scale": "yes_no",
+         "bucket": "Compliance",
+         "rating": 1,
+         "weight": 15,
+         "evidence": "Could you please confirm your date of birth for verification?",
+         "optional": false,
+         "parameter": "Verified the customer's identity",
+         "reasoning": "Confirmed the date of birth before discussing the loan.",
+         "timestamp": 12.9,
+         "na_excluded": false,
+         "weighted_score": 15
+        },
+        {
+         "fatal": false,
+         "scale": "yes_no",
+         "bucket": "Compliance",
+         "rating": 1,
+         "weight": 10,
+         "evidence": "Before we continue, this call is recorded for quality and training.",
+         "optional": false,
+         "parameter": "Gave the recording disclosure",
+         "reasoning": "Said the call is recorded for quality.",
+         "timestamp": 7.9,
+         "na_excluded": false,
+         "weighted_score": 10
+        },
+        {
+         "fatal": true,
+         "scale": "yes_no",
+         "bucket": "Compliance",
+         "rating": 1,
+         "weight": 15,
+         "evidence": "",
+         "optional": false,
+         "parameter": "No threats or pressure",
+         "reasoning": "Calm and respectful throughout.",
+         "timestamp": null,
+         "na_excluded": false,
+         "weighted_score": 15
+        },
+        {
+         "fatal": false,
+         "scale": "yes_no",
+         "bucket": "Resolution",
+         "rating": 1,
+         "weight": 10,
+         "evidence": "The amount is ₹13,400 and it's due on 26 October.",
+         "optional": false,
+         "parameter": "Stated the EMI amount and due date",
+         "reasoning": "Stated ₹13,400 due on 26 October.",
+         "timestamp": 26.1,
+         "na_excluded": false,
+         "weighted_score": 10
+        },
+        {
+         "fatal": false,
+         "scale": "yes_no_maybe",
+         "bucket": "Resolution",
+         "rating": 2,
+         "weight": 15,
+         "evidence": "I can send a UPI payment link by SMS, or set up auto-debit so you don't miss the next one.",
+         "optional": false,
+         "parameter": "Offered payment options",
+         "reasoning": "Offered the UPI link and auto-debit.",
+         "timestamp": 40.4,
+         "na_excluded": false,
+         "weighted_score": 15
+        },
+        {
+         "fatal": false,
+         "scale": "yes_no_na",
+         "bucket": "Resolution",
+         "rating": 1,
+         "weight": 10,
+         "evidence": "Great, I've noted Saturday.",
+         "optional": false,
+         "parameter": "Captured a promise to pay",
+         "reasoning": "Customer committed to pay by Saturday.",
+         "timestamp": 49.3,
+         "na_excluded": false,
+         "weighted_score": 10
+        },
+        {
+         "fatal": false,
+         "scale": "partial_5",
+         "bucket": "Soft skills",
+         "rating": 5,
+         "weight": 10,
+         "evidence": "I'm sorry to hear that, I hope everyone is doing better now.",
+         "optional": false,
+         "parameter": "Showed empathy",
+         "reasoning": "Acknowledged the medical expenses before moving on.",
+         "timestamp": 35.3,
+         "na_excluded": false,
+         "weighted_score": 10
+        },
+        {
+         "fatal": false,
+         "scale": "range_5",
+         "bucket": "Soft skills",
+         "rating": 2,
+         "weight": 5,
+         "evidence": "I'll send the link. Thank you.",
+         "optional": false,
+         "parameter": "Closed with a recap",
+         "reasoning": "Ended without a recap.",
+         "timestamp": 51.5,
+         "na_excluded": false,
+         "weighted_score": 2
+        }
+       ]
+      },
+      "rubric": [
+       {
+        "fatal": false,
+        "scale": "yes_no",
+        "bucket": "Call opening",
+        "weight": 5,
+        "optional": false,
+        "parameter": "Greeted the customer by name",
+        "bad_example": null,
+        "description": "Uses the customer's name in the first 15 seconds.",
+        "good_example": null
+       },
+       {
+        "fatal": false,
+        "scale": "yes_no",
+        "bucket": "Call opening",
+        "weight": 5,
+        "optional": false,
+        "parameter": "Stated name and company",
+        "bad_example": null,
+        "description": "Says their own name and Acme Lending before the reason for the call.",
+        "good_example": null
+       },
+       {
+        "fatal": true,
+        "scale": "yes_no",
+        "bucket": "Compliance",
+        "weight": 15,
+        "optional": false,
+        "parameter": "Verified the customer's identity",
+        "bad_example": null,
+        "description": "Confirms date of birth or the last four digits of the loan account before discussing it.",
+        "good_example": null
+       },
+       {
+        "fatal": false,
+        "scale": "yes_no",
+        "bucket": "Compliance",
+        "weight": 10,
+        "optional": false,
+        "parameter": "Gave the recording disclosure",
+        "bad_example": null,
+        "description": "Tells the customer the call is recorded.",
+        "good_example": null
+       },
+       {
+        "fatal": true,
+        "scale": "yes_no",
+        "bucket": "Compliance",
+        "weight": 15,
+        "optional": false,
+        "parameter": "No threats or pressure",
+        "bad_example": null,
+        "description": "No threats, shaming or pressure tactics at any point.",
+        "good_example": null
+       },
+       {
+        "fatal": false,
+        "scale": "yes_no",
+        "bucket": "Resolution",
+        "weight": 10,
+        "optional": false,
+        "parameter": "Stated the EMI amount and due date",
+        "bad_example": null,
+        "description": "States the exact amount and the due date.",
+        "good_example": null
+       },
+       {
+        "fatal": false,
+        "scale": "yes_no_maybe",
+        "bucket": "Resolution",
+        "weight": 15,
+        "optional": false,
+        "parameter": "Offered payment options",
+        "bad_example": null,
+        "description": "Offers UPI link, auto-debit or a branch visit as fits the customer.",
+        "good_example": null
+       },
+       {
+        "fatal": false,
+        "scale": "yes_no_na",
+        "bucket": "Resolution",
+        "weight": 10,
+        "optional": false,
+        "parameter": "Captured a promise to pay",
+        "bad_example": null,
+        "description": "Gets a date the customer commits to pay by. N/A when the EMI is already paid.",
+        "good_example": null
+       },
+       {
+        "fatal": false,
+        "scale": "partial_5",
+        "bucket": "Soft skills",
+        "weight": 10,
+        "optional": false,
+        "parameter": "Showed empathy",
+        "bad_example": null,
+        "description": "Acknowledges the customer's situation before moving on.",
+        "good_example": null
+       },
+       {
+        "fatal": false,
+        "scale": "range_5",
+        "bucket": "Soft skills",
+        "weight": 5,
+        "optional": false,
+        "parameter": "Closed with a recap",
+        "bad_example": null,
+        "description": "Recaps amount, date and next step before ending.",
+        "good_example": null
+       }
+      ],
+      "current_version": 1,
+      "corrected": false,
+      "first_resolved_at": "2026-10-22T04:32:42.533635Z",
+      "resolved_at": "2026-10-22T04:32:42.533635Z",
+      "resolved_by": {
+       "id": "df3fcf29-7620-4acc-a09a-e46d4e34373d",
+       "name": "Farah Ali"
+      },
+      "outcome": "overturned",
+      "score_delta": 8,
+      "current_review": {
+       "version": 1,
+       "kind": "resolution",
+       "reviewer": {
+        "id": "df3fcf29-7620-4acc-a09a-e46d4e34373d",
+        "name": "Farah Ali"
+       },
+       "reviewer_saw_ai": true,
+       "created_at": "2026-10-22T04:32:42.533635Z",
+       "score": 100,
+       "raw_score": 100,
+       "is_fatal": false,
+       "fatal_parameters": [],
+       "achieved": 100,
+       "base": 100,
+       "ratings": [
+        {
+         "rating": 1,
+         "comment": "Re-listened: the agent did this. Rating changed.",
+         "parameter": "Greeted the customer by name"
+        },
+        {
+         "rating": 5,
+         "comment": "Re-listened: the agent did this. Rating changed.",
+         "parameter": "Closed with a recap"
+        },
+        {
+         "rating": 1,
+         "kept_ai": true,
+         "parameter": "Stated name and company"
+        },
+        {
+         "rating": 1,
+         "kept_ai": true,
+         "parameter": "Verified the customer's identity"
+        },
+        {
+         "rating": 1,
+         "kept_ai": true,
+         "parameter": "Gave the recording disclosure"
+        },
+        {
+         "rating": 1,
+         "kept_ai": true,
+         "parameter": "No threats or pressure"
+        },
+        {
+         "rating": 1,
+         "kept_ai": true,
+         "parameter": "Stated the EMI amount and due date"
+        },
+        {
+         "rating": 2,
+         "kept_ai": true,
+         "parameter": "Offered payment options"
+        },
+        {
+         "rating": "yes",
+         "kept_ai": true,
+         "parameter": "Captured a promise to pay"
+        },
+        {
+         "rating": 5,
+         "kept_ai": true,
+         "parameter": "Showed empathy"
+        }
+       ],
+       "qa_fatal": false,
+       "qa_fatal_reason": null,
+       "summary": null,
+       "reason": null,
+       "parameter_results": [
+        {
+         "bucket": "Call opening",
+         "changed": true,
+         "disputed": true,
+         "ai_rating": 0,
+         "direction": "up",
+         "parameter": "Greeted the customer by name",
+         "qa_rating": 1,
+         "ai_weighted_score": 0,
+         "qa_weighted_score": 5
+        },
+        {
+         "bucket": "Call opening",
+         "changed": false,
+         "disputed": false,
+         "ai_rating": 1,
+         "direction": "none",
+         "parameter": "Stated name and company",
+         "qa_rating": 1,
+         "ai_weighted_score": 5,
+         "qa_weighted_score": 5
+        },
+        {
+         "bucket": "Compliance",
+         "changed": false,
+         "disputed": false,
+         "ai_rating": 1,
+         "direction": "none",
+         "parameter": "Verified the customer's identity",
+         "qa_rating": 1,
+         "ai_weighted_score": 15,
+         "qa_weighted_score": 15
+        },
+        {
+         "bucket": "Compliance",
+         "changed": false,
+         "disputed": false,
+         "ai_rating": 1,
+         "direction": "none",
+         "parameter": "Gave the recording disclosure",
+         "qa_rating": 1,
+         "ai_weighted_score": 10,
+         "qa_weighted_score": 10
+        },
+        {
+         "bucket": "Compliance",
+         "changed": false,
+         "disputed": false,
+         "ai_rating": 1,
+         "direction": "none",
+         "parameter": "No threats or pressure",
+         "qa_rating": 1,
+         "ai_weighted_score": 15,
+         "qa_weighted_score": 15
+        },
+        {
+         "bucket": "Resolution",
+         "changed": false,
+         "disputed": false,
+         "ai_rating": 1,
+         "direction": "none",
+         "parameter": "Stated the EMI amount and due date",
+         "qa_rating": 1,
+         "ai_weighted_score": 10,
+         "qa_weighted_score": 10
+        },
+        {
+         "bucket": "Resolution",
+         "changed": false,
+         "disputed": false,
+         "ai_rating": 2,
+         "direction": "none",
+         "parameter": "Offered payment options",
+         "qa_rating": 2,
+         "ai_weighted_score": 15,
+         "qa_weighted_score": 15
+        },
+        {
+         "bucket": "Resolution",
+         "changed": false,
+         "disputed": false,
+         "ai_rating": 1,
+         "direction": "none",
+         "parameter": "Captured a promise to pay",
+         "qa_rating": 1,
+         "ai_weighted_score": 10,
+         "qa_weighted_score": 10
+        },
+        {
+         "bucket": "Soft skills",
+         "changed": false,
+         "disputed": false,
+         "ai_rating": 5,
+         "direction": "none",
+         "parameter": "Showed empathy",
+         "qa_rating": 5,
+         "ai_weighted_score": 10,
+         "qa_weighted_score": 10
+        },
+        {
+         "bucket": "Soft skills",
+         "changed": true,
+         "disputed": true,
+         "ai_rating": 2,
+         "direction": "up",
+         "parameter": "Closed with a recap",
+         "qa_rating": 5,
+         "ai_weighted_score": 2,
+         "qa_weighted_score": 5
+        }
+       ],
+       "outcome": "overturned",
+       "score_delta": 8,
+       "disputed_changed": 2,
+       "non_disputed_changed": 0,
+       "previous_score": 92
+      },
+      "draft": null,
+      "draft_by": null,
+      "draft_updated_at": null,
+      "ai_hidden": false
+     },
+     "viewer": {
+      "can_claim": false,
+      "can_release": false,
+      "can_assign": false,
+      "can_save_draft": false,
+      "can_resolve": false,
+      "can_correct": false
+     }
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/business-metrics/interaction/727075a1-d59a-4338-842b-76253e227d06",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "has_outcome": false,
+    "values": [],
+    "coaching": null,
+    "model_used": null
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/pipeline/reprocess",
+   "query": "interaction_id=727075a1-d59a-4338-842b-76253e227d06&limit=50",
+   "phase": 0,
+   "status": 200,
+   "body": []
+  },
+  {
+   "method": "GET",
+   "path": "/interactions/727075a1-d59a-4338-842b-76253e227d06/human-scores/history",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": []
+  }
+ ]
+}

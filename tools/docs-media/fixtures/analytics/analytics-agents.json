@@ -1,0 +1,474 @@
+{
+ "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+ "calls": [
+  {
+   "method": "GET",
+   "path": "/auth/me",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "id": "3df810d8-3a7c-48a2-8132-94d100ca47a9",
+    "email": "priya@acme-lending.example",
+    "full_name": "Priya Sharma",
+    "is_active": true,
+    "created_at": "2026-10-22T07:37:03.476024Z",
+    "last_login_at": null,
+    "role": "owner",
+    "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+    "show_ai_scores": true,
+    "require_all_parameters": false
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/workspaces/mine",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+     "name": "Acme Lending",
+     "role": "owner",
+     "is_current": true
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/use-cases",
+   "query": "active_only=true",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "id": "47020d6e-299e-42ce-b736-2e804f77fbd4",
+     "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+     "name": "EMI collections",
+     "description": "Outbound calls to remind customers about EMIs and agree a payment date.",
+     "is_active": true,
+     "variables": [],
+     "created_at": "2026-10-22T07:37:03.476024Z"
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/agents/hierarchy-levels",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+     "name": "Agent",
+     "depth": 0,
+     "color": "#78909C"
+    },
+    {
+     "id": "8fcd5383-010b-4bba-8fff-60425471e85c",
+     "name": "Team Lead",
+     "depth": 1,
+     "color": "#D94F03"
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/agents",
+   "query": "page=1&page_size=200",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "items": [
+     {
+      "id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+      "agent_id": "arjun",
+      "name": "Arjun Mehta",
+      "email": "arjun@acme-lending.example",
+      "is_active": true,
+      "user_id": "3624ee97-57d0-4fe5-b153-757f3a99063a",
+      "team_leader_id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     },
+     {
+      "id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "agent_id": "kavya",
+      "name": "Kavya Nair",
+      "email": "kavya@acme-lending.example",
+      "is_active": true,
+      "user_id": "1ee4c070-bccc-4712-b8fa-dca20538dde2",
+      "team_leader_id": null,
+      "hierarchy_level_id": "8fcd5383-010b-4bba-8fff-60425471e85c",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     },
+     {
+      "id": "bc02f496-a4ec-472d-a999-4d5bd3c9273f",
+      "agent_id": "meera",
+      "name": "Meera Iyer",
+      "email": "meera@acme-lending.example",
+      "is_active": true,
+      "user_id": "edbaceef-e24f-4c00-9786-b6a3c667541a",
+      "team_leader_id": "83c43e6c-7a1a-48e1-af29-97856cae1799",
+      "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     },
+     {
+      "id": "1822661d-a832-4e84-8e81-247af583d604",
+      "agent_id": "neha",
+      "name": "Neha Kapoor",
+      "email": "neha@acme-lending.example",
+      "is_active": true,
+      "user_id": "9c4a8ceb-7b22-478c-afad-df48d9c0e0fb",
+      "team_leader_id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     },
+     {
+      "id": "f1a980bb-e5a9-4648-bbe5-87ec74132532",
+      "agent_id": "rahul",
+      "name": "Rahul Verma",
+      "email": "rahul@acme-lending.example",
+      "is_active": true,
+      "user_id": "19f437c0-0873-49fc-a2a5-b695ef82318e",
+      "team_leader_id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     },
+     {
+      "id": "83c43e6c-7a1a-48e1-af29-97856cae1799",
+      "agent_id": "rohan",
+      "name": "Rohan Das",
+      "email": "rohan@acme-lending.example",
+      "is_active": true,
+      "user_id": "7d2aa108-acb4-445a-9837-b6bb0a557027",
+      "team_leader_id": null,
+      "hierarchy_level_id": "8fcd5383-010b-4bba-8fff-60425471e85c",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     },
+     {
+      "id": "fc9dc9e7-86e1-4ecd-a763-cf78a69dff7e",
+      "agent_id": "sana",
+      "name": "Sana Khan",
+      "email": "sana@acme-lending.example",
+      "is_active": true,
+      "user_id": "5595a669-fc45-4623-8c55-1442d7674312",
+      "team_leader_id": "83c43e6c-7a1a-48e1-af29-97856cae1799",
+      "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     },
+     {
+      "id": "49620a22-0935-4f60-a2bb-629b1989bf30",
+      "agent_id": "vikram",
+      "name": "Vikram Rao",
+      "email": "vikram@acme-lending.example",
+      "is_active": true,
+      "user_id": "607cb160-c11c-422f-9e50-9b053885e33b",
+      "team_leader_id": "83c43e6c-7a1a-48e1-af29-97856cae1799",
+      "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     }
+    ],
+    "total": 8
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/agents/org-tree",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "levels": [
+     {
+      "id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "name": "Agent",
+      "depth": 0,
+      "color": "#78909C"
+     },
+     {
+      "id": "8fcd5383-010b-4bba-8fff-60425471e85c",
+      "name": "Team Lead",
+      "depth": 1,
+      "color": "#D94F03"
+     }
+    ],
+    "roots": [
+     {
+      "id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "name": "Kavya Nair",
+      "email": "kavya@acme-lending.example",
+      "hierarchy_level_id": "8fcd5383-010b-4bba-8fff-60425471e85c",
+      "hierarchy_level_name": "Team Lead",
+      "hierarchy_level_color": "#D94F03",
+      "children": [
+       {
+        "id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+        "name": "Arjun Mehta",
+        "email": "arjun@acme-lending.example",
+        "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+        "hierarchy_level_name": "Agent",
+        "hierarchy_level_color": "#78909C",
+        "children": []
+       },
+       {
+        "id": "1822661d-a832-4e84-8e81-247af583d604",
+        "name": "Neha Kapoor",
+        "email": "neha@acme-lending.example",
+        "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+        "hierarchy_level_name": "Agent",
+        "hierarchy_level_color": "#78909C",
+        "children": []
+       },
+       {
+        "id": "f1a980bb-e5a9-4648-bbe5-87ec74132532",
+        "name": "Rahul Verma",
+        "email": "rahul@acme-lending.example",
+        "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+        "hierarchy_level_name": "Agent",
+        "hierarchy_level_color": "#78909C",
+        "children": []
+       }
+      ]
+     },
+     {
+      "id": "83c43e6c-7a1a-48e1-af29-97856cae1799",
+      "name": "Rohan Das",
+      "email": "rohan@acme-lending.example",
+      "hierarchy_level_id": "8fcd5383-010b-4bba-8fff-60425471e85c",
+      "hierarchy_level_name": "Team Lead",
+      "hierarchy_level_color": "#D94F03",
+      "children": [
+       {
+        "id": "bc02f496-a4ec-472d-a999-4d5bd3c9273f",
+        "name": "Meera Iyer",
+        "email": "meera@acme-lending.example",
+        "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+        "hierarchy_level_name": "Agent",
+        "hierarchy_level_color": "#78909C",
+        "children": []
+       },
+       {
+        "id": "fc9dc9e7-86e1-4ecd-a763-cf78a69dff7e",
+        "name": "Sana Khan",
+        "email": "sana@acme-lending.example",
+        "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+        "hierarchy_level_name": "Agent",
+        "hierarchy_level_color": "#78909C",
+        "children": []
+       },
+       {
+        "id": "49620a22-0935-4f60-a2bb-629b1989bf30",
+        "name": "Vikram Rao",
+        "email": "vikram@acme-lending.example",
+        "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+        "hierarchy_level_name": "Agent",
+        "hierarchy_level_color": "#78909C",
+        "children": []
+       }
+      ]
+     }
+    ],
+    "unassigned": []
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/agents/stats",
+   "query": "page=1&page_size=20&sort_by=avg_score&sort_order=desc",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "items": [
+     {
+      "id": "1822661d-a832-4e84-8e81-247af583d604",
+      "agent_id": "neha",
+      "name": "Neha Kapoor",
+      "email": "neha@acme-lending.example",
+      "is_active": true,
+      "created_at": "2026-10-22T07:37:03.476024+00:00",
+      "user_id": "9c4a8ceb-7b22-478c-afad-df48d9c0e0fb",
+      "invite_status": "accepted",
+      "team_leader_id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "hierarchy_level_name": "Agent",
+      "hierarchy_level_color": "#78909C",
+      "call_count": 11,
+      "email_count": 0,
+      "avg_call_score": 98.18181818181819,
+      "avg_email_score": null,
+      "avg_score": 98.18181818181819,
+      "total_handling_time": 695.2000000000002,
+      "avg_handling_time": 63.20000000000002,
+      "fatal_count": 0
+     },
+     {
+      "id": "fc9dc9e7-86e1-4ecd-a763-cf78a69dff7e",
+      "agent_id": "sana",
+      "name": "Sana Khan",
+      "email": "sana@acme-lending.example",
+      "is_active": true,
+      "created_at": "2026-10-22T07:37:03.476024+00:00",
+      "user_id": "5595a669-fc45-4623-8c55-1442d7674312",
+      "invite_status": "accepted",
+      "team_leader_id": "83c43e6c-7a1a-48e1-af29-97856cae1799",
+      "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "hierarchy_level_name": "Agent",
+      "hierarchy_level_color": "#78909C",
+      "call_count": 5,
+      "email_count": 0,
+      "avg_call_score": 92,
+      "avg_email_score": null,
+      "avg_score": 92,
+      "total_handling_time": 316.3,
+      "avg_handling_time": 63.260000000000005,
+      "fatal_count": 0
+     },
+     {
+      "id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+      "agent_id": "arjun",
+      "name": "Arjun Mehta",
+      "email": "arjun@acme-lending.example",
+      "is_active": true,
+      "created_at": "2026-10-22T07:37:03.476024+00:00",
+      "user_id": "3624ee97-57d0-4fe5-b153-757f3a99063a",
+      "invite_status": "accepted",
+      "team_leader_id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "hierarchy_level_name": "Agent",
+      "hierarchy_level_color": "#78909C",
+      "call_count": 6,
+      "email_count": 0,
+      "avg_call_score": 87.33333333333333,
+      "avg_email_score": null,
+      "avg_score": 87.33333333333333,
+      "total_handling_time": 346.5,
+      "avg_handling_time": 57.75,
+      "fatal_count": 0
+     },
+     {
+      "id": "f1a980bb-e5a9-4648-bbe5-87ec74132532",
+      "agent_id": "rahul",
+      "name": "Rahul Verma",
+      "email": "rahul@acme-lending.example",
+      "is_active": true,
+      "created_at": "2026-10-22T07:37:03.476024+00:00",
+      "user_id": "19f437c0-0873-49fc-a2a5-b695ef82318e",
+      "invite_status": "accepted",
+      "team_leader_id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "hierarchy_level_name": "Agent",
+      "hierarchy_level_color": "#78909C",
+      "call_count": 10,
+      "email_count": 0,
+      "avg_call_score": 86.9,
+      "avg_email_score": null,
+      "avg_score": 86.9,
+      "total_handling_time": 605.6999999999999,
+      "avg_handling_time": 60.56999999999999,
+      "fatal_count": 0
+     },
+     {
+      "id": "bc02f496-a4ec-472d-a999-4d5bd3c9273f",
+      "agent_id": "meera",
+      "name": "Meera Iyer",
+      "email": "meera@acme-lending.example",
+      "is_active": true,
+      "created_at": "2026-10-22T07:37:03.476024+00:00",
+      "user_id": "edbaceef-e24f-4c00-9786-b6a3c667541a",
+      "invite_status": "accepted",
+      "team_leader_id": "83c43e6c-7a1a-48e1-af29-97856cae1799",
+      "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "hierarchy_level_name": "Agent",
+      "hierarchy_level_color": "#78909C",
+      "call_count": 8,
+      "email_count": 0,
+      "avg_call_score": 82.875,
+      "avg_email_score": null,
+      "avg_score": 82.875,
+      "total_handling_time": 497.8,
+      "avg_handling_time": 62.225,
+      "fatal_count": 1
+     },
+     {
+      "id": "49620a22-0935-4f60-a2bb-629b1989bf30",
+      "agent_id": "vikram",
+      "name": "Vikram Rao",
+      "email": "vikram@acme-lending.example",
+      "is_active": true,
+      "created_at": "2026-10-22T07:37:03.476024+00:00",
+      "user_id": "607cb160-c11c-422f-9e50-9b053885e33b",
+      "invite_status": "accepted",
+      "team_leader_id": "83c43e6c-7a1a-48e1-af29-97856cae1799",
+      "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "hierarchy_level_name": "Agent",
+      "hierarchy_level_color": "#78909C",
+      "call_count": 5,
+      "email_count": 0,
+      "avg_call_score": 82.4,
+      "avg_email_score": null,
+      "avg_score": 82.4,
+      "total_handling_time": 292.4,
+      "avg_handling_time": 58.48,
+      "fatal_count": 0
+     },
+     {
+      "id": "83c43e6c-7a1a-48e1-af29-97856cae1799",
+      "agent_id": "rohan",
+      "name": "Rohan Das",
+      "email": "rohan@acme-lending.example",
+      "is_active": true,
+      "created_at": "2026-10-22T07:37:03.476024+00:00",
+      "user_id": "7d2aa108-acb4-445a-9837-b6bb0a557027",
+      "invite_status": "accepted",
+      "team_leader_id": null,
+      "hierarchy_level_id": "8fcd5383-010b-4bba-8fff-60425471e85c",
+      "hierarchy_level_name": "Team Lead",
+      "hierarchy_level_color": "#D94F03",
+      "call_count": 0,
+      "email_count": 0,
+      "avg_call_score": null,
+      "avg_email_score": null,
+      "avg_score": null,
+      "total_handling_time": 0,
+      "avg_handling_time": 0,
+      "fatal_count": 0
+     },
+     {
+      "id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "agent_id": "kavya",
+      "name": "Kavya Nair",
+      "email": "kavya@acme-lending.example",
+      "is_active": true,
+      "created_at": "2026-10-22T07:37:03.476024+00:00",
+      "user_id": "1ee4c070-bccc-4712-b8fa-dca20538dde2",
+      "invite_status": "accepted",
+      "team_leader_id": null,
+      "hierarchy_level_id": "8fcd5383-010b-4bba-8fff-60425471e85c",
+      "hierarchy_level_name": "Team Lead",
+      "hierarchy_level_color": "#D94F03",
+      "call_count": 0,
+      "email_count": 0,
+      "avg_call_score": null,
+      "avg_email_score": null,
+      "avg_score": null,
+      "total_handling_time": 0,
+      "avg_handling_time": 0,
+      "fatal_count": 0
+     }
+    ],
+    "total": 8
+   }
+  }
+ ]
+}

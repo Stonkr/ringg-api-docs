@@ -1,0 +1,59 @@
+---
+title: "Summary"
+sidebarTitle: "Summary"
+description: "The Summary page shows call volume, average score, fatal calls and the score trend for your whole workspace, your team, or only your own calls."
+"og:title": "Ringg Analytics Summary: scores and trends by workspace, team or agent"
+---
+
+**Summary** is the first page after you sign in. What it covers depends on your [role](/analytics/roles-and-access): owners, admins, QAs and members see the whole workspace, a team lead sees their team, and an agent sees their own calls.
+
+In [Ringg Analytics](https://analytics.ringg.ai): **Sidebar → Summary**.
+
+Pick the period with the date picker at the top right; the default is the last 30 days. Scores are the official ones: a call's [resolved dispute](/disputes/results-and-corrections) score where there is one, otherwise the AI's.
+
+## Workspace
+
+<Frame caption="Summary for the whole workspace">
+  <img src="/media/analytics-summary/workspace.webp" alt="Workspace Summary with All, Calls, Emails and Meetings switches, four cards (Total interactions, Avg score, Above 80%, Fatal issues), top agents and top interactions lists, and the daily score trend" />
+</Frame>
+
+| Card or panel | Shows |
+|---|---|
+| **Total interactions** | Calls, emails and meetings in the period, analyzed and pending |
+| **Avg score** | Average score of analyzed interactions, with the split by type |
+| **Above 80%** | Interactions that scored 80 or more |
+| **Fatal issues** | Fatal classifications found |
+| **Agents** | Top or bottom agents by average score. The arrow opens **Agents**. |
+| **Interactions** | Best or worst interactions. The arrow opens **Interactions** sorted by score. |
+| **Score Trend** | Average score per day |
+
+Switch **All**, **Calls**, **Emails** or **Meetings** at the top to narrow every card to one type.
+
+## Team summary
+
+A team lead's **Summary** covers only their team, with the workspace average as the one benchmark.
+
+<Frame caption="A team lead's Summary">
+  <img src="/media/analytics-summary-team/team.webp" alt="Team summary for Kavya Nair: Team interactions, Team average score with the change against the previous period and the workspace average, Fatal calls, Open appeals, the Your team list with each agent's average and change, Where the team loses points, and Lowest-scoring calls" />
+</Frame>
+
+- **Team average score** shows the change against the previous period of the same length, and the workspace average.
+- **Your team** lists each agent, lowest average first, with their change. Click an agent to open their [report card](/analytics/coach-agents/report-cards).
+- **Where the team loses points** lists parameters scored on at least 3 calls where the team earns under 80% of the points.
+- **Open appeals** counts the team's [disputes](/disputes/overview) waiting for a QA.
+
+## My summary
+
+An agent's **Summary** covers only their own calls: their average and trend, lowest-scoring calls, the parameters to focus on, and **New coaching notes** from their team lead or QA. The notes card opens **My report card**.
+
+<Frame caption="An agent's own Summary">
+  <img src="/media/analytics-summary-agent/agent.webp" alt="My summary for Arjun Mehta: Interactions, Average score with the change against the previous period, Fatal calls, New coaching notes, Lowest-scoring calls, Where to focus and My score trend" />
+</Frame>
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Interactions" icon="inbox" href="/analytics/review-calls/interactions">Open a call behind a score.</Card>
+  <Card title="Report cards" icon="award" href="/analytics/coach-agents/report-cards">One agent's performance in depth.</Card>
+  <Card title="Roles and access" icon="shield" href="/analytics/roles-and-access">Why each role sees different figures.</Card>
+</Columns>

@@ -1,0 +1,59 @@
+---
+title: "Agents and teams"
+sidebarTitle: "Agents and teams"
+description: "Add the agents whose calls you score, set who reports to whom, and invite them to sign in. Team leads see only the agents in their team."
+"og:title": "Agents and teams in Ringg Analytics: add, organize and invite agents"
+---
+
+**Agents** holds one record per person whose calls you score, with their level and team lead. The reporting lines decide what a team lead sees: their own calls and those of everyone below them.
+
+In [Ringg Analytics](https://analytics.ringg.ai): **Sidebar → Agents**.
+
+<Frame caption="Agents with their level, team lead, login status and scores">
+  <img src="/media/analytics-agents/table.webp" alt="Agents table for Acme Lending with Agent name, Email, Level, Reports to, Login, Interactions, Avg score, Total HT and Avg HT columns, and Export, Manage Levels, Import CSV and Add Agent buttons" />
+</Frame>
+
+## Add agents
+
+<Steps>
+  <Step title="Set up levels">
+    Click **Manage Levels** and add your levels, for example **Agent** and **Team Lead**. An agent at the team-lead level signs in as a team lead.
+  </Step>
+  <Step title="Add agents">
+    Click **Add Agent** for one, or **Import CSV** for many. The CSV takes **Name**, **Email**, **Level** and **Reports To**; download the template from the import dialog. The whole file is checked first, and nothing is added if a row has an error.
+  </Step>
+  <Step title="Set who they report to">
+    Pick each agent's team lead under **Reports to**, or drag them onto their team lead in the org chart (the second view switch at the top).
+
+    <Check>An agent added with an email gets an invite and shows **Invited**, then **Joined** once they sign in.</Check>
+  </Step>
+</Steps>
+
+When you add calls with **Bulk calls**, each row is matched to an agent by email, then by name, and an agent that doesn't exist yet is created.
+
+<Frame caption="The org chart">
+  <img src="/media/analytics-agents/org-chart.webp" alt="Org chart with team leads Kavya Nair and Rohan Das, each with three agents under them" />
+</Frame>
+
+## Columns
+
+| Column | Shows |
+|---|---|
+| **Login** | **Joined**, **Invited**, **Not invited**, or **Add email to invite** |
+| **Interactions** | Calls and emails in the period |
+| **Avg score** | Average official score in the period |
+| **Total HT** / **Avg HT** | Total and average handling time |
+
+Click an agent to open their [report card](/analytics/coach-agents/report-cards). **Export** downloads the table.
+
+## What team leads see
+
+A team lead's **Agents** page is titled **Your team**. It lists only their team, read-only: no **Add Agent**, **Import CSV**, **Manage Levels** or **Export**, and reporting lines can't be changed. Clicking a row opens that agent's report card.
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Report cards" icon="award" href="/analytics/coach-agents/report-cards">Coach an agent from their report card.</Card>
+  <Card title="Roles and access" icon="shield" href="/analytics/roles-and-access">What each role can see.</Card>
+  <Card title="Interactions" icon="inbox" href="/analytics/review-calls/interactions">Add calls for your agents.</Card>
+</Columns>

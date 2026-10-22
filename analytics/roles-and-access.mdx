@@ -1,0 +1,56 @@
+---
+title: "Roles and access"
+sidebarTitle: "Roles and access"
+description: "Each Ringg Analytics role sees only the calls and pages it needs: agents their own calls, team leads their team, QAs and admins the whole workspace."
+"og:title": "Ringg Analytics roles: owner, admin, QA, team lead, agent and member"
+---
+
+Every member of a Ringg Analytics workspace has one role. The role decides which calls they can open and which pages they see; the server enforces the same rules, so a hidden page's data can't be fetched another way.
+
+In [Ringg Analytics](https://analytics.ringg.ai): **Sidebar → Team** (owners and admins).
+
+## Roles
+
+| Role | Calls they see | Pages | Can also |
+|---|---|---|---|
+| **Owner** | All | All | Everything an admin can. Set when the workspace is created. |
+| **Admin** | All | All, plus **Team** and **Settings** | Manage members, agents, metrics, notifications and dispute settings; reassign disputes; delete and reprocess calls |
+| **QA** | All | All except **Team** and **Settings** | Add calls, [review](/analytics/review-calls/qa-reviews) calls, resolve [disputes](/disputes/review-a-dispute), set up notifications, coach agents |
+| **Team lead** | Their team: the agents who report to them, directly or further down | **Summary** (their team), **Interactions**, **Agents** (their team, read-only), **Metrics** (read-only) | Leave coaching notes on their agents' [report cards](/analytics/coach-agents/report-cards) |
+| **Agent** | Their own | **Summary** (their own), **Interactions**, **My report card**, **Metrics** (read-only) | [Dispute](/disputes/raise-a-dispute) an AI score |
+| **Member** | All | All except **Notifications**, **Team** and **Settings** | Read only |
+
+A team lead sees the workspace average as a benchmark, but never another team's figures. An agent sees no team or workspace figures at all.
+
+## Invite members
+
+<Steps>
+  <Step title="Invite QAs, admins and members from Team">
+    Click **Invite User**, enter the name and email, and pick the role. For a QA, also pick the **Review mode** and whether they must **Rate and comment on every parameter** (see [QA settings](#qa-settings)).
+  </Step>
+  <Step title="Add agents and team leads from Agents">
+    Adding an agent with an email invites them and links their login to their agent record, which is what limits them to their own calls. See [Agents and teams](/analytics/coach-agents/agents-and-teams).
+
+    <Check>The invite arrives by email, and the member shows **Invite pending** until they sign in.</Check>
+  </Step>
+</Steps>
+
+An agent or team lead whose login isn't linked to an agent record sees no calls. Their **Summary** says "Your login isn't linked to an agent yet".
+
+## QA settings
+
+Set per QA when you invite them, or later from the icon next to their role on **Team**.
+
+| Setting | What it does |
+|---|---|
+| **Review mode: Blind review** (recommended) | The QA scores calls without seeing the AI. AI scores, reasoning and summaries show as `***`, and pages built on AI scores (**Summary**, **Business**, **Agents**, **Analytics**, **Notifications**) are hidden. |
+| **Review mode: Full view** | The QA sees AI scores, reasoning and summaries next to the rubric, plus the dashboards. |
+| **Rate and comment on every parameter** | The QA can't save a review until every parameter has a rating and a comment. |
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Agents and teams" icon="users" href="/analytics/coach-agents/agents-and-teams">Build the team structure team leads are scoped to.</Card>
+  <Card title="QA reviews" icon="clipboard-check" href="/analytics/review-calls/qa-reviews">How QAs score calls by hand.</Card>
+  <Card title="Disputes" icon="scale" href="/disputes/overview">How agents challenge an AI score.</Card>
+</Columns>

@@ -1,0 +1,63 @@
+---
+title: "Settings and reports"
+sidebarTitle: "Settings and reports"
+description: "Turn disputes on, set how long agents can appeal and how fast QAs should resolve, then track appeal and overturn rates to see where the AI is weakest."
+"og:title": "Dispute settings and the dispute report in Ringg Analytics"
+---
+
+Admins turn disputes on and set two deadlines for the workspace. The dispute report then shows how often agents appeal, how often QAs change the AI's rating, and which parameters the AI gets wrong most.
+
+In [Ringg Analytics](https://analytics.ringg.ai): **Sidebar → Settings** for the settings, **Sidebar → Analytics** for the report.
+
+## Settings
+
+<Frame caption="Dispute settings">
+  <img src="/media/disputes-settings/settings.webp" alt="Appeals settings card switched On, with Appeal window 3 calendar days and QA turnaround target 2 calendar days, and a Save button" />
+</Frame>
+
+<Steps>
+  <Step title="Turn appeals on">
+    In the **Appeals** card, turn the switch **On**. Agents can't appeal while it is off.
+  </Step>
+  <Step title="Set the deadlines">
+    Both are in calendar days, from 1 to 30:
+
+    | Setting | Default | Meaning |
+    |---|---|---|
+    | **Appeal window** | 3 | How long after the AI scores a call an agent can appeal it. A change applies to calls not yet appealed. |
+    | **QA turnaround target** | 2 | How soon a QA should resolve an appeal. Later ones are flagged **Overdue**. A change applies to new appeals. |
+  </Step>
+  <Step title="Save">
+    <Check>"Saved" shows next to the button.</Check>
+  </Step>
+</Steps>
+
+Only owners and admins can open **Settings**. Whether a QA sees the AI's score while reviewing is set per QA on **Team** (see [QA settings](/analytics/roles-and-access#qa-settings)).
+
+## Dispute report
+
+The **Disputed AI scores** section at the bottom of **Analytics** covers the period you pick. Owners, admins and QAs in full view can see it.
+
+<Frame caption="The dispute report">
+  <img src="/media/disputes-settings/report.webp" alt="Disputed AI scores section with Appeal rate 15%, Overturn rate 83%, Median turnaround 20.4 h, Closed on time 100% and Open now 3, the outcomes line, and Overturn rate by parameter listing four parameters with their disputed and overturned counts" />
+</Frame>
+
+| Figure | What it measures |
+|---|---|
+| **Appeal rate** | Scored calls in the period that were appealed |
+| **Overturn rate** | Disputed parameters a QA changed, out of all disputed parameters |
+| **Median turnaround** | Time from appeal to first resolution, with the time 90% were resolved within |
+| **Closed on time** | Appeals resolved by their **QA target**, and how many were corrected later |
+| **Open now** | Appeals waiting or in review, and how many are overdue |
+| Outcomes | Appeals **Overturned**, **Partially overturned** and **AI score upheld**, the average score change, and how often QAs changed parameters nobody disputed |
+| **Overturn rate by parameter** | For each parameter: how often it was disputed and how often the QA changed it. A high rate marks a parameter the AI gets wrong. |
+
+**Open the queue** opens **Interactions** filtered to appeals waiting for review. **Export** downloads the appeals in the period as a spreadsheet, with one sheet for the appeals, one for every disputed parameter's result, and one for their history.
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Review a dispute" icon="clipboard-check" href="/disputes/review-a-dispute">Work through the queue.</Card>
+  <Card title="Metrics" icon="clipboard-list" href="/analytics/set-up/metrics">Sharpen the descriptions of parameters the AI gets wrong.</Card>
+  <Card title="Roles and access" icon="shield" href="/analytics/roles-and-access">Set each QA's review mode.</Card>
+</Columns>

@@ -1,0 +1,348 @@
+{
+ "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+ "calls": [
+  {
+   "method": "GET",
+   "path": "/auth/me",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "id": "3624ee97-57d0-4fe5-b153-757f3a99063a",
+    "email": "arjun@acme-lending.example",
+    "full_name": "Arjun Mehta",
+    "is_active": true,
+    "created_at": "2026-10-22T07:37:03.476024Z",
+    "last_login_at": null,
+    "role": "agent",
+    "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+    "show_ai_scores": true,
+    "require_all_parameters": false
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/workspaces/mine",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+     "name": "Acme Lending",
+     "role": "agent",
+     "is_current": true
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/agents/me",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+    "name": "Arjun Mehta"
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/agents/a74e030a-713c-4f8a-a668-4fd233b0230a/report",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "kpis": {
+     "calls": 6,
+     "avg_score": 87.3333,
+     "previous_avg_score": 80.5714,
+     "fatal_calls": 0,
+     "fatal_rate": 0,
+     "appeals": 2,
+     "appeals_overturned": 2
+    },
+    "trend": [
+     {
+      "period": "2026-09-28",
+      "avg_score": 85,
+      "calls": 1
+     },
+     {
+      "period": "2026-10-12",
+      "avg_score": 84,
+      "calls": 2
+     },
+     {
+      "period": "2026-10-19",
+      "avg_score": 90.3333,
+      "calls": 3
+     }
+    ],
+    "parameters": [
+     {
+      "parameter": "Showed empathy",
+      "bucket": "Soft skills",
+      "fatal": false,
+      "scored": 6,
+      "pass_rate": 0.4667,
+      "previous_pass_rate": 0.1429,
+      "change": 0.3238,
+      "breaches": 0,
+      "team_pass_rate": null,
+      "workspace_pass_rate": null
+     },
+     {
+      "parameter": "Greeted the customer by name",
+      "bucket": "Call opening",
+      "fatal": false,
+      "scored": 6,
+      "pass_rate": 0.6667,
+      "previous_pass_rate": 0.7143,
+      "change": -0.0476,
+      "breaches": 0,
+      "team_pass_rate": null,
+      "workspace_pass_rate": null
+     },
+     {
+      "parameter": "Stated name and company",
+      "bucket": "Call opening",
+      "fatal": false,
+      "scored": 6,
+      "pass_rate": 0.6667,
+      "previous_pass_rate": 0.7143,
+      "change": -0.0476,
+      "breaches": 0,
+      "team_pass_rate": null,
+      "workspace_pass_rate": null
+     },
+     {
+      "parameter": "Captured a promise to pay",
+      "bucket": "Resolution",
+      "fatal": false,
+      "scored": 6,
+      "pass_rate": 0.8333,
+      "previous_pass_rate": 1,
+      "change": -0.1667,
+      "breaches": 0,
+      "team_pass_rate": null,
+      "workspace_pass_rate": null
+     },
+     {
+      "parameter": "Gave the recording disclosure",
+      "bucket": "Compliance",
+      "fatal": false,
+      "scored": 6,
+      "pass_rate": 0.8333,
+      "previous_pass_rate": 0.8571,
+      "change": -0.0238,
+      "breaches": 0,
+      "team_pass_rate": null,
+      "workspace_pass_rate": null
+     },
+     {
+      "parameter": "Closed with a recap",
+      "bucket": "Soft skills",
+      "fatal": false,
+      "scored": 6,
+      "pass_rate": 0.8667,
+      "previous_pass_rate": 0.8286,
+      "change": 0.0381,
+      "breaches": 0,
+      "team_pass_rate": null,
+      "workspace_pass_rate": null
+     },
+     {
+      "parameter": "No threats or pressure",
+      "bucket": "Compliance",
+      "fatal": true,
+      "scored": 6,
+      "pass_rate": 1,
+      "previous_pass_rate": 1,
+      "change": 0,
+      "breaches": 0,
+      "team_pass_rate": null,
+      "workspace_pass_rate": null
+     },
+     {
+      "parameter": "Offered payment options",
+      "bucket": "Resolution",
+      "fatal": false,
+      "scored": 6,
+      "pass_rate": 1,
+      "previous_pass_rate": 1,
+      "change": 0,
+      "breaches": 0,
+      "team_pass_rate": null,
+      "workspace_pass_rate": null
+     },
+     {
+      "parameter": "Stated the EMI amount and due date",
+      "bucket": "Resolution",
+      "fatal": false,
+      "scored": 6,
+      "pass_rate": 1,
+      "previous_pass_rate": 0.4286,
+      "change": 0.5714,
+      "breaches": 0,
+      "team_pass_rate": null,
+      "workspace_pass_rate": null
+     },
+     {
+      "parameter": "Verified the customer's identity",
+      "bucket": "Compliance",
+      "fatal": true,
+      "scored": 6,
+      "pass_rate": 1,
+      "previous_pass_rate": 1,
+      "change": 0,
+      "breaches": 0,
+      "team_pass_rate": null,
+      "workspace_pass_rate": null
+     }
+    ],
+    "categories": [
+     {
+      "bucket": "Call opening",
+      "pass_rate": 0.6667,
+      "scored": 12
+     },
+     {
+      "bucket": "Soft skills",
+      "pass_rate": 0.6667,
+      "scored": 12
+     },
+     {
+      "bucket": "Compliance",
+      "pass_rate": 0.9444,
+      "scored": 18
+     },
+     {
+      "bucket": "Resolution",
+      "pass_rate": 0.9444,
+      "scored": 18
+     }
+    ],
+    "needs_work": [
+     "Showed empathy",
+     "Greeted the customer by name",
+     "Stated name and company"
+    ],
+    "strengths": [
+     "No threats or pressure",
+     "Offered payment options",
+     "Stated the EMI amount and due date"
+    ],
+    "recent_calls": [
+     {
+      "id": "727075a1-d59a-4338-842b-76253e227d06",
+      "title": "EMI reminder · AL-20526",
+      "created_at": "2026-10-21T21:19:09.461569+00:00",
+      "score": 100,
+      "is_fatal": false,
+      "score_source": "appeal",
+      "appeal_status": "resolved",
+      "appeal_outcome": "overturned"
+     },
+     {
+      "id": "151eaa64-7191-4dff-803a-74a87db07206",
+      "title": "Missed EMI follow-up · AL-20528",
+      "created_at": "2026-10-21T16:51:55.491222+00:00",
+      "score": 85,
+      "is_fatal": false,
+      "score_source": "ai",
+      "appeal_status": null,
+      "appeal_outcome": null
+     },
+     {
+      "id": "dd7581f0-0cdd-4938-a38d-f3784bdd10c8",
+      "title": "Missed EMI follow-up · AL-20537",
+      "created_at": "2026-10-20T08:41:10.874422+00:00",
+      "score": 86,
+      "is_fatal": false,
+      "score_source": "appeal",
+      "appeal_status": "resolved",
+      "appeal_outcome": "overturned"
+     },
+     {
+      "id": "f2324023-a53b-4180-94e7-975e9a8b87f1",
+      "title": "Missed EMI follow-up · AL-20546",
+      "created_at": "2026-10-16T18:10:46.970714+00:00",
+      "score": 74,
+      "is_fatal": false,
+      "score_source": "ai",
+      "appeal_status": null,
+      "appeal_outcome": null
+     },
+     {
+      "id": "60ebec2f-15cb-4252-929f-d3558d1fcbad",
+      "title": "EMI reminder · AL-20553",
+      "created_at": "2026-10-13T02:25:42.359435+00:00",
+      "score": 94,
+      "is_fatal": false,
+      "score_source": "ai",
+      "appeal_status": null,
+      "appeal_outcome": null
+     },
+     {
+      "id": "44fa81a9-764f-4766-971a-b262a11aedf8",
+      "title": "Missed EMI follow-up · AL-20558",
+      "created_at": "2026-10-02T09:18:58.829255+00:00",
+      "score": 85,
+      "is_fatal": false,
+      "score_source": "ai",
+      "appeal_status": null,
+      "appeal_outcome": null
+     }
+    ],
+    "bucket": "week",
+    "agent": {
+     "id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+     "name": "Arjun Mehta",
+     "email": "arjun@acme-lending.example",
+     "team_leader": "Kavya Nair"
+    },
+    "period": {
+     "from": "2026-09-22T18:30:00+00:00",
+     "to": "2026-10-22T18:29:59.999000+00:00",
+     "previous_from": "2026-08-23T18:30:00.001000+00:00",
+     "previous_to": "2026-09-22T18:30:00+00:00"
+    },
+    "benchmarks": null,
+    "is_self": true,
+    "can_coach": false
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/agents/a74e030a-713c-4f8a-a668-4fd233b0230a/coaching",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "id": "2362d451-ce5f-45d5-a5db-bee7b2ca8ca6",
+     "agent_id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+     "parameter": "Greeted the customer by name",
+     "body": "Open with the customer's name every time, before anything else. Listen to Neha's call from Tuesday for a good example.",
+     "author_name": "Kavya Nair",
+     "author_user_id": "1ee4c070-bccc-4712-b8fa-dca20538dde2",
+     "created_at": "2026-10-18T04:37:06.725558Z",
+     "acknowledged_at": null,
+     "can_delete": false
+    },
+    {
+     "id": "97b4aebe-579d-49bc-9764-11c1ca9d5e60",
+     "agent_id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+     "parameter": null,
+     "body": "Good recovery on the restructuring call. Keep recapping the amount and date at the end.",
+     "author_name": "Kavya Nair",
+     "author_user_id": "1ee4c070-bccc-4712-b8fa-dca20538dde2",
+     "created_at": "2026-10-16T03:37:06.725558Z",
+     "acknowledged_at": "2026-10-16T05:37:06.725558Z",
+     "can_delete": false
+    }
+   ]
+  }
+ ]
+}

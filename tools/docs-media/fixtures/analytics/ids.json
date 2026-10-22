@@ -1,0 +1,31 @@
+{
+ "agents": {
+  "kavya": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+  "rahul": "f1a980bb-e5a9-4648-bbe5-87ec74132532",
+  "neha": "1822661d-a832-4e84-8e81-247af583d604",
+  "arjun": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+  "rohan": "83c43e6c-7a1a-48e1-af29-97856cae1799",
+  "sana": "fc9dc9e7-86e1-4ecd-a763-cf78a69dff7e",
+  "vikram": "49620a22-0935-4f60-a2bb-629b1989bf30",
+  "meera": "bc02f496-a4ec-472d-a999-4d5bd3c9273f"
+ },
+ "calls": {
+  "raise": "eadb24ec-b550-4a83-94a8-448c918ad4de",
+  "mixed": "aa30ab91-c903-493a-a255-c81c39b06548",
+  "qaReviewed": "4fd27b2a-ff12-49ed-871c-396bc730d092",
+  "appeal_rahul": "d4d3ab03-6ed1-47cb-85a9-eab9fa460dcc",
+  "appeal_neha": "e329cc29-d7e0-454b-9fa8-d2d8c33f7602",
+  "appeal_arjun_corrected": "dd7581f0-0cdd-4938-a38d-f3784bdd10c8",
+  "appeal_arjun": "727075a1-d59a-4338-842b-76253e227d06",
+  "appeal_sana": "a84d2b18-357e-43fe-83c2-da3906b7fcf7",
+  "appeal_meera": "35408c0b-a38c-4a09-af19-aad7f5e19d74"
+ },
+ "appeals": {
+  "rahul": "fa0d7a6c-106f-43b1-ae66-f0edd788210c",
+  "neha": "19f557f2-77b1-4301-b397-ed9ca62bf434",
+  "arjun_corrected": "0f8e505e-d84b-4ecd-8bfa-6c52b0a62794",
+  "arjun": "45188d16-cf37-4c20-baa0-5f544db49037",
+  "sana": "c1196fee-e396-43c1-8174-c70ee71136a3",
+  "meera": "3f53eccc-9c93-426e-a18e-a1a64d71ff22"
+ }
+}

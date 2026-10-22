@@ -252,6 +252,52 @@
         ]
       },
       {
+        "tab": "Analytics",
+        "pages": [
+          "analytics/introduction",
+          "analytics/roles-and-access",
+          {
+            "group": "Review calls",
+            "pages": [
+              "analytics/review-calls/summary",
+              "analytics/review-calls/interactions",
+              "analytics/review-calls/qa-reviews"
+            ]
+          },
+          {
+            "group": "Coach agents",
+            "tag": "NEW",
+            "pages": [
+              "analytics/coach-agents/agents-and-teams",
+              "analytics/coach-agents/report-cards"
+            ]
+          },
+          {
+            "group": "Set up",
+            "pages": [
+              "analytics/set-up/metrics",
+              "analytics/set-up/notifications"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Disputes",
+        "pages": [
+          {
+            "group": "Disputes",
+            "tag": "NEW",
+            "pages": [
+              "disputes/overview",
+              "disputes/raise-a-dispute",
+              "disputes/review-a-dispute",
+              "disputes/results-and-corrections",
+              "disputes/settings-and-reports"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "API reference",
         "groups": [
           {

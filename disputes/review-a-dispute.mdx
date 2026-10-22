@@ -1,0 +1,102 @@
+---
+title: "Review a dispute"
+sidebarTitle: "Review a dispute"
+description: "As a QA, take a dispute from the queue, re-score the call with the disputed parameters first, keep the AI's ratings for the rest, and resolve it."
+"og:title": "Review a dispute: re-score an appealed call in Ringg Analytics"
+---
+
+When an agent appeals a call, a QA re-scores it. You rate each disputed parameter with a remark the agent reads, keep or change the AI's ratings for the rest, and resolve; your score becomes the call's official score.
+
+In [Ringg Analytics](https://analytics.ringg.ai): **Sidebar → Interactions → Filter → Appeal**. Owners, admins and QAs can review.
+
+## Before you start
+
+<Columns cols={2}>
+  <Card title="A reviewer role" icon="shield" href="/analytics/roles-and-access" horizontal>
+    You are a QA, an admin or the owner.
+  </Card>
+  <Card title="An appeal waiting" icon="flag" href="/disputes/raise-a-dispute" horizontal>
+    An agent has appealed a call.
+  </Card>
+</Columns>
+
+## Resolve a dispute
+
+<Frame caption="Taking an appeal from the queue, re-scoring it and resolving it">
+  <video alt="Taking an appeal from the queue, re-scoring it and resolving it" aria-label="Taking an appeal from the queue, re-scoring it and resolving it" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/disputes-review/poster.webp">
+    <source src="/media/disputes-review/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open the queue">
+    On **Interactions**, click **Filter → Appeal** and pick **Waiting for review**. The queue lists the oldest appeal first.
+
+    <Frame caption="Appeals waiting for review">
+      <img src="/media/disputes-review/queue.webp" alt="Interactions filtered to Appeal: Waiting for review, listing three calls by Meera Iyer, Rahul Verma and Vikram Rao, each with an Appeal · waiting badge" />
+    </Frame>
+  </Step>
+  <Step title="Claim it">
+    Open the call and click **Start review**. The appeal moves to **In review**, and other QAs see that you have it.
+  </Step>
+  <Step title="Rate the disputed parameters">
+    "Disputed by the agent" lists each disputed parameter with the agent's reason and the AI's. Pick your rating and write a remark; the remark is required, and the agent reads it.
+  </Step>
+  <Step title="Keep or change the rest">
+    **Other parameters** holds everything nobody disputed. Click **Keep AI ratings for …** to keep the AI's rating on all of them, or **Rate them myself** to open them and change any. Tick **Mark interaction as fatal** if the call breaks a fatal rule, and add a note to the agent if you want; it goes in their email.
+
+    <Frame caption="A disputed parameter accepted, the AI's ratings kept for the rest">
+      <img src="/media/disputes-review/review-form.webp" alt="Review the appeal form: Disputed by the agent (1) with Stated the EMI amount and due date, the agent's and AI's reasons, Yes selected and the QA's remark, marked Accepted; Other parameters (9) with AI ratings kept; Mark interaction as fatal; a note box; and Score so far 100" />
+    </Frame>
+  </Step>
+  <Step title="Resolve">
+    Check **Score so far**, then click **Resolve appeal** and **Submit final score**.
+
+    <Check>The call shows "Final score · Appeal reviewed by QA" with the AI's score and the outcome. The agent and their team lead get an email: "Appeal reviewed: …".</Check>
+  </Step>
+</Steps>
+
+<Frame caption="The final score after the appeal">
+  <img src="/media/disputes-review/final-score.webp" alt="Final score card reading Final score · Appeal reviewed by QA, 100, AI scored 90 (+10) · Overturned" />
+</Frame>
+
+Your work saves as a draft while you review, so you can leave and come back. Only reviewers see the draft; the agent never does.
+
+## Queue filters
+
+| Filter | Lists |
+|---|---|
+| **Waiting for review** | Appeals no QA has claimed |
+| **In review** | Appeals a QA has claimed |
+| **In review by me** | Appeals you have claimed |
+| **Overdue** | Open appeals past their **QA target** |
+| **Resolved** | Appeals with a final score |
+| **Not appealed** | Calls without an appeal |
+
+## Release or reassign
+
+- Click **Release** to put an appeal you claimed back in the queue.
+- An owner or admin can **Take back** anyone's claim, or pick a QA under **Assign to…** to hand it over.
+- A reviewer who is removed from the workspace, or moved to a role that can't review, gives up their claims automatically.
+
+## Blind review
+
+A QA in **Blind review** sees the names of the disputed parameters but not the agent's reasons, and none of the AI's ratings or reasons, so they re-score the call from the recording. **Keep AI ratings** still works; the ratings stay hidden. See [QA settings](/analytics/roles-and-access#qa-settings).
+
+## Outcomes
+
+Each disputed parameter is marked **Changed** or **Unchanged** (**Accepted** or **Rejected** in full view), and the appeal as a whole:
+
+| Outcome | When |
+|---|---|
+| **AI score upheld** | You changed none of the disputed parameters |
+| **Partially overturned** | You changed some of them |
+| **Overturned** | You changed all of them |
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Results and corrections" icon="file-check" href="/disputes/results-and-corrections">What the agent sees, and how to correct a result.</Card>
+  <Card title="Settings and reports" icon="settings" href="/disputes/settings-and-reports">Turnaround targets and the dispute report.</Card>
+  <Card title="QA reviews" icon="clipboard-check" href="/analytics/review-calls/qa-reviews">Review calls nobody disputed.</Card>
+</Columns>

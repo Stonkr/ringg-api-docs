@@ -1,0 +1,65 @@
+---
+title: "Interactions"
+sidebarTitle: "Interactions"
+description: "Interactions lists every call, email and meeting with its score, agent and status; open one for the transcript, recording and the scorecard behind the score."
+"og:title": "Ringg Analytics Interactions: calls, transcripts and scorecards"
+---
+
+**Interactions** is the list of everything Ringg Analytics has scored. Open any row to see why it scored the way it did: the transcript, the recording, and a rating with a reason for every parameter.
+
+In [Ringg Analytics](https://analytics.ringg.ai): **Sidebar → Interactions**.
+
+<Frame caption="Interactions for the last 30 days">
+  <img src="/media/analytics-interactions/list.webp" alt="Interactions list with Title, Type, Agent, Use case, Duration, Score and Status columns; some rows show appeal badges such as Appeal · waiting and Appeal · resolved, and one row shows a FATAL score of 0" />
+</Frame>
+
+Agents see only their own calls here and team leads their team's (see [Roles and access](/analytics/roles-and-access)).
+
+## Filter and sort
+
+Click **Filter**. Active filters show as chips above the list; click a chip's **×** to clear it.
+
+| Filter | Options |
+|---|---|
+| **Type** | Calls, emails or meetings |
+| **Status** | **Pending**, **Processing**, **Analyzed**, **Failed** |
+| **Agent** | One or more agents. Not shown to agents. |
+| **Use Case** | The [use case](/analytics/set-up/metrics) a call was scored under |
+| **Duration** | Call length, for example **Under 2 min** |
+| **Score** | Score range. Hidden in blind review. |
+| **Classification** | Calls tagged with a classification, such as a fatal issue. Not shown to agents and team leads. |
+| **Human Evaluation** | Calls a QA has or hasn't [reviewed](/analytics/review-calls/qa-reviews) |
+| **Appeal** | [Dispute](/disputes/overview) status, such as **Waiting for review** or **Overdue**. Agents get **Can still appeal**, **Appealed — awaiting QA** and **Appeal resolved**. |
+| **ID / External ID** | A call's ID or your own reference |
+
+The **Score** column shows the official score: a scale icon marks one set by a QA on a resolved dispute, and **FATAL** marks a call whose score is 0 because a fatal parameter was missed.
+
+**Export** downloads the filtered list as a spreadsheet. It's available to owners, admins, QAs and members.
+
+## Open a call
+
+Click a row to open the call in a side panel, or **Open full page** in that panel for the full-width view below.
+
+<Frame caption="One call: the transcript on the left, the scorecard on the right">
+  <img src="/media/analytics-interactions/call-page.webp" alt="Call Analysis for Missed EMI follow-up with the agent, date, duration, status and IDs, the audio waveform with play button and speed, the transcript with Agent and Customer turns and timestamps, and Analytics with speaking distribution, the overall score and category scores" />
+</Frame>
+
+| Section | What it shows |
+|---|---|
+| Audio | The recording with a waveform. Click the waveform to jump to a moment, and change the playback speed next to it. |
+| **Transcript** | Each turn labelled **Agent** or **Customer**, with its time in the call |
+| **Speaking distribution** | Talk time and turns for the agent and the customer |
+| Score | The overall score, or **AI** and **Human** side by side once a QA has [reviewed](/analytics/review-calls/qa-reviews) the call |
+| Categories | Points earned per category, for example **Compliance 40/40**. Expand one for its parameters: the rating, the AI's reason and the quote from the call it is based on. |
+| **Summary** and **Key Events** | What happened on the call and what needs follow-up |
+| Classifications | Tags such as **Promise to pay**, with their severity |
+
+If the call has a [dispute](/disputes/overview), its status and result sit at the top of the scorecard.
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="QA reviews" icon="clipboard-check" href="/analytics/review-calls/qa-reviews">Re-score a call by hand.</Card>
+  <Card title="Raise a dispute" icon="scale" href="/disputes/raise-a-dispute">Agents: appeal a score you think is wrong.</Card>
+  <Card title="Metrics" icon="clipboard-list" href="/analytics/set-up/metrics">The rubric behind every score.</Card>
+</Columns>

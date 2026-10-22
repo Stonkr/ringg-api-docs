@@ -1,0 +1,663 @@
+{
+ "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+ "calls": [
+  {
+   "method": "GET",
+   "path": "/auth/me",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "id": "1ee4c070-bccc-4712-b8fa-dca20538dde2",
+    "email": "kavya@acme-lending.example",
+    "full_name": "Kavya Nair",
+    "is_active": true,
+    "created_at": "2026-10-22T07:37:03.476024Z",
+    "last_login_at": null,
+    "role": "team_lead",
+    "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+    "show_ai_scores": true,
+    "require_all_parameters": false
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/workspaces/mine",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+     "name": "Acme Lending",
+     "role": "team_lead",
+     "is_current": true
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/agents/hierarchy-levels",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+     "name": "Agent",
+     "depth": 0,
+     "color": "#78909C"
+    },
+    {
+     "id": "8fcd5383-010b-4bba-8fff-60425471e85c",
+     "name": "Team Lead",
+     "depth": 1,
+     "color": "#D94F03"
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/use-cases",
+   "query": "active_only=true",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "id": "47020d6e-299e-42ce-b736-2e804f77fbd4",
+     "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+     "name": "EMI collections",
+     "description": "Outbound calls to remind customers about EMIs and agree a payment date.",
+     "is_active": true,
+     "variables": [],
+     "created_at": "2026-10-22T07:37:03.476024Z"
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/agents",
+   "query": "page=1&page_size=200",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "items": [
+     {
+      "id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+      "agent_id": "arjun",
+      "name": "Arjun Mehta",
+      "email": "arjun@acme-lending.example",
+      "is_active": true,
+      "user_id": "3624ee97-57d0-4fe5-b153-757f3a99063a",
+      "team_leader_id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     },
+     {
+      "id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "agent_id": "kavya",
+      "name": "Kavya Nair",
+      "email": "kavya@acme-lending.example",
+      "is_active": true,
+      "user_id": "1ee4c070-bccc-4712-b8fa-dca20538dde2",
+      "team_leader_id": null,
+      "hierarchy_level_id": "8fcd5383-010b-4bba-8fff-60425471e85c",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     },
+     {
+      "id": "1822661d-a832-4e84-8e81-247af583d604",
+      "agent_id": "neha",
+      "name": "Neha Kapoor",
+      "email": "neha@acme-lending.example",
+      "is_active": true,
+      "user_id": "9c4a8ceb-7b22-478c-afad-df48d9c0e0fb",
+      "team_leader_id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     },
+     {
+      "id": "f1a980bb-e5a9-4648-bbe5-87ec74132532",
+      "agent_id": "rahul",
+      "name": "Rahul Verma",
+      "email": "rahul@acme-lending.example",
+      "is_active": true,
+      "user_id": "19f437c0-0873-49fc-a2a5-b695ef82318e",
+      "team_leader_id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     }
+    ],
+    "total": 4
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/agents/org-tree",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "levels": [
+     {
+      "id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "name": "Agent",
+      "depth": 0,
+      "color": "#78909C"
+     },
+     {
+      "id": "8fcd5383-010b-4bba-8fff-60425471e85c",
+      "name": "Team Lead",
+      "depth": 1,
+      "color": "#D94F03"
+     }
+    ],
+    "roots": [
+     {
+      "id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "name": "Kavya Nair",
+      "email": "kavya@acme-lending.example",
+      "hierarchy_level_id": "8fcd5383-010b-4bba-8fff-60425471e85c",
+      "hierarchy_level_name": "Team Lead",
+      "hierarchy_level_color": "#D94F03",
+      "children": [
+       {
+        "id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+        "name": "Arjun Mehta",
+        "email": "arjun@acme-lending.example",
+        "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+        "hierarchy_level_name": "Agent",
+        "hierarchy_level_color": "#78909C",
+        "children": []
+       },
+       {
+        "id": "1822661d-a832-4e84-8e81-247af583d604",
+        "name": "Neha Kapoor",
+        "email": "neha@acme-lending.example",
+        "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+        "hierarchy_level_name": "Agent",
+        "hierarchy_level_color": "#78909C",
+        "children": []
+       },
+       {
+        "id": "f1a980bb-e5a9-4648-bbe5-87ec74132532",
+        "name": "Rahul Verma",
+        "email": "rahul@acme-lending.example",
+        "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+        "hierarchy_level_name": "Agent",
+        "hierarchy_level_color": "#78909C",
+        "children": []
+       }
+      ]
+     }
+    ],
+    "unassigned": []
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/agents/stats",
+   "query": "page=1&page_size=20&sort_by=avg_score&sort_order=desc",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "items": [
+     {
+      "id": "1822661d-a832-4e84-8e81-247af583d604",
+      "agent_id": "neha",
+      "name": "Neha Kapoor",
+      "email": "neha@acme-lending.example",
+      "is_active": true,
+      "created_at": "2026-10-22T07:37:03.476024+00:00",
+      "user_id": "9c4a8ceb-7b22-478c-afad-df48d9c0e0fb",
+      "invite_status": "accepted",
+      "team_leader_id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "hierarchy_level_name": "Agent",
+      "hierarchy_level_color": "#78909C",
+      "call_count": 11,
+      "email_count": 0,
+      "avg_call_score": 98.18181818181819,
+      "avg_email_score": null,
+      "avg_score": 98.18181818181819,
+      "total_handling_time": 695.2000000000002,
+      "avg_handling_time": 63.20000000000002,
+      "fatal_count": 0
+     },
+     {
+      "id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+      "agent_id": "arjun",
+      "name": "Arjun Mehta",
+      "email": "arjun@acme-lending.example",
+      "is_active": true,
+      "created_at": "2026-10-22T07:37:03.476024+00:00",
+      "user_id": "3624ee97-57d0-4fe5-b153-757f3a99063a",
+      "invite_status": "accepted",
+      "team_leader_id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "hierarchy_level_name": "Agent",
+      "hierarchy_level_color": "#78909C",
+      "call_count": 6,
+      "email_count": 0,
+      "avg_call_score": 87.33333333333333,
+      "avg_email_score": null,
+      "avg_score": 87.33333333333333,
+      "total_handling_time": 346.5,
+      "avg_handling_time": 57.75,
+      "fatal_count": 0
+     },
+     {
+      "id": "f1a980bb-e5a9-4648-bbe5-87ec74132532",
+      "agent_id": "rahul",
+      "name": "Rahul Verma",
+      "email": "rahul@acme-lending.example",
+      "is_active": true,
+      "created_at": "2026-10-22T07:37:03.476024+00:00",
+      "user_id": "19f437c0-0873-49fc-a2a5-b695ef82318e",
+      "invite_status": "accepted",
+      "team_leader_id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "hierarchy_level_id": "150af301-d6aa-4ac7-8f2f-bd63bf763152",
+      "hierarchy_level_name": "Agent",
+      "hierarchy_level_color": "#78909C",
+      "call_count": 10,
+      "email_count": 0,
+      "avg_call_score": 86.9,
+      "avg_email_score": null,
+      "avg_score": 86.9,
+      "total_handling_time": 605.6999999999999,
+      "avg_handling_time": 60.56999999999999,
+      "fatal_count": 0
+     },
+     {
+      "id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "agent_id": "kavya",
+      "name": "Kavya Nair",
+      "email": "kavya@acme-lending.example",
+      "is_active": true,
+      "created_at": "2026-10-22T07:37:03.476024+00:00",
+      "user_id": "1ee4c070-bccc-4712-b8fa-dca20538dde2",
+      "invite_status": "accepted",
+      "team_leader_id": null,
+      "hierarchy_level_id": "8fcd5383-010b-4bba-8fff-60425471e85c",
+      "hierarchy_level_name": "Team Lead",
+      "hierarchy_level_color": "#D94F03",
+      "call_count": 0,
+      "email_count": 0,
+      "avg_call_score": null,
+      "avg_email_score": null,
+      "avg_score": null,
+      "total_handling_time": 0,
+      "avg_handling_time": 0,
+      "fatal_count": 0
+     }
+    ],
+    "total": 4
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/agents/a74e030a-713c-4f8a-a668-4fd233b0230a/report",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "kpis": {
+     "calls": 6,
+     "avg_score": 87.3333,
+     "previous_avg_score": 80.5714,
+     "fatal_calls": 0,
+     "fatal_rate": 0,
+     "appeals": 2,
+     "appeals_overturned": 2
+    },
+    "trend": [
+     {
+      "period": "2026-09-28",
+      "avg_score": 85,
+      "calls": 1
+     },
+     {
+      "period": "2026-10-12",
+      "avg_score": 84,
+      "calls": 2
+     },
+     {
+      "period": "2026-10-19",
+      "avg_score": 90.3333,
+      "calls": 3
+     }
+    ],
+    "parameters": [
+     {
+      "parameter": "Showed empathy",
+      "bucket": "Soft skills",
+      "fatal": false,
+      "scored": 6,
+      "pass_rate": 0.4667,
+      "previous_pass_rate": 0.1429,
+      "change": 0.3238,
+      "breaches": 0,
+      "team_pass_rate": 0.8148,
+      "workspace_pass_rate": 0.875
+     },
+     {
+      "parameter": "Greeted the customer by name",
+      "bucket": "Call opening",
+      "fatal": false,
+      "scored": 6,
+      "pass_rate": 0.6667,
+      "previous_pass_rate": 0.7143,
+      "change": -0.0476,
+      "breaches": 0,
+      "team_pass_rate": 0.8889,
+      "workspace_pass_rate": 0.8958
+     },
+     {
+      "parameter": "Stated name and company",
+      "bucket": "Call opening",
+      "fatal": false,
+      "scored": 6,
+      "pass_rate": 0.6667,
+      "previous_pass_rate": 0.7143,
+      "change": -0.0476,
+      "breaches": 0,
+      "team_pass_rate": 0.8519,
+      "workspace_pass_rate": 0.8958
+     },
+     {
+      "parameter": "Captured a promise to pay",
+      "bucket": "Resolution",
+      "fatal": false,
+      "scored": 6,
+      "pass_rate": 0.8333,
+      "previous_pass_rate": 1,
+      "change": -0.1667,
+      "breaches": 0,
+      "team_pass_rate": 0.9615,
+      "workspace_pass_rate": 0.8936
+     },
+     {
+      "parameter": "Gave the recording disclosure",
+      "bucket": "Compliance",
+      "fatal": false,
+      "scored": 6,
+      "pass_rate": 0.8333,
+      "previous_pass_rate": 0.8571,
+      "change": -0.0238,
+      "breaches": 0,
+      "team_pass_rate": 0.7778,
+      "workspace_pass_rate": 0.8125
+     },
+     {
+      "parameter": "Closed with a recap",
+      "bucket": "Soft skills",
+      "fatal": false,
+      "scored": 6,
+      "pass_rate": 0.8667,
+      "previous_pass_rate": 0.8286,
+      "change": 0.0381,
+      "breaches": 0,
+      "team_pass_rate": 0.9704,
+      "workspace_pass_rate": 0.9542
+     },
+     {
+      "parameter": "No threats or pressure",
+      "bucket": "Compliance",
+      "fatal": true,
+      "scored": 6,
+      "pass_rate": 1,
+      "previous_pass_rate": 1,
+      "change": 0,
+      "breaches": 0,
+      "team_pass_rate": 1,
+      "workspace_pass_rate": 1
+     },
+     {
+      "parameter": "Offered payment options",
+      "bucket": "Resolution",
+      "fatal": false,
+      "scored": 6,
+      "pass_rate": 1,
+      "previous_pass_rate": 1,
+      "change": 0,
+      "breaches": 0,
+      "team_pass_rate": 0.9074,
+      "workspace_pass_rate": 0.9271
+     },
+     {
+      "parameter": "Stated the EMI amount and due date",
+      "bucket": "Resolution",
+      "fatal": false,
+      "scored": 6,
+      "pass_rate": 1,
+      "previous_pass_rate": 0.4286,
+      "change": 0.5714,
+      "breaches": 0,
+      "team_pass_rate": 0.8889,
+      "workspace_pass_rate": 0.8125
+     },
+     {
+      "parameter": "Verified the customer's identity",
+      "bucket": "Compliance",
+      "fatal": true,
+      "scored": 6,
+      "pass_rate": 1,
+      "previous_pass_rate": 1,
+      "change": 0,
+      "breaches": 0,
+      "team_pass_rate": 1,
+      "workspace_pass_rate": 0.9792
+     }
+    ],
+    "categories": [
+     {
+      "bucket": "Call opening",
+      "pass_rate": 0.6667,
+      "scored": 12
+     },
+     {
+      "bucket": "Soft skills",
+      "pass_rate": 0.6667,
+      "scored": 12
+     },
+     {
+      "bucket": "Compliance",
+      "pass_rate": 0.9444,
+      "scored": 18
+     },
+     {
+      "bucket": "Resolution",
+      "pass_rate": 0.9444,
+      "scored": 18
+     }
+    ],
+    "needs_work": [
+     "Showed empathy",
+     "Greeted the customer by name",
+     "Stated name and company"
+    ],
+    "strengths": [
+     "No threats or pressure",
+     "Offered payment options",
+     "Stated the EMI amount and due date"
+    ],
+    "recent_calls": [
+     {
+      "id": "727075a1-d59a-4338-842b-76253e227d06",
+      "title": "EMI reminder · AL-20526",
+      "created_at": "2026-10-21T21:19:09.461569+00:00",
+      "score": 100,
+      "is_fatal": false,
+      "score_source": "appeal",
+      "appeal_status": "resolved",
+      "appeal_outcome": "overturned"
+     },
+     {
+      "id": "151eaa64-7191-4dff-803a-74a87db07206",
+      "title": "Missed EMI follow-up · AL-20528",
+      "created_at": "2026-10-21T16:51:55.491222+00:00",
+      "score": 85,
+      "is_fatal": false,
+      "score_source": "ai",
+      "appeal_status": null,
+      "appeal_outcome": null
+     },
+     {
+      "id": "dd7581f0-0cdd-4938-a38d-f3784bdd10c8",
+      "title": "Missed EMI follow-up · AL-20537",
+      "created_at": "2026-10-20T08:41:10.874422+00:00",
+      "score": 86,
+      "is_fatal": false,
+      "score_source": "appeal",
+      "appeal_status": "resolved",
+      "appeal_outcome": "overturned"
+     },
+     {
+      "id": "f2324023-a53b-4180-94e7-975e9a8b87f1",
+      "title": "Missed EMI follow-up · AL-20546",
+      "created_at": "2026-10-16T18:10:46.970714+00:00",
+      "score": 74,
+      "is_fatal": false,
+      "score_source": "ai",
+      "appeal_status": null,
+      "appeal_outcome": null
+     },
+     {
+      "id": "60ebec2f-15cb-4252-929f-d3558d1fcbad",
+      "title": "EMI reminder · AL-20553",
+      "created_at": "2026-10-13T02:25:42.359435+00:00",
+      "score": 94,
+      "is_fatal": false,
+      "score_source": "ai",
+      "appeal_status": null,
+      "appeal_outcome": null
+     },
+     {
+      "id": "44fa81a9-764f-4766-971a-b262a11aedf8",
+      "title": "Missed EMI follow-up · AL-20558",
+      "created_at": "2026-10-02T09:18:58.829255+00:00",
+      "score": 85,
+      "is_fatal": false,
+      "score_source": "ai",
+      "appeal_status": null,
+      "appeal_outcome": null
+     }
+    ],
+    "bucket": "week",
+    "agent": {
+     "id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+     "name": "Arjun Mehta",
+     "email": "arjun@acme-lending.example",
+     "team_leader": "Kavya Nair"
+    },
+    "period": {
+     "from": "2026-09-22T18:30:00+00:00",
+     "to": "2026-10-22T18:29:59.999000+00:00",
+     "previous_from": "2026-08-23T18:30:00.001000+00:00",
+     "previous_to": "2026-09-22T18:30:00+00:00"
+    },
+    "benchmarks": {
+     "team_avg_score": 91.59,
+     "workspace_avg_score": 89.54,
+     "team_name": "Kavya Nair"
+    },
+    "is_self": false,
+    "can_coach": true
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/agents/a74e030a-713c-4f8a-a668-4fd233b0230a/coaching",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "id": "2362d451-ce5f-45d5-a5db-bee7b2ca8ca6",
+     "agent_id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+     "parameter": "Greeted the customer by name",
+     "body": "Open with the customer's name every time, before anything else. Listen to Neha's call from Tuesday for a good example.",
+     "author_name": "Kavya Nair",
+     "author_user_id": "1ee4c070-bccc-4712-b8fa-dca20538dde2",
+     "created_at": "2026-10-18T04:37:06.725558Z",
+     "acknowledged_at": null,
+     "can_delete": true
+    },
+    {
+     "id": "97b4aebe-579d-49bc-9764-11c1ca9d5e60",
+     "agent_id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+     "parameter": null,
+     "body": "Good recovery on the restructuring call. Keep recapping the amount and date at the end.",
+     "author_name": "Kavya Nair",
+     "author_user_id": "1ee4c070-bccc-4712-b8fa-dca20538dde2",
+     "created_at": "2026-10-16T03:37:06.725558Z",
+     "acknowledged_at": "2026-10-16T05:37:06.725558Z",
+     "can_delete": true
+    }
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/agents/a74e030a-713c-4f8a-a668-4fd233b0230a/coaching",
+   "query": "",
+   "phase": 0,
+   "status": 201,
+   "body": {
+    "id": "f31d7d9f-1a98-4171-8bda-154725b3ecfa",
+    "agent_id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+    "parameter": "Showed empathy",
+    "body": "Say the customer's name in your first line, every call.",
+    "author_name": "Kavya Nair",
+    "author_user_id": "1ee4c070-bccc-4712-b8fa-dca20538dde2",
+    "created_at": "2026-10-22T07:39:36.971441Z",
+    "acknowledged_at": null,
+    "can_delete": true
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/agents/a74e030a-713c-4f8a-a668-4fd233b0230a/coaching",
+   "query": "",
+   "phase": 1,
+   "status": 200,
+   "body": [
+    {
+     "id": "f31d7d9f-1a98-4171-8bda-154725b3ecfa",
+     "agent_id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+     "parameter": "Showed empathy",
+     "body": "Say the customer's name in your first line, every call.",
+     "author_name": "Kavya Nair",
+     "author_user_id": "1ee4c070-bccc-4712-b8fa-dca20538dde2",
+     "created_at": "2026-10-22T07:39:36.971441Z",
+     "acknowledged_at": null,
+     "can_delete": true
+    },
+    {
+     "id": "2362d451-ce5f-45d5-a5db-bee7b2ca8ca6",
+     "agent_id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+     "parameter": "Greeted the customer by name",
+     "body": "Open with the customer's name every time, before anything else. Listen to Neha's call from Tuesday for a good example.",
+     "author_name": "Kavya Nair",
+     "author_user_id": "1ee4c070-bccc-4712-b8fa-dca20538dde2",
+     "created_at": "2026-10-18T04:37:06.725558Z",
+     "acknowledged_at": null,
+     "can_delete": true
+    },
+    {
+     "id": "97b4aebe-579d-49bc-9764-11c1ca9d5e60",
+     "agent_id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+     "parameter": null,
+     "body": "Good recovery on the restructuring call. Keep recapping the amount and date at the end.",
+     "author_name": "Kavya Nair",
+     "author_user_id": "1ee4c070-bccc-4712-b8fa-dca20538dde2",
+     "created_at": "2026-10-16T03:37:06.725558Z",
+     "acknowledged_at": "2026-10-16T05:37:06.725558Z",
+     "can_delete": true
+    }
+   ]
+  }
+ ]
+}
