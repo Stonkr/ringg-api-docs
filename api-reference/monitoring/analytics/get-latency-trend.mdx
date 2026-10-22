@@ -1,0 +1,23 @@
+---
+openapi: get /analytics/v4/latency-trend
+description: "Get median and 95th-percentile agent response latency over time, filtered by date, agent, version, campaign or channel, to spot latency regressions."
+related:
+  - "Analytics": /documentation/monitor/analytics
+  - "Get agent performance": /api-reference/monitoring/analytics/get-agent-performance
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Plot `bucket` on the X-axis and `p50_ms` and `p95_ms` on the Y-axis. Compare before and after a prompt, model or voice change to catch regressions.
+
+## Notes
+
+- `scored` is the number of calls in the bucket with latency data. Buckets with few scored calls are noisy.
+- Bucket size follows the date range: hour, day, week (labelled with the Monday) or month (labelled with the 1st). Pass `tz` to bucket in your timezone.
+
+## Errors
+
+- `400`: a filter is invalid, such as an unknown `channel`, a malformed ID, or `sub_workspace_id` sent from a workspace that isn't a primary workspace.
+- `401`: `X-API-KEY` is missing or invalid.
+
+<RelatedTopics items={[["Analytics", "/documentation/monitor/analytics"], ["Get agent performance", "/api-reference/monitoring/analytics/get-agent-performance"]]} />

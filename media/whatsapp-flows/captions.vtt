@@ -1,0 +1,37 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:05.625
+Your account's Flows tab lists every Flow, built in Ringg or in WhatsApp Manager
+
+00:00:05.625 --> 00:00:15.824
+Open a Flow: its details show a preview you can fill in
+
+00:00:15.824 --> 00:00:20.442
+In the WhatsApp assistant, select WhatsApp Flows, then Add flow
+
+00:00:20.442 --> 00:00:22.983
+Pick a published Flow
+
+00:00:22.983 --> 00:00:29.542
+Write the message and button that carry it
+
+00:00:29.542 --> 00:00:37.903
+Say when it's useful. It opens on its first screen
+
+00:00:37.903 --> 00:00:41.033
+Click Save
+
+00:00:41.033 --> 00:00:44.305
+Tag it in the prompt with @ so the assistant knows when to send it
+
+00:00:44.305 --> 00:00:50.248
+To start the chat yourself, put the Flow on a template
+
+00:00:50.248 --> 00:01:05.426
+Under Buttons, add a Flow button and pick the Flow
+
+00:01:05.426 --> 00:01:11.020
+In Logs, the customer's answers show as Response sent
+
+00:01:11.020 --> 00:01:16.415
+Click View response to see every answer, by screen

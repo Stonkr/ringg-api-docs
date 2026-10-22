@@ -1,0 +1,29 @@
+---
+openapi: post /external/kb
+description: "Create a knowledge base from files, web page URLs and FAQ pairs, processed in the background, then attach it to an agent so it can answer from that content."
+related:
+  - "Edit knowledge base": /api-reference/inventory/knowledge-bases/edit-knowledge-base
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+The response returns its `kb_id` with `processing_status` `pending`; poll [Get knowledge base](/api-reference/inventory/knowledge-bases/get-knowledge-base-by-id) until `status` is `completed`, then attach it to an agent with the `attach_kb` operation of [Edit agent settings](/api-reference/agents/edit-assistant).
+
+## Content
+
+Send `kb_name` and any mix of `files`, `urls` and `faqs`; each FAQ is a `{"question", "answer"}` object. One request takes up to 10 files (2 MB each, 5 MB in total) and 20 URLs.
+
+Files are read by extension: PDF, DOCX, TXT, CSV (one entry per row) and JSON. Any other extension, such as `.md`, is read as plain text.
+
+Knowledge bases created with the API are not listed on the dashboard's **Knowledge Base** page. They do appear in the agent editor's knowledge base picker and in [Get all knowledge bases](/api-reference/inventory/knowledge-bases/get-all-knowledge-bases), which also lists the ones made in the dashboard.
+
+```bash
+curl --request POST "https://prod-api.ringg.ai/ca/api/v0/external/kb" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --form 'kb_name="Acme Lending FAQ"' \
+  --form 'urls="[\"https://example.com/faq\"]"' \
+  --form 'faqs="[{\"question\": \"Can I pay my EMI early?\", \"answer\": \"Yes, from the Acme app under Loans.\"}]"' \
+  --form "files=@loan-terms.pdf"
+```
+
+<RelatedTopics items={[["Edit knowledge base", "/api-reference/inventory/knowledge-bases/edit-knowledge-base"]]} />

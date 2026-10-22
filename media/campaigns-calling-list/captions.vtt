@@ -1,0 +1,31 @@
+WEBVTT
+
+00:00:01.545 --> 00:00:05.310
+Pick the agent whose variables the list fills
+
+00:00:05.310 --> 00:00:08.295
+Upload your CSV under Upload calling list
+
+00:00:08.295 --> 00:00:09.497
+The preview shows your file, 15 rows per page
+
+00:00:09.497 --> 00:00:10.900
+Matching headers are mapped automatically
+
+00:00:10.900 --> 00:00:14.621
+Map the rest by hand: amount_due → due_amount
+
+00:00:14.621 --> 00:00:16.867
+One country code for the whole list (+91 default)
+
+00:00:16.867 --> 00:00:19.119
+Remove invalid rows is on by default
+
+00:00:19.119 --> 00:00:21.620
+Transliterate names into the agent's language
+
+00:00:21.620 --> 00:00:25.814
+Click Next: Ringg verifies every row
+
+00:00:25.814 --> 00:00:29.553
+Invalid rows are counted and can be downloaded

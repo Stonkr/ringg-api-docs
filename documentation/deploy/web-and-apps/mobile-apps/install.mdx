@@ -1,0 +1,347 @@
+---
+title: "Mobile app install"
+sidebarTitle: "Install"
+description: "Add the Ringg AI voice and chat widget to a React Native, Expo or Flutter app: install the package, set permissions, mount it and pass the caller identity."
+"og:title": "Mobile Voice and Chat Widget | Ringg AI Guide"
+---
+
+import OriginRequirement from "/snippets/widget-origin-requirement.mdx";
+
+`@ringg/react-native` and `ringg_flutter` put the [web widget](/documentation/deploy/web-and-apps/web-widget/overview)'s voice calls, text chat, [components](/documentation/deploy/web-and-apps/web-widget/components) and feedback screen into a native app, with the same conversation logic; for a website, use the web widget. Both packages are pre-1.0 (`@ringg/react-native` 0.4.0, `ringg_flutter` 0.1.5), so their APIs can change between minor versions: pin an exact version. Pick your framework with the switcher next to the table of contents; the [configuration](/documentation/deploy/web-and-apps/mobile-apps/configuration) and [events](/documentation/deploy/web-and-apps/mobile-apps/events) references have the same switch.
+
+## Before you start
+
+<Columns cols={3}>
+  <Card title="An agent" icon="bot" href="/documentation/build-agents/agents/create-an-agent">
+    A **Webcall** or voice agent; the app's calls and chats go to it.
+  </Card>
+  <Card title="Its webcall key" icon="key" href="/documentation/deploy/web-and-apps/web-widget/overview">
+    The `agentId` and the `Bearer` key from the agent's embed snippet.
+  </Card>
+  <Card title="Your app allowed" icon="globe-lock" href="/documentation/deploy/web-and-apps/web-widget/overview#allowed-clients">
+    Each bundle or application ID, per platform and build flavor.
+  </Card>
+</Columns>
+
+<View title="React Native" icon="smartphone">
+  `@ringg/react-native` runs the widget in a React Native or Expo app with native views. You also need React 18+ and React Native 0.73+, in a development build or a bare app. Expo Go can't load the native LiveKit modules, so use an [Expo development build](https://docs.expo.dev/develop/development-builds/introduction/).
+
+  Files you touch, depending on your setup:
+
+  <FileTree>
+
+  - app.json
+  - App.tsx
+  - ios/
+    - YourApp/
+      - Info.plist
+  - android/
+    - app/
+      - src/
+        - main/
+          - AndroidManifest.xml
+
+  </FileTree>
+
+  ## Install
+
+  ```bash
+  npm install @ringg/react-native
+  ```
+
+  Then install the three native modules. Autolinking only links native code in your app's own `node_modules`, so the package can't bundle them:
+
+  <CodeGroup>
+  ```bash Expo
+  npx expo install @livekit/react-native @livekit/react-native-webrtc react-native-svg
+  ```
+
+  ```bash Bare React Native
+  npm install @livekit/react-native @livekit/react-native-webrtc react-native-svg
+  ```
+  </CodeGroup>
+
+  The `config` prop used below needs 0.4.0 or newer; on 0.3.0 you build the controller yourself.
+
+  ## Platform setup
+
+  Voice calls need a microphone, background audio and the native transport's own manifest entries. Text chat needs none of it.
+
+  ### Expo
+
+  Add the plugin to `app.json` and rebuild the development build. It applies everything the widget needs, on both platforms.
+
+  ```json app.json
+  {
+    "expo": {
+      "plugins": ["@ringg/react-native"]
+    }
+  }
+  ```
+
+  To change the microphone prompt your users see:
+
+  ```json app.json
+  {
+    "expo": {
+      "plugins": [["@ringg/react-native", { "microphonePermissionText": "Talk to support." }]]
+    }
+  }
+  ```
+
+  ### Bare React Native
+
+  Bare apps have no config plugins, so add the same values by hand.
+
+  ```xml ios/YourApp/Info.plist
+  <key>NSMicrophoneUsageDescription</key>
+  <string>Voice calls use the microphone.</string>
+  <key>UIBackgroundModes</key>
+  <array><string>audio</string></array>
+  ```
+
+  ```xml android/app/src/main/AndroidManifest.xml
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.RECORD_AUDIO" />
+  <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+  <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+  ```
+
+  ## Mount the widget
+
+  Pass a config and make the widget the last child of your root view, so its floating trigger and panel draw over the rest of the app. It opens its own connection and handles the microphone, and releases both when it unmounts.
+
+  ```tsx App.tsx
+  import { Platform, View } from "react-native";
+  import { RinggWidget, appOrigin } from "@ringg/react-native";
+
+  const BUNDLE_ID = Platform.OS === "android" ? "com.acme.app" : "com.acme.App";
+
+  export const App = () => (
+    <View style={{ flex: 1 }}>
+      <YourApp />
+      <RinggWidget
+        config={{
+          agentId: "your-agent-id",
+          authorization: "Bearer your-webcall-public-key",
+          clientOrigin: appOrigin(BUNDLE_ID),
+          title: "Support",
+          description: "How can we help?",
+          defaultTab: "text", // or "audio"
+        }}
+      />
+    </View>
+  );
+  ```
+
+  <Check>Tapping the trigger opens the panel, and a chat or call connects to your agent.</Check>
+
+  <Prompt description="Hand the install to Claude or Cursor. Fill in the agent ID, key and bundle IDs first." actions={["copy", "cursor"]}>
+  Add the Ringg AI widget to this React Native app. Install @ringg/react-native, then @livekit/react-native, @livekit/react-native-webrtc and react-native-svg (with npx expo install on Expo). On Expo, add "@ringg/react-native" to expo.plugins in app.json; on a bare app, add NSMicrophoneUsageDescription and UIBackgroundModes audio to Info.plist and the INTERNET, RECORD_AUDIO, MODIFY_AUDIO_SETTINGS, ACCESS_NETWORK_STATE and BLUETOOTH_CONNECT permissions to AndroidManifest.xml. Render RinggWidget from @ringg/react-native as the last child of the root view with a config prop containing agentId "AGENT_ID", authorization "Bearer WEBCALL_PUBLIC_KEY", clientOrigin set to appOrigin(BUNDLE_ID) where BUNDLE_ID is the Android application ID or iOS bundle ID for the current platform, and defaultTab "text". Pin exact package versions. Tell me which files you changed and remind me to rebuild the development build.
+  </Prompt>
+
+  ## Caller identity
+
+  <OriginRequirement />
+
+  On React Native you pass the identity explicitly: `appOrigin(BUNDLE_ID)` in `App.tsx` above builds the `<platform>://<bundleId>` string, `android://com.acme.app` for that example. React Native can't read the bundle ID without a native module, so pass it in: a constant, or a value from your app config, is enough. `expo-application` can read it from the OS, but it is native code, so adding it means rebuilding the app.
+
+  ## Notification sound
+
+  React Native has no built-in audio playback, so the widget plays no reply sound unless you pass a player through `ports`:
+
+  ```tsx
+  import { createAudioPlayer } from "expo-audio";
+  import { createNotificationPlayer, DEFAULT_CONFIG, RinggWidget } from "@ringg/react-native";
+
+  const notification = createNotificationPlayer(DEFAULT_CONFIG.notificationTuneUrl, (url) => createAudioPlayer(url).play());
+
+  <RinggWidget config={config} ports={{ notification }} />;
+  ```
+
+  `ports` overrides anything the widget wires by default, and leaves the rest alone.
+
+  ## Testing hooks
+
+  Nodes carry a `testID` named after the web widget's [`data-ringg`](/documentation/deploy/web-and-apps/web-widget/styling) attribute with a `ringg-` prefix: `ringg-trigger-button`, `ringg-widget-root`, `ringg-header-title`, `ringg-message-input`, `ringg-end-call-confirm`. `header-status` has no counterpart; its text is the surrounding node's `accessibilityLabel`.
+
+  ## Verify the integration
+
+  - The app is a development build, not Expo Go.
+  - The trigger appears above your app content on both platforms.
+  - Voice mode prompts for microphone permission and can start and end a call on a real device.
+  - Every shipped flavor's bundle ID is under **Allowed clients**.
+  - Unmount the screen during a call and confirm the microphone indicator clears.
+
+  ## Known issues
+
+  - No frosted-glass blur behind the header and composer; those surfaces are near-opaque.
+  - The typing indicator has no gradient shimmer on the text; the ellipsis animates instead.
+  - Agent replies render bold, italic, inline code, links, lists, headings, code blocks, blockquotes and rules. Markdown tables show as plain text.
+  - Voice is unreliable on emulators: Android emulator networking often can't set up the media connection, and iOS simulators have no microphone. Test voice on a real device.
+</View>
+
+<View title="Flutter" icon="smartphone-charging">
+  `ringg_flutter` is written in Dart on `livekit_client`, with no platform bridge. Android, iOS, macOS, Windows and Linux are supported. You also need Dart 3.6+ and Flutter 3.27+. Files you touch:
+
+  <FileTree>
+
+  - pubspec.yaml
+  - lib/
+    - ringg_support.dart
+  - ios/
+    - Runner/
+      - Info.plist
+  - android/
+    - app/
+      - src/
+        - main/
+          - AndroidManifest.xml
+
+  </FileTree>
+
+  ## Install
+
+  ```yaml pubspec.yaml
+  dependencies:
+    ringg_flutter: ^0.1.5
+  ```
+
+  Then run `flutter pub get`.
+
+  ## Platform setup
+
+  Voice calls need microphone and audio permissions. Text chat works without them.
+
+  ```xml ios/Runner/Info.plist
+  <key>NSMicrophoneUsageDescription</key>
+  <string>Voice calls use the microphone.</string>
+  <key>UIBackgroundModes</key>
+  <array><string>audio</string></array>
+  ```
+
+  ```xml android/app/src/main/AndroidManifest.xml
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.RECORD_AUDIO" />
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+  <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+  <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+  <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+  <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+  ```
+
+  ## Integrate
+
+  <Steps>
+    <Step title="Get your credentials">
+      In the agent's **Embed & Widgets → Install & domains**, switch the snippet to **Flutter**. It shows your `agentId` and `authorization: "Bearer <key>"`. There are no URLs to configure.
+
+      The dashboard's Flutter snippet constructs `RinggWidgetController` without a second argument; `ringg_flutter` 0.1.5 requires `ControllerPorts(transport: …)`, as in the code below.
+    </Step>
+
+    <Step title="Wire up a controller and widget">
+      Hold the transport and controller in a `State` so you can dispose of them.
+
+      ```dart lib/ringg_support.dart
+      import 'package:flutter/material.dart';
+      import 'package:ringg_flutter/ringg_flutter.dart';
+
+      class RinggSupport extends StatefulWidget {
+        const RinggSupport({super.key});
+
+        @override
+        State<RinggSupport> createState() => _RinggSupportState();
+      }
+
+      class _RinggSupportState extends State<RinggSupport> {
+        late final LiveKitTransport _transport;
+        late final RinggWidgetController _controller;
+
+        @override
+        void initState() {
+          super.initState();
+          _transport = createLiveKitTransport();
+          _controller = RinggWidgetController(
+            const RinggWidgetConfig(
+              agentId: 'your-agent-id',
+              authorization: 'Bearer your-webcall-public-key',
+              title: 'Support',
+              description: 'How can we help?',
+              defaultTab: MediaType.text, // or MediaType.audio
+            ),
+            ControllerPorts(transport: _transport.transport),
+          );
+        }
+
+        @override
+        void dispose() {
+          _controller.destroy();
+          _transport.dispose();
+          super.dispose();
+        }
+
+        @override
+        Widget build(BuildContext context) => RinggWidget(
+              controller: _controller,
+              transport: _transport, // enables the in-call audio visualizer
+            );
+      }
+      ```
+    </Step>
+
+    <Step title="Mount it over your app">
+      `RinggWidget` places its own floating trigger and panel, so give it the full screen on top of your content.
+
+      ```dart
+      Stack(
+        children: const [
+          YourApp(),
+          RinggSupport(),
+        ],
+      )
+      ```
+    </Step>
+  </Steps>
+
+  <Check>Tapping the trigger opens the panel, and a chat or call connects to your agent.</Check>
+
+  <Prompt description="Hand the install to Claude or Cursor. Fill in the agent ID and key first." actions={["copy", "cursor"]}>
+  Add the Ringg AI widget to this Flutter app. Add ringg_flutter 0.1.5 to pubspec.yaml and run flutter pub get. Add NSMicrophoneUsageDescription and UIBackgroundModes audio to ios/Runner/Info.plist, and the INTERNET, RECORD_AUDIO, ACCESS_NETWORK_STATE, CHANGE_NETWORK_STATE, MODIFY_AUDIO_SETTINGS, BLUETOOTH (maxSdkVersion 30), BLUETOOTH_CONNECT and BLUETOOTH_ADMIN (maxSdkVersion 30) permissions to AndroidManifest.xml. Create a StatefulWidget that in initState calls createLiveKitTransport(), then builds a RinggWidgetController from a RinggWidgetConfig with agentId 'AGENT_ID', authorization 'Bearer WEBCALL_PUBLIC_KEY' and defaultTab MediaType.text, passing ControllerPorts(transport: transport.transport) as the second argument; in dispose call controller.destroy() and transport.dispose(); in build return RinggWidget(controller: controller, transport: transport). Mount that widget on top of the app in a Stack. Tell me which files you changed.
+  </Prompt>
+
+  ## Caller identity
+
+  <OriginRequirement />
+
+  On Flutter the package reads the running app's id and sends it as `<platform>://<bundleId>`, so there is nothing to pass; to pin one value across build flavors, see [Caller identity](/documentation/deploy/web-and-apps/mobile-apps/configuration#caller-identity).
+
+  ## Example app
+
+  A runnable example ships in the package's **Example** tab on [pub.dev](https://pub.dev/packages/ringg_flutter/example).
+
+  ## Verify the integration
+
+  - `flutter pub get` resolves and the app builds on both platforms.
+  - The trigger appears above your app content.
+  - Voice mode prompts for microphone permission and can start and end a call on a real device.
+  - Every shipped flavor's application ID is under **Allowed clients**.
+  - `_controller.destroy()` and `_transport.dispose()` run in `dispose()`. Confirm the mic indicator clears.
+
+  ## Known issues
+
+  - iOS simulators (26.x) have no call audio: no microphone or playout device, so you can't hear the agent or unmute. Test voice on a real device or macOS. See Apple's forum threads [738346](https://developer.apple.com/forums/thread/738346) and [803364](https://developer.apple.com/forums/thread/803364).
+  - Voice on Android emulators often fails to connect because of emulator networking. Text chat works there; test voice on a real device.
+</View>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Configure the widget" icon="sliders-horizontal" href="/documentation/deploy/web-and-apps/mobile-apps/configuration">
+    Every option, its type and its default.
+  </Card>
+  <Card title="Handle events and actions" icon="radio" href="/documentation/deploy/web-and-apps/mobile-apps/events">
+    Lifecycle events, controller methods, agent actions.
+  </Card>
+</Columns>

@@ -1,0 +1,40 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:04.295
+Open the agent and select Tools
+
+00:00:04.295 --> 00:00:06.596
+Pre-call: click API in the side panel
+
+00:00:06.596 --> 00:00:18.575
+Name the request and enter the URL
+
+00:00:18.575 --> 00:00:32.142
+Add parameters: pass the phone number
+
+00:00:32.142 --> 00:00:35.442
+Click Test API to see the response
+
+00:00:35.442 --> 00:00:38.545
+Keep only the fields the agent needs
+
+00:00:38.545 --> 00:00:41.570
+Click Add to assistant
+
+00:00:41.570 --> 00:00:45.507
+On-call: the agent calls these mid-conversation
+
+00:00:45.507 --> 00:00:51.163
+Add a transfer destination
+
+00:00:51.163 --> 00:00:54.689
+Save the tool
+
+00:00:54.689 --> 00:00:55.810
+The tool appears in the phase's list
+
+00:00:55.810 --> 00:00:59.812
+Post-call: send the outcome to your systems
+
+00:00:59.812 --> 00:01:05.301
+The body can use the summary and analysis values

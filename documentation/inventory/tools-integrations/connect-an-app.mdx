@@ -1,0 +1,56 @@
+---
+title: "Connect an app"
+sidebarTitle: "Connect an app"
+description: "Connect Google Sheets, Slack, calendars and other apps on the Ringg AI Tools page once per workspace, then give any agent an Integration tool on that account."
+"og:title": "Connect an app to your workspace"
+related:
+  - "Integration tools": /documentation/build-agents/customize-agent-behaviour/tools/integration-tools
+  - "Connect WhatsApp": /documentation/inventory/tools-integrations/connect-whatsapp
+  - "WhatsApp tools": /documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+A connected account is shared by every agent in the workspace; it is what an agent's [Integration tool](/documentation/build-agents/customize-agent-behaviour/tools/integration-tools#integration-tools) runs against.
+
+In the dashboard: **Tools → Add more tools**. The WhatsApp card opens the [WhatsApp Business account](/documentation/inventory/tools-integrations/connect-whatsapp) page instead.
+
+## Connect an account
+
+Each app card shows its status: **Connected**, **Pending setup**, **Expired**, **Error** or **Disconnected**.
+
+<Steps>
+  <Step title="Open the app">
+    Open an app card and click **Add another account**, or connect the first one.
+  </Step>
+  <Step title="Name the account">
+    **Enter an account name**: "Pick a unique name so you can identify this connection across assistants."
+  </Step>
+  <Step title="Add connection details">
+    The credentials the app needs, such as an API key or client secret. Apps that use OAuth open the provider's sign-in in a popup; if you see "Popup blocked", allow popups for the dashboard and try again.
+  </Step>
+  <Step title="Connect">
+    Click **Connect**.
+    <Check>The card shows **Connected**, and the account's page lists its **Available Tools**.</Check>
+  </Step>
+</Steps>
+
+## The account page
+
+- **Available Tools** lists what the app exposes, each with a **Run tool** button to try it with sample values before any agent uses it.
+- Connection settings are app-specific; Google Sheets, for example, has **Choose spreadsheet**.
+- "Token expired, re-authorization required." comes with a **Re-authorize** button. On the agent side, an expired account shows **Reconnect** in the tool picker.
+- **Disconnect** removes the connection and all associated tool configurations. While assistants still use its tools, the dialog offers **Edit assistants** instead, so detach the tools from those agents first.
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Add an Integration tool" icon="wrench" href="/documentation/build-agents/customize-agent-behaviour/tools/integration-tools#integration-tools" horizontal>
+    Pick the account, bind parameters, run it and import it onto the agent.
+  </Card>
+  <Card title="Tune call settings" icon="settings" href="/documentation/build-agents/customize-agent-behaviour/call-settings" horizontal>
+    Call duration, calling window, voicemail and interruptions.
+  </Card>
+</Columns>
+
+<RelatedTopics items={[["Integration tools", "/documentation/build-agents/customize-agent-behaviour/tools/integration-tools"], ["Connect WhatsApp", "/documentation/inventory/tools-integrations/connect-whatsapp"], ["WhatsApp tools", "/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools"]]} />

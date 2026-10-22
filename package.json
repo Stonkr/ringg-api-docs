@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"mint": "^4.1.103"
+		"mint": "^4.2.1085"
 	},
 	"scripts": {
 		"dev": "mint dev"

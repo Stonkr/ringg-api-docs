@@ -1,0 +1,30 @@
+---
+openapi: patch /external/kb
+description: "Add files, URLs or FAQs to a knowledge base and remove existing ones by ID in one request, keeping its kb_id and the agents it is attached to."
+related:
+  - "Knowledge base": /documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+New content is processed in the background, as on creation.
+
+## Add content
+
+- `new_files`: 2 MB each, 5 MB in total, with optional `new_files_metadata`
+- `new_faqs`: each FAQ is a `{"question", "answer"}` object
+
+## Remove content
+
+Pass IDs from [Get knowledge base](/api-reference/inventory/knowledge-bases/get-knowledge-base-by-id). Removal is permanent.
+
+```bash
+curl --request PATCH "https://prod-api.ringg.ai/ca/api/v0/external/kb" \
+  --header "X-API-KEY: $RINGG_API_KEY" \
+  --form 'kb_id="550e8400-e29b-41d4-a716-446655440000"' \
+  --form 'files_to_remove="[\"7a8b9c0d-1e2f-3a4b-5c6d-7e8f9a0b1c2d\"]"' \
+  --form 'urls_to_remove="[\"https://example.com/old-page\"]"' \
+  --form 'new_urls="[\"https://example.com/new-docs\"]"'
+```
+
+<RelatedTopics items={[["Knowledge base", "/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base"]]} />

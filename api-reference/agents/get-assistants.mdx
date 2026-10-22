@@ -1,0 +1,18 @@
+---
+openapi: get /agent/all
+description: "List the agents in your workspace with their IDs, display names and types, so your backend can pick the agent_id that calls and campaigns need."
+related:
+  - "Agents overview": /documentation/build-agents/agents/agent-types
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+## Notes
+
+- Without `limit`, every agent is returned. `search` filters by name.
+- Each agent lists its `versions` (`version_id`, `version_slug`, `is_archived`). Prompt, voice and other settings are not included; use [Get agent](/api-reference/agents/get-assistant-by-id).
+
+- An agent's ID does not change when the agent is edited, so look it up once during setup and store it rather than fetching it before every [call](/api-reference/calling/individual-calls/initiate-individual-call) or [campaign](/api-reference/calling/campaigns/upload-campaign-contact-list).
+- For one agent's full configuration, call [Get agent](/api-reference/agents/get-assistant-by-id).
+
+<RelatedTopics items={[["Agents overview", "/documentation/build-agents/agents/agent-types"]]} />

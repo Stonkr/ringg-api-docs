@@ -1,0 +1,13 @@
+The React Native and Flutter widgets emit five lifecycle events on an in-memory event bus. The web widget uses the same names as browser `CustomEvent`s, with two differences: it never emits `ringg:component_acknowledgement`, and its `ringg:calendar_booking` has no `"failed"` status. See [web widget events](/documentation/deploy/web-and-apps/web-widget/events).
+
+| Event | Fires when | Payload |
+|---|---|---|
+| `ringg:widget_status` | The panel opens or closes. | `status`: `"maximised"` or `"minimised"`. `mode`: `"audio"` or `"text"`. |
+| `ringg:conversation_status` | A voice or chat conversation starts or ends. | `status`: `"started"` or `"ended"`. `mode`: `"audio"` or `"text"`. `callId`: string. |
+| `ringg:feedback_status` | The user submits or skips the post-call feedback screen. | `status`: `"submitted"` or `"skipped"`. `callId`: string. `rating`: number, only when submitted. |
+| `ringg:calendar_booking` | A calendar component is shown, a slot is confirmed, or booking fails. | `status`: `"shown"`, `"confirmed"` or `"failed"`. `componentId`: string. `slotId`: string, optional. `message`: string, optional. |
+| `ringg:component_acknowledgement` | The user responds to an interactive component (form submit, button tap, slot pick). | `componentName`: string. `componentId`: string. `status`: string. |
+
+<Note>
+`ringg:calendar_booking` and `ringg:component_acknowledgement` only fire when the agent sends interactive components. An agent configured for plain voice or text never emits them.
+</Note>

@@ -1,0 +1,66 @@
+---
+title: "Changelog"
+description: "What changed in the Ringg AI platform and its documentation, newest first: new features, API additions and new guides, with links to the pages that cover them."
+rss: true
+icon: "list"
+---
+
+Subscribe with the RSS button above, or filter by tag on the right.
+
+<Update label="22 October 2026" description="Ringg Analytics" tags={["Ringg Analytics"]}>
+  A new **Analytics platform** tab documents [Ringg Analytics](/analytics-platform/introduction), the call quality platform at [analytics.ringg.ai](https://analytics.ringg.ai), separate from the Ringg AI dashboard:
+
+  - [Roles and access](/analytics-platform/roles-and-access): agents see only their own calls and team leads only their team, on [Summary](/analytics-platform/review-calls/summary) and [Agents](/analytics-platform/coach-agents/agents-and-teams) too.
+  - [Report cards](/analytics-platform/coach-agents/report-cards): each agent's scores against the previous period, the parameters to work on, and coaching notes from their team lead.
+  - [Disputes](/analytics-platform/disputes/overview): agents [appeal an AI score](/analytics-platform/disputes/raise-a-dispute), a QA [re-scores the call](/analytics-platform/disputes/review-a-dispute), and the QA's score becomes the official one.
+  - [Notifications](/analytics-platform/set-up/notifications) can run when a QA reviews a call, use the QA's score and ratings, and copy the agent's team lead.
+</Update>
+
+<Update label="18 October 2026" description="WhatsApp Flows" tags={["WhatsApp"]}>
+  New [WhatsApp Flows](/documentation/build-agents/agents/whatsapp-agents/flows): a WhatsApp agent sends a form inside the chat, like a booking, a lead form or a survey, and gets the answers back as the next message. A message template can open a Flow from a button too. Build Flows in the [Flow builder](/documentation/build-agents/agents/whatsapp-agents/flow-builder) or sync them from WhatsApp Manager, and fill their screens with [live data](/documentation/build-agents/agents/whatsapp-agents/flows-live-data) from your calendar or [your own server](/documentation/build-agents/agents/whatsapp-agents/flows-your-server).
+</Update>
+
+<Update label="16 October 2026" description="Analytics API" tags={["API"]}>
+  The [analytics API](/api-reference/monitoring/analytics/get-volume-analytics) now returns the same figures as the [Analytics](/documentation/monitor/analytics) page, with filters for agent version, channel, callbacks and Ringg Spaces. It covers volume, connectivity, agent performance, latency, concurrency, cohorts and chat, across 11 endpoints under `/analytics/v4`. The five earlier analytics endpoint pages are replaced, and their URLs redirect to the new pages.
+</Update>
+
+<Update label="15 October 2026" description="Members permission" tags={["Account"]}>
+  New **Members** permission: give it to a member, for example your IT admin, and they can invite members, change their permissions and remove them without being the owner. They can only grant or remove the areas they hold themselves, and can't change the owner. Granted in a primary workspace, it also applies in the [Ringg Spaces](/documentation/manage-account/ringg-spaces/overview) the member inherits; a Ringg Space they were invited to directly keeps its own permissions. See [Let a member manage members](/documentation/manage-account/members#let-a-member-manage-members).
+</Update>
+
+<Update label="13 October 2026" description="Docs" tags={["Docs"]}>
+  New guides to connect [Telnyx](/documentation/inventory/phone-numbers/your-own-telephony/telnyx) and [InTalk](/documentation/inventory/phone-numbers/your-own-telephony/intalk) as your own telephony. Both are import only, and are now listed in [supported providers](/documentation/inventory/phone-numbers/overview#supported-telephony-providers), the [account fields](/documentation/inventory/phone-numbers/buy-or-import-a-number#connect-a-provider-account-first) and [provider-side routing](/documentation/inventory/phone-numbers/inbound-agent-number#provider-side-routing).
+
+  API reference URLs now follow the sidebar groups, for example [`/api-reference/calling/individual-calls/initiate-individual-call`](/api-reference/calling/individual-calls/initiate-individual-call). Old `/api-reference/endpoint/…` links redirect to the new pages.
+</Update>
+
+<Update label="29 September 2026" description="API keys" tags={["Account"]}>
+  New workspace [API keys](/documentation/manage-account/api-key) start with `rg_live_` and show a masked form in the dashboard so you can tell keys apart. Keys generated earlier (`ringg_live_` or a plain UUID) keep working until you regenerate them.
+</Update>
+
+<Update label="28 September 2026" description="WhatsApp agents" tags={["WhatsApp", "API"]}>
+  - A WhatsApp chat now ends by the agent's idle timeout or maximum length, which you set per agent under session timeouts; see [Create a WhatsApp agent](/documentation/build-agents/agents/whatsapp-agents/create-an-agent).
+  - New **End the chat** on-call tool for chat (End Call stays voice-only), and agents can reply to earlier messages in the thread.
+  - New API: [start a WhatsApp conversation](/documentation/deploy/whatsapp/start-a-conversation) from your backend.
+</Update>
+
+<Update label="24 September 2026" description="WhatsApp" tags={["WhatsApp"]}>
+  WhatsApp agents documented end to end: [overview](/documentation/build-agents/agents/whatsapp-agents/overview), Meta Embedded Signup [onboarding](/documentation/inventory/tools-integrations/connect-whatsapp) with numbers and templates, [on-call](/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#on-call) and [post-call](/documentation/build-agents/customize-agent-behaviour/tools/whatsapp-tools#post-call) tools, [creating an agent](/documentation/build-agents/agents/whatsapp-agents/create-an-agent) and attaching a number, [chat events](/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events#whatsapp-chat-events), and [chat history](/documentation/monitor/logs#whatsapp-chats) with CSV export.
+</Update>
+
+<Update label="21 September 2026" description="Mobile widgets and Parrot STT" tags={["Widgets", "Parrot STT"]}>
+  - `@ringg/react-native` and `ringg_flutter` put the voice and chat widget into native apps: [install](/documentation/deploy/web-and-apps/mobile-apps/install), [configuration](/documentation/deploy/web-and-apps/mobile-apps/configuration) and [events](/documentation/deploy/web-and-apps/mobile-apps/events).
+  - Parrot <Tooltip tip="Speech-to-text: turning the caller’s audio into text.">STT</Tooltip> (beta): a [Python SDK](/documentation/ringg-labs/parrot-stt/python-sdk) for sync and async streaming transcription.
+</Update>
+
+<Update label="18 September 2026" description="Ringg Spaces API" tags={["Account", "API"]}>
+  Manage a workspace family by API: [create a Ringg Space](/api-reference/account/ringg-spaces/create-sub-workspace), list the family, allocate concurrency and reallocate credit limits or balances. See the [Ringg Spaces overview](/documentation/manage-account/ringg-spaces/ringg-spaces-by-api#manage-the-family-by-api) and the [dashboard guide](/documentation/manage-account/ringg-spaces/overview).
+</Update>
+
+<Update label="15 September 2026" description="MCP server" tags={["MCP"]}>
+  The Ringg AI MCP server at `https://mcp.ringg.ai/mcp` lets Claude, ChatGPT, Cursor or your own agent place calls, read transcripts and edit agents from a chat: [overview](/resources/mcp-server/workspace-mcp-server/overview), [connect a client](/resources/mcp-server/workspace-mcp-server/connect-an-assistant), [tool reference](/resources/mcp-server/workspace-mcp-server/tool-reference).
+</Update>
+
+<Update label="10 September 2026" description="Agent call config" tags={["API"]}>
+  [Create agent](/api-reference/agents/create-agent) accepts call configuration at creation, so an agent can be created with its call settings in one request.
+</Update>

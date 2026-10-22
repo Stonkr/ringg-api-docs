@@ -1,0 +1,21 @@
+---
+openapi: get /analytics/v4/data-freshness
+description: "Get how up to date your workspace's analytics data is, as a data-as-of timestamp and lag in seconds, to label dashboards and decide when to refetch."
+related:
+  - "Analytics": /documentation/monitor/analytics
+  - "Get call history": /api-reference/monitoring/call-history/get-call-history
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Show `data_as_of` as a "data as of" label. `version` changes whenever new data lands, so refetch only when it differs from the last value you saw.
+
+## Notes
+
+- `data_as_of` and `lag_seconds` are `null` and `version` is `0` before your workspace has any analytics data.
+
+## Errors
+
+- `401`: `X-API-KEY` is missing or invalid.
+
+<RelatedTopics items={[["Analytics", "/documentation/monitor/analytics"], ["Get call history", "/api-reference/monitoring/call-history/get-call-history"]]} />

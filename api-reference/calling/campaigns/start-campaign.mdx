@@ -1,0 +1,34 @@
+---
+openapi: post /campaign/start
+description: "Start a campaign uploaded with POST /campaign/save using caller numbers you list in from_numbers; the campaign then moves to scheduled or ongoing."
+related:
+  - "Monitor a campaign": /documentation/deploy/campaigns/manage-a-campaign
+  - "Run a campaign by API": /documentation/deploy/campaigns/campaigns-by-api#with-the-api
+  - "Terminate calls by campaign": /api-reference/calling/campaigns/stop-campaign
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+To let Ringg choose caller numbers from a [number pool](/documentation/inventory/phone-numbers/number-pools) instead, use [Start campaign (number pool)](/api-reference/calling/campaigns/start-campaign-v2).
+
+`list_id` is the one returned by [Upload campaign contact list](/api-reference/calling/campaigns/upload-campaign-contact-list); `agent_id` is the agent the list was uploaded for; `from_numbers` are workspace numbers from [List workspace numbers](/api-reference/inventory/numbers/get-workspace-numbers): send each number's `id` (recommended), or the number written exactly as it is listed there. Each retry dials the next number in the list.
+
+```json
+{
+  "agent_id": "your-agent-id",
+  "list_id": "123e4567-e89b-12d3-a456-426614174000",
+  "from_numbers": ["00000000-0000-4000-8000-000000000109"]
+}
+```
+
+A success returns `{"status": "campaign registered successfully!"}` and the campaign's `campaign_status` becomes `scheduled` or `ongoing` in [Get all campaigns](/api-reference/calling/campaigns/get-all-campaigns).
+
+The workspace balance must cover the campaign ([Billing](/documentation/manage-account/billing)); otherwise the request returns `402`.
+
+## Errors
+
+- `400`: an ID is wrong, a caller number is not in the workspace (`From numbers not found: …`), or the campaign has already started.
+- `402`: the balance does not cover the campaign.
+- `401`: `X-API-KEY` is missing or invalid.
+
+<RelatedTopics items={[["Monitor a campaign", "/documentation/deploy/campaigns/manage-a-campaign"], ["Run a campaign by API", "/documentation/deploy/campaigns/campaigns-by-api#with-the-api"], ["Terminate calls by campaign", "/api-reference/calling/campaigns/stop-campaign"]]} />

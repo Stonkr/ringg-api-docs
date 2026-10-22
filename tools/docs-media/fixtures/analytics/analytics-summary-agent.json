@@ -1,0 +1,145 @@
+{
+ "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+ "calls": [
+  {
+   "method": "GET",
+   "path": "/auth/me",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "id": "74f6bc4f-9d13-47b2-9592-5799bf0cdd81",
+    "email": "arjun@acme-lending.example",
+    "full_name": "Arjun Mehta",
+    "is_active": true,
+    "created_at": "2026-10-22T08:21:52.304650Z",
+    "last_login_at": null,
+    "role": "agent",
+    "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+    "show_ai_scores": true,
+    "require_all_parameters": false
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/workspaces/mine",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+     "name": "Acme Lending",
+     "role": "agent",
+     "is_current": true
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/analytics/my-summary",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "scope": "agent",
+    "linked": true,
+    "period": {
+     "from": "2026-09-22T18:30:00+00:00",
+     "to": "2026-10-22T18:29:59.999000+00:00",
+     "previous_from": "2026-08-23T18:30:00.001000+00:00",
+     "previous_to": "2026-09-22T18:30:00+00:00"
+    },
+    "bucket": "week",
+    "kpis": {
+     "interactions": 6,
+     "avg_score": 87.33,
+     "previous_avg_score": 80.57,
+     "fatal_calls": 0,
+     "fatal_rate": 0,
+     "open_appeals": 0
+    },
+    "trend": [
+     {
+      "period": "2026-09-28",
+      "avg_score": 85,
+      "calls": 1
+     },
+     {
+      "period": "2026-10-12",
+      "avg_score": 84,
+      "calls": 2
+     },
+     {
+      "period": "2026-10-19",
+      "avg_score": 90.3333,
+      "calls": 3
+     }
+    ],
+    "benchmark": null,
+    "agents": null,
+    "weakest_parameters": [
+     {
+      "parameter": "Showed empathy",
+      "pass_rate": 0.4667,
+      "scored": 6
+     },
+     {
+      "parameter": "Greeted the customer by name",
+      "pass_rate": 0.6667,
+      "scored": 6
+     },
+     {
+      "parameter": "Stated name and company",
+      "pass_rate": 0.6667,
+      "scored": 6
+     }
+    ],
+    "lowest_calls": [
+     {
+      "id": "883cef82-b4cc-45b5-8bcd-a4322d1c8eed",
+      "title": "Missed EMI follow-up · AL-20546",
+      "created_at": "2026-10-16T18:54:46.970714+00:00",
+      "score": 74,
+      "is_fatal": false,
+      "agent_name": "Arjun Mehta"
+     },
+     {
+      "id": "cf722593-8f05-44ae-a393-4011b5d78a80",
+      "title": "Missed EMI follow-up · AL-20528",
+      "created_at": "2026-10-21T17:35:55.491222+00:00",
+      "score": 85,
+      "is_fatal": false,
+      "agent_name": "Arjun Mehta"
+     },
+     {
+      "id": "86cb9192-8b37-4765-be3c-5b9dec220c55",
+      "title": "Missed EMI follow-up · AL-20558",
+      "created_at": "2026-10-02T10:02:58.829255+00:00",
+      "score": 85,
+      "is_fatal": false,
+      "agent_name": "Arjun Mehta"
+     },
+     {
+      "id": "05c94402-b031-434c-9817-c18bf9c11d4a",
+      "title": "Missed EMI follow-up · AL-20537",
+      "created_at": "2026-10-20T09:25:10.874422+00:00",
+      "score": 86,
+      "is_fatal": false,
+      "agent_name": "Arjun Mehta"
+     },
+     {
+      "id": "b9d17109-13ec-4290-9f26-c3f0e327491c",
+      "title": "EMI reminder · AL-20553",
+      "created_at": "2026-10-13T03:09:42.359435+00:00",
+      "score": 94,
+      "is_fatal": false,
+      "agent_name": "Arjun Mehta"
+     }
+    ],
+    "my_agent_id": "09dddf68-5c1b-47fa-9c80-e44b8cbafa02",
+    "unacknowledged_notes": 2
+   }
+  }
+ ]
+}

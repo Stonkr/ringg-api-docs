@@ -1,0 +1,14 @@
+---
+openapi: get /external/kb/all
+description: "List every knowledge base in your workspace with its kb_id, name, type and creation date, for example to fill a picker when attaching one to an agent."
+related:
+  - "Knowledge base": /documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+The endpoint does not page; it returns every knowledge base in one response. Cache the list if you show it often.
+
+For files, URLs, FAQs and processing status, call [Get knowledge base](/api-reference/inventory/knowledge-bases/get-knowledge-base-by-id).
+
+<RelatedTopics items={[["Knowledge base", "/documentation/build-agents/customize-agent-behaviour/attach-a-knowledge-base"]]} />

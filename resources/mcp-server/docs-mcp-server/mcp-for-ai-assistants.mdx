@@ -1,0 +1,76 @@
+---
+title: "MCP for AI assistants"
+sidebarTitle: "MCP for AI assistants"
+description: "Connect Claude, ChatGPT, Cursor or Claude Code to the Ringg AI documentation MCP server at docs.ringg.ai/mcp to search and read these docs; no API key needed."
+"og:title": "Search the Ringg AI docs from an AI assistant"
+---
+
+The docs server is read-only and separate from the [Ringg AI MCP server](/resources/mcp-server/workspace-mcp-server/overview), which acts on your workspace with your API key.
+
+## What it exposes
+
+| Tool | What it does |
+| --- | --- |
+| `search_ringg_ai` | Searches the docs and returns snippets with titles and links |
+| `query_docs_filesystem_ringg_ai` | Reads pages as Markdown, including several pages in one call |
+
+It also serves [`skill.md`](https://docs.ringg.ai/skill.md) as an MCP resource, and a discovery document at `https://docs.ringg.ai/.well-known/mcp` for tools that find servers on their own. A coding agent that reads skills can install the Ringg skill directly, without the server:
+
+```bash
+npx skills add https://docs.ringg.ai
+```
+
+## Connect an assistant
+
+On any docs page, **MCP** in the menu next to **Copy page** copies the server URL. To add it by hand:
+
+<Tabs>
+  <Tab title="Claude.ai / Desktop">
+    **Settings → Connectors → Add custom connector**. Name it *Ringg AI docs*, set the URL to `https://docs.ringg.ai/mcp` and click **Add**. No sign-in is needed. In a chat, pick it from the **+** menu.
+  </Tab>
+
+  <Tab title="ChatGPT">
+    **Settings → Connectors → Advanced → Developer mode**, then **Create**: name *Ringg AI docs*, URL `https://docs.ringg.ai/mcp`, authentication **None**. Save.
+  </Tab>
+
+  <Tab title="Claude Code">
+    ```bash
+    claude mcp add --transport http ringg-docs https://docs.ringg.ai/mcp
+    ```
+  </Tab>
+
+  <Tab title="Cursor & JSON-configured clients">
+    Add it beside the workspace server in `.cursor/mcp.json`, with no headers:
+
+    ```json
+    {
+      "mcpServers": {
+        "ringg-docs": {
+          "url": "https://docs.ringg.ai/mcp"
+        }
+      }
+    }
+    ```
+
+    VS Code: **Command Palette → MCP: Add Server → HTTP**, then the URL. Codex: in `~/.codex/config.toml`, `[mcp_servers.ringg-docs]` with `url = "https://docs.ringg.ai/mcp"`.
+  </Tab>
+</Tabs>
+
+<Check>Ask "Using the Ringg docs, how do I attach a number to an inbound agent?" The client searches the docs and answers with links to the pages it read.</Check>
+
+## Other ways to read the docs
+
+- [`llms.txt`](https://docs.ringg.ai/llms.txt): an index of every page with a one-line summary; [`llms-full.txt`](https://docs.ringg.ai/llms-full.txt) is the full docs in one file.
+- Add `.md` to any page URL, for example `https://docs.ringg.ai/agents/overview.md`, for one page as Markdown.
+- [Mintlify Index](https://www.mintlify.com/docs/search-index) (`https://index.mintlify.com/mcp`) covers every product documented on Mintlify, Ringg included, so an agent that has it needs nothing else; connect this server only to search Ringg's docs alone.
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Ringg AI MCP server" icon="plug" href="/resources/mcp-server/workspace-mcp-server/overview">
+    Let the same client act on your workspace: create agents, place calls, read transcripts.
+  </Card>
+  <Card title="Hand the quickstart to a coding agent" icon="code" href="/api-reference/introduction/quickstart#hand-it-to-a-coding-agent">
+    A prompt that writes the script for your first call, reading these docs.
+  </Card>
+</Columns>

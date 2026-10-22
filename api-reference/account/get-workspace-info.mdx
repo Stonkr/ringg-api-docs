@@ -1,0 +1,15 @@
+---
+openapi: get /workspace
+description: "Get the workspace that owns your API key, with its name, ID and credit balance; use it as the first request to confirm a key works and points where expected."
+related:
+  - "Authentication": /api-reference/introduction/authentication
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+## Notes
+
+- A `401` means the key is wrong or was regenerated. Get the current key from the workspace owner ([API key](/documentation/manage-account/api-key)).
+- Check `name` before storing a key: each workspace and each [Ringg Space](/documentation/manage-account/ringg-spaces/overview) has its own key.
+
+<RelatedTopics items={[["Authentication", "/api-reference/introduction/authentication"]]} />

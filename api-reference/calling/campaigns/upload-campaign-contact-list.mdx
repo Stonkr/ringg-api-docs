@@ -1,0 +1,57 @@
+---
+openapi: post /campaign/save
+description: "Upload a campaign calling list as CSV with the agent, variable mapping, country code, campaign window and call settings, and get the list_id to start it with."
+related:
+  - "Run a campaign by API": /documentation/deploy/campaigns/campaigns-by-api#with-the-api
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Nothing is dialled yet: start the campaign with [Start campaign (number pool)](/api-reference/calling/campaigns/start-campaign-v2) or [Start campaign](/api-reference/calling/campaigns/start-campaign). The `list_id` is also the campaign's ID in [Get all campaigns](/api-reference/calling/campaigns/get-all-campaigns), call history and analytics (`bulk_list_id`).
+
+## The CSV
+
+One header row, then one row per contact. Every outbound agent has the variables `mobile_number` and `callee_name`, so the file needs a column for each, plus one for every other variable the agent's prompt uses. Write phone numbers without the country code; `country_code` applies to the whole list.
+
+```text
+callee_name,mobile_number,amount_due,due_date
+Priya Sharma,9876543210,4500,12 October
+Rahul Verma,9876540123,1200,15 October
+```
+
+[Calling list](/documentation/deploy/campaigns/calling-list) has the full file rules.
+
+## Fields
+
+`campaign_start_time` and `campaign_end_time` are read in `call_config.call_time.timezone`, and the start must be in the future. Without `remove_invalid_rows`, a row that fails validation fails the whole upload with `400`, and the uploader is emailed the errors. A list may have up to 100 rows by default, and up to 5,000 once Company details are saved in the dashboard; a longer list returns `402`.
+
+`transliterate_fields` is a JSON array of the agent's own variable names, not CSV headers, whose values are transliterated into the agent's language; each must be mapped in `variables_map`, and `mobile_number` is not allowed. `transliterate_callee_name=true` is the same as adding `callee_name`; both can be sent.
+
+`variables_map` for the CSV above:
+
+```json
+{"callee_name": "callee_name", "mobile_number": "mobile_number", "amount_due": "amount_due", "due_date": "due_date"}
+```
+
+`call_config` is a JSON string with the daily window calls may be placed in and how failed calls are retried. Retry waits are in minutes.
+
+```json
+{
+  "call_time": { "call_start_time": "09:00", "call_end_time": "18:00", "timezone": "Asia/Kolkata" },
+  "call_retry_config": { "retry_count": 2, "retry_busy": 30, "retry_not_picked": 30, "retry_failed": 30 }
+}
+```
+
+## Response
+
+```json
+{
+  "message": "Contacts imported successfully!",
+  "list_id": "123e4567-e89b-12d3-a456-426614174000",
+  "total_rows": 100,
+  "successful_rows": 98,
+  "failed_rows": 2
+}
+```
+
+<RelatedTopics items={[["Run a campaign by API", "/documentation/deploy/campaigns/campaigns-by-api#with-the-api"]]} />

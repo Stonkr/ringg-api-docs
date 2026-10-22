@@ -1,0 +1,142 @@
+---
+title: "Event Subscription"
+sidebarTitle: "Event Subscription"
+description: "Subscribe a Ringg AI agent to call, chat and analysis events from the dashboard: pick events, set the callback URL and headers, and know the per-event limits."
+"og:title": "Send call and chat events to your server (webhooks)"
+related:
+  - "Webhook setup and errors": /documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors
+  - "Call events": /documentation/build-agents/customize-agent-behaviour/webhooks/call-events
+  - "WhatsApp chat events": /documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events
+  - "Webhook field reference": /documentation/build-agents/customize-agent-behaviour/webhooks/field-reference
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Event Subscription (webhooks) sends an HTTP request to your server when an [agent's](/documentation/build-agents/agents/agent-types) conversation reaches a stage: a call starts or ends, its recording is ready, or its analysis finishes. Use it to update your CRM or trigger follow-ups without polling.
+
+In the dashboard: Agents (listed under **Assistants** in the sidebar) → open an agent → **Advanced Settings → Event Subscription**. On a [multi-prompt agent](/documentation/build-agents/agents/multi-prompt-agents/overview), open **Global Settings → Events subscription** (see [Global Settings](/documentation/build-agents/agents/multi-prompt-agents/global-settings#global-settings)).
+
+
+On a WhatsApp agent the list offers chat events instead of call events; see [WhatsApp chat events](/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events#whatsapp-chat-events).
+
+## Before you start
+
+<Columns cols={2}>
+  <Card title="An agent" icon="bot" href="/documentation/build-agents/agents/create-an-agent" horizontal>
+    The agent whose calls or chats send the events.
+  </Card>
+  <Card title="An HTTPS endpoint" icon="server" href="/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors#endpoint-requirements" horizontal>
+    A URL on your server that accepts the requests and returns a `2xx` status.
+  </Card>
+</Columns>
+
+## Add a subscription
+
+<Frame caption="Adding an event subscription">
+  <video alt="Adding an event subscription" aria-label="Adding an event subscription" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/agents-event-subscription/poster.webp">
+    <source src="/media/agents-event-subscription/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open the section">
+    Open **Event Subscription**. With no subscriptions yet, the **New subscription** form is already open; otherwise click **Create Subscription** (**Add** on a multi-prompt agent).
+  </Step>
+  <Step title="Set the method and URL">
+    Pick a **Method**: **GET**, **POST**, **PUT** or **PATCH** (default **POST**). Enter the **Callback URL**, for example `https://api.example.com/webhooks/ringg`.
+  </Step>
+  <Step title="Select events">
+    Under **Select Events**, tick one or more. Each is described in [Events](#events).
+  </Step>
+  <Step title="Add headers (optional)">
+    Under **Custom Headers**, click **Add Header** and fill in a key and value, such as `Authorization` and `Bearer <your-token>`. Ringg sends these headers with every event, so your server can check them (see [Authentication patterns](/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors#authentication-patterns)).
+    <Frame caption="A filled-in new subscription">
+      <img src="/media/agents-event-subscription/new-subscription.webp" alt="New subscription form with method POST, callback URL https://api.acme-lending.example/webhooks/ringg, Call Completed, Recording Ready and Advanced Analysis Complete ticked, and an Authorization header" />
+    </Frame>
+  </Step>
+  <Step title="Save">
+    Click **Create Subscription**. It is enabled once the URL and at least one event are set. You see "Event subscription added" and a card with the **Webhook URL**, **Events** and **Headers**.
+    <Check>
+    The card shows your URL and every event you ticked.
+    </Check>
+    <Frame caption="Saved subscriptions">
+      <img src="/media/agents-event-subscription/subscriptions.webp" alt="Webhook Subscriptions with two cards, the new one showing POST, its webhook URL, events call_completed, recording_completed and client_analysis_completed, and a masked Authorization header" />
+    </Frame>
+  </Step>
+</Steps>
+
+To manage subscriptions from code instead, see [Configure subscriptions](/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors#configure-subscriptions).
+
+## Events
+
+The list matches the agent's channel. Voice and web agents get the call events, WhatsApp agents get **Chat Completed**, and every agent gets the analysis events. Hover the info icon next to an event for the same details as below.
+
+| Event | Fires | Carries |
+|---|---|---|
+| **Call Started**<br/>`call_started` | When an outbound call or web call begins. Not sent for inbound phone calls | Call ID, caller info, custom args, agent info |
+| **Call Ringing**<br/>`call_ringing` | Dashboard test calls only, together with Call Started, once the carrier accepts the dial | Call ID, custom args, agent and version info |
+| **Call Ongoing**<br/>`call_ongoing` | Same moment as Call Ringing | Same as Call Ringing |
+| **Call Completed**<br/>`call_completed` | When every call attempt finishes | Transcript, duration, status, custom args |
+| **Recording Ready**<br/>`recording_completed` | When the recording is processed and ready | Recording URL, duration |
+| **Chat Completed**<br/>`chat_completed` | When a WhatsApp conversation ends | Transcript, message counts, status, custom args |
+| **Platform Analysis Done**<br/>`platform_analysis_completed` | When AI analysis completes | Key points, summary, classification |
+| **Advanced Analysis Complete**<br/>`client_analysis_completed` | When [Advanced Analysis](/documentation/build-agents/customize-agent-behaviour/advanced-analysis) completes | Your Advanced Analysis results |
+| **All Processing Done**<br/>`all_processing_completed` | Once all the events above are processed | All data from each event combined |
+
+The `chat_completed` payload is in [WhatsApp events](/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events#whatsapp-chat-events).
+
+## Rules the dashboard enforces
+
+| Rule | What you see |
+|---|---|
+| At most 4 subscriptions per event on one agent | "Subscription limit reached". **Create Subscription** is hidden once every offered event has 4. |
+| The same callback URL and event cannot appear twice | "Duplicate subscription". Remove the duplicate, or add the event to the existing subscription. |
+| A header with a key needs a value | "Add a value or remove this header" |
+
+The limit counts subscriptions per event, not in total. One URL subscribed to several events counts once against each of them. The API enforces the same rules with `400`, and also rejects an event the agent's channel can never produce.
+
+## Header values are masked
+
+After you save, Ringg masks the value of any header whose name contains `authorization`, `api-key`, `token`, `bearer`, `secret`, `password`, `auth` or `key` (so `X-Idempotency-Key` is masked too). A masked value shows its first 4 characters, for example `sk_l***`. In the dashboard a masked value is read-only:
+
+- To change it, click the pencil (**Edit header value**) and type the full new value. Leave it blank to keep the stored one.
+- If you change the **Callback URL**, or replace all of a subscription's original events, masked values are cleared and you see "Header value cleared": "The secret was tied to the previous target. Re-enter it before saving."
+
+## Edit or remove a subscription
+
+- **Edit**: open the card's menu (**⋮**) and click **Edit**. The card turns into the form; change it and click **Update Subscription**. You see "Event subscription updated".
+- **Remove**: open the menu and click **Delete**. It is removed at once, with no confirmation, and you see "Event subscription removed".
+
+On a multi-prompt agent the compact list has pencil and trash buttons instead of the menu. Changes there go into the agent's draft; see [Publish changes on a multi-prompt agent](/documentation/build-agents/test-and-improve/drafts-and-versions#publish-changes-on-a-multi-prompt-agent).
+
+## Verify it worked
+
+Place a [test call](/documentation/build-agents/test-and-improve/test-an-agent). Your endpoint receives each event you subscribed to, with your custom headers.
+
+<Check>
+If you subscribed to **Call Completed**, your server logs a `call_completed` request with the call's transcript and status.
+</Check>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title='"Failed to update subscriptions"'>
+    The server rejected the list. Check the URL, the 4-per-event limit and duplicate URL and event pairs, then save again.
+  </Accordion>
+  <Accordion title="My endpoint is not receiving events">
+    Check the endpoint against the [requirements](/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors#endpoint-requirements) and the [error handling](/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors) guide. Confirm the call reached the stage the event waits for: **Recording Ready** needs a recording, and the analysis events need a completed conversation.
+  </Accordion>
+</AccordionGroup>
+
+## Next steps
+
+<Columns cols={2}>
+  <Card title="Read the payloads" icon="code" href="/documentation/build-agents/customize-agent-behaviour/webhooks/call-events">
+    Every field Ringg sends for each event.
+  </Card>
+  <Card title="Build your endpoint" icon="webhook" href="/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors">
+    Endpoint requirements, idempotency and authentication.
+  </Card>
+</Columns>
+
+<RelatedTopics items={[["Webhook setup and errors", "/documentation/build-agents/customize-agent-behaviour/webhooks/setup-and-errors"], ["Call events", "/documentation/build-agents/customize-agent-behaviour/webhooks/call-events"], ["WhatsApp chat events", "/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events"], ["Webhook field reference", "/documentation/build-agents/customize-agent-behaviour/webhooks/field-reference"]]} />

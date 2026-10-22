@@ -1,0 +1,106 @@
+---
+title: "Workflow block reference"
+sidebarTitle: "Block reference"
+description: "Every Ringg AI workflow block and its settings: Agent in call or chat mode (WhatsApp, SMS, email), Conditional, Await and Action, with what each passes to later steps."
+related:
+  - "Workflows": /documentation/build-agents/workflows/overview
+  - "Build a workflow": /documentation/build-agents/workflows/build-a-workflow
+  - "Test and publish a workflow": /documentation/build-agents/workflows/test-and-publish
+  - "Workflow campaign": /documentation/deploy/campaigns/workflow-campaign
+  - "Workflow runs in Logs": /documentation/monitor/logs#workflow-runs
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+## Block reference
+
+| Block | Purpose | Required to publish |
+| --- | --- | --- |
+| **Agent**, **Call** mode | Voice call with one of your [agents](/documentation/build-agents/agents/create-an-agent). One branch out. | An agent and at least one caller [number](/documentation/inventory/phone-numbers/buy-or-import-a-number) |
+| **Agent**, **Chat** mode | WhatsApp, SMS or email message, optionally with a chat agent ([WhatsApp agent](/documentation/build-agents/agents/whatsapp-agents/create-an-agent)). One branch out. | A channel, plus a template or chat agent (WhatsApp), or a body or chat agent (SMS, email). Email also needs **To** and **Subject**. To send, a WhatsApp block needs both a template and a chat agent. |
+| **Conditional** (card titled **Condition**) | Branch on data from earlier steps, including [Advanced Analysis](/documentation/build-agents/customize-agent-behaviour/advanced-analysis) fields. Branches out to **Match** or **No match**. | At least one complete rule |
+| **Await** | Pause the run. One branch out; Event mode adds **Timeout**. | A duration, a resume time, or an event name |
+| **Action** | HTTP request to any API or CRM, authenticated through a [workspace tool](/documentation/build-agents/customize-agent-behaviour/tools/workspace-tools#workspace-tools) if needed. One branch out. | A URL; a valid JSON body for POST, PUT, PATCH |
+
+Each block's full settings:
+
+<AccordionGroup>
+<Accordion title="Agent: Call" icon="phone">
+
+Switching between **Call** and **Chat** keeps the block's position, connections and the other mode's settings.
+
+| Setting | Values and defaults |
+| --- | --- |
+| Agent | Pick an agent, or **Add new** to [create one](/documentation/build-agents/agents/create-an-agent). Changing the agent clears its variable mapping. If a [call limit](/documentation/manage-account/call-limits) applies to the agent or workspace, a line under the picker states it, for example "Workspace call limit 3 calls / 24 hours per person. Retries count toward it." |
+| **Variables** | Shows `mapped/total`. Opens **Map variables** to fill every variable the agent's prompt uses. See [Feed an agent its variables](/documentation/build-agents/workflows/build-a-workflow#feed-an-agent-its-variables). |
+| **From** | One or more workspace numbers to call from. [Buy or import a number](/documentation/inventory/phone-numbers/buy-or-import-a-number) if the list is empty. |
+| <Tooltip tip="The hours of the day in which this block may place calls.">**Call window**</Tooltip> | Earliest and latest call time. Default 09:00 to 18:00, in your browser's time zone when you edit it. The block waits up to 6 hours for the call's result; after that the run moves on without it. |
+| **Retries** | 0 to 10. Default 0. |
+| Retry gaps (when Retries is above 0) | Minutes to wait after **Busy** (default 15), **No answer** (default 30) and **Failed** (default 60). Minimum 1. |
+
+</Accordion>
+<Accordion title="Agent: Chat" icon="message-square">
+
+| Setting | Values and defaults |
+| --- | --- |
+| **Channel** | **WhatsApp** (default), **SMS**, **Email**. |
+| **Chat assistant (optional)** | A chat agent that takes over the conversation. See [Create a WhatsApp agent](/documentation/build-agents/agents/whatsapp-agents/create-an-agent). |
+| **Template** (WhatsApp) | WhatsApp template name. Needed to send, together with a chat agent on the **From** number. Template variables can't be filled from the block. The message goes to the contact's number from the campaign list. |
+| **From** (WhatsApp) | Your WhatsApp phone number ID. See [WhatsApp](/documentation/build-agents/agents/whatsapp-agents/overview) and [connect WhatsApp Business](/documentation/inventory/tools-integrations/connect-whatsapp). |
+| **To** (SMS, email) | Recipient. Accepts variables, for example `{{callee.mobile_number}}`. |
+| **Subject** (email) | Required for email. |
+| **Body** (SMS, email) | Message text with variables. Optional when a chat agent is selected. |
+| **Via** (SMS, email) | A connected integration ([workspace tools](/documentation/build-agents/customize-agent-behaviour/tools/workspace-tools#workspace-tools)) to send through, or **None**. SMS needs one whose credentials include an `endpoint` and an `api_key`: Ringg sends `POST` `{"to": …, "text": …}` to the endpoint with `Authorization: Bearer <api_key>`, and only HTTP `200` counts as sent. Email ignores **Via**; Ringg sends it. |
+
+</Accordion>
+<Accordion title="Conditional" icon="git-branch">
+
+A Condition block checks its rules and sends the run down **Match** or **No match**. With two or more rules, choose **All** or **Any**. With no rules, every run takes **Match**.
+
+Each rule has a source, a field and a comparison:
+
+| Source | Reads | Pick |
+| --- | --- | --- |
+| **Call status** | Status of an earlier Agent block's call, typed as free text. Usually `completed`, `failed`, `error` or `cancelled`, in lowercase | The block |
+| **Call duration** | Seconds the call lasted | The block |
+| **Retry count** | Retries the call used | The block |
+| **Custom variable** | A workflow input variable or the callee's name or number | The variable |
+| **Custom analysis** | A field from the agent's [Advanced Analysis](/documentation/build-agents/customize-agent-behaviour/advanced-analysis) | The block, then the field |
+| **Platform analysis** | **Call sentiment** or **Call summary** | The block, then the field |
+| **Tool response** | A field of an earlier Action block's JSON response | The block, then the field name |
+| **Custom path** | Any path, typed or picked | The path |
+
+Comparisons: **is**, **is not**, **contains**, **does not contain**, **is over**, **is at least**, **is under**, **is at most**, **is one of**, **is none of**. Text comparisons are exact and case-sensitive: `Completed` doesn't match `completed`. For **is one of** and **is none of**, separate values with commas (`paid, promised`). **Call duration** and **Retry count** take numbers and offer only **is**, **is not**, **is over**, **is at least**, **is under** and **is at most**.
+
+If exactly one suitable block is upstream, it is picked for you. "Connect an agent upstream" means the Condition has no Agent block before it.
+
+</Accordion>
+<Accordion title="Await" icon="timer">
+
+| Mode | Settings |
+| --- | --- |
+| **Duration** | Amount and unit (**minutes**, **hours**, **days**). Default 1 hour. Presets: 15m, 30m, 1h, 2h, 1d. |
+| **Time**, **Fixed** | A date and time to resume at. |
+| **Time**, **Variable** | A date field from an upstream agent's [Advanced Analysis](/documentation/build-agents/customize-agent-behaviour/advanced-analysis), plus an offset **before** or **after** it (for example, 2 hours before the promised payment date). |
+| **Event** | An event name (for example `crm_interview_done`) and a **Fallback timeout** (default 48 hours). "If the event never arrives, the run takes the Timeout branch after this long." |
+
+Leaving Event mode removes the Timeout branch and its connection. The dashboard doesn't show how an outside system sends the event to a waiting run, so ask Ringg support before you build on Event mode.
+
+</Accordion>
+<Accordion title="Action" icon="send">
+
+| Setting | Values and defaults |
+| --- | --- |
+| Method | **GET** (default), **POST**, **PUT**, **PATCH**, **DELETE**. |
+| Request URL | Required. Accepts variables, for example `https://api.example.com/leads/{{callee.custom_args.id}}`. |
+| **Headers** | Name and value rows. **Add header** adds one. |
+| **Body** | POST, PUT and PATCH only. Must be a valid JSON object. Accepts variables. |
+| **Timeout** | 1 to 120 seconds. Default 15. |
+| **Auth** | A connected integration to authenticate with, or **None**. See [workspace tools](/documentation/build-agents/customize-agent-behaviour/tools/workspace-tools#workspace-tools). |
+
+Later blocks can read fields from the Action's JSON response, under **Tool response** in a Condition or from the [variable menu](/documentation/build-agents/workflows/build-a-workflow#insert-a-variable) in any text field.
+
+</Accordion>
+</AccordionGroup>
+
+<RelatedTopics items={[["Workflows", "/documentation/build-agents/workflows/overview"], ["Build a workflow", "/documentation/build-agents/workflows/build-a-workflow"], ["Test and publish a workflow", "/documentation/build-agents/workflows/test-and-publish"], ["Workflow campaign", "/documentation/deploy/campaigns/workflow-campaign"], ["Workflow runs in Logs", "/documentation/monitor/logs#workflow-runs"]]} />

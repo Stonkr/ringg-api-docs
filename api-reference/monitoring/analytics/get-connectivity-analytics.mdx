@@ -1,0 +1,24 @@
+---
+openapi: get /analytics/v4/connectivity
+description: "Get how many calls connected, the connectivity percentage, and which attempt each connected call got through on, filtered by date, agent, campaign or channel."
+related:
+  - "Analytics": /documentation/monitor/analytics
+  - "Get volume analytics": /api-reference/monitoring/analytics/get-volume-analytics
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Returns the data behind the **Connectivity** chart in [Analytics](/documentation/monitor/analytics). Use `by_retry_attempt` to judge whether more retries are worth it: `attempt_2` and later are calls that connected only after a retry.
+
+## Notes
+
+- `connectivity_pct` runs from `0` to `100`, rounded to two decimals, unlike the `0` to `1` rates on other analytics endpoints. It is `0.0` when there are no calls.
+- `total` includes every call status, including registered, ongoing and retry calls.
+- For calls stopped by the campaign's end time or retry limit, read `volume.connection_rate` from [Get volume analytics](/api-reference/monitoring/analytics/get-volume-analytics).
+
+## Errors
+
+- `400`: a filter is invalid, such as an unknown `channel`, a malformed ID, or `sub_workspace_id` sent from a workspace that isn't a primary workspace.
+- `401`: `X-API-KEY` is missing or invalid.
+
+<RelatedTopics items={[["Analytics", "/documentation/monitor/analytics"], ["Get volume analytics", "/api-reference/monitoring/analytics/get-volume-analytics"]]} />
