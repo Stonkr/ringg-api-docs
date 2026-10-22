@@ -3,7 +3,7 @@ import type { Scenario } from "../run.ts";
 // The agent's own report card, with a coaching note to read.
 export default {
   name: "analytics-report-card-agent",
-  docsPage: "analytics/coach-agents/report-cards",
+  docsPage: "analytics-platform/coach-agents/report-cards",
   routes: {},
   analytics: { as: "arjun", fixture: "analytics-report-card-agent" },
   async run(s) {

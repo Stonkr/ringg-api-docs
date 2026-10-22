@@ -3,7 +3,7 @@ import type { Scenario } from "../run.ts";
 // An agent's Summary: their own calls only.
 export default {
   name: "analytics-summary-agent",
-  docsPage: "analytics/review-calls/summary",
+  docsPage: "analytics-platform/review-calls/summary",
   routes: {},
   analytics: { as: "arjun", fixture: "analytics-summary-agent" },
   async run(s) {

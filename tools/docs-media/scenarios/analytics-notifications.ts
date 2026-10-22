@@ -2,7 +2,7 @@ import type { Scenario } from "../run.ts";
 
 export default {
   name: "analytics-notifications",
-  docsPage: "analytics/set-up/notifications",
+  docsPage: "analytics-platform/set-up/notifications",
   routes: {},
   analytics: { as: "priya", fixture: "analytics-notifications" },
   async run(s) {

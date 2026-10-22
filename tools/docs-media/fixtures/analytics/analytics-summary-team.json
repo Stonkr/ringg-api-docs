@@ -1,5 +1,5 @@
 {
- "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+ "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
  "calls": [
   {
    "method": "GET",
@@ -8,14 +8,14 @@
    "phase": 0,
    "status": 200,
    "body": {
-    "id": "1ee4c070-bccc-4712-b8fa-dca20538dde2",
+    "id": "ad7da174-800d-4f25-b880-1d03ddb3c190",
     "email": "kavya@acme-lending.example",
     "full_name": "Kavya Nair",
     "is_active": true,
-    "created_at": "2026-10-22T07:37:03.476024Z",
+    "created_at": "2026-10-22T08:21:52.304650Z",
     "last_login_at": null,
     "role": "team_lead",
-    "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+    "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
     "show_ai_scores": true,
     "require_all_parameters": false
    }
@@ -28,7 +28,7 @@
    "status": 200,
    "body": [
     {
-     "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+     "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
      "name": "Acme Lending",
      "role": "team_lead",
      "is_current": true
@@ -87,11 +87,11 @@
      }
     ],
     "benchmark": {
-     "workspace_avg_score": 89.54
+     "workspace_avg_score": 89.75
     },
     "agents": [
      {
-      "id": "f1a980bb-e5a9-4648-bbe5-87ec74132532",
+      "id": "9d3c52d9-2fca-48f4-8fc1-77b831d45cd0",
       "name": "Rahul Verma",
       "is_self": false,
       "interactions": 10,
@@ -101,7 +101,7 @@
       "fatal_rate": 0
      },
      {
-      "id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+      "id": "09dddf68-5c1b-47fa-9c80-e44b8cbafa02",
       "name": "Arjun Mehta",
       "is_self": false,
       "interactions": 6,
@@ -111,7 +111,7 @@
       "fatal_rate": 0
      },
      {
-      "id": "1822661d-a832-4e84-8e81-247af583d604",
+      "id": "07d32e85-cb6d-4317-93a5-c9d46f33c05f",
       "name": "Neha Kapoor",
       "is_self": false,
       "interactions": 11,
@@ -121,7 +121,7 @@
       "fatal_rate": 0
      },
      {
-      "id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+      "id": "5ab2926e-fc01-43e5-830c-c9e737845660",
       "name": "Kavya Nair",
       "is_self": true,
       "interactions": 0,
@@ -140,41 +140,41 @@
     ],
     "lowest_calls": [
      {
-      "id": "7beb36ce-6b8a-48fe-967e-cdbbd2839a78",
+      "id": "a96bab92-1b37-4de5-abd2-64646d02b9b5",
       "title": "Missed EMI follow-up · AL-20453",
-      "created_at": "2026-09-24T10:38:28.628047+00:00",
+      "created_at": "2026-09-24T11:22:28.628047+00:00",
       "score": 65,
       "is_fatal": false,
       "agent_name": "Rahul Verma"
      },
      {
-      "id": "f2324023-a53b-4180-94e7-975e9a8b87f1",
+      "id": "883cef82-b4cc-45b5-8bcd-a4322d1c8eed",
       "title": "Missed EMI follow-up · AL-20546",
-      "created_at": "2026-10-16T18:10:46.970714+00:00",
+      "created_at": "2026-10-16T18:54:46.970714+00:00",
       "score": 74,
       "is_fatal": false,
       "agent_name": "Arjun Mehta"
      },
      {
-      "id": "0ee673ae-2295-42db-b2bb-bf2445d58f92",
+      "id": "2b098f8f-2a56-4fa4-ac72-da4d4f73abbc",
       "title": "EMI reminder · AL-20435",
-      "created_at": "2026-10-14T16:53:26.722037+00:00",
+      "created_at": "2026-10-14T17:37:26.722037+00:00",
       "score": 75,
       "is_fatal": false,
       "agent_name": "Rahul Verma"
      },
      {
-      "id": "d4d3ab03-6ed1-47cb-85a9-eab9fa460dcc",
+      "id": "0c5e3d7a-5f94-43ab-acde-4eff6d236e1b",
       "title": "Restructuring request · AL-20417",
-      "created_at": "2026-10-21T17:51:56.072600+00:00",
+      "created_at": "2026-10-21T18:35:56.072600+00:00",
       "score": 81,
       "is_fatal": false,
       "agent_name": "Rahul Verma"
      },
      {
-      "id": "0238f658-fbb6-46a6-8abc-c54966174080",
+      "id": "cb410913-0af0-4bc3-b7ab-b028800948a1",
       "title": "EMI reminder · AL-20434",
-      "created_at": "2026-10-15T15:55:54.670240+00:00",
+      "created_at": "2026-10-15T16:39:54.670240+00:00",
       "score": 82,
       "is_fatal": false,
       "agent_name": "Rahul Verma"

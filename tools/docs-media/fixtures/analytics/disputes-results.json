@@ -1,5 +1,5 @@
 {
- "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+ "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
  "calls": [
   {
    "method": "GET",
@@ -8,14 +8,14 @@
    "phase": 0,
    "status": 200,
    "body": {
-    "id": "3624ee97-57d0-4fe5-b153-757f3a99063a",
+    "id": "74f6bc4f-9d13-47b2-9592-5799bf0cdd81",
     "email": "arjun@acme-lending.example",
     "full_name": "Arjun Mehta",
     "is_active": true,
-    "created_at": "2026-10-22T07:37:03.476024Z",
+    "created_at": "2026-10-22T08:21:52.304650Z",
     "last_login_at": null,
     "role": "agent",
-    "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+    "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
     "show_ai_scores": true,
     "require_all_parameters": false
    }
@@ -28,7 +28,7 @@
    "status": 200,
    "body": [
     {
-     "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+     "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
      "name": "Acme Lending",
      "role": "agent",
      "is_current": true
@@ -37,27 +37,27 @@
   },
   {
    "method": "GET",
-   "path": "/interactions/727075a1-d59a-4338-842b-76253e227d06",
+   "path": "/interactions/e83b6d1b-518b-4bab-a37d-c135594d3a3b",
    "query": "",
    "phase": 0,
    "status": 200,
    "body": {
-    "id": "727075a1-d59a-4338-842b-76253e227d06",
-    "agent_id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+    "id": "e83b6d1b-518b-4bab-a37d-c135594d3a3b",
+    "agent_id": "09dddf68-5c1b-47fa-9c80-e44b8cbafa02",
     "agent_name": "Arjun Mehta",
     "source_type": "call",
     "media_type": "audio",
     "status": "analyzed",
     "title": "EMI reminder · AL-20526",
     "external_id": "AL-20526",
-    "use_case_id": "47020d6e-299e-42ce-b736-2e804f77fbd4",
+    "use_case_id": "1e338915-2728-49a7-8644-4cf00ee87e9f",
     "use_case_name": "EMI collections",
     "overall_score": 100,
     "is_fatal": false,
     "score_source": "appeal",
     "ai_overall_score": 92,
     "ai_is_fatal": false,
-    "created_at": "2026-10-21T21:19:09.461569Z",
+    "created_at": "2026-10-21T22:03:09.461569Z",
     "duration_seconds": 57.5,
     "subject": null,
     "sender": null,
@@ -66,7 +66,7 @@
     "ai_hidden": false,
     "active_job": null,
     "appeal_status": "resolved",
-    "appeal_due_at": "2026-10-23T22:43:28.885828Z",
+    "appeal_due_at": "2026-10-23T23:27:35.376091Z",
     "appeal_overdue": false,
     "appeal_claimed_by_name": null,
     "appeal_deadline": null,
@@ -409,7 +409,7 @@
     },
     "classifications": [
      {
-      "bucket_id": "466a78c4-2f74-459f-8ab7-191b17000846",
+      "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
       "bucket_name": "Promise to pay",
       "severity": "informational",
       "confidence": 0.92
@@ -425,35 +425,35 @@
     "appeal": {
      "eligibility": {
       "can_appeal": false,
-      "deadline": "2026-10-24T21:25:09.461569Z",
+      "deadline": "2026-10-24T22:09:09.461569Z",
       "reason_if_not": "already_appealed"
      },
      "appeal": {
-      "id": "45188d16-cf37-4c20-baa0-5f544db49037",
-      "interaction_id": "727075a1-d59a-4338-842b-76253e227d06",
+      "id": "9a220b31-ebc9-4630-a1dc-c82489013da1",
+      "interaction_id": "e83b6d1b-518b-4bab-a37d-c135594d3a3b",
       "status": "resolved",
       "agent": {
-       "id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+       "id": "09dddf68-5c1b-47fa-9c80-e44b8cbafa02",
        "name": "Arjun Mehta"
       },
       "team_leader": {
-       "id": "cf8ed292-6b85-44a8-ae5c-fe6dd80b9a7a",
+       "id": "5ab2926e-fc01-43e5-830c-c9e737845660",
        "name": "Kavya Nair"
       },
       "submitted_by": {
-       "id": "3624ee97-57d0-4fe5-b153-757f3a99063a",
+       "id": "74f6bc4f-9d13-47b2-9592-5799bf0cdd81",
        "name": "Arjun Mehta"
       },
-      "submitted_at": "2026-10-21T22:43:28.885828Z",
-      "ai_scored_at": "2026-10-21T21:25:09.461569Z",
-      "appeal_deadline_at": "2026-10-24T21:25:09.461569Z",
-      "due_at": "2026-10-23T22:43:28.885828Z",
+      "submitted_at": "2026-10-21T23:27:35.376091Z",
+      "ai_scored_at": "2026-10-21T22:09:09.461569Z",
+      "appeal_deadline_at": "2026-10-24T22:09:09.461569Z",
+      "due_at": "2026-10-23T23:27:35.376091Z",
       "overdue": false,
       "claimed_by": {
-       "id": "df3fcf29-7620-4acc-a09a-e46d4e34373d",
+       "id": "7a7d0aed-5340-4713-bfd5-0318c8835a73",
        "name": "Farah Ali"
       },
-      "claimed_at": "2026-10-22T01:27:24.724851Z",
+      "claimed_at": "2026-10-22T02:11:44.799156Z",
       "note": "Happy to walk through the recording if that helps.",
       "disputes": [
        {
@@ -468,7 +468,7 @@
       "ai_snapshot": {
        "is_fatal": false,
        "raw_score": 92,
-       "analyzed_at": "2026-10-21T21:25:09.461569+00:00",
+       "analyzed_at": "2026-10-21T22:09:09.461569+00:00",
        "overall_score": 92,
        "rubric_version": 1,
        "category_scores": [
@@ -755,10 +755,10 @@
       ],
       "current_version": 1,
       "corrected": false,
-      "first_resolved_at": "2026-10-22T04:32:42.533635Z",
-      "resolved_at": "2026-10-22T04:32:42.533635Z",
+      "first_resolved_at": "2026-10-22T05:17:17.962479Z",
+      "resolved_at": "2026-10-22T05:17:17.962479Z",
       "resolved_by": {
-       "id": "df3fcf29-7620-4acc-a09a-e46d4e34373d",
+       "id": "7a7d0aed-5340-4713-bfd5-0318c8835a73",
        "name": "Farah Ali"
       },
       "outcome": "overturned",
@@ -767,11 +767,11 @@
        "version": 1,
        "kind": "resolution",
        "reviewer": {
-        "id": "df3fcf29-7620-4acc-a09a-e46d4e34373d",
+        "id": "7a7d0aed-5340-4713-bfd5-0318c8835a73",
         "name": "Farah Ali"
        },
        "reviewer_saw_ai": true,
-       "created_at": "2026-10-22T04:32:42.533635Z",
+       "created_at": "2026-10-22T05:17:17.962479Z",
        "score": 100,
        "raw_score": 100,
        "is_fatal": false,
@@ -970,7 +970,23 @@
   },
   {
    "method": "GET",
-   "path": "/business-metrics/interaction/727075a1-d59a-4338-842b-76253e227d06",
+   "path": "/pipeline/reprocess",
+   "query": "interaction_id=e83b6d1b-518b-4bab-a37d-c135594d3a3b&limit=50",
+   "phase": 0,
+   "status": 200,
+   "body": []
+  },
+  {
+   "method": "GET",
+   "path": "/interactions/e83b6d1b-518b-4bab-a37d-c135594d3a3b/human-scores/history",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": []
+  },
+  {
+   "method": "GET",
+   "path": "/business-metrics/interaction/e83b6d1b-518b-4bab-a37d-c135594d3a3b",
    "query": "",
    "phase": 0,
    "status": 200,
@@ -980,22 +996,6 @@
     "coaching": null,
     "model_used": null
    }
-  },
-  {
-   "method": "GET",
-   "path": "/pipeline/reprocess",
-   "query": "interaction_id=727075a1-d59a-4338-842b-76253e227d06&limit=50",
-   "phase": 0,
-   "status": 200,
-   "body": []
-  },
-  {
-   "method": "GET",
-   "path": "/interactions/727075a1-d59a-4338-842b-76253e227d06/human-scores/history",
-   "query": "",
-   "phase": 0,
-   "status": 200,
-   "body": []
   }
  ]
 }

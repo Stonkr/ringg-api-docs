@@ -15,9 +15,9 @@ In [Ringg Analytics](https://analytics.ringg.ai): **Sidebar → Team** (owners a
 |---|---|---|---|
 | **Owner** | All | All | Everything an admin can. Set when the workspace is created. |
 | **Admin** | All | All, plus **Team** and **Settings** | Manage members, agents, metrics, notifications and dispute settings; reassign disputes; delete and reprocess calls |
-| **QA** | All | All except **Team** and **Settings** | Add calls, [review](/analytics/review-calls/qa-reviews) calls, resolve [disputes](/disputes/review-a-dispute), set up notifications, coach agents |
-| **Team lead** | Their team: the agents who report to them, directly or further down | **Summary** (their team), **Interactions**, **Agents** (their team, read-only), **Metrics** (read-only) | Leave coaching notes on their agents' [report cards](/analytics/coach-agents/report-cards) |
-| **Agent** | Their own | **Summary** (their own), **Interactions**, **My report card**, **Metrics** (read-only) | [Dispute](/disputes/raise-a-dispute) an AI score |
+| **QA** | All | All except **Team** and **Settings** | Add calls, [review](/analytics-platform/review-calls/qa-reviews) calls, resolve [disputes](/analytics-platform/disputes/review-a-dispute), set up notifications, coach agents |
+| **Team lead** | Their team: the agents who report to them, directly or further down | **Summary** (their team), **Interactions**, **Agents** (their team, read-only), **Metrics** (read-only) | Leave coaching notes on their agents' [report cards](/analytics-platform/coach-agents/report-cards) |
+| **Agent** | Their own | **Summary** (their own), **Interactions**, **My report card**, **Metrics** (read-only) | [Dispute](/analytics-platform/disputes/raise-a-dispute) an AI score |
 | **Member** | All | All except **Notifications**, **Team** and **Settings** | Read only |
 
 A team lead sees the workspace average as a benchmark, but never another team's figures. An agent sees no team or workspace figures at all.
@@ -29,7 +29,7 @@ A team lead sees the workspace average as a benchmark, but never another team's 
     Click **Invite User**, enter the name and email, and pick the role. For a QA, also pick the **Review mode** and whether they must **Rate and comment on every parameter** (see [QA settings](#qa-settings)).
   </Step>
   <Step title="Add agents and team leads from Agents">
-    Adding an agent with an email invites them and links their login to their agent record, which is what limits them to their own calls. See [Agents and teams](/analytics/coach-agents/agents-and-teams).
+    Adding an agent with an email invites them and links their login to their agent record, which is what limits them to their own calls. See [Agents and teams](/analytics-platform/coach-agents/agents-and-teams).
 
     <Check>The invite arrives by email, and the member shows **Invite pending** until they sign in.</Check>
   </Step>
@@ -50,7 +50,7 @@ Set per QA when you invite them, or later from the icon next to their role on **
 ## Next steps
 
 <Columns cols={3}>
-  <Card title="Agents and teams" icon="users" href="/analytics/coach-agents/agents-and-teams">Build the team structure team leads are scoped to.</Card>
-  <Card title="QA reviews" icon="clipboard-check" href="/analytics/review-calls/qa-reviews">How QAs score calls by hand.</Card>
-  <Card title="Disputes" icon="scale" href="/disputes/overview">How agents challenge an AI score.</Card>
+  <Card title="Agents and teams" icon="users" href="/analytics-platform/coach-agents/agents-and-teams">Build the team structure team leads are scoped to.</Card>
+  <Card title="QA reviews" icon="clipboard-check" href="/analytics-platform/review-calls/qa-reviews">How QAs score calls by hand.</Card>
+  <Card title="Disputes" icon="scale" href="/analytics-platform/disputes/overview">How agents challenge an AI score.</Card>
 </Columns>

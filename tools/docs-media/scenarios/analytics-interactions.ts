@@ -3,7 +3,7 @@ import ids from "../fixtures/analytics/ids.json" with { type: "json" };
 
 export default {
   name: "analytics-interactions",
-  docsPage: "analytics/review-calls/interactions",
+  docsPage: "analytics-platform/review-calls/interactions",
   routes: {},
   analytics: { as: "priya", fixture: "analytics-interactions" },
   async run(s) {

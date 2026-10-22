@@ -1,5 +1,5 @@
 {
- "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+ "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
  "calls": [
   {
    "method": "GET",
@@ -9,7 +9,7 @@
    "status": 200,
    "body": [
     {
-     "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+     "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
      "name": "Acme Lending",
      "role": "qa",
      "is_current": true
@@ -23,41 +23,41 @@
    "phase": 0,
    "status": 200,
    "body": {
-    "id": "04a5aae6-93e4-4b5f-963e-5f97a11fd946",
+    "id": "f74e499a-4755-4671-a49f-5a7c754079c8",
     "email": "dev@acme-lending.example",
     "full_name": "Dev Malhotra",
     "is_active": true,
-    "created_at": "2026-10-22T07:37:03.476024Z",
+    "created_at": "2026-10-22T08:21:52.304650Z",
     "last_login_at": null,
     "role": "qa",
-    "workspace_id": "6e98d821-9600-4599-81f1-59eba0a096df",
+    "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
     "show_ai_scores": true,
     "require_all_parameters": false
    }
   },
   {
    "method": "GET",
-   "path": "/interactions/4fd27b2a-ff12-49ed-871c-396bc730d092",
+   "path": "/interactions/2b3251db-c81c-4606-a653-2f7b44712804",
    "query": "",
    "phase": 0,
    "status": 200,
    "body": {
-    "id": "4fd27b2a-ff12-49ed-871c-396bc730d092",
-    "agent_id": "a74e030a-713c-4f8a-a668-4fd233b0230a",
+    "id": "2b3251db-c81c-4606-a653-2f7b44712804",
+    "agent_id": "09dddf68-5c1b-47fa-9c80-e44b8cbafa02",
     "agent_name": "Arjun Mehta",
     "source_type": "call",
     "media_type": "audio",
     "status": "analyzed",
     "title": "Missed EMI follow-up · AL-20569",
     "external_id": "AL-20569",
-    "use_case_id": "47020d6e-299e-42ce-b736-2e804f77fbd4",
+    "use_case_id": "1e338915-2728-49a7-8644-4cf00ee87e9f",
     "use_case_name": "EMI collections",
     "overall_score": 85,
     "is_fatal": false,
     "score_source": "ai",
     "ai_overall_score": 85,
     "ai_is_fatal": false,
-    "created_at": "2026-09-11T23:56:30.586126Z",
+    "created_at": "2026-09-12T00:40:30.586126Z",
     "duration_seconds": 60.7,
     "subject": null,
     "sender": null,
@@ -69,7 +69,7 @@
     "appeal_due_at": null,
     "appeal_overdue": false,
     "appeal_claimed_by_name": null,
-    "appeal_deadline": "2026-09-15T00:02:30.586126Z",
+    "appeal_deadline": "2026-09-15T00:46:30.586126Z",
     "recording_url": "/__docs-media/call.mp3",
     "transcript": [
      {
@@ -125,7 +125,7 @@
       "role": "agent",
       "speaker": "speaker_0",
       "end_time": 32.2,
-      "utterance": "The amount is ₹8,900 and it's due on 14 September.",
+      "utterance": "The amount is ₹8,900 and it's due on 15 September.",
       "start_time": 28.8
      },
      {
@@ -153,21 +153,21 @@
       "role": "customer",
       "speaker": "speaker_1",
       "end_time": 47.6,
-      "utterance": "I can pay by Sunday.",
+      "utterance": "I can pay by Monday.",
       "start_time": 46
      },
      {
       "role": "agent",
       "speaker": "speaker_0",
       "end_time": 49.8,
-      "utterance": "Great, I've noted Sunday.",
+      "utterance": "Great, I've noted Monday.",
       "start_time": 48.1
      },
      {
       "role": "agent",
       "speaker": "speaker_0",
       "end_time": 56.2,
-      "utterance": "So that's ₹8,900 by Sunday, and the link is on your phone. Anything else I can help with?",
+      "utterance": "So that's ₹8,900 by Monday, and the link is on your phone. Anything else I can help with?",
       "start_time": 50.2
      },
      {
@@ -319,10 +319,10 @@
        "bucket": "Resolution",
        "rating": 1,
        "weight": 10,
-       "evidence": "The amount is ₹8,900 and it's due on 14 September.",
+       "evidence": "The amount is ₹8,900 and it's due on 15 September.",
        "optional": false,
        "parameter": "Stated the EMI amount and due date",
-       "reasoning": "Stated ₹8,900 due on 14 September.",
+       "reasoning": "Stated ₹8,900 due on 15 September.",
        "timestamp": 28.8,
        "na_excluded": false,
        "weighted_score": 10
@@ -347,10 +347,10 @@
        "bucket": "Resolution",
        "rating": 1,
        "weight": 10,
-       "evidence": "Great, I've noted Sunday.",
+       "evidence": "Great, I've noted Monday.",
        "optional": false,
        "parameter": "Captured a promise to pay",
-       "reasoning": "Customer committed to pay by Sunday.",
+       "reasoning": "Customer committed to pay by Monday.",
        "timestamp": 48.1,
        "na_excluded": false,
        "weighted_score": 10
@@ -375,7 +375,7 @@
        "bucket": "Soft skills",
        "rating": 5,
        "weight": 5,
-       "evidence": "So that's ₹8,900 by Sunday, and the link is on your phone. Anything else I can help with?",
+       "evidence": "So that's ₹8,900 by Monday, and the link is on your phone. Anything else I can help with?",
        "optional": false,
        "parameter": "Closed with a recap",
        "reasoning": "Recapped amount, date and the SMS link.",
@@ -384,10 +384,10 @@
        "weighted_score": 5
       }
      ],
-     "summary": "Arjun called Lakshmi Menon about the ₹8,900 EMI on loan AL-20569. The customer promised to pay by Sunday.",
+     "summary": "Arjun called Lakshmi Menon about the ₹8,900 EMI on loan AL-20569. The customer promised to pay by Monday.",
      "action_items": [
       "Send the UPI payment link by SMS",
-      "Follow up on Sunday if unpaid"
+      "Follow up on Monday if unpaid"
      ],
      "topic_phrases": [
       {
@@ -420,7 +420,7 @@
     },
     "classifications": [
      {
-      "bucket_id": "466a78c4-2f74-459f-8ab7-191b17000846",
+      "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
       "bucket_name": "Promise to pay",
       "severity": "informational",
       "confidence": 0.91
@@ -447,7 +447,7 @@
     "appeal": {
      "eligibility": {
       "can_appeal": false,
-      "deadline": "2026-09-15T00:02:30.586126Z",
+      "deadline": "2026-09-15T00:46:30.586126Z",
       "reason_if_not": "not_your_call"
      },
      "appeal": null,
@@ -464,15 +464,36 @@
   },
   {
    "method": "GET",
-   "path": "/interactions/4fd27b2a-ff12-49ed-871c-396bc730d092/human-scores/history",
+   "path": "/pipeline/reprocess",
+   "query": "interaction_id=2b3251db-c81c-4606-a653-2f7b44712804&limit=50",
+   "phase": 0,
+   "status": 200,
+   "body": []
+  },
+  {
+   "method": "GET",
+   "path": "/business-metrics/interaction/2b3251db-c81c-4606-a653-2f7b44712804",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "has_outcome": false,
+    "values": [],
+    "coaching": null,
+    "model_used": null
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/interactions/2b3251db-c81c-4606-a653-2f7b44712804/human-scores/history",
    "query": "",
    "phase": 0,
    "status": 200,
    "body": [
     {
-     "id": "e91d093b-3c44-44b7-a8da-d799f94587fc",
-     "interaction_id": "4fd27b2a-ff12-49ed-871c-396bc730d092",
-     "changed_by_user_id": "04a5aae6-93e4-4b5f-963e-5f97a11fd946",
+     "id": "2c843d65-c79e-4d9b-a560-dcc01f3b7bda",
+     "interaction_id": "2b3251db-c81c-4606-a653-2f7b44712804",
+     "changed_by_user_id": "f74e499a-4755-4671-a49f-5a7c754079c8",
      "changed_by_name": "Dev Malhotra",
      "changed_by_email": "dev@acme-lending.example",
      "action": "create",
@@ -491,30 +512,9 @@
      ],
      "previous_fatal": false,
      "new_fatal": false,
-     "changed_at": "2026-09-13T13:02:30.586126Z"
+     "changed_at": "2026-09-13T13:46:30.586126Z"
     }
    ]
-  },
-  {
-   "method": "GET",
-   "path": "/pipeline/reprocess",
-   "query": "interaction_id=4fd27b2a-ff12-49ed-871c-396bc730d092&limit=50",
-   "phase": 0,
-   "status": 200,
-   "body": []
-  },
-  {
-   "method": "GET",
-   "path": "/business-metrics/interaction/4fd27b2a-ff12-49ed-871c-396bc730d092",
-   "query": "",
-   "phase": 0,
-   "status": 200,
-   "body": {
-    "has_outcome": false,
-    "values": [],
-    "coaching": null,
-    "model_used": null
-   }
   }
  ]
 }

@@ -4,7 +4,7 @@ import ids from "../fixtures/analytics/ids.json" with { type: "json" };
 // A resolved dispute that a QA corrected later, as the QA sees it.
 export default {
   name: "disputes-corrections",
-  docsPage: "disputes/results-and-corrections",
+  docsPage: "analytics-platform/disputes/results-and-corrections",
   routes: {},
   analytics: { as: "farah", fixture: "disputes-corrections" },
   async run(s) {

@@ -2,7 +2,7 @@ import type { Scenario } from "../run.ts";
 
 export default {
   name: "analytics-summary",
-  docsPage: "analytics/review-calls/summary",
+  docsPage: "analytics-platform/review-calls/summary",
   routes: {},
   analytics: { as: "priya", fixture: "analytics-summary" },
   async run(s) {

@@ -25,7 +25,7 @@ flowchart LR
 |---|---|---|
 | **Submitted** | Waiting for a QA ("Waiting for a QA to pick it up.") | Any QA, with **Start review** |
 | **In review** | A QA has claimed it; other QAs see who has it | That QA resolves it, or releases it back to the queue |
-| **Resolved** | The QA's score is the call's official score | A QA can still [correct](/disputes/results-and-corrections#corrections) it |
+| **Resolved** | The QA's score is the call's official score | A QA can still [correct](/analytics-platform/disputes/results-and-corrections#corrections) it |
 
 Each dispute also has a **QA target**: the submission time plus the workspace's **QA turnaround target**. An open dispute past it shows **Overdue**.
 
@@ -33,10 +33,10 @@ Each dispute also has a **QA target**: the submission time plus the workspace's 
 
 | Role | Can |
 |---|---|
-| Agent | [Raise a dispute](/disputes/raise-a-dispute) on their own calls and follow it to the result |
+| Agent | [Raise a dispute](/analytics-platform/disputes/raise-a-dispute) on their own calls and follow it to the result |
 | Team lead | Follow their team's disputes and receive every dispute email in CC |
-| QA | [Review](/disputes/review-a-dispute) and resolve disputes, and correct resolved ones |
-| Owner, admin | Everything a QA can, plus hand a dispute to another QA, and turn disputes on and set the deadlines in [Settings](/disputes/settings-and-reports) |
+| QA | [Review](/analytics-platform/disputes/review-a-dispute) and resolve disputes, and correct resolved ones |
+| Owner, admin | Everything a QA can, plus hand a dispute to another QA, and turn disputes on and set the deadlines in [Settings](/analytics-platform/disputes/settings-and-reports) |
 
 Nobody reviews their own dispute: a QA who also takes calls can't claim or resolve an appeal on their own call.
 
@@ -50,12 +50,12 @@ Nobody reviews their own dispute: a QA who also takes calls can't claim or resol
 
 ## Where the official score shows
 
-Once a dispute is resolved, the QA's score is used everywhere a score appears: **Interactions** (marked with a scale icon), **Summary**, **Agents**, [report cards](/analytics/coach-agents/report-cards), [notification](/analytics/set-up/notifications) conditions and exports. The AI's original score stays visible on the call for comparison.
+Once a dispute is resolved, the QA's score is used everywhere a score appears: **Interactions** (marked with a scale icon), **Summary**, **Agents**, [report cards](/analytics-platform/coach-agents/report-cards), [notification](/analytics-platform/set-up/notifications) conditions and exports. The AI's original score stays visible on the call for comparison.
 
 ## Next steps
 
 <Columns cols={3}>
-  <Card title="Raise a dispute" icon="flag" href="/disputes/raise-a-dispute">Agents: appeal a score.</Card>
-  <Card title="Review a dispute" icon="clipboard-check" href="/disputes/review-a-dispute">QAs: claim, re-score and resolve.</Card>
-  <Card title="Settings and reports" icon="settings" href="/disputes/settings-and-reports">Admins: windows, deadlines and the dispute report.</Card>
+  <Card title="Raise a dispute" icon="flag" href="/analytics-platform/disputes/raise-a-dispute">Agents: appeal a score.</Card>
+  <Card title="Review a dispute" icon="clipboard-check" href="/analytics-platform/disputes/review-a-dispute">QAs: claim, re-score and resolve.</Card>
+  <Card title="Settings and reports" icon="settings" href="/analytics-platform/disputes/settings-and-reports">Admins: windows, deadlines and the dispute report.</Card>
 </Columns>

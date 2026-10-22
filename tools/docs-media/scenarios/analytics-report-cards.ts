@@ -3,7 +3,7 @@ import type { Scenario } from "../run.ts";
 // A team lead opens an agent's report card and leaves a coaching note on a parameter.
 export default {
   name: "analytics-report-cards",
-  docsPage: "analytics/coach-agents/report-cards",
+  docsPage: "analytics-platform/coach-agents/report-cards",
   routes: {},
   analytics: { as: "kavya", fixture: "analytics-report-cards" },
   async run(s) {

@@ -22,6 +22,8 @@ export interface Scenario {
   routes: RouteMap;
   /** Set to record the analytics app (analytics.ringg.ai) instead of the dashboard; `routes` is then unused. */
   analytics?: AnalyticsSession;
+  /** A smaller 16:10 viewport shows the UI larger in the video (default 1440×900). */
+  viewport?: { width: number; height: number };
   run(s: Session): Promise<void>;
 }
 
@@ -34,9 +36,11 @@ export class Session {
   capture = { stop: async () => {}, start: async () => {} };
   page: Page;
   scenario: Scenario;
+  viewport: { width: number; height: number };
   constructor(page: Page, scenario: Scenario) {
     this.page = page;
     this.scenario = scenario;
+    this.viewport = scenario.viewport ?? VIEWPORT;
   }
 
   async goto(route: string) {
@@ -44,7 +48,7 @@ export class Session {
     else await gotoDashboard(this.page, route);
     await this.page.waitForTimeout(600);
     if (!this.readyAt) {
-      await this.page.mouse.move(VIEWPORT.width / 2, VIEWPORT.height / 2);
+      await this.page.mouse.move(this.viewport.width / 2, this.viewport.height / 2);
       this.readyAt = Date.now();
     }
   }
@@ -103,7 +107,7 @@ export class Session {
       const b = inScroller ? await visibleBox(target) : await target.boundingBox();
       if (!b) throw new Error(`No box for shot ${name}`);
       const x = Math.max(0, b.x - padding), y = Math.max(0, b.y - padding);
-      saveWebp(await this.page.screenshot({ clip: { x, y, width: Math.min(VIEWPORT.width - x, b.width + padding * 2), height: Math.min(VIEWPORT.height - y, b.height + padding * 2) } }), path);
+      saveWebp(await this.page.screenshot({ clip: { x, y, width: Math.min(this.viewport.width - x, b.width + padding * 2), height: Math.min(this.viewport.height - y, b.height + padding * 2) } }), path);
     } else saveWebp(await this.page.screenshot(), path);
     this.shots.push(path);
     await this.page.evaluate(() => (window as any).__docs?.hidden(false));
@@ -143,8 +147,8 @@ function titleFor(scenario: Scenario) {
 }
 
 /** White card with the page name in Inter (the dashboard's font), shown before the recording. */
-async function renderTitleCard(browser: import("@playwright/test").Browser, title: string, path: string) {
-  const page = await browser.newPage({ viewport: VIEWPORT, deviceScaleFactor: 2 });
+async function renderTitleCard(browser: import("@playwright/test").Browser, title: string, path: string, viewport = VIEWPORT) {
+  const page = await browser.newPage({ viewport, deviceScaleFactor: 2 });
   const esc = title.replace(/&/g, "&amp;").replace(/</g, "&lt;");
   await page.setContent(`<style>@font-face{font-family:Inter;src:url(data:font/woff2;base64,${INTER}) format("woff2")}html,body{margin:0;height:100%;background:#fff}body{display:grid;place-items:center;font:600 56px/1.2 Inter,sans-serif;letter-spacing:-0.02em;color:#111114}</style><div>${esc}</div>`);
   await page.evaluate(() => document.fonts.ready);
@@ -160,8 +164,9 @@ async function runScenario(scenario: Scenario) {
   // Without this flag the screencast sends 1x frames even at deviceScaleFactor 2.
   const browser = await chromium.launch({ args: ["--force-device-scale-factor=2"] });
   const titleCard = join(raw, "title.jpg");
-  await renderTitleCard(browser, titleFor(scenario), titleCard);
-  const context = await browser.newContext({ viewport: VIEWPORT, deviceScaleFactor: 2, colorScheme: "light" });
+  const viewport = scenario.viewport ?? VIEWPORT;
+  await renderTitleCard(browser, titleFor(scenario), titleCard, viewport);
+  const context = await browser.newContext({ viewport, deviceScaleFactor: 2, colorScheme: "light" });
   await context.addInitScript((ids) => {
     localStorage.setItem("_ringg_coachmarks", JSON.stringify(Object.fromEntries(ids.map((id) => [id, { version: 9999, status: "completed" }]))));
   }, COACHMARKS);
@@ -189,7 +194,7 @@ async function runScenario(scenario: Scenario) {
     frames.push({ file, t: Date.now() });
     cdp.send("Page.screencastFrameAck", { sessionId: f.sessionId }).catch(() => {});
   });
-  const screencast = { format: "jpeg" as const, quality: 92, maxWidth: VIEWPORT.width * 2, maxHeight: VIEWPORT.height * 2 };
+  const screencast = { format: "jpeg" as const, quality: 92, maxWidth: viewport.width * 2, maxHeight: viewport.height * 2 };
   await cdp.send("Page.startScreencast", screencast);
   s.capture = { stop: () => cdp.send("Page.stopScreencast").then(() => {}), start: () => cdp.send("Page.startScreencast", screencast).then(() => {}) };
   let endAt = 0;

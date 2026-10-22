@@ -2,7 +2,7 @@ import type { Scenario } from "../run.ts";
 
 export default {
   name: "analytics-agents",
-  docsPage: "analytics/coach-agents/agents-and-teams",
+  docsPage: "analytics-platform/coach-agents/agents-and-teams",
   routes: {},
   analytics: { as: "priya", fixture: "analytics-agents" },
   async run(s) {

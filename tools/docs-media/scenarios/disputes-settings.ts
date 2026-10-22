@@ -3,7 +3,7 @@ import type { Scenario } from "../run.ts";
 // Dispute settings and the dispute report, as an admin.
 export default {
   name: "disputes-settings",
-  docsPage: "disputes/settings-and-reports",
+  docsPage: "analytics-platform/disputes/settings-and-reports",
   routes: {},
   analytics: { as: "priya", fixture: "disputes-settings" },
   async run(s) {

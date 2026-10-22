@@ -3,7 +3,7 @@ import type { Scenario } from "../run.ts";
 // A team lead's Summary: their team only, with the workspace average to compare against.
 export default {
   name: "analytics-summary-team",
-  docsPage: "analytics/review-calls/summary",
+  docsPage: "analytics-platform/review-calls/summary",
   routes: {},
   analytics: { as: "kavya", fixture: "analytics-summary-team" },
   async run(s) {

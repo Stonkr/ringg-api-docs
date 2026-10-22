@@ -124,6 +124,7 @@ Ringg Analytics ([analytics.ringg.ai](https://analytics.ringg.ai)) is a separate
 - **Call audio.** Every call plays `fixtures/analytics/call.mp3`, a synthesized, fictional conversation. `recording_url` and `media-url` are rewritten to it in both modes.
 - **IDs.** `fixtures/analytics/ids.json` holds the fictional call, agent and appeal IDs the scenarios open.
 - **Long panels.** The call page scrolls each column on its own. `s.shot(name, target, padding, true)` crops to the part of `target` visible in its scrolling panel.
+- **Bigger UI in the video.** A scenario can set `viewport: { width: 1152, height: 720 }` (keep 16:10) so a flow that happens in one panel stays readable at docs width; the dispute videos use it.
 
 Re-record a fixture whenever the screen it covers changes, and check it for internal details like any other media.
 

@@ -252,47 +252,42 @@
         ]
       },
       {
-        "tab": "Analytics",
+        "tab": "Analytics platform",
         "pages": [
-          "analytics/introduction",
-          "analytics/roles-and-access",
+          "analytics-platform/introduction",
+          "analytics-platform/roles-and-access",
           {
             "group": "Review calls",
             "pages": [
-              "analytics/review-calls/summary",
-              "analytics/review-calls/interactions",
-              "analytics/review-calls/qa-reviews"
+              "analytics-platform/review-calls/summary",
+              "analytics-platform/review-calls/interactions",
+              "analytics-platform/review-calls/qa-reviews"
+            ]
+          },
+          {
+            "group": "Disputes",
+            "tag": "NEW",
+            "pages": [
+              "analytics-platform/disputes/overview",
+              "analytics-platform/disputes/raise-a-dispute",
+              "analytics-platform/disputes/review-a-dispute",
+              "analytics-platform/disputes/results-and-corrections",
+              "analytics-platform/disputes/settings-and-reports"
             ]
           },
           {
             "group": "Coach agents",
             "tag": "NEW",
             "pages": [
-              "analytics/coach-agents/agents-and-teams",
-              "analytics/coach-agents/report-cards"
+              "analytics-platform/coach-agents/agents-and-teams",
+              "analytics-platform/coach-agents/report-cards"
             ]
           },
           {
             "group": "Set up",
             "pages": [
-              "analytics/set-up/metrics",
-              "analytics/set-up/notifications"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Disputes",
-        "pages": [
-          {
-            "group": "Disputes",
-            "tag": "NEW",
-            "pages": [
-              "disputes/overview",
-              "disputes/raise-a-dispute",
-              "disputes/review-a-dispute",
-              "disputes/results-and-corrections",
-              "disputes/settings-and-reports"
+              "analytics-platform/set-up/metrics",
+              "analytics-platform/set-up/notifications"
             ]
           }
         ]

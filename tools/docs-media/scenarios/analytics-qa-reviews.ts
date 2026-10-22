@@ -4,7 +4,7 @@ import ids from "../fixtures/analytics/ids.json" with { type: "json" };
 // A QA's review next to the AI's scoring on one call.
 export default {
   name: "analytics-qa-reviews",
-  docsPage: "analytics/review-calls/qa-reviews",
+  docsPage: "analytics-platform/review-calls/qa-reviews",
   routes: {},
   analytics: { as: "dev", fixture: "analytics-qa-reviews" },
   async run(s) {
