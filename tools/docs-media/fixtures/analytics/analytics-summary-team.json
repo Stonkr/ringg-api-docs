@@ -1,0 +1,188 @@
+{
+ "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+ "calls": [
+  {
+   "method": "GET",
+   "path": "/auth/me",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "id": "ad7da174-800d-4f25-b880-1d03ddb3c190",
+    "email": "kavya@acme-lending.example",
+    "full_name": "Kavya Nair",
+    "is_active": true,
+    "created_at": "2026-10-22T08:21:52.304650Z",
+    "last_login_at": null,
+    "role": "team_lead",
+    "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+    "show_ai_scores": true,
+    "require_all_parameters": false
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/workspaces/mine",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+     "name": "Acme Lending",
+     "role": "team_lead",
+     "is_current": true
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/analytics/my-summary",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "scope": "team",
+    "linked": true,
+    "period": {
+     "from": "2026-09-22T18:30:00+00:00",
+     "to": "2026-10-22T18:29:59.999000+00:00",
+     "previous_from": "2026-08-23T18:30:00.001000+00:00",
+     "previous_to": "2026-09-22T18:30:00+00:00"
+    },
+    "bucket": "week",
+    "kpis": {
+     "interactions": 27,
+     "avg_score": 91.59,
+     "previous_avg_score": 87.67,
+     "fatal_calls": 0,
+     "fatal_rate": 0,
+     "open_appeals": 2
+    },
+    "trend": [
+     {
+      "period": "2026-09-21",
+      "avg_score": 82.5,
+      "calls": 2
+     },
+     {
+      "period": "2026-09-28",
+      "avg_score": 94.2,
+      "calls": 5
+     },
+     {
+      "period": "2026-10-05",
+      "avg_score": 90,
+      "calls": 2
+     },
+     {
+      "period": "2026-10-12",
+      "avg_score": 90.5556,
+      "calls": 9
+     },
+     {
+      "period": "2026-10-19",
+      "avg_score": 93.5556,
+      "calls": 9
+     }
+    ],
+    "benchmark": {
+     "workspace_avg_score": 89.75
+    },
+    "agents": [
+     {
+      "id": "9d3c52d9-2fca-48f4-8fc1-77b831d45cd0",
+      "name": "Rahul Verma",
+      "is_self": false,
+      "interactions": 10,
+      "avg_score": 86.9,
+      "previous_avg_score": 97.67,
+      "fatal_calls": 0,
+      "fatal_rate": 0
+     },
+     {
+      "id": "09dddf68-5c1b-47fa-9c80-e44b8cbafa02",
+      "name": "Arjun Mehta",
+      "is_self": false,
+      "interactions": 6,
+      "avg_score": 87.33,
+      "previous_avg_score": 80.57,
+      "fatal_calls": 0,
+      "fatal_rate": 0
+     },
+     {
+      "id": "07d32e85-cb6d-4317-93a5-c9d46f33c05f",
+      "name": "Neha Kapoor",
+      "is_self": false,
+      "interactions": 11,
+      "avg_score": 98.18,
+      "previous_avg_score": 97.5,
+      "fatal_calls": 0,
+      "fatal_rate": 0
+     },
+     {
+      "id": "5ab2926e-fc01-43e5-830c-c9e737845660",
+      "name": "Kavya Nair",
+      "is_self": true,
+      "interactions": 0,
+      "avg_score": null,
+      "previous_avg_score": null,
+      "fatal_calls": 0,
+      "fatal_rate": null
+     }
+    ],
+    "weakest_parameters": [
+     {
+      "parameter": "Gave the recording disclosure",
+      "pass_rate": 0.7778,
+      "scored": 27
+     }
+    ],
+    "lowest_calls": [
+     {
+      "id": "a96bab92-1b37-4de5-abd2-64646d02b9b5",
+      "title": "Missed EMI follow-up · AL-20453",
+      "created_at": "2026-09-24T11:22:28.628047+00:00",
+      "score": 65,
+      "is_fatal": false,
+      "agent_name": "Rahul Verma"
+     },
+     {
+      "id": "883cef82-b4cc-45b5-8bcd-a4322d1c8eed",
+      "title": "Missed EMI follow-up · AL-20546",
+      "created_at": "2026-10-16T18:54:46.970714+00:00",
+      "score": 74,
+      "is_fatal": false,
+      "agent_name": "Arjun Mehta"
+     },
+     {
+      "id": "2b098f8f-2a56-4fa4-ac72-da4d4f73abbc",
+      "title": "EMI reminder · AL-20435",
+      "created_at": "2026-10-14T17:37:26.722037+00:00",
+      "score": 75,
+      "is_fatal": false,
+      "agent_name": "Rahul Verma"
+     },
+     {
+      "id": "0c5e3d7a-5f94-43ab-acde-4eff6d236e1b",
+      "title": "Restructuring request · AL-20417",
+      "created_at": "2026-10-21T18:35:56.072600+00:00",
+      "score": 81,
+      "is_fatal": false,
+      "agent_name": "Rahul Verma"
+     },
+     {
+      "id": "cb410913-0af0-4bc3-b7ab-b028800948a1",
+      "title": "EMI reminder · AL-20434",
+      "created_at": "2026-10-15T16:39:54.670240+00:00",
+      "score": 82,
+      "is_fatal": false,
+      "agent_name": "Rahul Verma"
+     }
+    ],
+    "my_agent_id": null,
+    "unacknowledged_notes": 0
+   }
+  }
+ ]
+}

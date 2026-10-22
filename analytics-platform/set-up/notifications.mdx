@@ -1,0 +1,86 @@
+---
+title: "Notifications"
+sidebarTitle: "Notifications"
+description: "Email agents automatically when a call scores low, misses a fatal parameter or gets a QA review, with their team lead in CC, using templates you design."
+"og:title": "Notifications in Ringg Analytics: triggers, templates and QA review emails"
+---
+
+A trigger sends an email when a call meets your conditions: after the AI scores it, or each time a QA reviews it. Use triggers for alerts such as a fatal miss, and to share QA feedback with the agent.
+
+In [Ringg Analytics](https://analytics.ringg.ai): **Sidebar → Notifications**. Owners, admins and QAs can open it.
+
+<Frame caption="Triggers and templates on the Setup tab">
+  <img src="/media/analytics-notifications/triggers.webp" alt="Notifications Setup tab listing the triggers Low score alert and Share QA reviews with the agent, marked On QA review, and the five System templates below" />
+</Frame>
+
+## Add a trigger
+
+<Steps>
+  <Step title="Start a trigger">
+    On **Setup**, click **Add trigger** and give it a **Trigger name**. Pick the **Use case**: the trigger only fires for calls in it, and its parameters become available as conditions.
+  </Step>
+  <Step title="Choose what starts it">
+    Under **What starts it?**:
+
+    - **The AI scores a call**: runs once the AI has scored and classified the call.
+    - **A QA reviews a call**: runs each time a QA saves a change to their [review](/analytics-platform/review-calls/qa-reviews). Saving an unchanged review, or clearing it, sends nothing.
+  </Step>
+  <Step title="Set the conditions">
+    Under **When should this fire?**, add conditions and groups. Within a group, pick whether all or any of them must match.
+  </Step>
+  <Step title="Pick the template and recipients">
+    Choose a [template](#templates) under **What message should we send?**. Under **Who should receive it?**, pick **Agent on the interaction** or **Specific email addresses**, and tick **CC the agent's team lead** to copy their current team lead.
+
+    <Check>The trigger appears on **Setup**, and every email it sends shows on the **History** tab.</Check>
+  </Step>
+</Steps>
+
+<Frame caption="A trigger that shares QA reviews with the agent">
+  <img src="/media/analytics-notifications/qa-trigger.webp" alt="Edit trigger form: name Share QA reviews with the agent, use case EMI collections, A QA reviews a call selected, the condition Parameters the QA Changed at least 1, message QA Review Shared, and a preview of the email with the QA score, AI score and the QA's comments" />
+</Frame>
+
+## Conditions
+
+| Condition | Available for | Means |
+|---|---|---|
+| **Overall Score** | Both | The call's official score, 0 to 100 |
+| **Max Severity** | Both | The most severe classification on the call |
+| **Source Type** | Both | Call, email or meeting |
+| **Fatal Parameter Count** | Both | Fatal parameters the call missed |
+| **Min Category Score** | Both | The lowest category score |
+| A parameter, by name | Both | Whether the AI gave it full marks (Yes / No), Yes / Maybe / No, or its share of points |
+| **QA Score** | QA reviews | The QA's score: their ratings, the AI's for parameters they didn't rate, 0 if marked fatal |
+| **QA Score minus AI Score** | QA reviews | Negative when the QA scored lower than the AI |
+| **QA Marked Fatal** | QA reviews | Yes or No |
+| **QA Fatal Parameter Count** | QA reviews | Fatal parameters missed under the QA's ratings |
+| **Parameters the QA Changed** | QA reviews | How many parameters the QA rated differently from the AI |
+| QA: a parameter, by name | QA reviews | That parameter under the QA's rating |
+
+QA conditions can't be used with **The AI scores a call**: there is no review yet at that point.
+
+## Templates
+
+A template is the email a trigger sends: a subject and a body built from blocks, with a live preview using sample data. Five come with every workspace, marked **System**: **Fatal Classification Alert**, **Low Score Alert**, **Classification Summary**, **General Notification** and **QA Review Shared**. Click **New template** under **Templates** to add your own, or **Edit** on one to change it.
+
+Type `@` in a block to insert a variable:
+
+| Variable | Filled with |
+|---|---|
+| `agent_name`, `interaction_title`, `overall_score`, `max_severity`, `summary` | The call and its official score |
+| `qa_score`, `ai_score`, `qa_score_change_text` | The QA's score, the AI's, and the difference, for example "−14 points vs the AI" |
+| `qa_reviewer_name`, `qa_reviewed_at`, `qa_fatal_reason` | Who reviewed, when (India time), and why they marked it fatal |
+| `qa_parameters` | A list of the parameters the QA rated or commented on, each with the AI's rating, the QA's rating and the comment |
+
+QA variables are empty in emails sent by **The AI scores a call** triggers.
+
+## Send one email by hand
+
+Owners, admins and QAs can email an agent from their [report card](/analytics-platform/coach-agents/report-cards) with **Email**, using any template.
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="QA reviews" icon="clipboard-check" href="/analytics-platform/review-calls/qa-reviews">What a QA review contains.</Card>
+  <Card title="Disputes" icon="scale" href="/analytics-platform/disputes/overview">Dispute emails go out on their own, with the team lead in CC.</Card>
+  <Card title="Metrics" icon="clipboard-list" href="/analytics-platform/set-up/metrics">The parameters your conditions use.</Card>
+</Columns>

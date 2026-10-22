@@ -1,0 +1,386 @@
+{
+ "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+ "calls": [
+  {
+   "method": "GET",
+   "path": "/auth/me",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "id": "79ef102c-b506-48b2-89fb-e51e6a4e2de7",
+    "email": "priya@acme-lending.example",
+    "full_name": "Priya Sharma",
+    "is_active": true,
+    "created_at": "2026-10-22T08:21:52.304650Z",
+    "last_login_at": null,
+    "role": "owner",
+    "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+    "show_ai_scores": true,
+    "require_all_parameters": false
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/workspaces/mine",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+     "name": "Acme Lending",
+     "role": "owner",
+     "is_current": true
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/notifications/templates",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "id": "57cca3be-4bb1-4ba3-8fca-9d74dad25a31",
+     "name": "Fatal Classification Alert",
+     "subject_template": "FATAL: {{ agent_name }} - {{ interaction_title }}",
+     "body_template": "<div style=\"background:#FEE2E2;border-left:4px solid #DC2626;padding:16px;border-radius:8px;margin-bottom:20px\">\n  <h2 style=\"color:#DC2626;margin:0 0 8px\">Fatal Issue Detected</h2>\n  <p style=\"margin:0;color:#333\">A fatal classification was found on an interaction handled by <strong>{{ agent_name }}</strong>.</p>\n</div>\n\n<table style=\"width:100%;border-collapse:collapse;margin-bottom:20px\">\n  <tr>\n    <td style=\"padding:8px 12px;background:#F9FAFB;border:1px solid #E5E7EB;font-weight:600;width:140px\">Agent</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB\">{{ agent_name }}</td>\n  </tr>\n  <tr>\n    <td style=\"padding:8px 12px;background:#F9FAFB;border:1px solid #E5E7EB;font-weight:600\">Interaction</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB\">{{ interaction_title }}</td>\n  </tr>\n  <tr>\n    <td style=\"padding:8px 12px;background:#F9FAFB;border:1px solid #E5E7EB;font-weight:600\">Type</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB\">{{ source_type | title }}</td>\n  </tr>\n  <tr>\n    <td style=\"padding:8px 12px;background:#F9FAFB;border:1px solid #E5E7EB;font-weight:600\">Score</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB\"><strong>{{ overall_score }}/100</strong></td>\n  </tr>\n  <tr>\n    <td style=\"padding:8px 12px;background:#F9FAFB;border:1px solid #E5E7EB;font-weight:600\">Severity</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB;color:#DC2626;font-weight:700\">{{ max_severity | upper }}</td>\n  </tr>\n</table>\n\n{% if classifications %}\n<h3 style=\"margin:0 0 8px;color:#333\">Classifications</h3>\n<ul style=\"margin:0 0 20px;padding-left:20px\">\n{% for c in classifications %}\n  <li style=\"margin-bottom:4px\"><strong>{{ c.name }}</strong> — {{ c.severity }} ({{ (c.confidence * 100) | round }}% confidence)</li>\n{% endfor %}\n</ul>\n{% endif %}\n\n{% if summary %}\n<h3 style=\"margin:0 0 8px;color:#333\">Summary</h3>\n<p style=\"margin:0 0 20px;color:#555\">{{ summary }}</p>\n{% endif %}\n\n<a href=\"{{ interaction_url }}\" style=\"display:inline-block;padding:10px 20px;background:#F55F04;color:#fff;text-decoration:none;border-radius:6px;font-weight:600\">View Interaction</a>",
+     "description": "Immediate alert when a fatal issue is detected on an interaction.",
+     "is_system": true,
+     "is_active": true,
+     "created_at": "2026-10-22T08:21:52.467212Z",
+     "updated_at": null
+    },
+    {
+     "id": "46cb95b1-a51d-4874-a687-bb94f9500983",
+     "name": "Low Score Alert",
+     "subject_template": "Low Score Alert: {{ agent_name }} scored {{ overall_score }}/100",
+     "body_template": "<div style=\"background:#FEF3C7;border-left:4px solid #D97706;padding:16px;border-radius:8px;margin-bottom:20px\">\n  <h2 style=\"color:#D97706;margin:0 0 8px\">Low Score Detected</h2>\n  <p style=\"margin:0;color:#333\"><strong>{{ agent_name }}</strong> scored <strong>{{ overall_score }}/100</strong> on a {{ source_type }}.</p>\n</div>\n\n<table style=\"width:100%;border-collapse:collapse;margin-bottom:20px\">\n  <tr>\n    <td style=\"padding:8px 12px;background:#F9FAFB;border:1px solid #E5E7EB;font-weight:600;width:140px\">Agent</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB\">{{ agent_name }}</td>\n  </tr>\n  <tr>\n    <td style=\"padding:8px 12px;background:#F9FAFB;border:1px solid #E5E7EB;font-weight:600\">Score</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB;color:#D97706;font-weight:700\">{{ overall_score }}/100</td>\n  </tr>\n  <tr>\n    <td style=\"padding:8px 12px;background:#F9FAFB;border:1px solid #E5E7EB;font-weight:600\">Type</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB\">{{ source_type | title }}</td>\n  </tr>\n</table>\n\n{% if summary %}\n<h3 style=\"margin:0 0 8px;color:#333\">Summary</h3>\n<p style=\"margin:0 0 20px;color:#555\">{{ summary }}</p>\n{% endif %}\n\n{% if action_items %}\n<h3 style=\"margin:0 0 8px;color:#333\">Key Events</h3>\n<ul style=\"margin:0 0 20px;padding-left:20px\">\n{% for item in action_items %}\n  <li style=\"margin-bottom:4px\">{{ item }}</li>\n{% endfor %}\n</ul>\n{% endif %}\n\n<a href=\"{{ interaction_url }}\" style=\"display:inline-block;padding:10px 20px;background:#F55F04;color:#fff;text-decoration:none;border-radius:6px;font-weight:600\">View Interaction</a>",
+     "description": "Alert when an interaction scores below a threshold.",
+     "is_system": true,
+     "is_active": true,
+     "created_at": "2026-10-22T08:21:52.467212Z",
+     "updated_at": null
+    },
+    {
+     "id": "1ae71fd1-b3fd-4abf-b958-d21a58ace536",
+     "name": "Classification Summary",
+     "subject_template": "Classification Report: {{ interaction_title }}",
+     "body_template": "<h2 style=\"margin:0 0 16px;color:#333\">Classification Report</h2>\n\n<table style=\"width:100%;border-collapse:collapse;margin-bottom:20px\">\n  <tr>\n    <td style=\"padding:8px 12px;background:#F9FAFB;border:1px solid #E5E7EB;font-weight:600;width:140px\">Agent</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB\">{{ agent_name }}</td>\n  </tr>\n  <tr>\n    <td style=\"padding:8px 12px;background:#F9FAFB;border:1px solid #E5E7EB;font-weight:600\">Interaction</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB\">{{ interaction_title }}</td>\n  </tr>\n  <tr>\n    <td style=\"padding:8px 12px;background:#F9FAFB;border:1px solid #E5E7EB;font-weight:600\">Score</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB\"><strong>{{ overall_score }}/100</strong></td>\n  </tr>\n</table>\n\n{% if classifications %}\n<h3 style=\"margin:0 0 12px;color:#333\">Classifications Found</h3>\n<table style=\"width:100%;border-collapse:collapse;margin-bottom:20px\">\n  <tr style=\"background:#F9FAFB\">\n    <th style=\"padding:8px 12px;border:1px solid #E5E7EB;text-align:left\">Issue</th>\n    <th style=\"padding:8px 12px;border:1px solid #E5E7EB;text-align:left\">Severity</th>\n    <th style=\"padding:8px 12px;border:1px solid #E5E7EB;text-align:left\">Confidence</th>\n  </tr>\n  {% for c in classifications %}\n  <tr>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB\">{{ c.name }}</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB\">{{ c.severity }}</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB\">{{ (c.confidence * 100) | round }}%</td>\n  </tr>\n  {% endfor %}\n</table>\n{% endif %}\n\n{% if summary %}\n<h3 style=\"margin:0 0 8px;color:#333\">Summary</h3>\n<p style=\"margin:0 0 20px;color:#555\">{{ summary }}</p>\n{% endif %}\n\n<a href=\"{{ interaction_url }}\" style=\"display:inline-block;padding:10px 20px;background:#F55F04;color:#fff;text-decoration:none;border-radius:6px;font-weight:600\">View Interaction</a>",
+     "description": "Detailed classification breakdown for an interaction.",
+     "is_system": true,
+     "is_active": true,
+     "created_at": "2026-10-22T08:21:52.467212Z",
+     "updated_at": null
+    },
+    {
+     "id": "d7df77c4-533d-48e4-9ca7-24f5f823b3a7",
+     "name": "General Notification",
+     "subject_template": "Notification: {{ agent_name }} - {{ interaction_title }}",
+     "body_template": "<h2 style=\"margin:0 0 16px;color:#333\">Interaction Notification</h2>\n\n<table style=\"width:100%;border-collapse:collapse;margin-bottom:20px\">\n  <tr>\n    <td style=\"padding:8px 12px;background:#F9FAFB;border:1px solid #E5E7EB;font-weight:600;width:140px\">Agent</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB\">{{ agent_name }}</td>\n  </tr>\n  <tr>\n    <td style=\"padding:8px 12px;background:#F9FAFB;border:1px solid #E5E7EB;font-weight:600\">Interaction</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB\">{{ interaction_title }}</td>\n  </tr>\n  <tr>\n    <td style=\"padding:8px 12px;background:#F9FAFB;border:1px solid #E5E7EB;font-weight:600\">Type</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB\">{{ source_type | title }}</td>\n  </tr>\n  <tr>\n    <td style=\"padding:8px 12px;background:#F9FAFB;border:1px solid #E5E7EB;font-weight:600\">Score</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB\"><strong>{{ overall_score }}/100</strong></td>\n  </tr>\n</table>\n\n{% if summary %}\n<p style=\"margin:0 0 20px;color:#555\">{{ summary }}</p>\n{% endif %}\n\n<a href=\"{{ interaction_url }}\" style=\"display:inline-block;padding:10px 20px;background:#F55F04;color:#fff;text-decoration:none;border-radius:6px;font-weight:600\">View Interaction</a>",
+     "description": "Clean, minimal template for manual sends or custom rules.",
+     "is_system": true,
+     "is_active": true,
+     "created_at": "2026-10-22T08:21:52.467212Z",
+     "updated_at": null
+    },
+    {
+     "id": "a1bc70fc-274e-44e2-bccd-4d54ce5ab07a",
+     "name": "QA Review Shared",
+     "subject_template": "QA review: {{ interaction_title }} — {{ qa_score }}/100",
+     "body_template": "<h2 style=\"margin:0 0 6px;font-size:18px;color:#111\">Your call was reviewed by QA</h2>\n<p style=\"margin:0 0 16px;color:#555\">{{ qa_reviewer_name }} reviewed <strong>{{ interaction_title }}</strong> on {{ qa_reviewed_at }}.</p>\n\n<table style=\"width:100%;border-collapse:collapse;margin-bottom:20px\">\n  <tr>\n    <td style=\"padding:8px 12px;background:#F9FAFB;border:1px solid #E5E7EB;font-weight:600;width:140px\">QA score</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB\"><strong>{{ qa_score }}/100</strong> <span style=\"color:#666\">{{ qa_score_change_text }}</span></td>\n  </tr>\n  <tr>\n    <td style=\"padding:8px 12px;background:#F9FAFB;border:1px solid #E5E7EB;font-weight:600\">AI score</td>\n    <td style=\"padding:8px 12px;border:1px solid #E5E7EB\">{{ ai_score }}/100</td>\n  </tr>\n</table>\n\n{% if qa_fatal %}\n<div style=\"background:#FEE2E2;border-left:4px solid #DC2626;padding:12px 16px;border-radius:8px;margin-bottom:20px;color:#991B1B\">\n  The QA marked this call fatal{% if qa_fatal_reason %}: {{ qa_fatal_reason }}{% endif %}\n</div>\n{% endif %}\n\n{% if qa_parameters %}\n<h3 style=\"margin:0 0 8px;font-size:15px;color:#111\">What the QA said</h3>\n<table style=\"width:100%;border-collapse:collapse;margin-bottom:20px;font-size:13px\">\n  <tr>\n    <th style=\"text-align:left;padding:6px 10px;background:#F9FAFB;border:1px solid #E5E7EB\">Parameter</th>\n    <th style=\"text-align:left;padding:6px 10px;background:#F9FAFB;border:1px solid #E5E7EB\">AI</th>\n    <th style=\"text-align:left;padding:6px 10px;background:#F9FAFB;border:1px solid #E5E7EB\">QA</th>\n    <th style=\"text-align:left;padding:6px 10px;background:#F9FAFB;border:1px solid #E5E7EB\">Comment</th>\n  </tr>\n  {% for p in qa_parameters %}\n  <tr>\n    <td style=\"padding:6px 10px;border:1px solid #E5E7EB\">{{ p.parameter }}</td>\n    <td style=\"padding:6px 10px;border:1px solid #E5E7EB\">{{ p.ai_rating }}</td>\n    <td style=\"padding:6px 10px;border:1px solid #E5E7EB;font-weight:600\">{{ p.qa_rating }}</td>\n    <td style=\"padding:6px 10px;border:1px solid #E5E7EB;color:#444\">{{ p.comment }}</td>\n  </tr>\n  {% endfor %}\n</table>\n{% endif %}\n\n<a href=\"{{ interaction_url }}\" style=\"display:inline-block;padding:10px 20px;background:#F55F04;color:#fff;text-decoration:none;border-radius:6px;font-weight:600\">View the call</a>",
+     "description": "Tells the agent a QA reviewed their call: the QA's score against the AI's and the QA's comments. Use with a \"When a QA reviews a call\" trigger.",
+     "is_system": true,
+     "is_active": true,
+     "created_at": "2026-10-22T08:21:52.467212Z",
+     "updated_at": null
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/notifications/rules",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "id": "ee009f84-a55d-49a8-8cf8-35e29a8f3fce",
+     "name": "Share QA reviews with the agent",
+     "use_case_id": "1e338915-2728-49a7-8644-4cf00ee87e9f",
+     "use_case_name": "EMI collections",
+     "template_id": "a1bc70fc-274e-44e2-bccd-4d54ce5ab07a",
+     "template_name": "QA Review Shared",
+     "conditions": {
+      "match": "all",
+      "rules": [
+       {
+        "field": "qa_changed_parameters",
+        "value": 1,
+        "operator": "gte"
+       }
+      ]
+     },
+     "recipients": {
+      "type": "agent",
+      "emails": null,
+      "cc_team_lead": true
+     },
+     "trigger": "qa_reviewed",
+     "is_active": true,
+     "created_at": "2026-10-22T08:21:55.489614Z",
+     "updated_at": null
+    },
+    {
+     "id": "9a7fb858-c05c-4992-8573-62286fb886c9",
+     "name": "Low score alert",
+     "use_case_id": "1e338915-2728-49a7-8644-4cf00ee87e9f",
+     "use_case_name": "EMI collections",
+     "template_id": "46cb95b1-a51d-4874-a687-bb94f9500983",
+     "template_name": "Low Score Alert",
+     "conditions": {
+      "match": "all",
+      "rules": [
+       {
+        "field": "overall_score",
+        "value": 60,
+        "operator": "lt"
+       }
+      ]
+     },
+     "recipients": {
+      "type": "agent",
+      "emails": null,
+      "cc_team_lead": true
+     },
+     "trigger": "ai_scored",
+     "is_active": true,
+     "created_at": "2026-10-22T08:21:55.484209Z",
+     "updated_at": null
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/use-cases",
+   "query": "active_only=true",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "id": "1e338915-2728-49a7-8644-4cf00ee87e9f",
+     "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+     "name": "EMI collections",
+     "description": "Outbound calls to remind customers about EMIs and agree a payment date.",
+     "is_active": true,
+     "variables": [],
+     "created_at": "2026-10-22T08:21:52.304650Z"
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/rubrics",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "id": "d2833113-2aa5-4efa-8fc4-07f4e8f9b40d",
+     "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+     "use_case_id": "1e338915-2728-49a7-8644-4cf00ee87e9f",
+     "media_type": "audio",
+     "source_type": "call",
+     "version": 1,
+     "parameters": [
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Call opening",
+       "weight": 5,
+       "parameter": "Greeted the customer by name",
+       "description": "Uses the customer's name in the first 15 seconds."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Call opening",
+       "weight": 5,
+       "parameter": "Stated name and company",
+       "description": "Says their own name and Acme Lending before the reason for the call."
+      },
+      {
+       "fatal": true,
+       "scale": "yes_no",
+       "bucket": "Compliance",
+       "weight": 15,
+       "parameter": "Verified the customer's identity",
+       "description": "Confirms date of birth or the last four digits of the loan account before discussing it."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Compliance",
+       "weight": 10,
+       "parameter": "Gave the recording disclosure",
+       "description": "Tells the customer the call is recorded."
+      },
+      {
+       "fatal": true,
+       "scale": "yes_no",
+       "bucket": "Compliance",
+       "weight": 15,
+       "parameter": "No threats or pressure",
+       "description": "No threats, shaming or pressure tactics at any point."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Resolution",
+       "weight": 10,
+       "parameter": "Stated the EMI amount and due date",
+       "description": "States the exact amount and the due date."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no_maybe",
+       "bucket": "Resolution",
+       "weight": 15,
+       "parameter": "Offered payment options",
+       "description": "Offers UPI link, auto-debit or a branch visit as fits the customer."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no_na",
+       "bucket": "Resolution",
+       "weight": 10,
+       "parameter": "Captured a promise to pay",
+       "description": "Gets a date the customer commits to pay by. N/A when the EMI is already paid."
+      },
+      {
+       "fatal": false,
+       "scale": "partial_5",
+       "bucket": "Soft skills",
+       "weight": 10,
+       "parameter": "Showed empathy",
+       "description": "Acknowledges the customer's situation before moving on."
+      },
+      {
+       "fatal": false,
+       "scale": "range_5",
+       "bucket": "Soft skills",
+       "weight": 5,
+       "parameter": "Closed with a recap",
+       "description": "Recaps amount, date and next step before ending."
+      }
+     ],
+     "is_active": true,
+     "created_at": "2026-10-22T08:21:52.304650Z"
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/rubrics",
+   "query": "use_case_id=1e338915-2728-49a7-8644-4cf00ee87e9f",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "id": "d2833113-2aa5-4efa-8fc4-07f4e8f9b40d",
+     "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+     "use_case_id": "1e338915-2728-49a7-8644-4cf00ee87e9f",
+     "media_type": "audio",
+     "source_type": "call",
+     "version": 1,
+     "parameters": [
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Call opening",
+       "weight": 5,
+       "parameter": "Greeted the customer by name",
+       "description": "Uses the customer's name in the first 15 seconds."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Call opening",
+       "weight": 5,
+       "parameter": "Stated name and company",
+       "description": "Says their own name and Acme Lending before the reason for the call."
+      },
+      {
+       "fatal": true,
+       "scale": "yes_no",
+       "bucket": "Compliance",
+       "weight": 15,
+       "parameter": "Verified the customer's identity",
+       "description": "Confirms date of birth or the last four digits of the loan account before discussing it."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Compliance",
+       "weight": 10,
+       "parameter": "Gave the recording disclosure",
+       "description": "Tells the customer the call is recorded."
+      },
+      {
+       "fatal": true,
+       "scale": "yes_no",
+       "bucket": "Compliance",
+       "weight": 15,
+       "parameter": "No threats or pressure",
+       "description": "No threats, shaming or pressure tactics at any point."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no",
+       "bucket": "Resolution",
+       "weight": 10,
+       "parameter": "Stated the EMI amount and due date",
+       "description": "States the exact amount and the due date."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no_maybe",
+       "bucket": "Resolution",
+       "weight": 15,
+       "parameter": "Offered payment options",
+       "description": "Offers UPI link, auto-debit or a branch visit as fits the customer."
+      },
+      {
+       "fatal": false,
+       "scale": "yes_no_na",
+       "bucket": "Resolution",
+       "weight": 10,
+       "parameter": "Captured a promise to pay",
+       "description": "Gets a date the customer commits to pay by. N/A when the EMI is already paid."
+      },
+      {
+       "fatal": false,
+       "scale": "partial_5",
+       "bucket": "Soft skills",
+       "weight": 10,
+       "parameter": "Showed empathy",
+       "description": "Acknowledges the customer's situation before moving on."
+      },
+      {
+       "fatal": false,
+       "scale": "range_5",
+       "bucket": "Soft skills",
+       "weight": 5,
+       "parameter": "Closed with a recap",
+       "description": "Recaps amount, date and next step before ending."
+      }
+     ],
+     "is_active": true,
+     "created_at": "2026-10-22T08:21:52.304650Z"
+    }
+   ]
+  }
+ ]
+}

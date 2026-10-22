@@ -1,0 +1,91 @@
+---
+title: "Raise a dispute"
+sidebarTitle: "Raise a dispute"
+description: "As an agent, appeal the AI score on one of your calls in Ringg Analytics: pick the parameters you think are wrong, explain each one, and submit."
+"og:title": "Raise a dispute: appeal an AI score on your call in Ringg Analytics"
+---
+
+If you think the AI scored one of your calls wrongly, appeal it: pick the parameters it got wrong and say why for each. A QA re-scores the call, and their score becomes final.
+
+In [Ringg Analytics](https://analytics.ringg.ai): **Sidebar → Interactions →** open your call.
+
+## Before you start
+
+<Columns cols={2}>
+  <Card title="A linked agent login" icon="user-check" href="/analytics-platform/roles-and-access" horizontal>
+    You sign in as an agent and see your own calls.
+  </Card>
+  <Card title="Disputes turned on" icon="settings" href="/analytics-platform/disputes/settings-and-reports" horizontal>
+    An admin turns appeals on for the workspace.
+  </Card>
+</Columns>
+
+## Appeal a call
+
+The video shows the whole flow, from finding the call to the submitted appeal.
+
+<Frame caption="Finding a call you can still appeal, disputing two parameters and submitting">
+  <video alt="Finding a call you can still appeal, disputing two parameters and submitting" aria-label="Finding a call you can still appeal, disputing two parameters and submitting" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/disputes-raise/poster.webp">
+    <source src="/media/disputes-raise/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Find the calls you can still appeal">
+    On **Interactions**, click **Filter → Appeal**, pick **Can still appeal** and click **Save**. The list shows your scored calls still inside the appeal window, each with its deadline, for example **Appeal by Oct 24**.
+
+    <Frame caption="Calls you can still appeal">
+      <img src="/media/disputes-raise/can-still-appeal.webp" alt="Interactions with the Appeal: Can still appeal filter chip, listing three of Vikram Rao's calls with scores 70, 74 and 90, each marked Appeal by Oct 24" />
+    </Frame>
+  </Step>
+  <Step title="Open the call and click Appeal this score">
+    Click the call, then **Open full page** for more room. Under the speaking distribution, "Think the AI got this wrong?" shows your deadline: "Appeal by …" and the hours left. Click **Appeal this score**.
+
+    <Frame caption="The appeal deadline and button on the call">
+      <img src="/media/disputes-raise/appeal-button.webp" alt="Card reading Think the AI got this wrong?, Appeal by Sat, 24 Oct, 1:01 pm IST · 47 hours left, with an Appeal this score button" />
+    </Frame>
+  </Step>
+  <Step title="Tick the parameters you dispute and say why">
+    The form lists every parameter with the AI's rating, for example **AI: No**. Tick each one you think is wrong. Its box opens with the AI's reason; write why it is wrong, in at least 20 characters. Point the QA to the moment in the call, for example "at 0:06".
+
+    <Frame caption="Two parameters disputed, each with a reason">
+      <img src="/media/disputes-raise/appeal-form.webp" alt="Appeal form with Gave the recording disclosure and Stated the EMI amount and due date ticked, each showing AI: No, the AI's reason and the agent's explanation with its character count, and the other parameters unticked with their AI ratings" />
+    </Frame>
+
+    Add anything else for the QA in "Anything else the QA should know? (optional)".
+  </Step>
+  <Step title="Review and submit">
+    Click **Review & submit**. You can appeal a call only once, and can't edit the appeal after you submit it, so check it, then click **Submit appeal**. **Back** returns to the form.
+
+    <Frame caption="The last check before the appeal is sent">
+      <img src="/media/disputes-raise/confirm.webp" alt="Confirmation reading You can appeal this call only once, and the appeal can't be edited after you submit it. Submit 2 disputed parameters?, with Back and Submit appeal buttons" />
+    </Frame>
+
+    <Check>The call shows the appeal as **Submitted**, "Waiting for a QA to pick it up.", with the **QA target** for a decision. You and your team lead get an email: "Appeal submitted: …".</Check>
+
+    <Frame caption="A submitted appeal">
+      <img src="/media/disputes-raise/submitted.webp" alt="Appeal card with status Submitted, submitted by Vikram Rao with team lead Rohan Das, the QA target date with 47 hours left, Waiting for a QA to pick it up., and 2 disputed parameters" />
+    </Frame>
+  </Step>
+</Steps>
+
+## Follow your appeals
+
+On **Interactions**, filter **Appeal** to **Appealed — awaiting QA** for open appeals, or **Appeal resolved** for decided ones. The call's appeal card changes to "A QA is re-scoring your call." when a QA picks it up. See [Results and corrections](/analytics-platform/disputes/results-and-corrections) for what you get back.
+
+## When you can't appeal
+
+**Appeal this score** isn't offered when disputes are off, or the call isn't yours, isn't a call, isn't scored yet or already has an appeal. Otherwise the card says why:
+
+| Message | Why |
+|---|---|
+| "The appeal window for this call has closed" | The window, counted from when the AI scored the call, has passed |
+| "This call is being re-scored — you can appeal once it finishes" | The call is being reprocessed |
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Results and corrections" icon="file-check" href="/analytics-platform/disputes/results-and-corrections">What happens when the QA decides.</Card>
+  <Card title="Review a dispute" icon="clipboard-check" href="/analytics-platform/disputes/review-a-dispute">What the QA does with your appeal.</Card>
+  <Card title="Report cards" icon="award" href="/analytics-platform/coach-agents/report-cards">Where appeals show on your report card.</Card>
+</Columns>

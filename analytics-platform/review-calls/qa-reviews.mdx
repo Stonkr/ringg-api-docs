@@ -1,0 +1,53 @@
+---
+title: "QA reviews"
+sidebarTitle: "QA reviews"
+description: "A QA re-scores a call by hand, parameter by parameter, and sees their Human score next to the AI's. Reviews can trigger an email to the agent."
+"og:title": "QA reviews in Ringg Analytics: score calls by hand next to the AI"
+---
+
+A QA review is a QA's own scoring of a call, done whenever they choose. It sits next to the AI's score and doesn't replace it; to change the official score of a call, the agent [disputes](/analytics-platform/disputes/overview) it and a QA resolves the dispute.
+
+In [Ringg Analytics](https://analytics.ringg.ai): **Sidebar → Interactions →** open a call. Owners, admins and QAs can review.
+
+## Review a call
+
+<Steps>
+  <Step title="Open the call">
+    Open it from **Interactions**, or **Open full page** for more room.
+  </Step>
+  <Step title="Rate the parameters you check">
+    Expand a category and pick a rating for each parameter you check, with a comment saying why. Parameters you don't rate keep the AI's rating in your **Human** score.
+  </Step>
+  <Step title="Mark the call fatal if it is">
+    Tick **Mark interaction as fatal** to set the Human score to 0, whatever the ratings, and say why.
+  </Step>
+  <Step title="Save">
+    Click **Save review**, or **Discard** to drop your changes.
+
+    <Check>The scorecard shows **AI** and **Human** scores side by side.</Check>
+  </Step>
+</Steps>
+
+<Frame caption="A reviewed call: the AI scored 85, the QA 95">
+  <img src="/media/analytics-qa-reviews/review.webp" alt="Call Analysis for a Missed EMI follow-up call by Arjun Mehta with the recording, the transcript, and AI 85 next to Human 95, a View detailed comparison link and the Mark interaction as fatal option" />
+</Frame>
+
+**View detailed comparison** lists the parameters where you and the AI disagree, or says "Fully aligned". Every save is kept in the call's review history, marked **Added**, **Edited** or **Cleared**, with who made it.
+
+## Rules
+
+- A QA set to **Rate and comment on every parameter** can't save until each parameter has a rating and a comment: "Rate and comment on every parameter to save: N left." Clearing a whole review is always allowed.
+- A QA in **Blind review** sees AI ratings, reasons and summaries as `***` while they score, so their ratings stay independent. Admins set both on **Team** (see [QA settings](/analytics-platform/roles-and-access#qa-settings)).
+- Use **Human Evaluation** in the **Interactions** filter to list reviewed or unreviewed calls.
+
+## Share reviews with agents
+
+To email the agent each time a QA saves a review, add a notification trigger that starts when **A QA reviews a call**. The ready-made **QA Review Shared** template lists the QA's score against the AI's and every rating and comment. See [Notifications](/analytics-platform/set-up/notifications).
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Notifications" icon="bell" href="/analytics-platform/set-up/notifications">Email agents when a QA reviews their call.</Card>
+  <Card title="Review a dispute" icon="scale" href="/analytics-platform/disputes/review-a-dispute">Re-score a call an agent disputed.</Card>
+  <Card title="Report cards" icon="award" href="/analytics-platform/coach-agents/report-cards">Turn reviews into coaching.</Card>
+</Columns>

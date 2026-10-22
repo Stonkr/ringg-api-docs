@@ -1,0 +1,42 @@
+{
+ "agents": {
+  "kavya": "5ab2926e-fc01-43e5-830c-c9e737845660",
+  "rahul": "9d3c52d9-2fca-48f4-8fc1-77b831d45cd0",
+  "neha": "07d32e85-cb6d-4317-93a5-c9d46f33c05f",
+  "arjun": "09dddf68-5c1b-47fa-9c80-e44b8cbafa02",
+  "rohan": "9a485e37-166f-4f1a-b94c-b2f41a3346f2",
+  "sana": "584859fe-73ea-4447-b55a-b4fb1e539ad3",
+  "vikram": "f4e249cf-6a6e-4a1b-9910-b992e5adc848",
+  "meera": "601856fb-03a7-4062-be9b-d6014a26e16a"
+ },
+ "calls": {
+  "raise": "0ebbe05e-82eb-44ee-bbc9-80fc3fc7e097",
+  "mixed": "f3260df3-5550-4f7a-b7e7-ab2d169918b3",
+  "qaReviewed": "2b3251db-c81c-4606-a653-2f7b44712804",
+  "appeal_rahul": "0c5e3d7a-5f94-43ab-acde-4eff6d236e1b",
+  "appeal_neha": "c6fc3ffb-5b80-4c51-8011-e2885cb0c6ad",
+  "appeal_arjun_corrected": "05c94402-b031-434c-9817-c18bf9c11d4a",
+  "appeal_arjun": "e83b6d1b-518b-4bab-a37d-c135594d3a3b",
+  "appeal_sana": "015a9e93-8851-4991-af34-8abfd34ea68e",
+  "appeal_meera": "85ce6e3f-ce4e-4d2f-a263-65f02d6fe73a"
+ },
+ "appeals": {
+  "rahul": "1cf20a3f-166a-49df-8f15-4beb0be19084",
+  "neha": "a7e74a5e-63a5-4bc1-bb4c-805b3cb525a6",
+  "arjun_corrected": "5e685e8e-92be-4f8c-91fd-ddae3f0873f4",
+  "arjun": "9a220b31-ebc9-4630-a1dc-c82489013da1",
+  "sana": "d31bdcdc-c336-46c5-b6b3-97799b76893b",
+  "meera": "047c6a3c-1221-473d-84e0-010360c8c162"
+ },
+ "titles": {
+  "raise": "Missed EMI follow-up \u00b7 AL-20674",
+  "mixed": "Missed EMI follow-up \u00b7 AL-20702",
+  "qaReviewed": "Missed EMI follow-up \u00b7 AL-20569",
+  "appeal_rahul": "Restructuring request \u00b7 AL-20417",
+  "appeal_neha": "Restructuring request \u00b7 AL-20475",
+  "appeal_arjun_corrected": "Missed EMI follow-up \u00b7 AL-20537",
+  "appeal_arjun": "EMI reminder \u00b7 AL-20526",
+  "appeal_sana": "Restructuring request \u00b7 AL-20601",
+  "appeal_meera": "Payment promise check \u00b7 AL-20743"
+ }
+}

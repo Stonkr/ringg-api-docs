@@ -1,0 +1,55 @@
+---
+title: "Metrics"
+sidebarTitle: "Metrics"
+description: "Metrics hold the rubric Ringg Analytics scores calls against: one set per use case, with weighted parameters, rating scales and fatal rules."
+"og:title": "Metrics in Ringg Analytics: use cases, rubric parameters and fatal rules"
+---
+
+A rubric is the list of parameters a call is scored on, grouped into categories, each with a weight. Each use case, such as EMI collections, has its own rubric per channel; every call is scored against the rubric of its use case.
+
+In [Ringg Analytics](https://analytics.ringg.ai): **Sidebar → Metrics**. Everyone can read the metrics; only owners and admins change them.
+
+<Frame caption="The EMI collections rubric">
+  <img src="/media/analytics-metrics/scorecard.webp" alt="EMI collections use case with Quality metrics, Business metrics and Custom variables tabs, cards for 10 parameters, 100 total weight, 4 categories and 2 fatal rules, and the Call Opening category listing two Yes / No parameters of weight 5 with their descriptions" />
+</Frame>
+
+## Set up a rubric
+
+<Steps>
+  <Step title="Create the use case">
+    On **Metrics**, click **New Use Case** and name it for the kind of call, for example "EMI collections".
+  </Step>
+  <Step title="Add the parameters">
+    Open the use case. On **Quality metrics**, click **Add parameters** for one at a time, or **Import Sheet** to load a spreadsheet of them. **Edit Rubric** changes existing ones. Pick the channel the rubric applies to under **Channel**.
+  </Step>
+  <Step title="Check the totals">
+    The cards at the top show the number of parameters, the **Total weight**, the categories and the **Fatal rules**.
+
+    <Check>New calls in the use case are scored against the rubric. **Export** downloads it as a spreadsheet.</Check>
+  </Step>
+</Steps>
+
+## Parameters
+
+Each parameter has a category, a weight, a scale, and a description the AI follows when it rates a call. The call's score is the share of the total weight it earned, out of 100.
+
+| Scale | Ratings | Points |
+|---|---|---|
+| Yes / No | Yes, No | Full or none |
+| Yes / No / N/A | Yes, No, N/A | N/A leaves the parameter out of the score |
+| Yes / Maybe / No | Yes, Maybe, No | Maybe earns half |
+| 0 / 3 / 5 | 0, 3, 5 | A share of the weight |
+| 0 to 5 | 0 to 5 | A share of the weight |
+
+- **Fatal** parameters are the ones a call can't miss, such as verifying the customer's identity. Missing one sets the call's score to 0 and flags it **FATAL**.
+- **Optional** parameters don't count toward the score.
+
+**Business metrics** track outcomes such as a payment promise, and **Custom variables** declare values you send with each call; both are set per use case.
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Interactions" icon="inbox" href="/analytics-platform/review-calls/interactions">See a call's rating for each parameter.</Card>
+  <Card title="Notifications" icon="bell" href="/analytics-platform/set-up/notifications">Alert agents on low scores or fatal misses.</Card>
+  <Card title="Report cards" icon="award" href="/analytics-platform/coach-agents/report-cards">Each agent's results per parameter.</Card>
+</Columns>

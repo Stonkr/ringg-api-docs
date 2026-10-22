@@ -1,0 +1,92 @@
+---
+title: "Report cards"
+sidebarTitle: "Report cards"
+description: "An agent's report card shows their scores against the previous period, the parameters they need to work on, their calls and coaching notes from their team lead."
+"og:title": "Agent report cards and coaching notes in Ringg Analytics"
+boost: 4
+---
+
+A report card is one agent's performance over a period: how their score moved, which parameters cost them points, and the calls behind it. Team leads, QAs and admins leave coaching notes there, and the agent reads them on their own report card.
+
+In [Ringg Analytics](https://analytics.ringg.ai): **Sidebar → Agents →** click an agent. Agents open their own from **Sidebar → My report card**.
+
+## Before you start
+
+<Columns cols={2}>
+  <Card title="Agents and teams" icon="users" href="/analytics-platform/coach-agents/agents-and-teams" horizontal>
+    The agent exists, with a team lead and a login.
+  </Card>
+  <Card title="Metrics" icon="clipboard-list" href="/analytics-platform/set-up/metrics" horizontal>
+    Their calls are scored against a rubric.
+  </Card>
+</Columns>
+
+## Coach an agent
+
+A team lead opens an agent, reads the report card and leaves a note on the parameter to work on.
+
+<Frame caption="Opening an agent's report card and leaving a coaching note on a parameter">
+  <video alt="Opening an agent's report card and leaving a coaching note on a parameter" aria-label="Opening an agent's report card and leaving a coaching note on a parameter" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/analytics-report-cards/poster.webp">
+    <source src="/media/analytics-report-cards/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+<Steps>
+  <Step title="Open the agent">
+    On **Agents**, click the agent. A team lead can open only agents in their team.
+  </Step>
+  <Step title="Read the report card">
+    Pick the period at the top right; the default is the last 30 days, compared with the 30 days before.
+
+    <Frame caption="Arjun Mehta's report card">
+      <img src="/media/analytics-report-cards/report-card.webp" alt="Report card for Arjun Mehta: Average score 87% up 7 points with team and workspace averages, Scored calls, Fatal calls, Appeals, the weekly score trend, Focus areas listing needs work and strengths, the Parameters list on Needs work with a Coach link per row, and the Coaching panel" />
+    </Frame>
+  </Step>
+  <Step title="Leave a note">
+    Click **Coach** on a parameter, or pick one in the **Coaching** panel (or leave it as **General (no parameter)**). Write what to do differently and click **Post note**.
+
+    <Check>The note shows "Not read yet" until the agent marks it read, and the agent's **Summary** counts it under **New coaching notes**.</Check>
+  </Step>
+</Steps>
+
+<Frame caption="A coaching note waiting for the agent">
+  <img src="/media/analytics-report-cards/coaching.webp" alt="Coaching panel with a parameter picker, a note box with Post note, and notes from Kavya Nair, one pinned to Greeted the customer by name and marked Not read yet" />
+</Frame>
+
+## What's on a report card
+
+| Section | Shows |
+|---|---|
+| **Average score** | The official average, the change against the previous period, and for coaches the team and workspace averages |
+| **Scored calls**, **Fatal calls**, **Appeals** | Calls in the period, fatal ones, and [disputes](/analytics-platform/disputes/overview) raised and how many changed the score |
+| **Score trend** | Average score per day for periods up to two weeks, per week beyond (India time) |
+| **Parameters** | For each parameter, the share of its points the agent earned, the change, and the team's share. The tick on each bar is the workspace average. **Needs work** lists parameters under 80% on at least 3 calls, and any fatal miss. |
+| **Focus areas** | Up to three parameters that need work and three strengths, from parameters scored on at least 3 calls |
+| **Recent calls** | The latest calls with their official score and dispute result. **All calls** opens **Interactions** filtered to the agent. |
+| **Coaching** | Notes from the agent's team lead, QAs and admins, newest first |
+
+Scores are official: a resolved dispute's QA score replaces the AI's. Parameters marked N/A or optional on a call don't count toward it.
+
+## Coaching notes
+
+| | Who can |
+|---|---|
+| Write a note | The agent's team lead, QAs, admins and the owner. Nobody can coach themselves. |
+| Mark a note read | Only the agent, with **Mark as read** |
+| Delete a note | Its author, or an admin |
+
+An agent's own report card has no team or workspace figures, and no note box.
+
+<Frame caption="An agent's own report card">
+  <img src="/media/analytics-report-card-agent/my-report.webp" alt="My report card for Arjun Mehta with his KPIs, score trend, parameters, focus areas and coaching notes, one marked New with a Mark as read button" />
+</Frame>
+
+Owners, admins and QAs can also email an agent from their report card with **Email**, using a [notification](/analytics-platform/set-up/notifications) template.
+
+## Next steps
+
+<Columns cols={3}>
+  <Card title="Summary" icon="chart-column" href="/analytics-platform/review-calls/summary">Your team at a glance.</Card>
+  <Card title="QA reviews" icon="clipboard-check" href="/analytics-platform/review-calls/qa-reviews">Review the calls behind a weak parameter.</Card>
+  <Card title="Disputes" icon="scale" href="/analytics-platform/disputes/overview">How agents challenge a score.</Card>
+</Columns>

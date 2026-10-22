@@ -4,7 +4,7 @@ import { chromium, type Locator, type Page } from "@playwright/test";
 import { execFileSync } from "node:child_process";
 import { mkdirSync, readdirSync, rmSync, writeFileSync, existsSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { OUT, prepareContext, gotoDashboard, saveWebp, type RouteMap } from "./lib.ts";
+import { OUT, prepareContext, gotoDashboard, saveWebp, prepareAnalyticsContext, gotoAnalytics, type AnalyticsSession, type RouteMap } from "./lib.ts";
 import { installOverlay } from "./overlay.ts";
 
 const DOCS_ROOT = resolve(import.meta.dirname, "../..");
@@ -20,6 +20,10 @@ export interface Scenario {
   /** Docs page this media belongs to, e.g. "agents/create". */
   docsPage: string;
   routes: RouteMap;
+  /** Set to record the analytics app (analytics.ringg.ai) instead of the dashboard; `routes` is then unused. */
+  analytics?: AnalyticsSession;
+  /** A smaller 16:10 viewport shows the UI larger in the video (default 1440×900). */
+  viewport?: { width: number; height: number };
   run(s: Session): Promise<void>;
 }
 
@@ -32,16 +36,19 @@ export class Session {
   capture = { stop: async () => {}, start: async () => {} };
   page: Page;
   scenario: Scenario;
+  viewport: { width: number; height: number };
   constructor(page: Page, scenario: Scenario) {
     this.page = page;
     this.scenario = scenario;
+    this.viewport = scenario.viewport ?? VIEWPORT;
   }
 
   async goto(route: string) {
-    await gotoDashboard(this.page, route);
+    if (this.scenario.analytics) await gotoAnalytics(this.page, route);
+    else await gotoDashboard(this.page, route);
     await this.page.waitForTimeout(600);
     if (!this.readyAt) {
-      await this.page.mouse.move(VIEWPORT.width / 2, VIEWPORT.height / 2);
+      await this.page.mouse.move(this.viewport.width / 2, this.viewport.height / 2);
       this.readyAt = Date.now();
     }
   }
@@ -88,23 +95,41 @@ export class Session {
     await this.page.waitForTimeout(ms);
   }
 
-  /** Screenshot (overlay hidden) into media/<scenario>/<name>.webp. Crops to `target` (+padding) or the viewport. */
-  async shot(name: string, target?: Locator, padding = 16) {
+  /** Screenshot (overlay hidden) into media/<scenario>/<name>.webp. Crops to `target` (+padding) or the viewport.
+   *  `inScroller`: crop to the part of `target` visible in its scrolling panel (for long panels). */
+  async shot(name: string, target?: Locator, padding = 16, inScroller = false) {
     await this.capture.stop();
     await this.page.evaluate(() => (window as any).__docs?.hidden(true));
     const dir = join(DOCS_ROOT, "media", this.scenario.name);
     mkdirSync(dir, { recursive: true });
     const path = join(dir, `${name}.webp`);
     if (target) {
-      const b = await target.boundingBox();
+      const b = inScroller ? await visibleBox(target) : await target.boundingBox();
       if (!b) throw new Error(`No box for shot ${name}`);
       const x = Math.max(0, b.x - padding), y = Math.max(0, b.y - padding);
-      saveWebp(await this.page.screenshot({ clip: { x, y, width: Math.min(VIEWPORT.width - x, b.width + padding * 2), height: Math.min(VIEWPORT.height - y, b.height + padding * 2) } }), path);
+      saveWebp(await this.page.screenshot({ clip: { x, y, width: Math.min(this.viewport.width - x, b.width + padding * 2), height: Math.min(this.viewport.height - y, b.height + padding * 2) } }), path);
     } else saveWebp(await this.page.screenshot(), path);
     this.shots.push(path);
     await this.page.evaluate(() => (window as any).__docs?.hidden(false));
     await this.capture.start();
   }
+}
+
+/** The part of an element inside its nearest scrolling ancestor's visible area. */
+function visibleBox(target: Locator) {
+  return target.evaluate((el) => {
+    const r = el.getBoundingClientRect();
+    let top = r.top, bottom = r.bottom;
+    for (let p = el.parentElement; p; p = p.parentElement) {
+      if (/(auto|scroll)/.test(getComputedStyle(p).overflowY)) {
+        const pr = p.getBoundingClientRect();
+        top = Math.max(top, pr.top);
+        bottom = Math.min(bottom, pr.bottom);
+        break;
+      }
+    }
+    return { x: r.left, y: top, width: r.width, height: Math.max(0, bottom - top) };
+  });
 }
 
 function vtt(timeline: Session["timeline"], endMs: number) {
@@ -122,8 +147,8 @@ function titleFor(scenario: Scenario) {
 }
 
 /** White card with the page name in Inter (the dashboard's font), shown before the recording. */
-async function renderTitleCard(browser: import("@playwright/test").Browser, title: string, path: string) {
-  const page = await browser.newPage({ viewport: VIEWPORT, deviceScaleFactor: 2 });
+async function renderTitleCard(browser: import("@playwright/test").Browser, title: string, path: string, viewport = VIEWPORT) {
+  const page = await browser.newPage({ viewport, deviceScaleFactor: 2 });
   const esc = title.replace(/&/g, "&amp;").replace(/</g, "&lt;");
   await page.setContent(`<style>@font-face{font-family:Inter;src:url(data:font/woff2;base64,${INTER}) format("woff2")}html,body{margin:0;height:100%;background:#fff}body{display:grid;place-items:center;font:600 56px/1.2 Inter,sans-serif;letter-spacing:-0.02em;color:#111114}</style><div>${esc}</div>`);
   await page.evaluate(() => document.fonts.ready);
@@ -139,13 +164,22 @@ async function runScenario(scenario: Scenario) {
   // Without this flag the screencast sends 1x frames even at deviceScaleFactor 2.
   const browser = await chromium.launch({ args: ["--force-device-scale-factor=2"] });
   const titleCard = join(raw, "title.jpg");
-  await renderTitleCard(browser, titleFor(scenario), titleCard);
-  const context = await browser.newContext({ viewport: VIEWPORT, deviceScaleFactor: 2, colorScheme: "light" });
+  const viewport = scenario.viewport ?? VIEWPORT;
+  await renderTitleCard(browser, titleFor(scenario), titleCard, viewport);
+  const context = await browser.newContext({ viewport, deviceScaleFactor: 2, colorScheme: "light" });
   await context.addInitScript((ids) => {
     localStorage.setItem("_ringg_coachmarks", JSON.stringify(Object.fromEntries(ids.map((id) => [id, { version: 9999, status: "completed" }]))));
   }, COACHMARKS);
   await context.addInitScript(installOverlay);
-  await prepareContext(context, scenario.routes, join(OUT, `unmatched-${scenario.name}.log`));
+  const unmatchedLog = join(OUT, `unmatched-${scenario.name}.log`);
+  let saveRecording = () => {};
+  try {
+    if (scenario.analytics) saveRecording = await prepareAnalyticsContext(context, scenario.analytics, unmatchedLog);
+    else await prepareContext(context, scenario.routes, unmatchedLog);
+  } catch (e) {
+    await browser.close(); // a missing fixture file must not leave the run hanging
+    throw e;
+  }
   const page = await context.newPage();
   // Playwright actions never time out by default; fail fast instead of stalling a run.
   page.setDefaultTimeout(20000);
@@ -160,7 +194,7 @@ async function runScenario(scenario: Scenario) {
     frames.push({ file, t: Date.now() });
     cdp.send("Page.screencastFrameAck", { sessionId: f.sessionId }).catch(() => {});
   });
-  const screencast = { format: "jpeg" as const, quality: 92, maxWidth: VIEWPORT.width * 2, maxHeight: VIEWPORT.height * 2 };
+  const screencast = { format: "jpeg" as const, quality: 92, maxWidth: viewport.width * 2, maxHeight: viewport.height * 2 };
   await cdp.send("Page.startScreencast", screencast);
   s.capture = { stop: () => cdp.send("Page.stopScreencast").then(() => {}), start: () => cdp.send("Page.startScreencast", screencast).then(() => {}) };
   let endAt = 0;
@@ -168,6 +202,7 @@ async function runScenario(scenario: Scenario) {
     await scenario.run(s);
     await page.evaluate(() => (window as any).__docs?.caption(""));
     await page.waitForTimeout(800);
+    saveRecording();
   } catch (e) {
     await page.screenshot({ path: join(OUT, `${scenario.name}-fail.png`) }).catch(() => {});
     throw e;

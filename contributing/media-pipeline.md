@@ -11,6 +11,7 @@ The folder is listed in `.mintignore`, so it is never published.
 - [Run it](#run-it)
 - [Write a scenario](#write-a-scenario)
 - [Fixtures](#fixtures)
+- [Ringg Analytics scenarios](#ringg-analytics-scenarios)
 - [Review the output](#review-the-output)
 - [Why it is built this way](#why-it-is-built-this-way)
 
@@ -113,6 +114,19 @@ Guidelines:
 - **Copy response shapes from the dashboard's types** in the dashboard frontend repo (`types/*.types.ts`, `lib/api/*.api.ts`) and say which type you followed in a comment. A wrong shape renders a broken UI, which then ends up in the docs.
 - **Keep data fictional and consistent** with the shared cast. Use `.example` domains for every URL and email, phone numbers in the `+91987654xxxx` range, and the existing agent and workspace IDs. Never paste data from a real workspace, logs or a customer call.
 - **Watch for internal details.** Before you commit, step through the video and check that nothing internal is visible: real names, real numbers, keys, internal URLs, or vendor and provider names that the product doesn't show customers.
+
+## Ringg Analytics scenarios
+
+Ringg Analytics ([analytics.ringg.ai](https://analytics.ringg.ai)) is a separate app with its own API under `/an/api/v0`. Its scenarios (`analytics-*`, `disputes-*`) set `analytics: { as: "<user>", fixture: "<scenario>" }` instead of `routes`, and replay `fixtures/analytics/<scenario>.json`:
+
+- **Replay (the default).** Serve a production build of the analytics frontend repo at `http://localhost:3202` (or set `ANALYTICS_URL`) built with `NEXT_PUBLIC_API_URL` on the same origin, for example `http://localhost:3202/an/api/v0`. Every API call is answered from the fixture, so no backend is involved.
+- **Recording a fixture.** Analytics responses are too varied to write by hand, so they are recorded once from an analytics backend that holds only fictional data (the Acme Lending cast, never a customer database). Set `ANALYTICS_RECORD_API=http://<host>/an/api/v0` and `ANALYTICS_RECORD_TOKENS=<file>`, a JSON file with `workspace_id` and `tokens: { "<user>": "<access token>" }`, then run the scenario: calls go to that server and the fixture is written when the run succeeds. Saves are recorded in order, so the scenario must make the same saves when it replays.
+- **Call audio.** Every call plays `fixtures/analytics/call.mp3`, a synthesized, fictional conversation. `recording_url` and `media-url` are rewritten to it in both modes.
+- **IDs.** `fixtures/analytics/ids.json` holds the fictional call, agent and appeal IDs the scenarios open.
+- **Long panels.** The call page scrolls each column on its own. `s.shot(name, target, padding, true)` crops to the part of `target` visible in its scrolling panel.
+- **Bigger UI in the video.** A scenario can set `viewport: { width: 1152, height: 720 }` (keep 16:10) so a flow that happens in one panel stays readable at docs width; the dispute videos use it.
+
+Re-record a fixture whenever the screen it covers changes, and check it for internal details like any other media.
 
 ## Review the output
 

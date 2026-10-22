@@ -1,0 +1,948 @@
+{
+ "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+ "calls": [
+  {
+   "method": "GET",
+   "path": "/api-keys",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": []
+  },
+  {
+   "method": "GET",
+   "path": "/workspaces/current",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+    "name": "Acme Lending",
+    "industry": "lending",
+    "language_notes": null,
+    "domain_terms": [
+     "EMI",
+     "auto-debit",
+     "UPI",
+     "foreclosure"
+    ],
+    "is_active": true,
+    "appeals_enabled": true,
+    "appeal_window_days": 3,
+    "appeal_turnaround_days": 2,
+    "created_at": "2026-10-22T08:21:52.304650Z"
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/auth/me",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "id": "79ef102c-b506-48b2-89fb-e51e6a4e2de7",
+    "email": "priya@acme-lending.example",
+    "full_name": "Priya Sharma",
+    "is_active": true,
+    "created_at": "2026-10-22T08:21:52.304650Z",
+    "last_login_at": null,
+    "role": "owner",
+    "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+    "show_ai_scores": true,
+    "require_all_parameters": false
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/workspaces/mine",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+     "name": "Acme Lending",
+     "role": "owner",
+     "is_current": true
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/use-cases",
+   "query": "active_only=true",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "id": "1e338915-2728-49a7-8644-4cf00ee87e9f",
+     "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+     "name": "EMI collections",
+     "description": "Outbound calls to remind customers about EMIs and agree a payment date.",
+     "is_active": true,
+     "variables": [],
+     "created_at": "2026-10-22T08:21:52.304650Z"
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/analytics/volume-trend",
+   "query": "bucket=day",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "period": "2026-09-22T00:00:00+00:00",
+     "call_count": 1,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-09-23T00:00:00+00:00",
+     "call_count": 2,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-09-24T00:00:00+00:00",
+     "call_count": 1,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-09-26T00:00:00+00:00",
+     "call_count": 2,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-09-27T00:00:00+00:00",
+     "call_count": 1,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-09-28T00:00:00+00:00",
+     "call_count": 2,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-09-29T00:00:00+00:00",
+     "call_count": 1,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-09-30T00:00:00+00:00",
+     "call_count": 2,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-10-02T00:00:00+00:00",
+     "call_count": 2,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-10-03T00:00:00+00:00",
+     "call_count": 1,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-10-05T00:00:00+00:00",
+     "call_count": 1,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-10-07T00:00:00+00:00",
+     "call_count": 1,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-10-10T00:00:00+00:00",
+     "call_count": 1,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-10-13T00:00:00+00:00",
+     "call_count": 3,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-10-14T00:00:00+00:00",
+     "call_count": 2,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-10-15T00:00:00+00:00",
+     "call_count": 1,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-10-16T00:00:00+00:00",
+     "call_count": 4,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-10-17T00:00:00+00:00",
+     "call_count": 1,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-10-18T00:00:00+00:00",
+     "call_count": 1,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-10-20T00:00:00+00:00",
+     "call_count": 3,
+     "email_count": 0,
+     "meeting_count": 0
+    },
+    {
+     "period": "2026-10-21T00:00:00+00:00",
+     "call_count": 15,
+     "email_count": 0,
+     "meeting_count": 0
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/analytics/parameter-performance",
+   "query": "order=worst&source_type=call",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "parameter": "Gave the recording disclosure",
+     "bucket": "Compliance",
+     "scale": "yes_no",
+     "weight": 10,
+     "avg_pct": 81.2,
+     "sample_count": 48,
+     "yes_count": 39,
+     "no_count": 9
+    },
+    {
+     "parameter": "Stated the EMI amount and due date",
+     "bucket": "Resolution",
+     "scale": "yes_no",
+     "weight": 10,
+     "avg_pct": 83.3,
+     "sample_count": 48,
+     "yes_count": 40,
+     "no_count": 8
+    },
+    {
+     "parameter": "Captured a promise to pay",
+     "bucket": "Resolution",
+     "scale": "yes_no_na",
+     "weight": 10,
+     "avg_pct": 87.5,
+     "sample_count": 48,
+     "yes_count": 42,
+     "no_count": 6
+    },
+    {
+     "parameter": "Showed empathy",
+     "bucket": "Soft skills",
+     "scale": "partial_5",
+     "weight": 10,
+     "avg_pct": 87.5,
+     "sample_count": 48,
+     "yes_count": 44,
+     "no_count": 4
+    },
+    {
+     "parameter": "Stated name and company",
+     "bucket": "Call opening",
+     "scale": "yes_no",
+     "weight": 5,
+     "avg_pct": 89.6,
+     "sample_count": 48,
+     "yes_count": 43,
+     "no_count": 5
+    },
+    {
+     "parameter": "Greeted the customer by name",
+     "bucket": "Call opening",
+     "scale": "yes_no",
+     "weight": 5,
+     "avg_pct": 89.6,
+     "sample_count": 48,
+     "yes_count": 43,
+     "no_count": 5
+    },
+    {
+     "parameter": "Offered payment options",
+     "bucket": "Resolution",
+     "scale": "yes_no_maybe",
+     "weight": 15,
+     "avg_pct": 92.7,
+     "sample_count": 48,
+     "yes_count": 45,
+     "no_count": 3
+    },
+    {
+     "parameter": "Closed with a recap",
+     "bucket": "Soft skills",
+     "scale": "range_5",
+     "weight": 5,
+     "avg_pct": 95.4,
+     "sample_count": 48,
+     "yes_count": 48,
+     "no_count": 0
+    },
+    {
+     "parameter": "Verified the customer's identity",
+     "bucket": "Compliance",
+     "scale": "yes_no",
+     "weight": 15,
+     "avg_pct": 97.9,
+     "sample_count": 48,
+     "yes_count": 47,
+     "no_count": 1
+    },
+    {
+     "parameter": "No threats or pressure",
+     "bucket": "Compliance",
+     "scale": "yes_no",
+     "weight": 15,
+     "avg_pct": 100,
+     "sample_count": 48,
+     "yes_count": 48,
+     "no_count": 0
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/analytics/dashboard",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "total_calls": 48,
+    "analyzed_calls": 48,
+    "failed_calls": 0,
+    "total_emails": 0,
+    "analyzed_emails": 0,
+    "total_meetings": 0,
+    "analyzed_meetings": 0,
+    "avg_call_score": 89.75,
+    "avg_email_score": null,
+    "avg_meeting_score": null,
+    "high_score_count": 42,
+    "low_score_count": 1,
+    "fatal_classifications": 1
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/appeals/summary",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "analyzed_calls": 48,
+    "appealed_calls": 7,
+    "appeal_rate": 0.1458,
+    "resolved": 4,
+    "upheld": 1,
+    "partially_overturned": 0,
+    "overturned": 3,
+    "avg_score_delta": 8.25,
+    "disputed_parameters": 6,
+    "overturned_parameters": 5,
+    "overturn_rate": 0.8333,
+    "undisputed_change_rate": 0,
+    "turnaround_hours": {
+     "median": 20.4,
+     "p90": 38.73
+    },
+    "closed_on_time_rate": 1,
+    "open": 3,
+    "overdue": 0,
+    "corrections": 1,
+    "offline_escalation_rate": 0.25,
+    "by_parameter": [
+     {
+      "parameter": "Greeted the customer by name",
+      "bucket": "Call opening",
+      "disputed": 2,
+      "overturned": 2,
+      "overturn_rate": 1,
+      "reviewed": 4,
+      "undisputed_changes": 0
+     },
+     {
+      "parameter": "Closed with a recap",
+      "bucket": "Soft skills",
+      "disputed": 1,
+      "overturned": 1,
+      "overturn_rate": 1,
+      "reviewed": 4,
+      "undisputed_changes": 0
+     },
+     {
+      "parameter": "Gave the recording disclosure",
+      "bucket": "Compliance",
+      "disputed": 1,
+      "overturned": 1,
+      "overturn_rate": 1,
+      "reviewed": 4,
+      "undisputed_changes": 0
+     },
+     {
+      "parameter": "Stated the EMI amount and due date",
+      "bucket": "Resolution",
+      "disputed": 2,
+      "overturned": 1,
+      "overturn_rate": 0.5,
+      "reviewed": 4,
+      "undisputed_changes": 0
+     },
+     {
+      "parameter": "Captured a promise to pay",
+      "bucket": "Resolution",
+      "disputed": 0,
+      "overturned": 0,
+      "overturn_rate": null,
+      "reviewed": 4,
+      "undisputed_changes": 0
+     },
+     {
+      "parameter": "No threats or pressure",
+      "bucket": "Compliance",
+      "disputed": 0,
+      "overturned": 0,
+      "overturn_rate": null,
+      "reviewed": 4,
+      "undisputed_changes": 0
+     },
+     {
+      "parameter": "Offered payment options",
+      "bucket": "Resolution",
+      "disputed": 0,
+      "overturned": 0,
+      "overturn_rate": null,
+      "reviewed": 4,
+      "undisputed_changes": 0
+     },
+     {
+      "parameter": "Showed empathy",
+      "bucket": "Soft skills",
+      "disputed": 0,
+      "overturned": 0,
+      "overturn_rate": null,
+      "reviewed": 4,
+      "undisputed_changes": 0
+     },
+     {
+      "parameter": "Stated name and company",
+      "bucket": "Call opening",
+      "disputed": 0,
+      "overturned": 0,
+      "overturn_rate": null,
+      "reviewed": 4,
+      "undisputed_changes": 0
+     },
+     {
+      "parameter": "Verified the customer's identity",
+      "bucket": "Compliance",
+      "disputed": 0,
+      "overturned": 0,
+      "overturn_rate": null,
+      "reviewed": 4,
+      "undisputed_changes": 0
+     }
+    ]
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/agents",
+   "query": "page=1&page_size=200",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "items": [
+     {
+      "id": "09dddf68-5c1b-47fa-9c80-e44b8cbafa02",
+      "agent_id": "arjun",
+      "name": "Arjun Mehta",
+      "email": "arjun@acme-lending.example",
+      "is_active": true,
+      "user_id": "74f6bc4f-9d13-47b2-9592-5799bf0cdd81",
+      "team_leader_id": "5ab2926e-fc01-43e5-830c-c9e737845660",
+      "hierarchy_level_id": "1c128514-8c3e-4ea9-aebd-44aa9cdf7147",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     },
+     {
+      "id": "5ab2926e-fc01-43e5-830c-c9e737845660",
+      "agent_id": "kavya",
+      "name": "Kavya Nair",
+      "email": "kavya@acme-lending.example",
+      "is_active": true,
+      "user_id": "ad7da174-800d-4f25-b880-1d03ddb3c190",
+      "team_leader_id": null,
+      "hierarchy_level_id": "f1ff2e4d-bbdf-4040-966d-488e375a33b2",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     },
+     {
+      "id": "601856fb-03a7-4062-be9b-d6014a26e16a",
+      "agent_id": "meera",
+      "name": "Meera Iyer",
+      "email": "meera@acme-lending.example",
+      "is_active": true,
+      "user_id": "9348e1c1-ec75-4417-8041-ca3e4efa49d1",
+      "team_leader_id": "9a485e37-166f-4f1a-b94c-b2f41a3346f2",
+      "hierarchy_level_id": "1c128514-8c3e-4ea9-aebd-44aa9cdf7147",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     },
+     {
+      "id": "07d32e85-cb6d-4317-93a5-c9d46f33c05f",
+      "agent_id": "neha",
+      "name": "Neha Kapoor",
+      "email": "neha@acme-lending.example",
+      "is_active": true,
+      "user_id": "d85424f9-8028-4cfc-a484-b67f99ba6bbb",
+      "team_leader_id": "5ab2926e-fc01-43e5-830c-c9e737845660",
+      "hierarchy_level_id": "1c128514-8c3e-4ea9-aebd-44aa9cdf7147",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     },
+     {
+      "id": "9d3c52d9-2fca-48f4-8fc1-77b831d45cd0",
+      "agent_id": "rahul",
+      "name": "Rahul Verma",
+      "email": "rahul@acme-lending.example",
+      "is_active": true,
+      "user_id": "918783ab-1d33-4578-b083-4921ef29bbf9",
+      "team_leader_id": "5ab2926e-fc01-43e5-830c-c9e737845660",
+      "hierarchy_level_id": "1c128514-8c3e-4ea9-aebd-44aa9cdf7147",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     },
+     {
+      "id": "9a485e37-166f-4f1a-b94c-b2f41a3346f2",
+      "agent_id": "rohan",
+      "name": "Rohan Das",
+      "email": "rohan@acme-lending.example",
+      "is_active": true,
+      "user_id": "c8d28fe2-e0aa-4322-8775-02c08926b070",
+      "team_leader_id": null,
+      "hierarchy_level_id": "f1ff2e4d-bbdf-4040-966d-488e375a33b2",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     },
+     {
+      "id": "584859fe-73ea-4447-b55a-b4fb1e539ad3",
+      "agent_id": "sana",
+      "name": "Sana Khan",
+      "email": "sana@acme-lending.example",
+      "is_active": true,
+      "user_id": "c16a693e-ea31-41f0-bd6e-e4a167022d10",
+      "team_leader_id": "9a485e37-166f-4f1a-b94c-b2f41a3346f2",
+      "hierarchy_level_id": "1c128514-8c3e-4ea9-aebd-44aa9cdf7147",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     },
+     {
+      "id": "f4e249cf-6a6e-4a1b-9910-b992e5adc848",
+      "agent_id": "vikram",
+      "name": "Vikram Rao",
+      "email": "vikram@acme-lending.example",
+      "is_active": true,
+      "user_id": "65353e83-3429-4008-a699-30e13862ce3f",
+      "team_leader_id": "9a485e37-166f-4f1a-b94c-b2f41a3346f2",
+      "hierarchy_level_id": "1c128514-8c3e-4ea9-aebd-44aa9cdf7147",
+      "hierarchy_level_name": null,
+      "hierarchy_level_color": null
+     }
+    ],
+    "total": 8
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/analytics/insights",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "tracked_issues": [
+     {
+      "category": {
+       "id": "2c49e9e2-95fe-4c2d-b88d-7cdc8df72b69",
+       "name": "Customer outcome"
+      },
+      "issues": [
+       {
+        "id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+        "name": "Promise to pay",
+        "severity": "informational",
+        "call_count": 29,
+        "email_count": 0,
+        "meeting_count": 0,
+        "trend_pct": 45,
+        "trend_direction": "up",
+        "avg_score": 92.1,
+        "top_agent": "Rahul Verma",
+        "avg_duration": 61
+       },
+       {
+        "id": "39e5377d-ece1-4b97-a4d5-45e26bebb7df",
+        "name": "Asked to restructure",
+        "severity": "process",
+        "call_count": 15,
+        "email_count": 0,
+        "meeting_count": 0,
+        "trend_pct": 200,
+        "trend_direction": "up",
+        "avg_score": 87.1,
+        "top_agent": "Neha Kapoor",
+        "avg_duration": 61
+       },
+       {
+        "id": "ab30d0ac-c65d-4676-9b53-dae6a4ebe9b3",
+        "name": "Already paid",
+        "severity": "informational",
+        "call_count": 1,
+        "email_count": 0,
+        "meeting_count": 0,
+        "trend_pct": -66.7,
+        "trend_direction": "down",
+        "avg_score": 100,
+        "top_agent": "Rahul Verma",
+        "avg_duration": 67
+       },
+       {
+        "id": "10fe9e86-5270-483f-b4b5-9bbc035b35fc",
+        "name": "Disputed the amount",
+        "severity": "customer_impacting",
+        "call_count": 0,
+        "email_count": 0,
+        "meeting_count": 0,
+        "trend_pct": 0,
+        "trend_direction": "flat",
+        "avg_score": null,
+        "top_agent": null,
+        "avg_duration": null
+       }
+      ]
+     },
+     {
+      "category": {
+       "id": "12072375-adda-4f37-af8b-1bd1ffd4470d",
+       "name": "Agent conduct"
+      },
+      "issues": [
+       {
+        "id": "70a50c2a-41d3-4985-b6cd-0d28983ec969",
+        "name": "Skipped identity check",
+        "severity": "fatal",
+        "call_count": 1,
+        "email_count": 0,
+        "meeting_count": 0,
+        "trend_pct": null,
+        "trend_direction": "new",
+        "avg_score": 0,
+        "top_agent": "Meera Iyer",
+        "avg_duration": 49
+       },
+       {
+        "id": "4b62ba5c-82ab-4de2-9bea-23f77ce4b2b8",
+        "name": "Pressure or threats",
+        "severity": "fatal",
+        "call_count": 0,
+        "email_count": 0,
+        "meeting_count": 0,
+        "trend_pct": -100,
+        "trend_direction": "down",
+        "avg_score": null,
+        "top_agent": null,
+        "avg_duration": null
+       }
+      ]
+     }
+    ],
+    "emerging_signals": [
+     {
+      "phrase": "upi link",
+      "description": "Payment option offered",
+      "call_count": 48,
+      "email_count": 0,
+      "meeting_count": 0,
+      "total": 48
+     },
+     {
+      "phrase": "medical expenses",
+      "description": "Reason the EMI was delayed",
+      "call_count": 48,
+      "email_count": 0,
+      "meeting_count": 0,
+      "total": 48
+     }
+    ],
+    "correlations": {
+     "issue_rubric": [],
+     "issue_agent": [
+      {
+       "issue": "Asked to restructure",
+       "agent": "Meera Iyer",
+       "avg_score": 62.7,
+       "workspace_avg": 89.8,
+       "call_count": 3
+      },
+      {
+       "issue": "Promise to pay",
+       "agent": "Neha Kapoor",
+       "avg_score": 98.3,
+       "workspace_avg": 89.8,
+       "call_count": 6
+      },
+      {
+       "issue": "Asked to restructure",
+       "agent": "Neha Kapoor",
+       "avg_score": 98,
+       "workspace_avg": 89.8,
+       "call_count": 5
+      },
+      {
+       "issue": "Promise to pay",
+       "agent": "Meera Iyer",
+       "avg_score": 97,
+       "workspace_avg": 89.8,
+       "call_count": 5
+      },
+      {
+       "issue": "Promise to pay",
+       "agent": "Sana Khan",
+       "avg_score": 96.7,
+       "workspace_avg": 89.8,
+       "call_count": 3
+      },
+      {
+       "issue": "Promise to pay",
+       "agent": "Rahul Verma",
+       "avg_score": 86,
+       "workspace_avg": 89.8,
+       "call_count": 8
+      }
+     ]
+    }
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/analytics/score-trend",
+   "query": "agent_id=09dddf68-5c1b-47fa-9c80-e44b8cbafa02&bucket=day",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "period": "2026-10-02T00:00:00+00:00",
+     "avg_score": 85,
+     "call_count": 1
+    },
+    {
+     "period": "2026-10-13T00:00:00+00:00",
+     "avg_score": 94,
+     "call_count": 1
+    },
+    {
+     "period": "2026-10-16T00:00:00+00:00",
+     "avg_score": 74,
+     "call_count": 1
+    },
+    {
+     "period": "2026-10-20T00:00:00+00:00",
+     "avg_score": 86,
+     "call_count": 1
+    },
+    {
+     "period": "2026-10-21T00:00:00+00:00",
+     "avg_score": 92.5,
+     "call_count": 2
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/analytics/issue-trend",
+   "query": "bucket=day&bucket_ids=44cb1c66-8b35-40d9-acc7-7c0f85d254f6&bucket_ids=39e5377d-ece1-4b97-a4d5-45e26bebb7df&bucket_ids=ab30d0ac-c65d-4676-9b53-dae6a4ebe9b3&bucket_ids=10fe9e86-5270-483f-b4b5-9bbc035b35fc&bucket_ids=70a50c2a-41d3-4985-b6cd-0d28983ec969&bucket_ids=4b62ba5c-82ab-4de2-9bea-23f77ce4b2b8",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "period": "2026-09-22T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 1
+    },
+    {
+     "period": "2026-09-23T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 2
+    },
+    {
+     "period": "2026-09-24T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 1
+    },
+    {
+     "period": "2026-09-26T00:00:00+00:00",
+     "bucket_id": "39e5377d-ece1-4b97-a4d5-45e26bebb7df",
+     "count": 1
+    },
+    {
+     "period": "2026-09-26T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 1
+    },
+    {
+     "period": "2026-09-27T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 1
+    },
+    {
+     "period": "2026-09-28T00:00:00+00:00",
+     "bucket_id": "39e5377d-ece1-4b97-a4d5-45e26bebb7df",
+     "count": 1
+    },
+    {
+     "period": "2026-09-28T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 1
+    },
+    {
+     "period": "2026-09-29T00:00:00+00:00",
+     "bucket_id": "39e5377d-ece1-4b97-a4d5-45e26bebb7df",
+     "count": 1
+    },
+    {
+     "period": "2026-09-30T00:00:00+00:00",
+     "bucket_id": "39e5377d-ece1-4b97-a4d5-45e26bebb7df",
+     "count": 1
+    },
+    {
+     "period": "2026-09-30T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 1
+    },
+    {
+     "period": "2026-10-02T00:00:00+00:00",
+     "bucket_id": "39e5377d-ece1-4b97-a4d5-45e26bebb7df",
+     "count": 1
+    },
+    {
+     "period": "2026-10-02T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 1
+    },
+    {
+     "period": "2026-10-03T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 1
+    },
+    {
+     "period": "2026-10-05T00:00:00+00:00",
+     "bucket_id": "39e5377d-ece1-4b97-a4d5-45e26bebb7df",
+     "count": 1
+    },
+    {
+     "period": "2026-10-07T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 1
+    },
+    {
+     "period": "2026-10-10T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 1
+    },
+    {
+     "period": "2026-10-13T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 3
+    },
+    {
+     "period": "2026-10-14T00:00:00+00:00",
+     "bucket_id": "39e5377d-ece1-4b97-a4d5-45e26bebb7df",
+     "count": 1
+    },
+    {
+     "period": "2026-10-14T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 1
+    },
+    {
+     "period": "2026-10-15T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 1
+    },
+    {
+     "period": "2026-10-16T00:00:00+00:00",
+     "bucket_id": "39e5377d-ece1-4b97-a4d5-45e26bebb7df",
+     "count": 2
+    },
+    {
+     "period": "2026-10-16T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 2
+    },
+    {
+     "period": "2026-10-17T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 1
+    },
+    {
+     "period": "2026-10-18T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 1
+    },
+    {
+     "period": "2026-10-20T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 2
+    },
+    {
+     "period": "2026-10-21T00:00:00+00:00",
+     "bucket_id": "39e5377d-ece1-4b97-a4d5-45e26bebb7df",
+     "count": 6
+    },
+    {
+     "period": "2026-10-21T00:00:00+00:00",
+     "bucket_id": "44cb1c66-8b35-40d9-acc7-7c0f85d254f6",
+     "count": 6
+    },
+    {
+     "period": "2026-10-21T00:00:00+00:00",
+     "bucket_id": "70a50c2a-41d3-4985-b6cd-0d28983ec969",
+     "count": 1
+    },
+    {
+     "period": "2026-10-21T00:00:00+00:00",
+     "bucket_id": "ab30d0ac-c65d-4676-9b53-dae6a4ebe9b3",
+     "count": 1
+    }
+   ]
+  }
+ ]
+}

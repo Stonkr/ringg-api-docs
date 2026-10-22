@@ -1,0 +1,487 @@
+{
+ "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+ "calls": [
+  {
+   "method": "GET",
+   "path": "/auth/me",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "id": "79ef102c-b506-48b2-89fb-e51e6a4e2de7",
+    "email": "priya@acme-lending.example",
+    "full_name": "Priya Sharma",
+    "is_active": true,
+    "created_at": "2026-10-22T08:21:52.304650Z",
+    "last_login_at": null,
+    "role": "owner",
+    "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+    "show_ai_scores": true,
+    "require_all_parameters": false
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/workspaces/mine",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "workspace_id": "a6afedbb-1b5c-4711-9c67-2e1753fd7c50",
+     "name": "Acme Lending",
+     "role": "owner",
+     "is_current": true
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/analytics/top-interactions",
+   "query": "limit=10&order=best",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "id": "cf6b4eb4-9742-4b36-95c8-7dd717239585",
+     "title": "Restructuring request · AL-20491",
+     "source_type": "call",
+     "duration_seconds": 62.4,
+     "created_at": "2026-10-16T12:31:58.584364+00:00",
+     "agent_name": "Neha Kapoor",
+     "overall_score": 100
+    },
+    {
+     "id": "63edd711-40bf-4c6a-9d97-12d259c17a99",
+     "title": "Missed EMI follow-up · AL-20497",
+     "source_type": "call",
+     "duration_seconds": 65.4,
+     "created_at": "2026-10-13T17:15:30.751620+00:00",
+     "agent_name": "Neha Kapoor",
+     "overall_score": 100
+    },
+    {
+     "id": "120b07f5-3eb7-492b-8bfa-5cce2c11c074",
+     "title": "Missed EMI follow-up · AL-20481",
+     "source_type": "call",
+     "duration_seconds": 64.7,
+     "created_at": "2026-10-18T14:08:39.030595+00:00",
+     "agent_name": "Neha Kapoor",
+     "overall_score": 100
+    },
+    {
+     "id": "64f43ab2-6e83-4cc5-962f-a01ab8642eab",
+     "title": "Missed EMI follow-up · AL-20486",
+     "source_type": "call",
+     "duration_seconds": 64.2,
+     "created_at": "2026-10-17T13:43:21.271010+00:00",
+     "agent_name": "Neha Kapoor",
+     "overall_score": 100
+    },
+    {
+     "id": "135f0bc7-6c4e-4442-a931-c5eeebd37a6a",
+     "title": "Payment promise check · AL-20425",
+     "source_type": "call",
+     "duration_seconds": 67.3,
+     "created_at": "2026-10-21T10:38:46.621499+00:00",
+     "agent_name": "Rahul Verma",
+     "overall_score": 100
+    },
+    {
+     "id": "3d4277da-91d2-46f0-b9f5-eb90d4bb1218",
+     "title": "Missed EMI follow-up · AL-20474",
+     "source_type": "call",
+     "duration_seconds": 64.6,
+     "created_at": "2026-10-21T08:18:32.639147+00:00",
+     "agent_name": "Neha Kapoor",
+     "overall_score": 100
+    },
+    {
+     "id": "f6267cbe-e27a-40ba-a3cf-da66d09e4b6e",
+     "title": "Missed EMI follow-up · AL-20412",
+     "source_type": "call",
+     "duration_seconds": 64.1,
+     "created_at": "2026-10-21T17:09:59.635385+00:00",
+     "agent_name": "Rahul Verma",
+     "overall_score": 100
+    },
+    {
+     "id": "f85efc34-d405-439b-adca-2c1b29252697",
+     "title": "Missed EMI follow-up · AL-20451",
+     "source_type": "call",
+     "duration_seconds": 65.1,
+     "created_at": "2026-09-28T12:42:52.087684+00:00",
+     "agent_name": "Rahul Verma",
+     "overall_score": 100
+    },
+    {
+     "id": "aa64fc35-9157-455b-a2aa-dc921346b325",
+     "title": "Restructuring request · AL-20465",
+     "source_type": "call",
+     "duration_seconds": 64.2,
+     "created_at": "2026-10-21T12:01:04.930859+00:00",
+     "agent_name": "Neha Kapoor",
+     "overall_score": 100
+    },
+    {
+     "id": "659b2d96-d76a-4089-8b19-1faad7641635",
+     "title": "EMI reminder · AL-20510",
+     "source_type": "call",
+     "duration_seconds": 63.2,
+     "created_at": "2026-10-03T22:06:18.978281+00:00",
+     "agent_name": "Neha Kapoor",
+     "overall_score": 100
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/analytics/top-interactions",
+   "query": "limit=10&order=worst",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "id": "18a4fa3e-7916-492d-89cc-89a740b60e07",
+     "title": "Restructuring request · AL-20742",
+     "source_type": "call",
+     "duration_seconds": 49.3,
+     "created_at": "2026-10-21T00:40:42.834094+00:00",
+     "agent_name": "Meera Iyer",
+     "overall_score": 0
+    },
+    {
+     "id": "a96bab92-1b37-4de5-abd2-64646d02b9b5",
+     "title": "Missed EMI follow-up · AL-20453",
+     "source_type": "call",
+     "duration_seconds": 52.8,
+     "created_at": "2026-09-24T11:22:28.628047+00:00",
+     "agent_name": "Rahul Verma",
+     "overall_score": 65
+    },
+    {
+     "id": "0ebbe05e-82eb-44ee-bbc9-80fc3fc7e097",
+     "title": "Missed EMI follow-up · AL-20674",
+     "source_type": "call",
+     "duration_seconds": 56.8,
+     "created_at": "2026-10-21T07:25:19.015063+00:00",
+     "agent_name": "Vikram Rao",
+     "overall_score": 70
+    },
+    {
+     "id": "883cef82-b4cc-45b5-8bcd-a4322d1c8eed",
+     "title": "Missed EMI follow-up · AL-20546",
+     "source_type": "call",
+     "duration_seconds": 51.6,
+     "created_at": "2026-10-16T18:54:46.970714+00:00",
+     "agent_name": "Arjun Mehta",
+     "overall_score": 74
+    },
+    {
+     "id": "fa322373-6c4a-4d51-ab89-b82e59a91560",
+     "title": "Missed EMI follow-up · AL-20682",
+     "source_type": "call",
+     "duration_seconds": 60.4,
+     "created_at": "2026-10-21T02:53:29.420113+00:00",
+     "agent_name": "Vikram Rao",
+     "overall_score": 74
+    },
+    {
+     "id": "2b098f8f-2a56-4fa4-ac72-da4d4f73abbc",
+     "title": "EMI reminder · AL-20435",
+     "source_type": "call",
+     "duration_seconds": 58.9,
+     "created_at": "2026-10-14T17:37:26.722037+00:00",
+     "agent_name": "Rahul Verma",
+     "overall_score": 75
+    },
+    {
+     "id": "0c5e3d7a-5f94-43ab-acde-4eff6d236e1b",
+     "title": "Restructuring request · AL-20417",
+     "source_type": "call",
+     "duration_seconds": 58.7,
+     "created_at": "2026-10-21T18:35:56.072600+00:00",
+     "agent_name": "Rahul Verma",
+     "overall_score": 81
+    },
+    {
+     "id": "cb410913-0af0-4bc3-b7ab-b028800948a1",
+     "title": "EMI reminder · AL-20434",
+     "source_type": "call",
+     "duration_seconds": 59.5,
+     "created_at": "2026-10-15T16:39:54.670240+00:00",
+     "agent_name": "Rahul Verma",
+     "overall_score": 82
+    },
+    {
+     "id": "86cb9192-8b37-4765-be3c-5b9dec220c55",
+     "title": "Missed EMI follow-up · AL-20558",
+     "source_type": "call",
+     "duration_seconds": 62.4,
+     "created_at": "2026-10-02T10:02:58.829255+00:00",
+     "agent_name": "Arjun Mehta",
+     "overall_score": 85
+    },
+    {
+     "id": "cf722593-8f05-44ae-a393-4011b5d78a80",
+     "title": "Missed EMI follow-up · AL-20528",
+     "source_type": "call",
+     "duration_seconds": 60.3,
+     "created_at": "2026-10-21T17:35:55.491222+00:00",
+     "agent_name": "Arjun Mehta",
+     "overall_score": 85
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/analytics/top-agents",
+   "query": "limit=10&order=worst",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "agent_id": "f4e249cf-6a6e-4a1b-9910-b992e5adc848",
+     "agent_name": "Vikram Rao",
+     "call_count": 6,
+     "email_count": 0,
+     "meeting_count": 0,
+     "avg_score": 83.66666666666667
+    },
+    {
+     "agent_id": "601856fb-03a7-4062-be9b-d6014a26e16a",
+     "agent_name": "Meera Iyer",
+     "call_count": 8,
+     "email_count": 0,
+     "meeting_count": 0,
+     "avg_score": 84.125
+    },
+    {
+     "agent_id": "9d3c52d9-2fca-48f4-8fc1-77b831d45cd0",
+     "agent_name": "Rahul Verma",
+     "call_count": 10,
+     "email_count": 0,
+     "meeting_count": 0,
+     "avg_score": 86.9
+    },
+    {
+     "agent_id": "09dddf68-5c1b-47fa-9c80-e44b8cbafa02",
+     "agent_name": "Arjun Mehta",
+     "call_count": 6,
+     "email_count": 0,
+     "meeting_count": 0,
+     "avg_score": 87.33333333333333
+    },
+    {
+     "agent_id": "584859fe-73ea-4447-b55a-b4fb1e539ad3",
+     "agent_name": "Sana Khan",
+     "call_count": 7,
+     "email_count": 0,
+     "meeting_count": 0,
+     "avg_score": 94.28571428571429
+    },
+    {
+     "agent_id": "07d32e85-cb6d-4317-93a5-c9d46f33c05f",
+     "agent_name": "Neha Kapoor",
+     "call_count": 11,
+     "email_count": 0,
+     "meeting_count": 0,
+     "avg_score": 98.18181818181819
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/analytics/top-agents",
+   "query": "limit=10&order=best",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "agent_id": "07d32e85-cb6d-4317-93a5-c9d46f33c05f",
+     "agent_name": "Neha Kapoor",
+     "call_count": 11,
+     "email_count": 0,
+     "meeting_count": 0,
+     "avg_score": 98.18181818181819
+    },
+    {
+     "agent_id": "584859fe-73ea-4447-b55a-b4fb1e539ad3",
+     "agent_name": "Sana Khan",
+     "call_count": 7,
+     "email_count": 0,
+     "meeting_count": 0,
+     "avg_score": 94.28571428571429
+    },
+    {
+     "agent_id": "09dddf68-5c1b-47fa-9c80-e44b8cbafa02",
+     "agent_name": "Arjun Mehta",
+     "call_count": 6,
+     "email_count": 0,
+     "meeting_count": 0,
+     "avg_score": 87.33333333333333
+    },
+    {
+     "agent_id": "9d3c52d9-2fca-48f4-8fc1-77b831d45cd0",
+     "agent_name": "Rahul Verma",
+     "call_count": 10,
+     "email_count": 0,
+     "meeting_count": 0,
+     "avg_score": 86.9
+    },
+    {
+     "agent_id": "601856fb-03a7-4062-be9b-d6014a26e16a",
+     "agent_name": "Meera Iyer",
+     "call_count": 8,
+     "email_count": 0,
+     "meeting_count": 0,
+     "avg_score": 84.125
+    },
+    {
+     "agent_id": "f4e249cf-6a6e-4a1b-9910-b992e5adc848",
+     "agent_name": "Vikram Rao",
+     "call_count": 6,
+     "email_count": 0,
+     "meeting_count": 0,
+     "avg_score": 83.66666666666667
+    }
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/analytics/dashboard",
+   "query": "",
+   "phase": 0,
+   "status": 200,
+   "body": {
+    "total_calls": 48,
+    "analyzed_calls": 48,
+    "failed_calls": 0,
+    "total_emails": 0,
+    "analyzed_emails": 0,
+    "total_meetings": 0,
+    "analyzed_meetings": 0,
+    "avg_call_score": 89.75,
+    "avg_email_score": null,
+    "avg_meeting_score": null,
+    "high_score_count": 42,
+    "low_score_count": 1,
+    "fatal_classifications": 1
+   }
+  },
+  {
+   "method": "GET",
+   "path": "/analytics/score-trend",
+   "query": "bucket=day",
+   "phase": 0,
+   "status": 200,
+   "body": [
+    {
+     "period": "2026-09-22T00:00:00+00:00",
+     "avg_score": 100,
+     "call_count": 1
+    },
+    {
+     "period": "2026-09-23T00:00:00+00:00",
+     "avg_score": 95,
+     "call_count": 2
+    },
+    {
+     "period": "2026-09-24T00:00:00+00:00",
+     "avg_score": 65,
+     "call_count": 1
+    },
+    {
+     "period": "2026-09-26T00:00:00+00:00",
+     "avg_score": 95,
+     "call_count": 2
+    },
+    {
+     "period": "2026-09-27T00:00:00+00:00",
+     "avg_score": 100,
+     "call_count": 1
+    },
+    {
+     "period": "2026-09-28T00:00:00+00:00",
+     "avg_score": 95,
+     "call_count": 2
+    },
+    {
+     "period": "2026-09-29T00:00:00+00:00",
+     "avg_score": 98,
+     "call_count": 1
+    },
+    {
+     "period": "2026-09-30T00:00:00+00:00",
+     "avg_score": 88,
+     "call_count": 2
+    },
+    {
+     "period": "2026-10-02T00:00:00+00:00",
+     "avg_score": 92.5,
+     "call_count": 2
+    },
+    {
+     "period": "2026-10-03T00:00:00+00:00",
+     "avg_score": 100,
+     "call_count": 1
+    },
+    {
+     "period": "2026-10-05T00:00:00+00:00",
+     "avg_score": 85,
+     "call_count": 1
+    },
+    {
+     "period": "2026-10-07T00:00:00+00:00",
+     "avg_score": 90,
+     "call_count": 1
+    },
+    {
+     "period": "2026-10-10T00:00:00+00:00",
+     "avg_score": 90,
+     "call_count": 1
+    },
+    {
+     "period": "2026-10-13T00:00:00+00:00",
+     "avg_score": 98,
+     "call_count": 3
+    },
+    {
+     "period": "2026-10-14T00:00:00+00:00",
+     "avg_score": 84,
+     "call_count": 2
+    },
+    {
+     "period": "2026-10-15T00:00:00+00:00",
+     "avg_score": 82,
+     "call_count": 1
+    },
+    {
+     "period": "2026-10-16T00:00:00+00:00",
+     "avg_score": 91,
+     "call_count": 4
+    },
+    {
+     "period": "2026-10-17T00:00:00+00:00",
+     "avg_score": 100,
+     "call_count": 1
+    },
+    {
+     "period": "2026-10-18T00:00:00+00:00",
+     "avg_score": 100,
+     "call_count": 1
+    },
+    {
+     "period": "2026-10-20T00:00:00+00:00",
+     "avg_score": 93.66666666666667,
+     "call_count": 3
+    },
+    {
+     "period": "2026-10-21T00:00:00+00:00",
+     "avg_score": 84,
+     "call_count": 15
+    }
+   ]
+  }
+ ]
+}
