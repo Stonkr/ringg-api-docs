@@ -289,6 +289,14 @@
               "analytics-platform/set-up/metrics",
               "analytics-platform/set-up/notifications"
             ]
+          },
+          {
+            "group": "Integrations",
+            "icon": "plug",
+            "pages": [
+              "get-started/integrations/tatatele-setup",
+              "get-started/integrations/sip-onboarding"
+            ]
           }
         ]
       },
