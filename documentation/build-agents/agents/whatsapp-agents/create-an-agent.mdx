@@ -101,7 +101,7 @@ A WhatsApp conversation is one chat. The customer's first message opens it, and 
 | The customer goes quiet | After the idle timeout (3 hours by default) with no customer message, the chat ends. Their next message opens a new chat. |
 | It reaches the maximum length | After the maximum length (24 hours by default), however active, the next message opens a new chat. |
 
-A new chat starts without the previous chat's messages. Closing the chat is what runs post-call tools and analysis and fires `chat_completed`, so when a customer stops replying, those results arrive after the idle timeout.
+A new chat starts without the previous chat's messages, with one exception: a customer replying within a day to a chat your business [started with a template](/documentation/deploy/whatsapp/start-a-conversation#what-happens-next) continues that conversation, with its custom variables and recent messages. Closing the chat is what runs post-call tools and analysis and fires `chat_completed`, so when a customer stops replying, those results arrive after the idle timeout.
 
 ### Set the session timeouts
 

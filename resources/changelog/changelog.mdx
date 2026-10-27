@@ -7,6 +7,14 @@ icon: "list"
 
 Subscribe with the RSS button above, or filter by tag on the right.
 
+<Update label="27 October 2026" description="Start WhatsApp conversations" tags={["WhatsApp", "API"]}>
+  - [Start a WhatsApp conversation](/documentation/deploy/whatsapp/start-a-conversation) from the dashboard: **Start conversation** on a WhatsApp agent sends an approved template, and the agent takes over when the customer replies.
+  - New API `POST /chat/waba/outbound`: name the template and give its values, and Ringg builds the message, from the agent's own number. It takes an `Idempotency-Key`, and refusals carry a readable `message` and a `code`.
+  - A template for a customer who already has a chat open with the agent now goes into that chat instead of being refused, and the agent knows what the template said.
+  - A customer replying within a day after an outbound chat closed continues that conversation.
+  - [Logs](/documentation/monitor/logs#whatsapp-chats) marks WhatsApp chats **Inbound** or **Outbound**, filters by direction, and links a continued chat to the one it continues.
+</Update>
+
 <Update label="22 October 2026" description="Ringg Analytics" tags={["Ringg Analytics"]}>
   A new **Analytics platform** tab documents [Ringg Analytics](/analytics-platform/introduction), the call quality platform at [analytics.ringg.ai](https://analytics.ringg.ai), separate from the Ringg AI dashboard:
 
