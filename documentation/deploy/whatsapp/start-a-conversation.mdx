@@ -215,7 +215,7 @@ In the dashboard, **Agent variables** lists the custom variables declared on the
 2. When the customer replies, including by tapping a quick-reply button on the template, the agent answers in the same chat with the template's text in context.
 3. If WhatsApp later reports the template undelivered and the customer hasn't replied, the chat is marked **Failed**.
 4. The chat then follows the agent's [session timeouts](/documentation/build-agents/agents/whatsapp-agents/create-an-agent#set-the-session-timeouts) and closes like any other chat, firing the [events](/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events#whatsapp-chat-events) you subscribed to.
-5. If the customer replies after the chat closed, within a day, the new chat continues the conversation: it keeps the same agent variables, the agent sees the earlier messages, and it is also marked **Outbound** and linked to the chat it continues.
+5. If the customer replies after the chat closed, within a day, the new chat continues the conversation: it keeps the same agent variables, the agent sees the earlier messages, and it is marked **Inbound**, because the customer started it, and linked to the outbound chat it continues.
 
 ## Chat platform endpoint
 
