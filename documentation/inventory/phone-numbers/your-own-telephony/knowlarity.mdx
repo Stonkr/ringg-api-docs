@@ -1,0 +1,149 @@
+---
+title: "Knowlarity"
+sidebarTitle: "Knowlarity"
+description: "Connect Knowlarity to Ringg AI over Knowlarity Voice Streaming: add your account in Ringg, point an IVR's Stream node at Ringg, and place outbound agent calls through Knowlarity's OTP-call API."
+"og:title": "Connect Knowlarity to Ringg AI"
+---
+
+## Overview
+
+Knowlarity connects to Ringg over **Voice Streaming**: an IVR whose only step is a **Stream** node opens a WebSocket to Ringg that carries the call's audio both ways, and an HTTP callback reports each call's status. Knowlarity handles the phone network; Ringg runs the AI agent on the stream.
+
+| Direction | How the call starts |
+| - | - |
+| **Outbound** | Ringg asks Knowlarity's OTP-call API to dial the customer. When the customer answers, Knowlarity runs your IVR, whose Stream node opens the WebSocket to Ringg. |
+| **Inbound** | A customer calls your Knowlarity number. The IVR's Stream node opens the WebSocket to Ringg. |
+
+You configure two things in Knowlarity:
+
+| Purpose | Where you set it |
+| - | - |
+| **Stream URL** | The **Stream** node of the IVR Ringg dials through |
+| **Status callback** | Your Knowlarity account's call-status callback (one URL for the account) |
+
+<Note>
+  Ringg records every Knowlarity call itself, so recordings, transcripts and call analysis appear in Ringg as for any other provider.
+</Note>
+
+## Prerequisites
+
+* An active Knowlarity account with API access
+* Your Knowlarity **API key** and **SR API key** (SuperReceptionist)
+* An **IVR** for Ringg whose only step is a Stream node (Step 2), and its **IVR ID**
+* At least one Knowlarity virtual number (**k_number**)
+* A Ringg workspace with admin access, and an assistant ready to take calls
+
+## Step 1: Add Knowlarity as a telephony provider in Ringg
+
+<Steps>
+  <Step title="Open the Knowlarity account form">
+    Go to **Numbers → Add number** and select **Knowlarity**. With no Knowlarity account yet, the form opens on its own; otherwise open **Configure provider** (the gear) and select **Add**.
+  </Step>
+
+  <Step title="Enter credentials">
+    All fields are required. Leading and trailing spaces are removed when you save.
+
+    | Field | Value |
+    | - | - |
+    | **Name** | Your label, for example `Knowlarity Bengaluru` |
+    | **API Key** | Your Knowlarity developer API key |
+    | **SR API Key** | Your SuperReceptionist (SR) API key |
+    | **IVR ID** | The ID of the IVR from Step 2 |
+
+    The IVR must belong to the same Knowlarity account as the keys. Knowlarity rejects an IVR from another account.
+  </Step>
+
+  <Step title="Save">
+    Knowlarity has no credential-test endpoint, so the account is saved without a live check. The first test call (Step 4) confirms the credentials work.
+  </Step>
+
+  <Step title="Add your numbers">
+    After saving, **Add custom** opens. Enter each Knowlarity virtual number (k_number) with its country code, for example `+918049985103`.
+
+    Knowlarity numbers are added manually: there is no **Buy new** or **Import** option for Knowlarity.
+  </Step>
+
+  <Step title="Assign the numbers">
+    Assign each number to an assistant as the caller ID for outbound calls and campaigns.
+  </Step>
+</Steps>
+
+## Step 2: Stream URL
+
+In Knowlarity, create an IVR for Ringg whose **only** step is a **Stream** node, and set its stream URL to:
+
+```text theme={null}
+wss://<ringg-host>/pc/v1/knowlarity/ws
+```
+
+The Ringg team shares the exact `<ringg-host>`; use the same host in the status callback (Step 3). The URL takes no query parameters: Ringg matches each stream to its call from the first message Knowlarity sends.
+
+<Warning>
+  Assistants that dial through Knowlarity must run on Ringg's default region. The Stream node's URL is fixed, so an assistant pinned to another region cannot be reached from it. Ask the Ringg team if you are unsure which region your assistant uses.
+</Warning>
+
+## Step 3: Status callback
+
+Set your Knowlarity account's call-status callback to:
+
+```text theme={null}
+https://<ringg-host>/pc/v1/knowlarity/call_status
+```
+
+Knowlarity sends one **POST** with a JSON body per call. The callback is set once for the whole account, so it also receives callbacks for your other IVRs; Ringg acts only on outbound calls it placed and ignores the rest.
+
+This callback is what reports calls that never reach the assistant. **Without it, unanswered and busy calls stay in progress in Ringg.**
+
+| Knowlarity status (`customer_status`, else `call_status`) | Reported in Ringg as |
+| - | - |
+| Busy | Busy |
+| No Answer, Missed, Not Connected, Rejected | No answer |
+| Failed, Cancelled | Failed |
+| Connected, when the stream never opened | Failed (the call never reached the assistant) |
+| Connected (normal) | Handled by the assistant's own call reporting |
+
+<Note>
+  If an existing callback URL is already set on your Knowlarity account for another system, ask Knowlarity before replacing it: the callback is one URL per account.
+</Note>
+
+## Step 4: Place a test call
+
+Place an outbound call from the assistant to your own phone, from **Test call** or the outbound call API. Your phone rings from the k_number; when you answer, the assistant speaks.
+
+### Outbound calls
+
+Ringg dials through Knowlarity's OTP-call API with your IVR ID, the k_number as both `k_number` and `caller_id` (the number the customer sees), and the customer's number, all in `+91…` format.
+
+Per-lead data works as with any other provider: variables you pass in the API call (`custom_args_values`) or as columns in a campaign file are available to the assistant when the customer answers. Ringg does not send them to Knowlarity.
+
+| If Knowlarity refuses the dial | The call in Ringg |
+| - | - |
+| The number is on the DND list (`Call Failed!`) | Failed, with Knowlarity's message (customer digits masked) |
+| The IVR ID belongs to another account | Failed, with Knowlarity's message |
+
+## Call features
+
+| Feature | Supported |
+| - | - |
+| Outbound and inbound calls | Yes |
+| Recording, transcript, analysis | Yes, recorded by Ringg |
+| Call transfer | Yes, with the **Call Transfer** tool; the Ringg team configures it for you |
+| Hangup | Ringg ends the call by closing the WebSocket; Knowlarity closes it when the caller hangs up |
+
+## URL reference
+
+| Purpose | Method | URL |
+| - | - | - |
+| Stream URL (IVR Stream node) | WebSocket | `wss://<ringg-host>/pc/v1/knowlarity/ws` |
+| Status callback (account) | POST | `https://<ringg-host>/pc/v1/knowlarity/call_status` |
+
+## Troubleshooting
+
+| Symptom | Likely cause |
+| - | - |
+| Saving the account fails with `Missing required fields` or `Empty required fields` | One of API Key, SR API Key or IVR ID is blank. |
+| Outbound call fails with `ivr id doesn't belong to user` | The IVR ID is from a different Knowlarity account than the keys. |
+| Outbound call fails with `Call Failed!` | The customer's number is on the DND list. |
+| The phone rings but the assistant never speaks | The IVR has a step before the Stream node, the stream URL is wrong, or the assistant runs in a non-default region. |
+| Unanswered or busy calls stay in progress | The status callback is not set on the Knowlarity account. |
+| The assistant does not know the customer's details | The variables were not passed in `custom_args_values` or the campaign file. |
