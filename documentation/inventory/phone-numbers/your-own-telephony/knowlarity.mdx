@@ -78,6 +78,14 @@ wss://<ringg-host>/pc/v1/knowlarity/ws
 
 The Ringg team shares the exact `<ringg-host>`; use the same host in the status callback (Step 3). The URL takes no query parameters: Ringg matches each stream to its call from the first message Knowlarity sends.
 
+Ask Knowlarity to add one custom parameter to this IVR's stream, so its first message carries the Ringg call ID:
+
+| Key | Value |
+| - | - |
+| `callback_call_id` | `app_params1` |
+
+Ringg sends its call ID as `app_params1` on every outbound dial. Without this parameter, the stream is not matched to its call and the assistant does not answer. Add it only on the IVR Ringg dials through; your inbound IVRs need no change.
+
 <Warning>
   Assistants that dial through Knowlarity must run on Ringg's default region. The Stream node's URL is fixed, so an assistant pinned to another region cannot be reached from it. Ask the Ringg team if you are unsure which region your assistant uses.
 </Warning>
@@ -99,8 +107,11 @@ This callback is what reports calls that never reach the assistant. **Without it
 | Busy | Busy |
 | No Answer, Missed, Not Connected, Rejected | No answer |
 | Failed, Cancelled | Failed |
-| Connected, when the stream never opened | Failed (the call never reached the assistant) |
+| Connected, with no customer call duration, and the stream never opened | No answer (Knowlarity reports unanswered OTP calls as Connected) |
+| Connected, with a customer call duration, and the stream never opened | Failed (the customer answered but never reached the assistant) |
 | Connected (normal) | Handled by the assistant's own call reporting |
+
+A status for a call the assistant already handled never overwrites that call's result.
 
 <Note>
   If an existing callback URL is already set on your Knowlarity account for another system, ask Knowlarity before replacing it: the callback is one URL per account.
@@ -113,6 +124,8 @@ Place an outbound call from the assistant to your own phone, from **Test call** 
 ### Outbound calls
 
 Ringg dials through Knowlarity's OTP-call API with your IVR ID, the k_number as both `k_number` and `caller_id` (the number the customer sees), and the customer's number, all in `+91…` format.
+
+Ringg also sends its own call ID as `app_params1` (appended to `customer_number`), which Knowlarity echoes back on the stream as `callback_call_id` (Step 2).
 
 Per-lead data works as with any other provider: variables you pass in the API call (`custom_args_values`) or as columns in a campaign file are available to the assistant when the customer answers. Ringg does not send them to Knowlarity.
 
@@ -144,6 +157,6 @@ Per-lead data works as with any other provider: variables you pass in the API ca
 | Saving the account fails with `Missing required fields` or `Empty required fields` | One of API Key, SR API Key or IVR ID is blank. |
 | Outbound call fails with `ivr id doesn't belong to user` | The IVR ID is from a different Knowlarity account than the keys. |
 | Outbound call fails with `Call Failed!` | The customer's number is on the DND list. |
-| The phone rings but the assistant never speaks | The IVR has a step before the Stream node, the stream URL is wrong, or the assistant runs in a non-default region. |
+| The phone rings but the assistant never speaks | The IVR's stream has no `callback_call_id` = `app_params1` parameter (Step 2), the IVR has a step before the Stream node, the stream URL is wrong, or the assistant runs in a non-default region. |
 | Unanswered or busy calls stay in progress | The status callback is not set on the Knowlarity account. |
 | The assistant does not know the customer's details | The variables were not passed in `custom_args_values` or the campaign file. |
