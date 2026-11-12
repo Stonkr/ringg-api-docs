@@ -4931,7 +4931,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "example": "550e8400-e29b-41d4-a716-446655440000"
+              "example": "00000000-0000-4000-8000-0000000000c4"
             }
           },
           {
@@ -4974,12 +4974,28 @@
                       "properties": {
                         "id": {
                           "type": "string",
-                          "description": "The unique identifier of the call",
-                          "example": "550e8400-e29b-41d4-a716-446655440000"
+                          "description": "The call's ID.",
+                          "example": "00000000-0000-4000-8000-0000000000c4"
+                        },
+                        "call_sid": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "The telephony provider's call ID. `null` until the call is dialled.",
+                          "example": "00000000-0000-4000-8000-0000000000c2"
+                        },
+                        "workspace_id": {
+                          "type": "string",
+                          "description": "Your workspace ID.",
+                          "example": "00000000-0000-4000-8000-0000000000c3"
+                        },
+                        "bulk_list_id": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "The campaign list the call belongs to; `null` for single calls."
                         },
                         "call_direction": {
                           "type": "string",
-                          "description": "The direction of the call",
+                          "description": "The direction of the call.",
                           "enum": [
                             "inbound",
                             "outbound",
@@ -5000,6 +5016,11 @@
                             "cancelled",
                             "forwarded"
                           ],
+                          "example": "completed"
+                        },
+                        "status": {
+                          "type": "string",
+                          "description": "Same value as `call_status`.",
                           "example": "completed"
                         },
                         "call_sub_status": {
@@ -5038,40 +5059,102 @@
                         },
                         "from_number": {
                           "type": "string",
-                          "description": "The phone number the call was made from",
-                          "example": "+1234567890"
+                          "description": "The number that placed the call.",
+                          "example": "+919876540111"
                         },
                         "to_number": {
                           "type": "string",
-                          "description": "The phone number the call was made to",
-                          "example": "+14155550123"
+                          "description": "The number that received the call.",
+                          "example": "+919876543210"
                         },
                         "callee_name": {
                           "type": "string",
-                          "description": "The name of the person called",
-                          "example": "John Doe"
-                        },
-                        "agent_id": {
-                          "type": "string",
-                          "description": "The ID of the agent that handled the call",
-                          "example": "agent-123-456"
+                          "description": "The callee's name, as sent when starting the call. Empty when none was sent.",
+                          "example": "Priya"
                         },
                         "initiation_time": {
                           "type": "string",
+                          "description": "ISO 8601 time the call was started, UTC.",
                           "format": "date-time",
-                          "description": "When the call was initiated",
-                          "example": "2024-01-15T14:30:00Z"
+                          "example": "2026-08-04T12:25:26.942668+00:00"
+                        },
+                        "call_duration": {
+                          "type": "number",
+                          "nullable": true,
+                          "description": "Seconds; `null` if the call never connected.",
+                          "example": 96.4
+                        },
+                        "agent_id": {
+                          "type": "string",
+                          "description": "The agent that handled the call.",
+                          "example": "00000000-0000-4000-8000-0000000000a1"
+                        },
+                        "agent_name": {
+                          "type": "string",
+                          "description": "The agent's display name.",
+                          "example": "EMI Reminder"
+                        },
+                        "version_id": {
+                          "type": "string",
+                          "description": "The agent version used.",
+                          "example": "00000000-0000-4000-8000-0000000000c1"
+                        },
+                        "version_slug": {
+                          "type": "string",
+                          "description": "The agent version's slug.",
+                          "example": "v1"
+                        },
+                        "version_description": {
+                          "type": "string",
+                          "nullable": true,
+                          "description": "Description of the agent version.",
+                          "example": "Initial version"
+                        },
+                        "call_cost": {
+                          "type": "number",
+                          "nullable": true,
+                          "description": "Cost of the call in credits; `null` until calculated.",
+                          "example": 6.0
+                        },
+                        "overall_latency_seconds": {
+                          "type": "number",
+                          "nullable": true,
+                          "description": "Total response latency in seconds (sum of the median latencies across metrics).",
+                          "example": 0.655
+                        },
+                        "first_utterance_seconds": {
+                          "type": "number",
+                          "nullable": true,
+                          "description": "Time to the agent's first spoken response, in seconds.",
+                          "example": 0.365
+                        },
+                        "retry_count": {
+                          "type": "integer",
+                          "description": "Retries so far; `0` on the first attempt.",
+                          "example": 0
+                        },
+                        "custom_args_values": {
+                          "type": "object",
+                          "description": "The variables you sent when starting the call.",
+                          "additionalProperties": {
+                            "type": "string"
+                          },
+                          "example": {
+                            "callee_name": "Priya",
+                            "emi_amount": "4500",
+                            "due_date": "12 August"
+                          }
                         },
                         "recording_url": {
                           "type": "string",
                           "description": "URL of the call recording. The link may expire; call this endpoint again for a fresh link, and download the file if you need to keep it.",
-                          "example": "https://example.com/recordings/call-123.mp3"
+                          "example": "https://storage.googleapis.com/example-bucket/00000000-0000-4000-8000-0000000000c4.mp3?X-Goog-Expires=86399&X-Goog-Signature=..."
                         },
                         "transcription_url": {
                           "type": "string",
                           "nullable": true,
-                          "description": "The transcript as a JSON-encoded string, not an array: parse it to get one object per turn, keyed `bot` or `user`. `null` when there is no transcript, and `\"[]\"` for a call that never connected.",
-                          "example": "[{\"bot\": \"Hi Priya, this is Asha from Acme Lending. Is this a good time to talk about your EMI?\"}, {\"user\": \"Yes, go ahead.\"}]"
+                          "description": "The transcript as a JSON-encoded string, not an array: parse it to get one object per turn, keyed `bot` or `user`. `null` when there is no transcript, and `\"[]\"` for a call that never connected. Each turn also has `message_id`, `timestamp` (ISO 8601, UTC) and `audio_offset_ms` (milliseconds from the start of the recording); agent turns add `llm_latency_ms` and `llm_calls_ms`.",
+                          "example": "[{\"bot\": \"Hi Priya, this is Asha from Acme Lending. Is this a good time to talk about your EMI?\", \"message_id\": \"00000000-0000-4000-8000-0000000000e1\", \"timestamp\": \"2026-08-04T12:25:41.120+00:00\", \"audio_offset_ms\": 80}, {\"user\": \"Yes, go ahead.\", \"message_id\": \"00000000-0000-4000-8000-0000000000e2\", \"timestamp\": \"2026-08-04T12:25:46.530+00:00\", \"audio_offset_ms\": 5410}, {\"bot\": \"Your EMI of 4,500 rupees is due on 12 August. Will you be able to pay by then?\", \"message_id\": \"00000000-0000-4000-8000-0000000000e3\", \"timestamp\": \"2026-08-04T12:25:47.210+00:00\", \"audio_offset_ms\": 7020, \"llm_latency_ms\": 548.3, \"llm_calls_ms\": [548.3]}]"
                         },
                         "platform_analysis": {
                           "type": "object",
@@ -5152,17 +5235,35 @@
                     "value": {
                       "status": "success",
                       "data": {
-                        "id": "550e8400-e29b-41d4-a716-446655440000",
+                        "id": "00000000-0000-4000-8000-0000000000c4",
+                        "call_sid": "00000000-0000-4000-8000-0000000000c2",
+                        "workspace_id": "00000000-0000-4000-8000-0000000000c3",
+                        "bulk_list_id": null,
                         "call_direction": "outbound",
                         "call_status": "completed",
+                        "status": "completed",
                         "call_sub_status": "ACCEPTED",
-                        "from_number": "+1234567890",
-                        "to_number": "+14155550123",
-                        "callee_name": "John Doe",
-                        "agent_id": "agent-123-456",
-                        "initiation_time": "2024-01-15T14:30:00Z",
-                        "recording_url": "https://example.com/recordings/call-123.mp3",
-                        "transcription_url": "[{\"bot\": \"Hi Priya, this is Asha from Acme Lending. Is this a good time to talk about your EMI?\"}, {\"user\": \"Yes, go ahead.\"}]"
+                        "from_number": "+919876540111",
+                        "to_number": "+919876543210",
+                        "callee_name": "Priya",
+                        "initiation_time": "2026-08-04T12:25:26.942668+00:00",
+                        "call_duration": 96.4,
+                        "agent_id": "00000000-0000-4000-8000-0000000000a1",
+                        "agent_name": "EMI Reminder",
+                        "version_id": "00000000-0000-4000-8000-0000000000c1",
+                        "version_slug": "v1",
+                        "version_description": "Initial version",
+                        "call_cost": 6.0,
+                        "overall_latency_seconds": 0.655,
+                        "first_utterance_seconds": 0.365,
+                        "retry_count": 0,
+                        "custom_args_values": {
+                          "callee_name": "Priya",
+                          "emi_amount": "4500",
+                          "due_date": "12 August"
+                        },
+                        "recording_url": "https://storage.googleapis.com/example-bucket/00000000-0000-4000-8000-0000000000c4.mp3?X-Goog-Expires=86399&X-Goog-Signature=...",
+                        "transcription_url": "[{\"bot\": \"Hi Priya, this is Asha from Acme Lending. Is this a good time to talk about your EMI?\", \"message_id\": \"00000000-0000-4000-8000-0000000000e1\", \"timestamp\": \"2026-08-04T12:25:41.120+00:00\", \"audio_offset_ms\": 80}, {\"user\": \"Yes, go ahead.\", \"message_id\": \"00000000-0000-4000-8000-0000000000e2\", \"timestamp\": \"2026-08-04T12:25:46.530+00:00\", \"audio_offset_ms\": 5410}, {\"bot\": \"Your EMI of 4,500 rupees is due on 12 August. Will you be able to pay by then?\", \"message_id\": \"00000000-0000-4000-8000-0000000000e3\", \"timestamp\": \"2026-08-04T12:25:47.210+00:00\", \"audio_offset_ms\": 7020, \"llm_latency_ms\": 548.3, \"llm_calls_ms\": [548.3]}]"
                       }
                     }
                   },
@@ -5171,17 +5272,35 @@
                     "value": {
                       "status": "success",
                       "data": {
-                        "id": "550e8400-e29b-41d4-a716-446655440000",
+                        "id": "00000000-0000-4000-8000-0000000000c4",
+                        "call_sid": "00000000-0000-4000-8000-0000000000c2",
+                        "workspace_id": "00000000-0000-4000-8000-0000000000c3",
+                        "bulk_list_id": null,
                         "call_direction": "outbound",
                         "call_status": "completed",
+                        "status": "completed",
                         "call_sub_status": "ACCEPTED",
-                        "from_number": "+1234567890",
-                        "to_number": "+14155550123",
-                        "callee_name": "John Doe",
-                        "agent_id": "agent-123-456",
-                        "initiation_time": "2024-01-15T14:30:00Z",
-                        "recording_url": "https://example.com/recordings/call-123.mp3",
-                        "transcription_url": "[{\"bot\": \"Hi Priya, this is Asha from Acme Lending. Is this a good time to talk about your EMI?\"}, {\"user\": \"Yes, go ahead.\"}]",
+                        "from_number": "+919876540111",
+                        "to_number": "+919876543210",
+                        "callee_name": "Priya",
+                        "initiation_time": "2026-08-04T12:25:26.942668+00:00",
+                        "call_duration": 96.4,
+                        "agent_id": "00000000-0000-4000-8000-0000000000a1",
+                        "agent_name": "EMI Reminder",
+                        "version_id": "00000000-0000-4000-8000-0000000000c1",
+                        "version_slug": "v1",
+                        "version_description": "Initial version",
+                        "call_cost": 6.0,
+                        "overall_latency_seconds": 0.655,
+                        "first_utterance_seconds": 0.365,
+                        "retry_count": 0,
+                        "custom_args_values": {
+                          "callee_name": "Priya",
+                          "emi_amount": "4500",
+                          "due_date": "12 August"
+                        },
+                        "recording_url": "https://storage.googleapis.com/example-bucket/00000000-0000-4000-8000-0000000000c4.mp3?X-Goog-Expires=86399&X-Goog-Signature=...",
+                        "transcription_url": "[{\"bot\": \"Hi Priya, this is Asha from Acme Lending. Is this a good time to talk about your EMI?\", \"message_id\": \"00000000-0000-4000-8000-0000000000e1\", \"timestamp\": \"2026-08-04T12:25:41.120+00:00\", \"audio_offset_ms\": 80}, {\"user\": \"Yes, go ahead.\", \"message_id\": \"00000000-0000-4000-8000-0000000000e2\", \"timestamp\": \"2026-08-04T12:25:46.530+00:00\", \"audio_offset_ms\": 5410}, {\"bot\": \"Your EMI of 4,500 rupees is due on 12 August. Will you be able to pay by then?\", \"message_id\": \"00000000-0000-4000-8000-0000000000e3\", \"timestamp\": \"2026-08-04T12:25:47.210+00:00\", \"audio_offset_ms\": 7020, \"llm_latency_ms\": 548.3, \"llm_calls_ms\": [548.3]}]",
                         "platform_analysis": {
                           "summary": "Priya confirmed she will pay the EMI on 5 October.",
                           "key_points": [
