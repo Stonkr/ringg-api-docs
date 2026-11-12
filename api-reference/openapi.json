@@ -4412,11 +4412,40 @@
                 "desc"
               ]
             }
+          },
+          {
+            "name": "download",
+            "in": "query",
+            "description": "Set to `true` to email a CSV export of every call matching the filters instead of returning a page; `limit` and `offset` are ignored. The response is then `{\"message\": \"Call history export has been queued. You will receive an email shortly.\", \"emails\": [...]}`, the same as [Download call history](/api-reference/monitoring/call-history/download-call-history).",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "With `download=true`: email the download link to these addresses instead of the requester. **Each address must be a member of your workspace** (invited, invite accepted, not removed); invite new people to the workspace first. Repeat the parameter (`email=a@example.com&email=b@example.com`) or comma-separate (`email=a@example.com,b@example.com`). The link goes only to these addresses, one email each; the workspace owner is not copied. If any address isn't a member, the request returns 400 and nothing is sent. Omit it to send the link to the requester (for an API key, the workspace owner). Ignored without `download=true`.",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "email"
+              },
+              "example": [
+                "ops@example.com",
+                "qa@example.com"
+              ]
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Successful Response: Call history.",
+            "description": "Successful Response: Call history. With `download=true`, the export confirmation instead (`message` and `emails`).",
             "content": {
               "application/json": {
                 "schema": {
@@ -4588,7 +4617,7 @@
             }
           },
           "400": {
-            "description": "Bad Request - For example, `limit` over 200 or an ID that is not a UUID.",
+            "description": "Bad Request - For example, `limit` over 200, an ID that is not a UUID, or (with `download=true`) an `email` that is not a member of your workspace.",
             "content": {
               "application/json": {
                 "schema": {
