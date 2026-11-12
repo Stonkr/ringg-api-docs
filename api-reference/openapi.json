@@ -4675,7 +4675,7 @@
           {
             "lang": "curl",
             "label": "cURL (email teammates)",
-            "source": "curl --request POST \\\n  --url 'https://prod-api.ringg.ai/ca/api/v0/calling/history/download?start_date=2025-09-25T00:00:00%2B05:30&end_date=2025-09-25T23:59:59%2B05:30&email=ops@acme.com&email=qa@acme.com' \\\n  --header 'X-API-KEY: <x-api-key>'"
+            "source": "curl --request POST \\\n  --url 'https://prod-api.ringg.ai/ca/api/v0/calling/history/download?start_date=2025-09-25T00:00:00%2B05:30&end_date=2025-09-25T23:59:59%2B05:30&email=ops@example.com&email=qa@example.com' \\\n  --header 'X-API-KEY: <x-api-key>'"
           }
         ],
         "parameters": [
@@ -4815,7 +4815,7 @@
           {
             "name": "email",
             "in": "query",
-            "description": "Email the download link to these addresses instead of the requester. Repeat the parameter (`email=a@acme.com&email=b@acme.com`) or comma-separate (`email=a@acme.com,b@acme.com`). The link goes only to these addresses, one email each; the workspace owner is not copied. Every address must belong to an active member of your workspace (invite accepted, not removed), or the request returns 400 and nothing is sent. Omit it to send the link to the requester (for an API key, the workspace owner).",
+            "description": "Email the download link to these addresses instead of the requester. **Each address must be a member of your workspace** (invited, invite accepted, not removed); invite new people to the workspace first. Repeat the parameter (`email=a@example.com&email=b@example.com`) or comma-separate (`email=a@example.com,b@example.com`). The link goes only to these addresses, one email each; the workspace owner is not copied. Every address must belong to an active member of your workspace (invite accepted, not removed), or the request returns 400 and nothing is sent. Omit it to send the link to the requester (for an API key, the workspace owner).",
             "required": false,
             "style": "form",
             "explode": true,
@@ -4826,8 +4826,8 @@
                 "format": "email"
               },
               "example": [
-                "ops@acme.com",
-                "qa@acme.com"
+                "ops@example.com",
+                "qa@example.com"
               ]
             }
           }
@@ -4852,16 +4852,16 @@
                       },
                       "description": "The addresses the download link will be sent to: the `email` values you passed, or the requester when `email` is omitted.",
                       "example": [
-                        "ops@acme.com",
-                        "qa@acme.com"
+                        "ops@example.com",
+                        "qa@example.com"
                       ]
                     }
                   },
                   "example": {
                     "message": "Call history export has been queued. You will receive an email shortly.",
                     "emails": [
-                      "ops@acme.com",
-                      "qa@acme.com"
+                      "ops@example.com",
+                      "qa@example.com"
                     ]
                   }
                 }
@@ -4891,7 +4891,7 @@
                   "email_not_a_member": {
                     "summary": "An email isn't a workspace member",
                     "value": {
-                      "message": "Can't send the export to someone@gmail.com: only active members of this workspace can receive it. Invite them to the workspace first, or leave `email` out to send it to your own email."
+                      "message": "Can't send the export to outsider@example.org: only active members of this workspace can receive it. Invite them to the workspace first, or leave `email` out to send it to your own email."
                     }
                   }
                 }

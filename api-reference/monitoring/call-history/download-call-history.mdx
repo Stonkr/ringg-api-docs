@@ -7,19 +7,23 @@ related:
 
 import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-The response only confirms the export was queued and lists who will get the link: `{"message": "Call history export has been queued. You will receive an email shortly.", "emails": ["owner@acme.com"]}`. The download link arrives by email; large exports take several minutes.
+The response only confirms the export was queued and lists who will get the link: `{"message": "Call history export has been queued. You will receive an email shortly.", "emails": ["owner@example.com"]}`. The download link arrives by email; large exports take several minutes.
 
 ## Choose who receives the export
 
-By default the link goes to the requester; with an API key, that is the workspace owner. To send it to specific teammates instead, add `email`. Repeat it for several people:
+By default the link goes to the requester; with an API key, that is the workspace owner. To send it to specific teammates instead, add `email`. Repeat it for several people.
+
+<Warning>
+**Each recipient must be a member of your workspace.** The export is only emailed to people who belong to the workspace: they were invited, accepted the invite, and haven't been removed. An address outside the workspace gets a `400` and no one receives the export. To send it to someone new, invite them to the workspace first.
+</Warning>
 
 ```bash
 curl --request POST \
-  --url 'https://prod-api.ringg.ai/ca/api/v0/calling/history/download?start_date=2025-09-25T00:00:00%2B05:30&end_date=2025-09-25T23:59:59%2B05:30&email=ops@acme.com&email=qa@acme.com' \
+  --url 'https://prod-api.ringg.ai/ca/api/v0/calling/history/download?start_date=2025-09-25T00:00:00%2B05:30&end_date=2025-09-25T23:59:59%2B05:30&email=ops@example.com&email=qa@example.com' \
   --header 'X-API-KEY: <x-api-key>'
 ```
 
-- A comma-separated list (`email=ops@acme.com,qa@acme.com`) works too.
+- A comma-separated list (`email=ops@example.com,qa@example.com`) works too.
 - The link goes only to these addresses, one email each. The workspace owner is not copied.
 - Every address must belong to an active member of your workspace: invite accepted and not removed. Otherwise the request returns `400` naming the address, and no one is emailed. Invite them to the workspace first.
 
