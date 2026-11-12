@@ -4664,13 +4664,18 @@
             "og:title": "Download Call History | Ringg AI"
           }
         },
-        "description": "Queues a CSV export of call history and emails a download link to the requester. The link is valid for 7 days and downloads a ZIP with one CSV. Use `include_analysis=true` to add the post-call analysis columns.",
+        "description": "Queues a CSV export of call history and emails a download link. The link is valid for 7 days and downloads a ZIP with one CSV. Use `include_analysis=true` to add the post-call analysis columns. By default the link goes to the requester (for an API key, the workspace owner); pass `email` to send it only to specific workspace members instead.",
         "operationId": "downloadCallHistory",
         "x-code-samples": [
           {
             "lang": "curl",
             "label": "cURL",
             "source": "curl --request POST \\\n  --url 'https://prod-api.ringg.ai/ca/api/v0/calling/history/download?start_date=2025-09-25T00:00:00%2B05:30&end_date=2025-09-25T23:59:59%2B05:30&agent_id=00000000-0000-4000-8000-0000000000a1&status=completed&include_analysis=true&call_type=outbound&bulk_list_id=123e4567-e89b-12d3-a456-426614174000&voicemail=false&from_number=%2B1234567890&to_number=%2B0987654321&call_id=550e8400-e29b-41d4-a716-446655440000' \\\n  --header 'X-API-KEY: <x-api-key>'"
+          },
+          {
+            "lang": "curl",
+            "label": "cURL (email teammates)",
+            "source": "curl --request POST \\\n  --url 'https://prod-api.ringg.ai/ca/api/v0/calling/history/download?start_date=2025-09-25T00:00:00%2B05:30&end_date=2025-09-25T23:59:59%2B05:30&email=ops@acme.com&email=qa@acme.com' \\\n  --header 'X-API-KEY: <x-api-key>'"
           }
         ],
         "parameters": [
@@ -4806,6 +4811,25 @@
               "type": "string",
               "example": "550e8400-e29b-41d4-a716-446655440000"
             }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "Email the download link to these addresses instead of the requester. Repeat the parameter (`email=a@acme.com&email=b@acme.com`) or comma-separate (`email=a@acme.com,b@acme.com`). The link goes only to these addresses, one email each; the workspace owner is not copied. Every address must belong to an active member of your workspace (invite accepted, not removed), or the request returns 400 and nothing is sent. Omit it to send the link to the requester (for an API key, the workspace owner).",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "email"
+              },
+              "example": [
+                "ops@acme.com",
+                "qa@acme.com"
+              ]
+            }
           }
         ],
         "responses": {
@@ -4820,17 +4844,32 @@
                       "type": "string",
                       "description": "Confirmation that the export was queued.",
                       "example": "Call history export has been queued. You will receive an email shortly."
+                    },
+                    "emails": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "The addresses the download link will be sent to: the `email` values you passed, or the requester when `email` is omitted.",
+                      "example": [
+                        "ops@acme.com",
+                        "qa@acme.com"
+                      ]
                     }
                   },
                   "example": {
-                    "message": "Call history export has been queued. You will receive an email shortly."
+                    "message": "Call history export has been queued. You will receive an email shortly.",
+                    "emails": [
+                      "ops@acme.com",
+                      "qa@acme.com"
+                    ]
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Bad Request - Invalid parameters",
+            "description": "Bad Request - Invalid parameters, or an `email` that isn't an active member of your workspace.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4839,6 +4878,20 @@
                     "message": {
                       "type": "string",
                       "example": "Invalid date format"
+                    }
+                  }
+                },
+                "examples": {
+                  "invalid_parameters": {
+                    "summary": "Invalid parameters",
+                    "value": {
+                      "message": "Invalid date format"
+                    }
+                  },
+                  "email_not_a_member": {
+                    "summary": "An email isn't a workspace member",
+                    "value": {
+                      "message": "Can't send the export to someone@gmail.com: only active members of this workspace can receive it. Invite them to the workspace first, or leave `email` out to send it to your own email."
                     }
                   }
                 }
