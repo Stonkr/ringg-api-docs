@@ -1,7 +1,7 @@
 ---
 title: "Start a conversation"
 sidebarTitle: "Start a conversation"
-description: "Send the first WhatsApp message to a customer from your backend with an approved template, and let your Ringg AI WhatsApp agent take over when they reply."
+description: "Send the first WhatsApp message to a customer with an approved template, from the dashboard or your backend, and let your Ringg AI WhatsApp agent take over when they reply."
 "og:title": "Start a WhatsApp Conversation by API | Ringg AI Guide"
 boost: 4
 related:
@@ -22,11 +22,11 @@ related:
 
 import { RelatedTopics } from "/snippets/related-topics.mdx";
 
-`POST /cp/meta/whatsapp/outbound` sends an approved template from your [WhatsApp agent's](/documentation/build-agents/agents/whatsapp-agents/create-an-agent) number and opens a chat, so you can message a customer first: after a missed call, a form submission or ahead of a renewal. There is no dashboard equivalent.
+Send an approved template from your [WhatsApp agent's](/documentation/build-agents/agents/whatsapp-agents/create-an-agent) number to message a customer first: after a missed call, a form submission or ahead of a renewal. When they reply, the agent takes over in the same chat and knows what the template said.
 
 A template is required because WhatsApp allows free-form messages only within 24 hours of the customer's last message ([Message templates](/documentation/inventory/tools-integrations/connect-whatsapp#message-templates)).
 
-This section covers the two ways to put a WhatsApp agent in front of customers from your own systems: this page, and [WhatsApp Relay](/documentation/deploy/whatsapp/relay-overview), which runs the agent on a number that stays in your own Meta account.
+You can start a conversation from the dashboard or by API. To run the agent on a number that stays in your own Meta account, use [WhatsApp Relay](/documentation/deploy/whatsapp/relay-overview) instead.
 
 ## Before you start
 
@@ -38,32 +38,78 @@ This section covers the two ways to put a WhatsApp agent in front of customers f
     **Ready** on the connected WhatsApp Business account that holds the number.
   </Card>
   <Card title="An API key" icon="key" href="/documentation/manage-account/api-key">
-    Sent in the `X-API-KEY` header.
+    For the API only, sent in the `X-API-KEY` header.
   </Card>
 </Columns>
 
-## Send the first message
+## From the dashboard
+
+1. Open the WhatsApp agent and click **Start conversation** in the top bar. The button is disabled until a WhatsApp number is attached.
+2. Enter the customer's number with its country code, for example `+919876543210`.
+3. Choose an approved template and fill its values: body variables, the header file for an image, video or document header, and any button values.
+4. Optionally fill **Agent variables**: values for the agent's [custom variables](#agent-variables) in this conversation.
+5. Click **Send**. **Open chat** on the confirmation takes you to the chat in **Logs → WhatsApp**.
+
+## By API
+
+`POST /chat/waba/outbound` sends the template from the agent's number. Name an approved template and give its values, and Ringg builds the message; or send the full template in Meta's format.
 
 <RequestExample>
 ```bash cURL
-curl --request POST "https://prod-api.ringg.ai/cp/meta/whatsapp/outbound" \
+curl --request POST "https://prod-api.ringg.ai/ca/api/v0/chat/waba/outbound" \
   --header "X-API-KEY: $RINGG_API_KEY" \
-  --header "X-Idempotency-Key: lead-1042-first-message" \
+  --header "Idempotency-Key: lead-1042-first-message" \
   --header "Content-Type: application/json" \
   --data '{
-    "to_number": "919876543210",
-    "phone_number_id": "your-whatsapp-phone-number-id",
-    "workspace_id": "your-workspace-id",
     "agent_id": "your-agent-id",
-    "template": {
-      "name": "missed_call_follow_up",
-      "language": { "code": "en_US" },
-      "components": [
-        { "type": "body", "parameters": [ { "type": "text", "text": "Asha" } ] }
-      ]
-    },
+    "to_number": "+919876543210",
+    "template_name": "missed_call_follow_up",
+    "language": "en",
+    "body_variables": { "1": "Asha" },
     "custom_args_values": { "name": "Asha", "lead_id": "L-1042" }
   }'
+```
+
+```javascript JavaScript
+const response = await fetch("https://prod-api.ringg.ai/ca/api/v0/chat/waba/outbound", {
+  method: "POST",
+  headers: {
+    "X-API-KEY": process.env.RINGG_API_KEY,
+    "Idempotency-Key": "lead-1042-first-message",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    agent_id: "your-agent-id",
+    to_number: "+919876543210",
+    template_name: "missed_call_follow_up",
+    language: "en",
+    body_variables: { 1: "Asha" },
+    custom_args_values: { name: "Asha", lead_id: "L-1042" },
+  }),
+});
+console.log(await response.json());
+```
+
+```python Python
+import os
+import requests
+
+response = requests.post(
+    "https://prod-api.ringg.ai/ca/api/v0/chat/waba/outbound",
+    headers={
+        "X-API-KEY": os.environ["RINGG_API_KEY"],
+        "Idempotency-Key": "lead-1042-first-message",
+    },
+    json={
+        "agent_id": "your-agent-id",
+        "to_number": "+919876543210",
+        "template_name": "missed_call_follow_up",
+        "language": "en",
+        "body_variables": {"1": "Asha"},
+        "custom_args_values": {"name": "Asha", "lead_id": "L-1042"},
+    },
+)
+print(response.json())
 ```
 </RequestExample>
 
@@ -74,7 +120,8 @@ curl --request POST "https://prod-api.ringg.ai/cp/meta/whatsapp/outbound" \
   "chat_id": "b6107fbd-1f1a-4382-88f6-781c2f6ea787",
   "message_id": "whatsapp-message-id",
   "to_number": "919876543210",
-  "phone_number_id": "your-whatsapp-phone-number-id"
+  "phone_number_id": "your-whatsapp-phone-number-id",
+  "new_chat": true
 }
 ```
 </ResponseExample>
@@ -84,70 +131,108 @@ curl --request POST "https://prod-api.ringg.ai/cp/meta/whatsapp/outbound" \
 <ResponseField name="X-API-KEY" type="string" required>
   Your workspace [API key](/documentation/manage-account/api-key).
 </ResponseField>
-<ResponseField name="X-Idempotency-Key" type="string">
-  A unique value per message: letters, digits, `_` and `-`, up to 128 characters. A retry with the same key within 24 hours returns the first response and doesn't send the template again. `408`, `409` and `5xx` responses are not stored, so a retry after one of them is processed as a new request.
+<ResponseField name="Idempotency-Key" type="string">
+  A unique value per message: letters, digits, `_` and `-`, up to 128 characters. A retry with the same key within 24 hours returns the first response and doesn't send the template again. A failed send is not stored, so retrying it with the same key sends again. Retry a timeout or network error with the same key; the request itself is never retried for you.
 </ResponseField>
 
 ### Request body
 
-<ResponseField name="to_number" type="string" required>
-  The customer's number in international format, without `+`.
-</ResponseField>
-<ResponseField name="phone_number_id" type="string" required>
-  Meta's phone number ID for the WhatsApp number your agent is attached to.
-</ResponseField>
-<ResponseField name="workspace_id" type="string" required>
-  Your workspace ID (a UUID).
-</ResponseField>
+Send exactly one of `template_name` or `template`.
+
 <ResponseField name="agent_id" type="string" required>
-  The WhatsApp agent attached to that number. It must match, or the request fails with `409`.
+  The WhatsApp agent to send from. The template goes out from the number attached to it.
 </ResponseField>
-<ResponseField name="template" type="object" required>
+<ResponseField name="to_number" type="string" required>
+  The customer's number with its country code, for example `+919876543210`.
+</ResponseField>
+<ResponseField name="template_name" type="string">
+  An approved template on the number's WhatsApp Business account. Ringg fills it from the fields below.
+</ResponseField>
+<ResponseField name="language" type="string" default="en">
+  The template's language code, as it appears on the template, for example `en` or `en_US`.
+</ResponseField>
+<ResponseField name="body_variables" type="object">
+  A value for each body placeholder, keyed by the placeholder: `{"1": "Asha"}` for `{{1}}`, or `{"customer_name": "Asha"}` for `{{customer_name}}`. Every placeholder needs a value.
+</ResponseField>
+<ResponseField name="header_variable" type="string">
+  The value for a text header's placeholder.
+</ResponseField>
+<ResponseField name="header_media_link" type="string">
+  A public `https` link to the file, for an image, video or document header.
+</ResponseField>
+<ResponseField name="template" type="object">
+  The full template in Meta's format, for templates that `template_name` can't fill: buttons with a variable link or a copy code, location headers and carousels.
   <Expandable title="properties">
     <ResponseField name="name" type="string" required>
       The approved template to send.
     </ResponseField>
-    <ResponseField name="language.code" type="string" default="en_US">
+    <ResponseField name="language.code" type="string" required>
       The template's language code.
     </ResponseField>
     <ResponseField name="components" type="array">
-      Values for the template's variables and buttons, in Meta's component format: `body` parameters, `button` parameters with `sub_type` and `index`, and `cards` for carousel templates.
+      Values for the template's variables and buttons, in Meta's component format: `header` and `body` parameters, `button` parameters with `sub_type` and `index`, and `cards` for carousel templates.
     </ResponseField>
   </Expandable>
 </ResponseField>
+<ResponseField name="phone_number_id" type="string">
+  Meta's phone number ID of the agent's number. Optional; if you send it, it must be the number attached to the agent.
+</ResponseField>
 <ResponseField name="custom_args_values" type="object">
-  Values for your agent's custom variables, such as `{{name}}`. Defaults to `{}`. Every [event](/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events#whatsapp-chat-events) for this chat carries them in `custom_args_values`, with `source: "chat"` added, and `mobile_number` too if you didn't send one.
+  [Agent variables](#agent-variables) for this conversation. Defaults to `{}`.
 </ResponseField>
 
-Fields not listed here are rejected with `422`.
+### Responses
 
-## Responses
+Errors have a readable `message`, plus a `code` you can match on.
 
 | Status | Body | Meaning |
 |---|---|---|
-| `200` | `{"status": "sent", "chat_id": "…", "message_id": "…", "to_number": "…", "phone_number_id": "…"}` | WhatsApp accepted the template. `message_id` is WhatsApp's message ID. |
-| `400` | `{"detail": "invalid_idempotency_key"}` | `X-Idempotency-Key` has characters other than letters, digits, `_` and `-`, or is longer than 128. |
-| `401` | `{"detail": "missing_api_key"}` or `invalid_api_key` | The API key is missing or invalid. |
-| `409` | `{"detail": "active_session_exists", "chat_id": "…"}` | The customer already has an open chat with this agent. No template was sent. |
-| `409` | `{"detail": "agent_id_mismatch", "requested_agent_id": "…", "resolved_agent_id": "…"}` or `workspace_id_mismatch` | The IDs don't match the agent attached to `phone_number_id`. |
-| `409` | `{"detail": "idempotency_key_in_progress"}` | A request with the same `X-Idempotency-Key` is still being processed. |
-| `422` | `{"detail": …}` | The body has a missing, malformed or unknown field. |
-| `500` | `{"status": "error", "error": "internal_error"}` | An unexpected error. Check that `phone_number_id` is the number your agent is attached to. |
-| `502` | `{"status": "delivery_failed", "chat_id": "…", "message_id": null, "to_number": "…", "phone_number_id": "…"}` | WhatsApp rejected the template, for example a wrong template name or variable count. The chat is marked failed. |
-| `502` | `{"detail": "config_fetch_failed", "error": "…"}` | Ringg couldn't load the agent's settings. |
-| `503` | `{"detail": "session_lock_contention"}` or `auth_unavailable` | A temporary conflict or outage. Retry with the same `X-Idempotency-Key`. |
+| `200` | `{"status": "sent", "chat_id": "…", "message_id": "…", "new_chat": true}` | WhatsApp accepted the template. `new_chat` is `false` when it went into a chat the customer already had open ([below](#when-the-customer-already-has-a-chat-open)). |
+| `400` | `{"message": "…"}` | Something to fix in the request: not a WhatsApp agent, no number attached, `phone_number_id` doesn't match, the template isn't found or isn't approved, or a placeholder has no value. The message says which. |
+| `400` | `{"message": "… relay number …"}` | The agent's number is a [WhatsApp Relay](/documentation/deploy/whatsapp/relay-overview) number, whose messages your systems send. |
+| `401` | `{"message": "…"}` | The API key is missing or invalid. |
+| `409` | `{"message": "…", "code": "chat_in_progress", "chat_id": "…"}` | The customer has a chat open with a different agent on this number. No template was sent. |
+| `422` | `{"message": "…"}` | A malformed field, or both or neither of `template_name` and `template`. |
+| `502` | `{"message": "WhatsApp did not accept the message", "code": "delivery_failed", "chat_id": "…", "error": "…", "error_detail": {…}}` | WhatsApp rejected the template, for example a variable it can't take. `error_detail` carries WhatsApp's error. |
+
+## When the customer already has a chat open
+
+If the customer already has an open chat with the same agent on this number, the template goes into that chat instead of starting a new one. The agent answers their reply in the same conversation, and the response has `new_chat: false`.
+
+That chat keeps the custom variables it opened with, so `custom_args_values` only apply when a new chat starts. If WhatsApp rejects the template, the open chat carries on.
+
+## Agent variables
+
+`custom_args_values` fill the `{{placeholders}}` in the agent's prompt and tools for this conversation, the way a call's custom variables do. For example, `{"name": "Asha", "order_id": "A1029"}` lets the agent greet Asha and talk about order A1029 when she replies. They are not the template's own variables: the customer never sees them.
+
+They are also saved on the chat: in **Logs**, in the CSV export and in every [chat event](/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events#whatsapp-chat-events), with `source: "chat"` added and `mobile_number` set to the customer's number if you didn't send one. Keys the prompt doesn't use, such as your own `lead_id`, change nothing in the conversation but let you match the chat to your records.
+
+In the dashboard, **Agent variables** lists the custom variables declared on the agent.
 
 ## What happens next
 
-1. The template appears as the agent's first message in the chat, under **Logs → WhatsApp**.
-2. When the customer replies, including by tapping a quick-reply button on the template, the agent answers in the same chat, with the template in context.
-3. The chat then follows the agent's [session timeouts](/documentation/build-agents/agents/whatsapp-agents/create-an-agent#set-the-session-timeouts) and closes like any other chat, firing the [events](/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events#whatsapp-chat-events) you subscribed to.
+1. The template appears as the agent's first message in the chat, under **Logs → WhatsApp**, marked **Outbound**.
+2. When the customer replies, including by tapping a quick-reply button on the template, the agent answers in the same chat with the template's text in context.
+3. If WhatsApp later reports the template undelivered and the customer hasn't replied, the chat is marked **Failed**.
+4. The chat then follows the agent's [session timeouts](/documentation/build-agents/agents/whatsapp-agents/create-an-agent#set-the-session-timeouts) and closes like any other chat, firing the [events](/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events#whatsapp-chat-events) you subscribed to.
+5. If the customer replies after the chat closed, within a day, the new chat continues the conversation: it keeps the same agent variables, the agent sees the earlier messages, and it is marked **Inbound**, because the customer started it, and linked to the outbound chat it continues.
+
+## Chat platform endpoint
+
+Integrations built on `POST /cp/meta/whatsapp/outbound` keep working. It takes the full template only, plus `phone_number_id` and `workspace_id`, and uses `X-Idempotency-Key`. Its differences from the endpoint above:
+
+- An API key can only start conversations in its own workspace: another `workspace_id` gets `403` `{"detail": "workspace_mismatch"}`.
+- A template for a customer with an open chat with the same agent goes into that chat (`"new_chat": false`). A chat with a different agent still gets `409` `{"detail": "active_session_exists", "chat_id": "…"}`.
+- Optional `template_text`: the template as the customer reads it, which the agent then sees as what it sent. Without it, the agent only knows the template's name.
+- A `502` `delivery_failed` body includes WhatsApp's `error` and `error_detail`.
+
+For new integrations, use `POST /chat/waba/outbound`.
 
 ## Next steps
 
 <Columns cols={2}>
   <Card title="Read the chat in Logs" icon="list" href="/documentation/monitor/logs#whatsapp-chats">
-    Find it under Logs → WhatsApp.
+    Find it under Logs → WhatsApp, filtered to Outbound.
   </Card>
   <Card title="Get chat webhooks" icon="webhook" href="/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events#whatsapp-chat-events">
     Receive the transcript and analysis when the chat closes.

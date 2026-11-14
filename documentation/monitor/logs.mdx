@@ -181,10 +181,10 @@ The **WhatsApp** tab (`/logs/whatsapp`) lists chats of your [WhatsApp agents](/d
   </video>
 </Frame>
 
-- **Columns**: **Assistant** (with a version chip), **Contact** (the customer's number; the name is the `name` custom variable, otherwise their WhatsApp profile name), **Started on**, **Status** (**Ongoing**, **Completed**, **Failed**) and **Duration**. A chat stays **Ongoing** until it closes, which can be hours after the last message ([why](/documentation/build-agents/agents/whatsapp-agents/create-an-agent#when-a-chat-opens-and-closes)).
-- **Filters**: date range, WhatsApp agents, chat status, **From number** (the customer), **To number** (your business number) and **Chat ID**, for example a webhook's `chat_id`.
-- **The chat panel**: **Chat details** (duration, custom variables, platform analysis), **Advanced analysis**, and **Transcript**, where tool calls and template sends appear as pills you can open for their request and response.
-- **Export**: the same **Export** menu as calls. The emailed zip holds `chat_history_report.csv`, one row per chat, up to 200,000 chats; the link is valid for 7 days. It includes `To Number` (your number's Meta phone number ID), `External Chat ID` and the transcript as `speaker: text` lines.
+- **Columns**: **Assistant** (with a version chip), **Contact** (the customer's number; the name is the `name` custom variable, otherwise their WhatsApp profile name), **Started on**, **Status** (**Ongoing**, **Completed**, **Failed**, with an **Inbound** or **Outbound** tag) and **Duration**. **Inbound** chats were started by the customer, including a reply that arrives after an outbound chat closed; **Outbound** chats by your business with a [template](/documentation/deploy/whatsapp/start-a-conversation). A chat stays **Ongoing** until it closes, which can be hours after the last message ([why](/documentation/build-agents/agents/whatsapp-agents/create-an-agent#when-a-chat-opens-and-closes)).
+- **Filters**: date range, WhatsApp agents, chat status, **Direction** (**Inbound** or **Outbound**), **From number** (the customer), **To number** (your business number) and **Chat ID**, for example a webhook's `chat_id`.
+- **The chat panel**: **Chat details** (duration, custom variables, platform analysis), **Advanced analysis**, and **Transcript**, where tool calls and template sends appear as pills you can open for their request and response. A chat that continues an earlier outbound chat says so on **Chat details**, with **Open that chat**.
+- **Export**: the same **Export** menu as calls. The emailed zip holds `chat_history_report.csv`, one row per chat, up to 200,000 chats; the link is valid for 7 days. It includes `To Number` (your number's Meta phone number ID), `Direction`, `Continues Chat ID` (the chat a continued chat picks up from), `External Chat ID` and the transcript as `speaker: text` lines.
 
 ## Workflow runs
 
