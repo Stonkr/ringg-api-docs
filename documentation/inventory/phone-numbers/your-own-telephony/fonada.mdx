@@ -1,0 +1,214 @@
+---
+title: "Fonada"
+sidebarTitle: "Fonada"
+description: "Connect Fonada to Ringg AI over Fonada Voice Streaming: what Fonada configures on its side, what you set up in Ringg, and how outbound and inbound calls, call status and audio flow between the two."
+"og:title": "Connect Fonada to Ringg AI"
+---
+
+## Overview
+
+Fonada connects to Ringg over **Fonada Voice Streaming**: a WebSocket that carries the call's audio both ways, plus a call report (CDR) webhook for calls that never connect. Fonada handles the phone network; Ringg runs the AI agent on the stream.
+
+| Direction | How the call starts |
+| - | - |
+| **Outbound** | Ringg posts one lead per call to Fonada's single lead API. Fonada dials the customer and, when they answer, opens the WebSocket URL that came with the lead. |
+| **Inbound** | A customer calls your Fonada DID. Fonada opens Ringg's static inbound WebSocket URL and sends the caller's and the dialled number in `session_start`. |
+
+The setup is split between the two sides:
+
+| Side | What it covers |
+| - | - |
+| **Fonada** | The voicebot campaign and its API key, the caller IDs, streaming each answered call to the URL in the lead, sending both phone numbers in `session_start` (required), the inbound URL for your DIDs, the CDR webhook, and allowlisting Ringg's IPs. See [On Fonada's side](#on-fonadas-side). |
+| **Ringg** | The Fonada account and numbers in your workspace, the assistant, and everything per call: placing the lead, running the conversation, retries, recording and call status. See [On Ringg's side](#on-ringgs-side). |
+
+<Note>
+  Ringg records every Fonada call itself, so recordings, transcripts and call analysis appear in Ringg as for any other provider.
+</Note>
+
+## On Fonada's side
+
+Ask your Fonada account manager to set up the following. The URLs below are Ringg's production URLs for India workspaces (`region=in`).
+
+<Steps>
+  <Step title="A voicebot campaign with single lead API access">
+    Fonada creates a voicebot campaign for Ringg and enables the **OBD single lead API (v6)** on it. Fonada gives you four values for Ringg:
+
+    | Value | What it is |
+    | - | - |
+    | Base URL | The host of Fonada's OBD API, for example `uat.ivrobd.com` |
+    | UKey | The user authentication key for the API |
+    | User ID | Your Fonada `userId` (a number) |
+    | Campaign ID | The voicebot campaign's `campaignId` (a number) |
+  </Step>
+
+  <Step title="Caller IDs">
+    The numbers you want customers to see (your DIDs) must be active on the Fonada account. Ringg sends the caller ID with each lead, so every number you add in Ringg must exist on Fonada's side.
+  </Step>
+
+  <Step title="Stream each answered call to the URL in the lead">
+    The campaign must open the WebSocket URL carried in the lead's `TXT_url` field (a **dynamic** URL), not a fixed URL. Ringg builds this URL per call, and it carries the Ringg call ID as `ringg_call_id`; Fonada must use it unchanged. Fonada may add its own query parameters.
+
+    The stream must follow the [WebSocket protocol](#websocket-protocol) below: a `session_start` message first, then raw PCM16 audio at 8 kHz or 16 kHz. 16 kHz gives the assistant clearer audio.
+  </Step>
+
+  <Step title="Send both phone numbers in session_start">
+    Every `session_start` must carry **two numbers**; both are required from Fonada's side:
+
+    | Field | Number |
+    | - | - |
+    | `customer_phone` | The customer's number: the caller on inbound, the number dialled on outbound |
+    | `business_phone` | Your Fonada DID: the number dialled on inbound, the caller ID on outbound |
+
+    Ringg finds the assistant for an inbound call by `business_phone`, and refuses an inbound stream where either number is missing or empty. Numbers can be sent as 10 digits, with a leading `0`, or with `91` / `+91`.
+  </Step>
+
+  <Step title="Inbound: point your DIDs at Ringg">
+    For inbound calls, set the static WebSocket URL for your DIDs to:
+
+    ```text theme={null}
+    wss://use1-api.ringg.ai/pc/v1/fonada/ws?region=in
+    ```
+
+    Outbound calls do not use this URL: each lead carries its own.
+  </Step>
+
+  <Step title="CDR webhook">
+    Set the campaign's CDR posting URL to:
+
+    ```text theme={null}
+    https://use1-api.ringg.ai/pc/v1/fonada/call_status?region=in
+    ```
+
+    The webhook must carry the lead's `TXT_call_id` value back as **`ringg_call_id`**, along with `disposition`, `hangupCause` and Fonada's `session_id`. GET with a query string, or POST with JSON or a form body, all work.
+
+    **Without this webhook, busy and unanswered calls stay in progress in Ringg and are not retried.**
+  </Step>
+
+  <Step title="Allowlist Ringg">
+    Allowlist Ringg's egress IPs (Ringg's team shares them) for the single lead API, and allow outbound WebSocket and HTTPS traffic from Fonada to `use1-api.ringg.ai`.
+  </Step>
+
+  <Step title="Retries off on Fonada's side">
+    Ringg schedules its own retries and sends every lead with Fonada's retries set to `0`. Keep campaign-level retries off too, so each lead is dialled exactly once.
+  </Step>
+</Steps>
+
+## On Ringg's side
+
+<Steps>
+  <Step title="Add Fonada as a telephony provider">
+    Go to **Numbers → Add number**, select **Fonada**, and open **Configure provider** (the gear). Select **Add** and fill in the four values from Fonada:
+
+    | Field | Value |
+    | - | - |
+    | Base URL | The OBD API host, for example `uat.ivrobd.com`. A pasted `https://` and trailing `/` are fine. |
+    | UKey | Your Fonada user authentication key |
+    | User ID | Your Fonada `userId`, digits only |
+    | Campaign ID | The voicebot `campaignId`, digits only |
+
+    On save, Ringg checks that all four are filled in, that User ID and Campaign ID are numbers, and that Base URL is a plain public hostname. The host must resolve to public addresses only. Fonada has no test endpoint (a test request would place a real lead), so the credentials themselves are first checked by your first call.
+  </Step>
+
+  <Step title="Add your numbers by hand">
+    In **Add number**, choose the Fonada account. Fonada does not share its number list, so the dialog shows **Add custom**: type each caller ID with its country code, for example `+91 80 6600 1234`, and click **Save**. See [Add a number by hand](/documentation/inventory/phone-numbers/buy-or-import-a-number#add-a-number-by-hand).
+
+    Fonada numbers can't be bought or imported in Ringg.
+  </Step>
+
+  <Step title="Assign the numbers">
+    Use each number as the caller ID for an assistant's outbound calls and campaigns, and as the inbound number of the assistant that should answer it.
+  </Step>
+</Steps>
+
+Everything else is per call and needs no setup:
+
+| Ringg does | How |
+| - | - |
+| Places the call | Posts one lead to `https://<base_url>/api/v1/astrixdispatcher/v6/lead?isDND=false` with your User ID, Campaign ID, UKey and the caller ID. The lead's `header` is `Phone,TXT_call_id,TXT_url`: the customer number, the Ringg call ID, and the WebSocket URL for this call. |
+| Matches the stream to the call | Outbound: reads `ringg_call_id` from the WebSocket URL. Inbound: finds the assistant by `business_phone`. Fonada's `session_id` is stored as Fonada's ID for the call. |
+| Runs the conversation | Speaks, listens and handles interruptions on the stream. |
+| Ends the call | Sends `end_of_call` when the assistant ends the call. |
+| Retries and status | Reports busy, unanswered and failed calls from the CDR webhook, and retries them on your schedule. |
+| Recording | Records both sides of the call itself. |
+
+<Note>
+  Outbound calls are placed to Indian numbers. Ringg dials the 10-digit national number, so `+91XXXXXXXXXX`, `91XXXXXXXXXX` and `0XXXXXXXXXX` all work. Numbers that do not reduce to 10 digits are rejected before dialling. The caller ID is sent without the country code.
+</Note>
+
+## Call status
+
+Ringg acts on the CDR webhook only for calls that never reached the assistant:
+
+| Fonada `disposition` | Reported in Ringg as |
+| - | - |
+| `BUSY` | Busy |
+| `NOANSWER` | No answer |
+| `FAILED` | Failed |
+| `ANSWERED` | Handled by the assistant's own call reporting |
+
+The call's sub-status shows Fonada's disposition and hangup cause together, for example `NOANSWER-NO_ANSWER` or `BUSY-USER_BUSY`. Ringg always answers the webhook with `200`.
+
+## WebSocket protocol
+
+| Step | Direction | Message |
+| - | - | - |
+| 1 | Fonada → Ringg | `session_start` (JSON), within 10 seconds of opening the socket |
+| 2 | Ringg → Fonada | `{"type": "ready"}` |
+| 3 | Both ways | Audio as binary frames: raw PCM16, little-endian, mono, at the `session_start` sample rate |
+| 4 | Ringg → Fonada | `{"type": "interrupt"}` when the caller talks over the assistant: drop any assistant audio not yet played |
+| 5 | Ringg → Fonada | `{"type": "end_of_call"}` when the assistant ends the call: hang up |
+| 5 | Fonada → Ringg | `{"type": "session_end"}` when the caller hangs up |
+
+`session_start` looks like this:
+
+```json theme={null}
+{
+  "type": "session_start",
+  "session_id": "<Fonada's own unique call ID>",
+  "client_id": "<your Fonada client ID>",
+  "customer_phone": "<the customer's number>",
+  "business_phone": "<the caller ID>",
+  "audio": {
+    "codec": "pcm16",
+    "input_sample_rate": 16000,
+    "output_sample_rate": 16000,
+    "channels": 1
+  },
+  "metadata": {}
+}
+```
+
+Ringg accepts `pcm16` at 8000 or 16000 Hz, with the same rate in both directions. Anything else closes the stream. `session_id` must be Fonada's own ID, unique per call; on outbound, Ringg reads its own call ID from the URL. `customer_phone` and `business_phone` are both required (see [Send both phone numbers](#on-fonadas-side)).
+
+## Call features
+
+| Feature | Supported |
+| - | - |
+| Outbound calls | Yes |
+| Inbound calls | Yes. Fonada must send `customer_phone` and `business_phone` in `session_start`, as Ringg finds the assistant by the dialled number. |
+| Interruptions (barge-in) | Yes, via the `interrupt` message |
+| Call transfer | Not yet. A transfer on a Fonada call is declined and the conversation continues. |
+| Recording, transcript, analysis | Yes, recorded by Ringg |
+| Hangup | Ringg sends `end_of_call`; Fonada sends `session_end` when the caller hangs up |
+
+## URL reference
+
+| Purpose | Set by | Method | URL |
+| - | - | - | - |
+| Single lead API | Fonada (host), Ringg (calls it) | POST | `https://<base_url>/api/v1/astrixdispatcher/v6/lead?isDND=false` |
+| WebSocket, inbound | Fonada, once for your DIDs | WebSocket | `wss://use1-api.ringg.ai/pc/v1/fonada/ws?region=in` |
+| CDR webhook | Fonada, once per campaign | GET or POST | `https://use1-api.ringg.ai/pc/v1/fonada/call_status?region=in` |
+
+## Troubleshooting
+
+| Symptom | Likely cause |
+| - | - |
+| Saving the account fails with `Empty required fields` | One of Base URL, UKey, User ID or Campaign ID is blank. |
+| Saving fails with `must be a number` | User ID or Campaign ID contains something other than digits. |
+| Saving fails with `must be a hostname` | Base URL contains a path, query, IP address or an invalid port. Use `uat.ivrobd.com`, not `https://uat.ivrobd.com/api/v1`. |
+| Saving fails with `could not be resolved to a public IP address` | The Base URL host does not resolve, or points to a private address. |
+| Calls fail with `Fonada lead refused` | Fonada rejected the lead: wrong UKey, User ID or Campaign ID, an inactive campaign, or a caller ID that is not on the Fonada account. |
+| The customer answers but the assistant never speaks | Fonada did not open the WebSocket: the campaign uses a fixed URL instead of the lead's `TXT_url`, or traffic to `use1-api.ringg.ai` is blocked. |
+| The stream closes as soon as it opens | `session_start` is missing, late, or its audio is not `pcm16` at 8 or 16 kHz with equal rates. |
+| An inbound call drops at once | `customer_phone` or `business_phone` is missing or empty in `session_start`, or the DID is not added in Ringg and assigned to an assistant. |
+| Busy or unanswered calls are never retried | The CDR webhook is not configured, or it does not carry `ringg_call_id`. |
