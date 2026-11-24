@@ -1,0 +1,143 @@
+---
+title: "Superfone"
+sidebarTitle: "Superfone"
+description: "Connect your own Superfone account to Ringg AI with your SFVoPI API key, add your Superfone numbers, and set your account's inbound URLs on your SFVoPI app for inbound and outbound agent calls."
+"og:title": "Connect Superfone to Ringg AI"
+---
+
+## Overview
+
+Superfone connects to Ringg over **SFVoPI**, Superfone's voice API. Superfone handles the phone network; once a call is answered, Superfone streams its audio to Ringg over a WebSocket and Ringg runs the AI agent on it.
+
+| Direction | How the call starts |
+| - | - |
+| **Outbound** | Ringg asks SFVoPI to dial the customer from your Superfone number. Every call carries its own URLs, so outbound needs nothing in Superfone beyond linking the number to your SFVoPI app. |
+| **Inbound** | A customer calls your Superfone number. Superfone calls your SFVoPI app's **Answer URL**, which is your Ringg account's URL, and streams the call to Ringg. |
+
+<Note>
+  Ringg records every Superfone call itself, so recordings, transcripts and call analysis appear in Ringg as for any other provider.
+</Note>
+
+## Prerequisites
+
+* A Superfone account with SFVoPI enabled, an SFVoPI app and its **API key**
+* At least one Superfone number linked to that app
+* A Ringg workspace with the **Numbers** permission, and an assistant ready to take calls
+
+## Step 1: Add Superfone as a telephony provider in Ringg
+
+<Steps>
+  <Step title="Open the Superfone account form">
+    Go to **Numbers → Add number** and select **Superfone**. With no Superfone account yet, the form opens on its own; otherwise open **Configure provider** (the gear) and select **Add**.
+  </Step>
+  <Step title="Enter credentials">
+    | Field | Value |
+    | - | - |
+    | **Name** | Your label, for example `Superfone Bengaluru` |
+    | **API Key** | Your SFVoPI app's API key (Superfone **Settings → API keys**) |
+
+    Leading and trailing spaces are removed when you save.
+  </Step>
+  <Step title="Save">
+    Superfone has no credential-test endpoint, so the account is saved without a live check. The first test call (Step 4) confirms the key works.
+  </Step>
+  <Step title="Add your numbers">
+    Select **Add custom** and enter each Superfone number with its country code, for example `+919876543210`. Superfone numbers are added manually: there is no **Buy new** or **Import** option for Superfone.
+  </Step>
+  <Step title="Assign the numbers">
+    Attach each inbound number to the assistant that should answer it, and choose Superfone numbers as the caller ID for outbound calls and campaigns.
+  </Step>
+</Steps>
+
+## Step 2: Link your numbers to the SFVoPI app
+
+In Superfone, go to **Voice API → Numbers** and link every number you added in Ringg to your SFVoPI app. Superfone dials and answers only numbers linked to the app whose API key you entered in Step 1.
+
+## Step 3: Set the inbound URLs
+
+Inbound calls reach Ringg through two URLs that belong to your Ringg Superfone account.
+
+<Steps>
+  <Step title="Reveal the URLs">
+    In **Numbers → Add number**, select **Superfone**. Each Superfone account has an **Inbound setup** card. Select **Reveal** to show its **Answer URL** and **Hangup URL**, and copy each one.
+  </Step>
+  <Step title="Paste them into your SFVoPI app">
+    In your SFVoPI app, set the **Answer URL** and **Hangup URL** to the copied values, both with method **POST**.
+  </Step>
+</Steps>
+
+<Warning>
+  Treat these URLs like passwords: anyone holding them can send calls to your account. They are hidden until you select **Reveal**, and **Hide** removes them from the page.
+</Warning>
+
+Each pair of URLs belongs to one Ringg Superfone account. A call to a number that is on a different Ringg account is rejected, so if you use several Superfone accounts in Ringg, give each SFVoPI app its own account's URLs.
+
+<Note>
+  Deleting and re-adding the Superfone account in Ringg creates new URLs: paste them into your SFVoPI app again. Deleting and re-adding a number removes its assistant: attach it again.
+</Note>
+
+## Step 4: Place a test call
+
+* **Outbound**: place a call from the assistant to your own phone, from **Test call** or the outbound call API. Your phone rings from the Superfone number; when you answer, the assistant speaks.
+* **Inbound**: call your Superfone number from any phone. The attached assistant answers.
+
+## Call status
+
+Superfone reports calls that never reach the assistant to the Hangup URL. Calls the assistant handled are reported by the assistant itself.
+
+| Superfone hangup status | Reported in Ringg as |
+| - | - |
+| `BUSY` | Busy |
+| `NO_ANSWER`, `CANCELED` | No answer |
+| `FAILED` | Failed |
+| `COMPLETED`, but the assistant never started | Failed |
+
+If Superfone refuses a dial because your account hit its channel or calls-per-second limit, Ringg retries the call on your schedule; nothing rang.
+
+## Call features
+
+| Feature | Supported |
+| - | - |
+| Outbound and inbound calls | Yes |
+| Recording, transcript, analysis | Yes, recorded by Ringg |
+| Keypad input (DTMF) from the caller | Yes |
+| Withheld caller ID on inbound calls | Yes, the call is answered without the caller's number |
+| Hangup | Either side can end the call; Ringg tells Superfone to hang up when the assistant ends it |
+| Maximum call length | The assistant's maximum call length |
+
+## URL reference
+
+| Purpose | Set by | Method | URL |
+| - | - | - | - |
+| Answer URL | You, once per SFVoPI app (inbound) | POST | `https://<ringg-host>/pc/v1/superfone/answer/sf1_…`, copied from the **Inbound setup** card |
+| Hangup URL | You, once per SFVoPI app (inbound) | POST | `https://<ringg-host>/pc/v1/superfone/hangup/sf1_…`, copied from the **Inbound setup** card |
+| Outbound URLs | Ringg, on every dial | POST | Built per call; nothing to configure |
+
+## Troubleshooting
+
+| Symptom | Likely cause |
+| - | - |
+| Outbound call fails with `Superfone API key invalid` | The API key is wrong or was rotated. Update it on the Superfone account in Ringg. |
+| Outbound call fails with `Superfone couldn't place the call: …` | Superfone refused the dial, most often because the number is not linked to your SFVoPI app (Step 2). The message carries Superfone's reason. |
+| Superfone says `The specified number is not configured for this service.` | The number is not linked to an SFVoPI app (Step 2). |
+| Inbound calls are not answered | The app's Answer and Hangup URLs are not set, not set to POST, or belong to a different Ringg Superfone account than the number; or the number has no assistant attached in Ringg. |
+| **Reveal** shows "You need the Numbers permission to view these URLs." | Ask a workspace owner for the **Numbers** permission. |
+| **Reveal** shows "Superfone signing is not configured — contact support." | Superfone is not enabled on Ringg's side yet. Contact the Ringg team. |
+| **Reveal** shows "Too many requests. Try again in a minute." | The URLs can be revealed 10 times a minute. Wait a minute and try again. |
+
+## Support resources
+
+<CardGroup cols={2}>
+  <Card title="Superfone SFVoPI documentation" icon="book" href="https://docs.superfone.dev">
+    SFVoPI apps, numbers and API keys
+  </Card>
+  <Card title="Bring Your Own Telephony" icon="phone" href="/documentation/inventory/phone-numbers/your-own-telephony/byot-overview">
+    How BYOT works in Ringg
+  </Card>
+  <Card title="Attach a number to an agent" icon="phone-arrow-down-left" href="/documentation/inventory/phone-numbers/inbound-agent-number">
+    Inbound and outbound number setup
+  </Card>
+  <Card title="Ringg Support" icon="envelope" href="mailto:admin@ringg.ai">
+    admin@ringg.ai
+  </Card>
+</CardGroup>
