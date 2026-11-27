@@ -58,6 +58,8 @@ node run.ts                           # all of them (slow: tens of minutes)
 node probe.ts /assistants             # open one route, list backend calls no fixture answers
 ```
 
+`webchat-history` also films the web widget on a fictional customer site: build the web widget package's bundle (its `vite build`, which writes `dv-agent.umd.js` and `style.css`) and set `WIDGET_DIST` to that folder.
+
 Each scenario prints `✔ name: N shots, Ns video` or `✘ name: <error>`. On failure, a screenshot is saved to `$TMPDIR/ringg-docs-media/<name>-fail.png`. A line like `unanswered calls: GET /something` means the page asked for data no fixture provides. It received `{}`, so that part of the UI is probably empty in the recording; add the route and record again.
 
 ## Write a scenario

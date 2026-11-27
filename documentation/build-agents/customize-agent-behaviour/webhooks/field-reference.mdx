@@ -100,6 +100,9 @@ Present on every event unless the per-event notes below say otherwise.
 <ResponseField name="parent_call_id" type="string | null" required>
   The call this one was created from; `null` if dialled directly. See [Linking retries and callbacks](/documentation/build-agents/customize-agent-behaviour/webhooks/call-events#linking-retries-and-callbacks-to-the-original-call).
 </ResponseField>
+<ResponseField name="conversation_id" type="string | null">
+  For a session of a web chat continued from the widget's [chat history](/documentation/deploy/web-and-apps/web-widget/chat-history): the chat's ID, which is its first session's `call_id`. `null` for every other call. Only on `all_processing_completed`.
+</ResponseField>
 <ResponseField name="call_sid" type="string | null">
   The telephony provider's call ID. `null` until the call is dialled.
 </ResponseField>

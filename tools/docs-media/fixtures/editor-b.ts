@@ -303,6 +303,7 @@ export function makeEditorBRoutes() {
         if (b.mute_during_intro !== undefined) vd.agent_config.mute_during_intro = b.mute_during_intro;
         break;
       case "edit_rate_limit": vd.agent_config.rate_limit = b.rate_limit; break;
+      case "edit_chat_settings": vd.chat_config = { ...(vd.chat_config ?? {}), ...b.chat_settings }; break;
       case "edit_client_analysis": vd.client_analysis = { ...(vd.client_analysis ?? {}), ...b.client_analysis }; break;
       case "edit_analytics_context": vd.analytics_context = b.analytics_context; break;
       case "edit_event_subscriptions":
