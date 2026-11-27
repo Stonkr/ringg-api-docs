@@ -1,0 +1,70 @@
+---
+openapi: post /calling/call-details/search
+description: "Find the latest call that matches your filters, such as an agent plus a custom variable or phone number, and get it back in the same shape as Get call details."
+related:
+  - "Get call details": /api-reference/monitoring/call-history/get-call-details
+  - "API tools": /documentation/build-agents/customize-agent-behaviour/tools/api-tools
+  - "Custom variables": /documentation/build-agents/customize-agent-behaviour/custom-variables
+---
+
+import { RelatedTopics } from "/snippets/related-topics.mdx";
+
+Use this when you don't have a call's ID but know who the call was with. The response is the same as [Get call details](/api-reference/monitoring/call-history/get-call-details), so a pre-call tool can use it to give the agent the context of the customer's previous call.
+
+## Choose your filters
+
+Every filter is optional, and the filters you send must all match. Nothing forces you to narrow the search, but the result is only as specific as your filters. Pair `agent_id` with something that identifies the customer.
+
+| To find | Send |
+|---|---|
+| The last call with this customer on this agent | `agent_id` and a unique custom variable, such as `{"loan_id": "LN-20481"}` |
+| The last outbound call to a number | `agent_id`, `to_number` and `call_type: "outbound"` |
+| The last call from a returning inbound caller | `agent_id`, `to_number` and `call_type: "inbound"` |
+| The customer's last call on any agent | A unique custom variable only |
+| The last call where the customer asked for a callback | `agent_id`, `to_number` and `platform_analysis: {"callback_requested": true}` |
+| The last call on one agent version | `version_id` |
+| The latest call in the workspace | No filters |
+
+A custom variable that several customers share, such as `city`, returns whichever of their calls is newest. Use one that is unique per customer, such as a loan or account number.
+
+## Use it in a pre-call tool
+
+<Steps>
+  <Step title="Create the tool">
+    On the agent's **Tools** page, pick **Pre-call** and click **API**. Set the method to **POST**, the URL to `https://prod-api.ringg.ai/ca/api/v0/calling/call-details/search` and an `X-API-KEY` header with your API key. See [API tools](/documentation/build-agents/customize-agent-behaviour/tools/api-tools).
+  </Step>
+  <Step title="Build the body from the call context">
+    Fill the filters with **Variable** values: `agent_id` from `call_data.agent_id`, or a custom variable from `custom_args`. Set `exclude_call_id` from `call_data.id` so the current call is never the match.
+
+    The search's `to_number` is always the customer's number, but `call_data` names the numbers by direction. On an outbound agent, fill `to_number` from `call_data.to_number`. On an inbound agent, fill it from `call_data.from_number`, because `call_data.to_number` is your own number there.
+  </Step>
+  <Step title="Keep only what the agent needs">
+    Click **Test API** and tick the fields the prompt needs, such as the `platform_analysis` summary. The full response includes the transcript and a recording link, which the prompt doesn't need.
+
+    <Check>The **Response** tab shows the previous call for your test values.</Check>
+  </Step>
+</Steps>
+
+A first-time customer has no previous call, so the search returns `404`. That only skips this tool's data and the call goes ahead. Don't add `404` under **Block call on status codes**, or calls to new customers won't be placed.
+
+## Notes
+
+- The newest call by creation time wins.
+- `status` takes a list, such as `["completed"]`, and matches any status in it. Without `status`, only finished calls match: `completed`, `failed`, `error`, `cancelled` or `forwarded`. Send `["completed"]` to match only calls that connected.
+- A call is searchable once its post-call analysis has finished, so a call that ended moments ago may not match yet.
+- Every filter is an exact match. Partial values and `contains` are not supported, so `98765` never finds `+919876543210`.
+- Strings, whole numbers and `true` or `false` are compared as text, so `2` and `"2"` both match a stored `2`. Decimals are compared as numbers, so `0.000001` matches a stored `0.000001`.
+- `to_number` matches the number the call actually dialed, or the caller ID on an inbound call. It does not read the `mobile_number` custom variable, which can hold a different number.
+- Phone numbers ignore spaces and dashes. An Indian number matches with `+91`, `91`, `0` or no prefix, and a number without a country code is read as Indian. Send any other number with its country code, such as `+6581234567`; it only ever matches that number, never an Indian one.
+- `client_analysis` and `platform_analysis` filters take top-level keys only. `platform_analysis.summary` can't be filtered on.
+- A blank value, such as `"to_number": ""`, or a phone value with no number in it, such as `"00"`, is rejected rather than ignored, so an empty variable never widens the search to other customers.
+- Purged calls and eval simulation calls are never returned.
+
+## Errors
+
+- `401`: `X-API-KEY` is missing or invalid.
+- `404`: no call in the lookback window matches every filter.
+- `422`: a filter is invalid, such as `lookback_days` above 30, a blank value, a phone value with no number in it, more than 10 keys in one filter, or a key with characters other than letters, digits and underscores.
+- `503`: search is temporarily unavailable. Retry the request.
+
+<RelatedTopics items={[["Get call details", "/api-reference/monitoring/call-history/get-call-details"], ["API tools", "/documentation/build-agents/customize-agent-behaviour/tools/api-tools"], ["Custom variables", "/documentation/build-agents/customize-agent-behaviour/custom-variables"]]} />
