@@ -39,7 +39,7 @@ export async function prepareContext(context: BrowserContext, routes: RouteMap, 
 
 /** Hides UI that should never appear in docs media (support widgets, toasts from stubbed saves, coachmarks). */
 export async function cleanPage(page: Page) {
-  await page.addStyleTag({ content: `[data-sonner-toaster], [data-slot="toast-region"], [data-toast], [role="region"][aria-label*="otification" i], #crisp-chatbox, iframe[title*="chat" i] { display: none !important; }` }).catch(() => {});
+  await page.addStyleTag({ content: `[data-sonner-toaster], [data-slot="toast-region"], [data-toast], [role="region"][aria-label*="otification" i], #crisp-chatbox, iframe[title*="chat" i], nextjs-portal, [data-feedback-toolbar] { display: none !important; }` }).catch(() => {});
 }
 
 export async function gotoDashboard(page: Page, route: string) {
