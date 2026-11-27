@@ -108,7 +108,7 @@ The gear icon (**Call settings**) opens Meta's call settings for the number. Sel
 | **Allow callbacks** | Lets customers request a callback when a call can't be answered. |
 
 <Frame caption="Call settings for a WhatsApp number">
-  <img src="/media/whatsapp-calling/calling-03-number-settings.webp" alt="Call settings dialog for +919876543210 with Allow voice calls on, Display call buttons on, call hours of 09:00 to 18:00 Monday to Friday in Asia/Kolkata, and Allow callbacks off" />
+  <img src="/media/whatsapp-calling/calling-03-number-settings.webp" alt="Call settings dialog for +91 98765 40321 with Allow voice calls and Display call buttons on, call buttons limited to IN, a messaging limit of 10,000 a day, and call hours from 09:00 to 18:00 on weekdays" />
 </Frame>
 
 WhatsApp apps can take up to 7 days to show changes to these settings.
@@ -129,7 +129,7 @@ With calling on, a **Chat** | **Call** switch sits at the top of the agent's sid
   <img src="/media/whatsapp-calling/calling-02-agent-chat-tab.webp" alt="WhatsApp agent editor on the Chat tab, showing the chat prompt with WhatsApp Templates and WhatsApp Flows in the left menu" />
 </Frame>
 
-The agent's voice was picked when the agent was created, so the Call prompt shows "Calls speak in Priya. Choose the voice callers should hear." **Choose voice** opens the voice settings; the notice stays until you dismiss it.
+The agent's voice was picked when the agent was created, so the Call prompt shows "Calls speak in Ananya. Choose the voice callers should hear." **Choose voice** opens the voice settings; the notice stays until you dismiss it.
 
 Write the call prompt the way you would for an [inbound agent](/documentation/build-agents/customize-agent-behaviour/agent-prompt): short spoken sentences, no WhatsApp formatting, and `@||end_call||` where the call ends.
 
@@ -154,7 +154,7 @@ Select **Test assistant** in the editor's top bar. On the **Inbound** tab, a QR 
 A call row opens the call panel, as on the Phone tab: recording, transcript and analysis. See [the call panel](/documentation/monitor/logs#the-call-panel).
 
 <Frame caption="A WhatsApp call opened from Logs">
-  <img src="/media/whatsapp-calling/calling-07-call-drawer.webp" alt="Call panel for a WhatsApp call with the audio player, the transcript of the caller and the agent, and the general analysis" />
+  <img src="/media/whatsapp-calling/calling-07-call-drawer.webp" alt="Call panel for a completed WhatsApp call with the audio player and the transcript of the caller and the agent" />
 </Frame>
 
 **Export** follows the **Type** filter: chats, calls, or both as two separate reports. Nothing downloads; for both, "Chats and calls exports (with the applied filters) will be emailed to you."
@@ -181,7 +181,7 @@ Subscribe in [Event Subscription](/documentation/build-agents/customize-agent-be
 `call_ringing`, `call_ongoing` and `call_cancelled` aren't available to WhatsApp agents. Payloads: [call events](/documentation/build-agents/customize-agent-behaviour/webhooks/call-events) and [WhatsApp chat events](/documentation/build-agents/customize-agent-behaviour/webhooks/whatsapp-chat-events).
 
 <Frame caption="Event Subscription on the Call tab">
-  <img src="/media/whatsapp-calling/calling-09-webhooks.webp" alt="Event Subscription on a WhatsApp agent's Call tab offering Call Started, Call Completed, Recording Completed and the analysis events" />
+  <img src="/media/whatsapp-calling/calling-09-webhooks.webp" alt="Event Subscription on a WhatsApp agent's Call tab offering Call Started, Call Completed, Recording Ready and the analysis events" />
 </Frame>
 
 ## What turns calling off

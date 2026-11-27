@@ -135,7 +135,7 @@ export const featuredTranscript = turns.map(([who, text, off], i) => ({
 }));
 
 /** Placeholder recording: a speech-like synthetic tone envelope (no real voice). Built once with ffmpeg, served as a data URI. */
-function placeholderRecording(): string {
+export function placeholderRecording(): string {
   const file = resolve(import.meta.dirname, "../out/monitor-recording.mp3");
   if (!existsSync(file)) {
     mkdirSync(resolve(import.meta.dirname, "../out"), { recursive: true });
