@@ -1,7 +1,7 @@
 ---
 title: "Logs"
 sidebarTitle: "Logs"
-description: "Find any Ringg AI call or WhatsApp chat in Logs: filter by date, agent, campaign or status, play recordings, read transcripts and analysis, and export by email."
+description: "Find any Ringg AI call, WhatsApp chat or web chat in Logs: filter by date, agent or status, play recordings, read transcripts and analysis, and export by email."
 boost: 4
 "og:title": "View call logs, recordings and transcripts in Ringg AI"
 ---
@@ -20,14 +20,17 @@ In the dashboard: **Sidebar → Monitor → Logs**.
 
 ## Tabs
 
-Logs has three tabs, one per kind of conversation. Pick yours:
+Logs has four tabs, one per kind of conversation. Pick yours:
 
-<Columns cols={3}>
+<Columns cols={2}>
   <Card title="Phone" icon="phone" href="#the-call-list">
     Outbound, inbound and web calls, at `/logs`. The rest of this page.
   </Card>
   <Card title="WhatsApp" icon="message-circle" href="/documentation/monitor/logs#whatsapp-chats">
     Chats, at `/logs/whatsapp`, with their own columns, filters and export.
+  </Card>
+  <Card title="Webchat" icon="globe" href="#web-chats">
+    Text chats from the web widget, at `/logs/webchat`, one row per chat.
   </Card>
   <Card title="Workflows" icon="workflow" href="#workflow-runs">
     One row per workflow run, at `/logs/runs`, with the path each run took.
@@ -185,6 +188,34 @@ The **WhatsApp** tab (`/logs/whatsapp`) lists chats of your [WhatsApp agents](/d
 - **Filters**: date range, WhatsApp agents, chat status, **From number** (the customer), **To number** (your business number) and **Chat ID**, for example a webhook's `chat_id`.
 - **The chat panel**: **Chat details** (duration, custom variables, platform analysis), **Advanced analysis**, and **Transcript**, where tool calls and template sends appear as pills you can open for their request and response.
 - **Export**: the same **Export** menu as calls. The emailed zip holds `chat_history_report.csv`, one row per chat, up to 200,000 chats; the link is valid for 7 days. It includes `To Number` (your number's Meta phone number ID), `External Chat ID` and the transcript as `speaker: text` lines.
+
+## Web chats
+
+The **Webchat** tab (`/logs/webchat`) lists text chats from the [web widget](/documentation/deploy/web-and-apps/web-widget/chat-mode). A chat a visitor continued from the widget's [chat history](/documentation/deploy/web-and-apps/web-widget/chat-history) spans several sessions, and it is still one row. The **Calls** tab no longer lists them.
+
+<Frame caption="Reading a web chat across its sessions in Logs">
+  <video alt="Reading a web chat across its sessions in Logs" aria-label="Reading a web chat across its sessions in Logs" controls muted playsInline className="w-full rounded-xl" style={{ aspectRatio: "16 / 10" }} preload="metadata" controlsList="nodownload noremoteplayback" poster="/media/webchat-logs/poster.webp">
+    <source src="/media/webchat-logs/video.webm" type='video/webm; codecs="av01.0.09M.08"' />
+  </video>
+</Frame>
+
+- **Columns**: **Assistant**, **Visitor** (the name variable when the page passed one), **Last message**, **Turns** (visitor and agent, across every session) and **Cost** (the whole chat). Rows sort by the latest message. There is no status column: a chat can be continued, so it never really ends.
+- **Filters**: date range, assistants, versions, **Chat ID** (a valid UUID), turns, custom variables and advanced analysis.
+
+<Frame caption="Logs → Webchat: one row per chat">
+  <img src="/media/webchat-logs/chat-list.webp" alt="The Webchat tab listing five chats with Assistant, Visitor, Last message, Turns and Cost columns" />
+</Frame>
+
+Click a chat to open it. The header shows **Conversation** with the chat's ID and a copy button, and **Total cost** for all its sessions. The **Transcript** tab shows every session in order, each starting with a divider that has the session's date and a button to copy that session's call ID, followed by that session's own tool calls.
+
+<Columns cols={2}>
+  <Frame caption="Call details: totals across every session">
+    <img src="/media/webchat-logs/chat-details.webp" alt="A web chat's panel with the conversation ID, total cost, duration, visitor and agent turns, custom variables and the chat summary" />
+  </Frame>
+  <Frame caption="Transcript: each session with its own divider and tool calls">
+    <img src="/media/webchat-logs/transcript.webp" alt="A web chat's transcript with a Session 1 divider, a pre-call tool, the agent's greeting, the visitor's question, a Send Blocks tool and the agent's answer, then a Session 2 divider" />
+  </Frame>
+</Columns>
 
 ## Workflow runs
 

@@ -7,6 +7,12 @@ icon: "list"
 
 Subscribe with the RSS button above, or filter by tag on the right.
 
+<Update label="27 November 2026" description="Web chat history" tags={["Web widget"]}>
+  Visitors can reopen past web chats from the widget's **History** button and carry on, with the agent remembering the earlier conversation. Turn it on per agent under **Chat → Chat history**. See [Chat history](/documentation/deploy/web-and-apps/web-widget/chat-history).
+
+  Logs has a new **Webchat** tab with one row per chat, its total cost and turns, and every session in its transcript. See [Web chats](/documentation/monitor/logs#web-chats). The `all_processing_completed` webhook now carries [`conversation_id`](/documentation/build-agents/customize-agent-behaviour/webhooks/field-reference).
+</Update>
+
 <Update label="24 November 2026" description="Docs" tags={["Docs"]}>
   New guide to connect [Knowlarity](/documentation/inventory/phone-numbers/your-own-telephony/knowlarity) as your own telephony: Ringg places outbound calls through Knowlarity's OTP-call API and runs the assistant on your IVR's Stream node, and a status callback reports unanswered and busy calls. Inbound calls to your Knowlarity number work through the same Stream node.
 

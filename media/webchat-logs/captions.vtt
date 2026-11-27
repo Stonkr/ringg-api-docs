@@ -1,0 +1,16 @@
+WEBVTT
+
+00:00:01.500 --> 00:00:06.477
+Logs → Webchat lists one row per chat, latest message first
+
+00:00:06.477 --> 00:00:09.676
+Click a chat to open it
+
+00:00:09.676 --> 00:00:14.738
+The chat ID, total cost and turns cover every session
+
+00:00:14.738 --> 00:00:19.795
+Transcript: every session, each with its own tool calls
+
+00:00:19.795 --> 00:00:23.623
+Copy one session's call ID from its divider
